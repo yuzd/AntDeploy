@@ -118,13 +118,16 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="110" xml:space="preserve">
-    <value>AntDataVS Extension</value>
+    <value>Edit Project</value>
   </data>
   <data name="112" xml:space="preserve">
-    <value>AntDataVS Visual Studio Extension Detailed Info</value>
+    <value>一个开源的 Visual Studio 拓展，在项目右键菜单中加入“编辑项目文件”的功能。</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="400" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\AppenVersionMenuPackage.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Resources\Logo.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="EditMenuPattern" xml:space="preserve">
+    <value>编辑 {0}</value>
   </data>
 </root>

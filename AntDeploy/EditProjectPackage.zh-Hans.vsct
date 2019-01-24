@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema" language="zh-hans">
+
+  <Include href="EditProjectPackage.vsct" />
+
+  <Commands package="guidPackage">
+    <Buttons>
+      <Button guid="guidCmdSet" id="EDIT_PROJECT_CMD_ID" priority="0x0100" type="Button">
+        <!--Visual Studio 2015 doesn't have such menu, we have to define a new Group-->
+        <!--<Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_PROJECT_EDITFILE" />-->
+        <Parent guid="guidCmdSet" id="EDIT_PROJECT_GROUP_ID" />
+        <Icon guid="ImageCatalogGuid" id="Open" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>TextChanges</CommandFlag>
+        <CommandFlag>IconAndText</CommandFlag>
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <Strings>
+          <ButtonText>编辑...</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidCmdSet" id="EDIT_PROJECTS_CMD_ID" priority="0x0100" type="Button">
+        <Parent guid="guidCmdSet" id="EDIT_PROJECTS_GROUP_ID" />
+        <Icon guid="ImageCatalogGuid" id="Open" />
+        <CommandFlag>IconAndText</CommandFlag>
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <Strings>
+          <ButtonText>编辑项目文件</ButtonText>
+        </Strings>
+      </Button>
+    </Buttons>
+  </Commands>
+</CommandTable>

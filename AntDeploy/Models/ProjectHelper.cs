@@ -1,18 +1,52 @@
 ﻿using EnvDTE;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using static AntDeploy.Models.ProjectKinds;
+using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
+using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace AntDeploy
+namespace AntDeploy.Models
 {
-    internal static class ProjectHelpers
+    internal static class ProjectHelper
     {
+        public static bool IsDotNetCoreProject(Project project)
+        {
+            switch (project.Kind)
+            {
+                case CS_CORE_PROJECT_KIND:
+                case FS_CORE_PROJECT_KIND:
+                case VB_CORE_PROJECT_KIND:
+                    return true;
+
+                default:
+                    var solution = Package.GetGlobalService(typeof(SVsSolution)) as IVsSolution;
+                    if (solution.GetProjectOfUniqueName(project.UniqueName, out var hierarchy) == 0)
+                    {
+                        return IsCpsProject(hierarchy);
+                    }
+
+                    return false;
+            }
+        }
+
+        // https://developercommunity.visualstudio.com/content/problem/312523/envdteprojectkind-no-longer-differentiates-between.html
+        // https://github.com/Microsoft/VSProjectSystem/blob/master/doc/automation/detect_whether_a_project_is_a_CPS_project.md
+        // https://www.mztools.com/articles/2014/MZ2014006.aspx
+        private static bool IsCpsProject(IVsHierarchy hierarchy)
+        {
+            Microsoft.Requires.NotNull(hierarchy, nameof(hierarchy));
+            return hierarchy.IsCapabilityMatch("CPS");
+        }
+
+
         public const string SolutionItemsFolder = "Solution Items";
 
         public static void AddError(Package package, string errorText)
@@ -23,7 +57,7 @@ namespace AntDeploy
             IVsHierarchy hierarchyItem;
             var proj = GetActiveProject();
             var projectUniqueName = proj.FileName;
-            var firstFileInProject = ProjectHelpers.GetSelectedItemPaths(AntDeployVSPackage.DTE).FirstOrDefault();
+            var firstFileInProject = GetSelectedItemPaths(EditProjectPackage.DTE).FirstOrDefault();
             ivsSolution.GetProjectOfUniqueName(projectUniqueName, out hierarchyItem);
             var newError = new ErrorTask()
             {
@@ -52,17 +86,17 @@ namespace AntDeploy
         ///<summary>Gets the Solution Items solution folder in the current solution, creating it if it doesn't exist.</summary>
         public static Project GetSolutionItemsProject()
         {
-            Solution2 solution = AntDeployVSPackage.DTE.Solution as Solution2;
+            Solution2 solution = EditProjectPackage.DTE.Solution as Solution2;
             return solution.Projects
                            .OfType<Project>()
                            .FirstOrDefault(p => p.Name.Equals(SolutionItemsFolder, StringComparison.OrdinalIgnoreCase))
                       ?? solution.AddSolutionFolder(SolutionItemsFolder);
         }
 
-       
 
 
-        
+
+
 
         ///<summary>Gets the base directory of a specific Project, or of the active project if no parameter is passed.</summary>
         public static string GetRootFolder(Project project = null)
@@ -73,7 +107,7 @@ namespace AntDeploy
 
                 if (project == null || project.Collection == null)
                 {
-                    var doc = AntDeployVSPackage.DTE.ActiveDocument;
+                    var doc = EditProjectPackage.DTE.ActiveDocument;
                     if (doc != null && !string.IsNullOrEmpty(doc.FullName))
                         return GetProjectFolder(doc.FullName);
                     return string.Empty;
@@ -111,7 +145,6 @@ namespace AntDeploy
             }
             catch (Exception ex)
             {
-                Debug.Write(ex);
                 return string.Empty;
             }
         }
@@ -134,7 +167,7 @@ namespace AntDeploy
             }
         }
 
-        
+
         public static void AddFileToActiveProject(string fileName, string itemType = null)
         {
             Project project = GetActiveProject();
@@ -165,7 +198,7 @@ namespace AntDeploy
         {
             try
             {
-                Array activeSolutionProjects = AntDeployVSPackage.DTE.ActiveSolutionProjects as Array;
+                Array activeSolutionProjects = EditProjectPackage.DTE.ActiveSolutionProjects as Array;
 
                 if (activeSolutionProjects != null && activeSolutionProjects.Length > 0)
                     return activeSolutionProjects.GetValue(0) as Project;
@@ -200,7 +233,7 @@ namespace AntDeploy
             if (file == null)
                 return null;
 
-            var baseFolder = file.Properties == null ? null : ProjectHelpers.GetProjectFolder(file);
+            var baseFolder = file.Properties == null ? null : GetProjectFolder(file);
             return ToAbsoluteFilePath(relativeUrl, GetProjectFolder(file), baseFolder);
         }
 
@@ -267,7 +300,7 @@ namespace AntDeploy
         ///<summary>Gets the full paths to the currently selected item(s) in the Solution Explorer.</summary>
         public static IEnumerable<string> GetSelectedItemPaths(DTE2 dte = null)
         {
-            var items = (Array)(dte ?? AntDeployVSPackage.DTE).ToolWindows.SolutionExplorer.SelectedItems;
+            var items = (Array)(dte ?? EditProjectPackage.DTE).ToolWindows.SolutionExplorer.SelectedItems;
             foreach (UIHierarchyItem selItem in items)
             {
                 var item = selItem.Object as ProjectItem;
@@ -280,7 +313,7 @@ namespace AntDeploy
         ///<summary>Gets the the currently selected project(s) in the Solution Explorer.</summary>
         public static IEnumerable<Project> GetSelectedProjects()
         {
-            var items = (Array)AntDeployVSPackage.DTE.ToolWindows.SolutionExplorer.SelectedItems;
+            var items = (Array)EditProjectPackage.DTE.ToolWindows.SolutionExplorer.SelectedItems;
             foreach (UIHierarchyItem selItem in items)
             {
                 var item = selItem.Object as Project;
@@ -296,7 +329,7 @@ namespace AntDeploy
         {
             try
             {
-                var dte = AntDeployVSPackage.DTE;
+                var dte = EditProjectPackage.DTE;
 
                 if (dte == null || !File.Exists(fileName) || dte.Solution.FindProjectItem(fileName) == null)
                     return true;
@@ -316,7 +349,7 @@ namespace AntDeploy
         ///<summary>Gets the directory containing the active solution file.</summary>
         public static string GetSolutionFolderPath()
         {
-            EnvDTE.Solution solution = AntDeployVSPackage.DTE.Solution;
+            EnvDTE.Solution solution = EditProjectPackage.DTE.Solution;
 
             if (solution == null)
                 return null;
@@ -354,7 +387,7 @@ namespace AntDeploy
         ///<summary>Gets the the currently selected file(s) in the Solution Explorer.</summary>
         public static IEnumerable<ProjectItem> GetSelectedItems()
         {
-            var items = (Array)AntDeployVSPackage.DTE.ToolWindows.SolutionExplorer.SelectedItems;
+            var items = (Array)EditProjectPackage.DTE.ToolWindows.SolutionExplorer.SelectedItems;
             foreach (UIHierarchyItem selItem in items)
             {
                 var item = selItem.Object as ProjectItem;
@@ -393,7 +426,7 @@ namespace AntDeploy
 
         public static ProjectItem GetActiveFile()
         {
-            var doc = AntDeployVSPackage.DTE.ActiveDocument;
+            var doc = EditProjectPackage.DTE.ActiveDocument;
 
             if (doc == null)
                 return null;
@@ -408,7 +441,7 @@ namespace AntDeploy
         {
             try
             {
-                return AntDeployVSPackage.DTE.Solution.FindProjectItem(fileName);
+                return EditProjectPackage.DTE.Solution.FindProjectItem(fileName);
             }
             catch (Exception exception)
             {
@@ -499,7 +532,7 @@ namespace AntDeploy
              && !settingsPath.StartsWith("/", StringComparison.OrdinalIgnoreCase))
                 return Path.GetFullPath(Path.Combine(sourceDir, settingsPath, targetFileName));
 
-            string rootDir = ProjectHelpers.GetRootFolder();
+            string rootDir = GetRootFolder();
 
             if (string.IsNullOrEmpty(rootDir))
                 // If no project is loaded, assume relative to file anyway
