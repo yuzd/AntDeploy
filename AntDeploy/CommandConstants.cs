@@ -18,7 +18,7 @@ namespace AntDeploy
 
     enum CommandId
     {
-        SqlServer = 0x1047,
-        Mysql = 0x1048
+        Web_IIS = 0x1047,
+        Web_Service = 0x1048
     }
 }

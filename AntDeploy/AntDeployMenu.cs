@@ -34,13 +34,13 @@ namespace AntDeploy
 
         public void SetupCommands()
         {
-            CommandID sqlserverCommand = new CommandID(CommandGuids.guidDiffCmdSet, (int)CommandId.SqlServer);
-            OleMenuCommand sqlServer_jsCommand = new OleMenuCommand(CommandInvoke, sqlserverCommand);
+            CommandID webiisCommand = new CommandID(CommandGuids.guidDiffCmdSet, (int)CommandId.Web_IIS);
+            OleMenuCommand sqlServer_jsCommand = new OleMenuCommand(CommandWebIIsInvoke, webiisCommand);
             sqlServer_jsCommand.BeforeQueryStatus += html_BeforeQueryStatus;
             _mcs.AddCommand(sqlServer_jsCommand);
 
-            CommandID mysqlCommadn = new CommandID(CommandGuids.guidDiffCmdSet, (int)CommandId.Mysql);
-            OleMenuCommand mysql_jsCommand = new OleMenuCommand(CommandInvoke, mysqlCommadn);
+            CommandID webserviceCommadn = new CommandID(CommandGuids.guidDiffCmdSet, (int)CommandId.Web_Service);
+            OleMenuCommand mysql_jsCommand = new OleMenuCommand(CommandWebServiceInvoke, webserviceCommadn);
             mysql_jsCommand.BeforeQueryStatus += html_BeforeQueryStatus;
             _mcs.AddCommand(mysql_jsCommand);
 
@@ -52,7 +52,34 @@ namespace AntDeploy
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CommandInvoke(object sender, EventArgs e)
+        private void CommandWebIIsInvoke(object sender, EventArgs e)
+        {
+            try
+            {
+
+                //先pubslish
+
+                //然后zip打包
+
+                //然后传输zip到远程
+
+                //拿到远程交互结果
+
+
+                MessageBox.Show("append success",
+                    "Success", MessageBoxButtons.OK,
+                    MessageBoxIcon.Exclamation);
+            }
+            catch (Exception ex)
+            {
+                ProjectHelpers.AddError(_package, ex.ToString());
+                MessageBox.Show("Error happens: " + ex,
+                    "Fail", MessageBoxButtons.OK,
+                    MessageBoxIcon.Exclamation);
+            }
+        }
+
+        private void CommandWebServiceInvoke(object sender, EventArgs e)
         {
             try
             {
@@ -69,8 +96,6 @@ namespace AntDeploy
                     MessageBoxIcon.Exclamation);
             }
         }
-
-
 
 
 

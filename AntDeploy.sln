@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28307.102
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntDeploy", "AntDeploy\AntDeploy.csproj", "{B147B488-6D3C-4ACF-846C-13A659058C20}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestProject", "UnitTestProject\UnitTestProject.csproj", "{017DE80F-1688-42CE-AD88-783203575993}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{B147B488-6D3C-4ACF-846C-13A659058C20}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B147B488-6D3C-4ACF-846C-13A659058C20}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B147B488-6D3C-4ACF-846C-13A659058C20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{017DE80F-1688-42CE-AD88-783203575993}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{017DE80F-1688-42CE-AD88-783203575993}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{017DE80F-1688-42CE-AD88-783203575993}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{017DE80F-1688-42CE-AD88-783203575993}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
