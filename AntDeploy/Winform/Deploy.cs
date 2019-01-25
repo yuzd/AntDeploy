@@ -451,6 +451,8 @@ namespace AntDeploy.Winform
                 this.combo_iis_env.Enabled = flag;
                 this.combo_iis_sdk_type.Enabled = flag;
                 this.page_set.Enabled = flag;
+                this.page_docker.Enabled = flag;
+                this.page_window_service.Enabled = flag;
             });
 
         }
