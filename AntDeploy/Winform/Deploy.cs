@@ -430,9 +430,24 @@ namespace AntDeploy.Winform
                     return;
                 }
                 this.Logger.Info("package success");
+
                 //执行 上传
-
-
+                this.Logger.Info("Deploy Start");
+                foreach (var server in serverList)
+                {
+                    if (string.IsNullOrEmpty(server.Token))
+                    {
+                        this.Logger.Warn($"{server.Host} Deploy skip,Token is null or empty!");
+                        continue;
+                    }
+                    this.Logger.Info($"Start Uppload,Host:{server.Host}");
+                    HttpRequestClient httpRequestClient = new HttpRequestClient();
+                    httpRequestClient.SetFieldValue("Token", server.Token);
+                    httpRequestClient.SetFieldValue("publish","publish.zip", "application/octet-stream", zipBytes);
+                    httpRequestClient.Upload($"http://{server.Host}/publish", out var responseText);
+                    this.Logger.Info($"End Uppload,Host:{server.Host},Response:${responseText}");
+                }
+                this.Logger.Info("Deploy End");
                 //交互
 
                 Enable(true);

@@ -59,6 +59,7 @@
     <Compile Include="Models\TempFileHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\CommandHelper.cs" />
+    <Compile Include="Util\HttpRequestClient.cs" />
     <Compile Include="Util\ZipHelper.cs" />
     <Compile Include="Vsix.cs" />
     <Compile Include="VSPackage.Designer.cs">
