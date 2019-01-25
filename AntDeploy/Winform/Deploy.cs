@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -368,7 +369,7 @@ namespace AntDeploy.Winform
 
             this.rich_iis_log.Text = "";
 
-            new Task(() =>
+            new Task(async () =>
             {
                 this.Logger.Info("Start publish");
                 Enable(false);
@@ -444,8 +445,20 @@ namespace AntDeploy.Winform
                     HttpRequestClient httpRequestClient = new HttpRequestClient();
                     httpRequestClient.SetFieldValue("Token", server.Token);
                     httpRequestClient.SetFieldValue("publish","publish.zip", "application/octet-stream", zipBytes);
-                    httpRequestClient.Upload($"http://{server.Host}/publish", out var responseText);
-                    this.Logger.Info($"End Uppload,Host:{server.Host},Response:${responseText}");
+                    var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/publish", (client) =>
+                    {
+                        client.UploadProgressChanged += ClientOnUploadProgressChanged;
+                    });
+
+                    if (uploadResult.Item1)
+                    {
+                        this.Logger.Info($"End Uppload,Host:{server.Host},Response:${uploadResult.Item2}");
+                    }
+                    else
+                    {
+                        this.Logger.Error($"Fail Uppload,Host:{server.Host},Response:${uploadResult.Item2},Skip to Next");
+                    }
+                    
                 }
                 this.Logger.Info("Deploy End");
                 //交互
@@ -454,6 +467,11 @@ namespace AntDeploy.Winform
 
             }).Start();
 
+        }
+
+        private void ClientOnUploadProgressChanged(object sender, UploadProgressChangedEventArgs e)
+        {
+            this.Logger.Info($"Upload {e.ProgressPercentage} % complete...");
         }
 
 

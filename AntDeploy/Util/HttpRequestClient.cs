@@ -65,9 +65,8 @@ namespace AntDeploy.Util
         /// 上传
         /// </summary>
         /// <param name="requestUrl">请求url</param>
-        /// <param name="responseText">响应</param>
         /// <returns></returns>
-        public bool Upload(String requestUrl, out String responseText)
+        public async Task<Tuple<bool,string>> Upload(String requestUrl,Action<WebClient> config)
         {
             WebClient webClient = new WebClient();
             webClient.Headers.Add("Content-Type", "multipart/form-data; boundary=" + boundary);
@@ -77,9 +76,9 @@ namespace AntDeploy.Util
 
             try
             {
-                responseBytes = webClient.UploadData(requestUrl, bytes);
-                responseText = System.Text.Encoding.UTF8.GetString(responseBytes);
-                return true;
+                responseBytes = await webClient.UploadDataTaskAsync(requestUrl, bytes);
+                var responseText = System.Text.Encoding.UTF8.GetString(responseBytes);
+                return new Tuple<bool, string>(true,responseText);
             }
             catch (WebException ex)
             {
@@ -87,8 +86,8 @@ namespace AntDeploy.Util
                 responseBytes = new byte[ex.Response.ContentLength];
                 responseStream.Read(responseBytes, 0, responseBytes.Length);
             }
-            responseText = System.Text.Encoding.UTF8.GetString(responseBytes);
-            return false;
+            var responseText2 = System.Text.Encoding.UTF8.GetString(responseBytes);
+            return new Tuple<bool, string>(false,responseText2);
         }
 
         /// <summary>
