@@ -1,16 +1,15 @@
 ﻿using AntDeploy.Models;
+using AntDeploy.Util;
 using Newtonsoft.Json;
+using NLog.Windows.Forms;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using AntDeploy.Util;
-using NLog.Windows.Forms;
 
 namespace AntDeploy.Winform
 {
@@ -29,9 +28,9 @@ namespace AntDeploy.Winform
             RichTextBoxTarget.ReInitializeAllTextboxes(this);
         }
 
-     
 
-        
+
+
 
         public DeployConfig DeployConfig { get; set; }
 
@@ -73,7 +72,7 @@ namespace AntDeploy.Winform
                     this.txt_iis_web_site_name.Text = DeployConfig.IIsConfig.WebSiteName;
                 }
 
-                if (this.combo_iis_env.Items.Count>0 &&
+                if (this.combo_iis_env.Items.Count > 0 &&
                     !string.IsNullOrEmpty(DeployConfig.IIsConfig.LastEnvName)
                     && this.combo_iis_env.Items.Cast<string>().Contains(DeployConfig.IIsConfig.LastEnvName))
                 {
@@ -359,7 +358,7 @@ namespace AntDeploy.Winform
 
             var serverHostList = string.Join(Environment.NewLine, serverList.Select(r => r.Host).ToList());
 
-            var confirmResult = MessageBox.Show("Are you sure to deploy to Server: "+ Environment.NewLine + serverHostList,
+            var confirmResult = MessageBox.Show("Are you sure to deploy to Server: " + Environment.NewLine + serverHostList,
                 "Confirm Deploy!!",
                 MessageBoxButtons.YesNo);
             if (confirmResult != DialogResult.Yes)
@@ -372,7 +371,7 @@ namespace AntDeploy.Winform
             new Task(() =>
             {
                 this.Logger.Info("Start publish");
-
+                Enable(false);
                 var publishLog = new List<string>();
                 //执行 publish
                 var isSuccess = CommandHelper.RunDotnetExternalExe(ProjectFolderPath,
@@ -430,18 +429,36 @@ namespace AntDeploy.Winform
                     this.Logger.Error("package fail");
                     return;
                 }
-               
+                this.Logger.Info("package success");
                 //执行 上传
 
 
                 //交互
 
+                Enable(true);
+
             }).Start();
-            
+
         }
 
-        
 
+        private void Enable(bool flag)
+        {
+            this.BeginInvokeLambda(() =>
+            {
+                this.b_iis_deploy.Enabled = flag;
+                this.txt_iis_web_site_name.Enabled = flag;
+                this.combo_iis_env.Enabled = flag;
+                this.combo_iis_sdk_type.Enabled = flag;
+                this.page_set.Enabled = flag;
+            });
+
+        }
+
+        private void BeginInvokeLambda(Action action)
+        {
+            BeginInvoke(action, null);
+        }
 
     }
 }

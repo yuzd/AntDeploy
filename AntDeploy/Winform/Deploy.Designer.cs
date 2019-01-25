@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.deployTab = new System.Windows.Forms.TabControl();
-            this.IIS_Web = new System.Windows.Forms.TabPage();
-            this.setPage = new System.Windows.Forms.TabPage();
+            this.page_ = new System.Windows.Forms.TabControl();
+            this.page_web_iis = new System.Windows.Forms.TabPage();
+            this.page_set = new System.Windows.Forms.TabPage();
             this.environment = new System.Windows.Forms.GroupBox();
             this.combo_env_list = new System.Windows.Forms.ComboBox();
             this.b_env_add_by_name = new System.Windows.Forms.Button();
@@ -48,8 +48,8 @@
             this.b_env_server_remove = new System.Windows.Forms.Button();
             this.combo_env_server_list = new System.Windows.Forms.ComboBox();
             this.b_env_server_test = new System.Windows.Forms.Button();
-            this.deployDocker = new System.Windows.Forms.TabPage();
-            this.deployWidowService = new System.Windows.Forms.TabPage();
+            this.page_docker = new System.Windows.Forms.TabPage();
+            this.page_window_service = new System.Windows.Forms.TabPage();
             this.label6 = new System.Windows.Forms.Label();
             this.combo_iis_sdk_type = new System.Windows.Forms.ComboBox();
             this.label7 = new System.Windows.Forms.Label();
@@ -64,58 +64,58 @@
             this.list_env_ignore = new System.Windows.Forms.ListBox();
             this.b_env_ignore_remove = new System.Windows.Forms.Button();
             this.rich_iis_log = new System.Windows.Forms.RichTextBox();
-            this.deployTab.SuspendLayout();
-            this.IIS_Web.SuspendLayout();
-            this.setPage.SuspendLayout();
+            this.page_.SuspendLayout();
+            this.page_web_iis.SuspendLayout();
+            this.page_set.SuspendLayout();
             this.environment.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBoxIgnore.SuspendLayout();
             this.SuspendLayout();
             // 
-            // deployTab
+            // page_
             // 
-            this.deployTab.Controls.Add(this.IIS_Web);
-            this.deployTab.Controls.Add(this.deployDocker);
-            this.deployTab.Controls.Add(this.deployWidowService);
-            this.deployTab.Controls.Add(this.setPage);
-            this.deployTab.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.deployTab.Location = new System.Drawing.Point(0, 0);
-            this.deployTab.Name = "deployTab";
-            this.deployTab.SelectedIndex = 0;
-            this.deployTab.Size = new System.Drawing.Size(634, 448);
-            this.deployTab.TabIndex = 0;
+            this.page_.Controls.Add(this.page_web_iis);
+            this.page_.Controls.Add(this.page_docker);
+            this.page_.Controls.Add(this.page_window_service);
+            this.page_.Controls.Add(this.page_set);
+            this.page_.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.page_.Location = new System.Drawing.Point(0, 0);
+            this.page_.Name = "page_";
+            this.page_.SelectedIndex = 0;
+            this.page_.Size = new System.Drawing.Size(634, 448);
+            this.page_.TabIndex = 0;
             // 
-            // IIS_Web
+            // page_web_iis
             // 
-            this.IIS_Web.Controls.Add(this.b_iis_deploy);
-            this.IIS_Web.Controls.Add(this.combo_iis_env);
-            this.IIS_Web.Controls.Add(this.label8);
-            this.IIS_Web.Controls.Add(this.groupBox2);
-            this.IIS_Web.Controls.Add(this.txt_iis_web_site_name);
-            this.IIS_Web.Controls.Add(this.label7);
-            this.IIS_Web.Controls.Add(this.combo_iis_sdk_type);
-            this.IIS_Web.Controls.Add(this.label6);
-            this.IIS_Web.Location = new System.Drawing.Point(4, 22);
-            this.IIS_Web.Name = "IIS_Web";
-            this.IIS_Web.Padding = new System.Windows.Forms.Padding(3);
-            this.IIS_Web.Size = new System.Drawing.Size(626, 422);
-            this.IIS_Web.TabIndex = 0;
-            this.IIS_Web.Text = "IIS_Web";
-            this.IIS_Web.UseVisualStyleBackColor = true;
+            this.page_web_iis.Controls.Add(this.b_iis_deploy);
+            this.page_web_iis.Controls.Add(this.combo_iis_env);
+            this.page_web_iis.Controls.Add(this.label8);
+            this.page_web_iis.Controls.Add(this.groupBox2);
+            this.page_web_iis.Controls.Add(this.txt_iis_web_site_name);
+            this.page_web_iis.Controls.Add(this.label7);
+            this.page_web_iis.Controls.Add(this.combo_iis_sdk_type);
+            this.page_web_iis.Controls.Add(this.label6);
+            this.page_web_iis.Location = new System.Drawing.Point(4, 22);
+            this.page_web_iis.Name = "page_web_iis";
+            this.page_web_iis.Padding = new System.Windows.Forms.Padding(3);
+            this.page_web_iis.Size = new System.Drawing.Size(626, 422);
+            this.page_web_iis.TabIndex = 0;
+            this.page_web_iis.Text = "IIS_Web";
+            this.page_web_iis.UseVisualStyleBackColor = true;
             // 
-            // setPage
+            // page_set
             // 
-            this.setPage.Controls.Add(this.groupBoxIgnore);
-            this.setPage.Controls.Add(this.groupBox1);
-            this.setPage.Controls.Add(this.environment);
-            this.setPage.Location = new System.Drawing.Point(4, 22);
-            this.setPage.Name = "setPage";
-            this.setPage.Padding = new System.Windows.Forms.Padding(3);
-            this.setPage.Size = new System.Drawing.Size(626, 422);
-            this.setPage.TabIndex = 1;
-            this.setPage.Text = "Setting";
-            this.setPage.UseVisualStyleBackColor = true;
+            this.page_set.Controls.Add(this.groupBoxIgnore);
+            this.page_set.Controls.Add(this.groupBox1);
+            this.page_set.Controls.Add(this.environment);
+            this.page_set.Location = new System.Drawing.Point(4, 22);
+            this.page_set.Name = "page_set";
+            this.page_set.Padding = new System.Windows.Forms.Padding(3);
+            this.page_set.Size = new System.Drawing.Size(626, 422);
+            this.page_set.TabIndex = 1;
+            this.page_set.Text = "Setting";
+            this.page_set.UseVisualStyleBackColor = true;
             // 
             // environment
             // 
@@ -290,23 +290,23 @@
             this.b_env_server_test.Text = "Connect Test";
             this.b_env_server_test.UseVisualStyleBackColor = true;
             // 
-            // deployDocker
+            // page_docker
             // 
-            this.deployDocker.Location = new System.Drawing.Point(4, 22);
-            this.deployDocker.Name = "deployDocker";
-            this.deployDocker.Size = new System.Drawing.Size(626, 422);
-            this.deployDocker.TabIndex = 2;
-            this.deployDocker.Text = "Docker";
-            this.deployDocker.UseVisualStyleBackColor = true;
+            this.page_docker.Location = new System.Drawing.Point(4, 22);
+            this.page_docker.Name = "page_docker";
+            this.page_docker.Size = new System.Drawing.Size(626, 422);
+            this.page_docker.TabIndex = 2;
+            this.page_docker.Text = "Docker";
+            this.page_docker.UseVisualStyleBackColor = true;
             // 
-            // deployWidowService
+            // page_window_service
             // 
-            this.deployWidowService.Location = new System.Drawing.Point(4, 22);
-            this.deployWidowService.Name = "deployWidowService";
-            this.deployWidowService.Size = new System.Drawing.Size(626, 422);
-            this.deployWidowService.TabIndex = 3;
-            this.deployWidowService.Text = "WindowsService";
-            this.deployWidowService.UseVisualStyleBackColor = true;
+            this.page_window_service.Location = new System.Drawing.Point(4, 22);
+            this.page_window_service.Name = "page_window_service";
+            this.page_window_service.Size = new System.Drawing.Size(626, 422);
+            this.page_window_service.TabIndex = 3;
+            this.page_window_service.Text = "WindowsService";
+            this.page_window_service.UseVisualStyleBackColor = true;
             // 
             // label6
             // 
@@ -450,7 +450,7 @@
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.ClientSize = new System.Drawing.Size(634, 448);
-            this.Controls.Add(this.deployTab);
+            this.Controls.Add(this.page_);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.Name = "Deploy";
@@ -460,10 +460,10 @@
             this.Text = "AntDeploy";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Deploy_FormClosing);
             this.Load += new System.EventHandler(this.Deploy_Load);
-            this.deployTab.ResumeLayout(false);
-            this.IIS_Web.ResumeLayout(false);
-            this.IIS_Web.PerformLayout();
-            this.setPage.ResumeLayout(false);
+            this.page_.ResumeLayout(false);
+            this.page_web_iis.ResumeLayout(false);
+            this.page_web_iis.PerformLayout();
+            this.page_set.ResumeLayout(false);
             this.environment.ResumeLayout(false);
             this.environment.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -477,9 +477,9 @@
 
         #endregion
 
-        private System.Windows.Forms.TabControl deployTab;
-        private System.Windows.Forms.TabPage IIS_Web;
-        private System.Windows.Forms.TabPage setPage;
+        private System.Windows.Forms.TabControl page_;
+        private System.Windows.Forms.TabPage page_web_iis;
+        private System.Windows.Forms.TabPage page_set;
         private System.Windows.Forms.GroupBox environment;
         private System.Windows.Forms.Button b_env_add_by_name;
         private System.Windows.Forms.ComboBox combo_env_list;
@@ -497,8 +497,8 @@
         private System.Windows.Forms.Button b_env_server_remove;
         private System.Windows.Forms.ComboBox combo_env_server_list;
         private System.Windows.Forms.Button b_env_server_test;
-        private System.Windows.Forms.TabPage deployDocker;
-        private System.Windows.Forms.TabPage deployWidowService;
+        private System.Windows.Forms.TabPage page_docker;
+        private System.Windows.Forms.TabPage page_window_service;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ComboBox combo_iis_sdk_type;
         private System.Windows.Forms.Label label7;
