@@ -29,13 +29,14 @@ namespace AntDeploy.Commands
                 var project = projects[0];
                 if (ProjectHelper.IsDotNetCoreProject(project))
                 {
-                    Visible = false;
-                }
-                else
-                {
                     _projectFile = project.FullName;
                     Text = "AntDeploy";
                     Visible = true;
+                    
+                }
+                else
+                {
+                    Visible = false;
                 }
             }
             else

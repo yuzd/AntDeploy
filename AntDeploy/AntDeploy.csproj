@@ -5,7 +5,7 @@
     <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <UseCodebase>true</UseCodebase>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -53,6 +53,7 @@
     <Compile Include="Commands\EditProjectsCommand.cs" />
     <Compile Include="EditProjectPackage.cs" />
     <Compile Include="Ids.cs" />
+    <Compile Include="Models\DeployConfig.cs" />
     <Compile Include="Models\ProjectHelper.cs" />
     <Compile Include="Models\ProjectKinds.cs" />
     <Compile Include="Models\TempFileHelper.cs" />
@@ -65,9 +66,18 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>VSPackage.tt</DependentUpon>
     </Compile>
+    <Compile Include="Winform\Deploy.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Winform\Deploy.Designer.cs">
+      <DependentUpon>Deploy.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />
+    <None Include="nlog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="source.extension.vsixmanifest" />
     <None Include="VSPackage.tt">
@@ -172,6 +182,15 @@
       <HintPath>..\packages\Microsoft.VisualStudio.Validation.14.1.111\lib\net45\Microsoft.VisualStudio.Validation.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\DLL\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog.Windows.Forms">
+      <HintPath>..\DLL\NLog.Windows.Forms.dll</HintPath>
+    </Reference>
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
       <Private>False</Private>
@@ -195,7 +214,9 @@
     <VSCTCompile Include="EditProjectPackage.vsct" />
     <Content Include="Resources\Logo.ico">
       <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Resources\Logo1.ico" />
     <Content Include="Resources\__TemplateIcon.png">
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -212,10 +233,14 @@
     <EmbeddedResource Include="VSPackage.zh-Hans.resx">
       <MergeWithCTO>true</MergeWithCTO>
     </EmbeddedResource>
+    <EmbeddedResource Include="Winform\Deploy.resx">
+      <DependentUpon>Deploy.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

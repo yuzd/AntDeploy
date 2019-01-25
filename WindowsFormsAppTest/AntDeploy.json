@@ -1,0 +1,25 @@
+{
+  "Env": [
+    {
+      "Name": "fat",
+      "ServerList": [
+        {
+          "Host": "127.0.0.1",
+          "Token": "aaaa"
+        },
+        {
+          "Host": "aa",
+          "Token": "1"
+        }
+      ]
+    }
+  ],
+  "IgnoreList": [
+    "2222"
+  ],
+  "IIsConfig": {
+    "SdkType": "netcore",
+    "WebSiteName": "11111",
+    "LastEnvName": "fat"
+  }
+}

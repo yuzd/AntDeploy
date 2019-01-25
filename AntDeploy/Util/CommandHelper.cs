@@ -12,52 +12,64 @@ namespace AntDeploy.Util
         /// <summary>
         /// 执行dotnet Command命令
         /// </summary>
+        /// <param name="projectPath"></param>
         /// <param name="arguments"></param>
         /// <param name="logAction"></param>
         /// <param name="errLogAction"></param>
         /// <returns></returns>
-        public static bool RunDotnetExternalExe(string arguments,Action<string> logAction,Action<string> errLogAction)
+        public static bool RunDotnetExternalExe(string projectPath,string arguments,Action<string> logAction,Action<string> errLogAction)
         {
-            if (string.IsNullOrEmpty(arguments))
+            try
             {
-                throw new ArgumentException(nameof(arguments));
+                if (string.IsNullOrEmpty(arguments))
+                {
+                    throw new ArgumentException(nameof(arguments));
+                }
+
+                //if (!arguments.StartsWith(" "))
+                //{
+                //    arguments = " " + arguments;
+                //}
+
+                var process = new Process();
+
+                process.StartInfo.WorkingDirectory = projectPath;
+                process.StartInfo.FileName = "dotnet";
+                process.StartInfo.Arguments = arguments;
+                process.StartInfo.CreateNoWindow = true;
+                process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.Verb = "runas";
+                process.StartInfo.RedirectStandardError = true;
+                process.StartInfo.RedirectStandardOutput = true;
+
+
+
+                process.Start();
+
+
+                process.OutputDataReceived += (sender, args) =>
+                {
+                    if(!string.IsNullOrWhiteSpace(args.Data))logAction(args.Data);
+                };
+                process.BeginOutputReadLine();
+
+                process.ErrorDataReceived += (sender, data) =>
+                {
+                    if (!string.IsNullOrWhiteSpace(data.Data)) errLogAction(data.Data);
+                };
+                process.BeginErrorReadLine();
+
+                process.WaitForExit();
+                return process.ExitCode == 0;
             }
-
-            if (!arguments.StartsWith(" "))
+            catch (Exception ex)
             {
-                arguments += " ";
+                errLogAction(ex.Message);
+                return false;
             }
-
-            var process = new Process();
-
-            process.StartInfo.FileName = "dotnet";
-            process.StartInfo.Arguments = arguments;
-            process.StartInfo.CreateNoWindow = true;
-            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            process.StartInfo.UseShellExecute = false;
-            process.StartInfo.Verb = "runas";
-            process.StartInfo.RedirectStandardError = true;
-            process.StartInfo.RedirectStandardOutput = true;
-            process.OutputDataReceived += (sender, args) =>
-            {
-                logAction(args.Data);
-            };
-
-            process.ErrorDataReceived += (sender, data) =>
-            {
-                errLogAction(data.Data);
-            };
-
-            process.Start();
-            process.WaitForExit();
-            return process.ExitCode == 0;
         }
 
-        private static string Format(string filename, string arguments)
-        {
-            return "'" + filename +
-                   ((string.IsNullOrEmpty(arguments)) ? string.Empty : " " + arguments) +
-                   "'";
-        }
+        
     }
 }
