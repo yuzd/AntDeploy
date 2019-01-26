@@ -27,7 +27,8 @@ namespace AntDeploy.Util
         {
             bytesArray = new ArrayList();
             string flag = DateTime.Now.Ticks.ToString("x");
-            boundary = "---------------------------" + flag;
+            //boundary = "---------------------------" + flag;
+            boundary = flag;
         }
         #endregion
 
@@ -70,7 +71,7 @@ namespace AntDeploy.Util
         {
             WebClient webClient = new WebClient();
             webClient.Headers.Add("Content-Type", "multipart/form-data; boundary=" + boundary);
-
+            config?.Invoke(webClient);
             byte[] responseBytes;
             byte[] bytes = MergeContent();
 
@@ -84,10 +85,11 @@ namespace AntDeploy.Util
             {
                 Stream responseStream = ex.Response.GetResponseStream();
                 responseBytes = new byte[ex.Response.ContentLength];
-                responseStream.Read(responseBytes, 0, responseBytes.Length);
+                responseStream?.Read(responseBytes, 0, responseBytes.Length);
             }
+
             var responseText2 = System.Text.Encoding.UTF8.GetString(responseBytes);
-            return new Tuple<bool, string>(false,responseText2);
+            return new Tuple<bool, string>(false, responseText2);
         }
 
         /// <summary>

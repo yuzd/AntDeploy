@@ -11,7 +11,7 @@ namespace AntDeployAgentWindows.WebApiCore
     /// <summary>
     /// POST数据处理类
     /// </summary>
-    class FormHandler
+   public class FormHandler
     {
 
 
@@ -133,7 +133,7 @@ namespace AntDeployAgentWindows.WebApiCore
                     //Content-Type:multipart/form-data; boundary=abcdef
                     var ss = s.Trim().ToLower();
                     if (ss == "multipart/form-data") ism = true;
-                    if (ss.StartsWith("boundary=")) boundar = "--" + s.Substring(9).Trim();
+                    if (ss.StartsWith("boundary=")) boundar = "--" + s.Trim().Substring(9);
                 }
 
                 //如果是，处理

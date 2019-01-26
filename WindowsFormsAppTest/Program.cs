@@ -18,7 +18,7 @@ namespace WindowsFormsAppTest
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Deploy(@"H:\Csharp\yuzd\AntDeploy\AntDeploy\WindowsFormsAppTest\Test\MyProject\MyProject.csproj"));
+            Application.Run(new Deploy(@"H:\Csharp\yuzd\Lito\Lito\Lito.APP\Lito.APP.csproj"));
         }
     }
 }

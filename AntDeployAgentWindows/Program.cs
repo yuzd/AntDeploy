@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using AntDeployAgentWindows.Model;
 using TinyFox;
 
 namespace AntDeployAgentWindows
@@ -15,7 +16,7 @@ namespace AntDeployAgentWindows
             //--------------------------------------------------------
             // * OWIN WEB服务配置与启动
             //--------------------------------------------------------
-
+            Setting.InitWebRoot(AppDomain.CurrentDomain.BaseDirectory);
             // 一个启动对象
             var startup = new Startup();
 
@@ -24,7 +25,7 @@ namespace AntDeployAgentWindows
             // 启动服务
             TinyFoxService.Start(startup.OwinMain);       //启动服务（非阻塞的）
 
-
+            
             //----------------------------------------------------
             // * 等候退出
             //-----------------------------------------------------

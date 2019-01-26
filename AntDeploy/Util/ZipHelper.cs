@@ -45,12 +45,57 @@ namespace AntDeploy.Util
                                 destination.CreateEntry(entryName + s_pathSeperator.ToString());
                         }
                     }
+
+                    if ((includeBaseDirectory & flag))
+                    {
+                        string str = directoryInfo.Name;
+                        destination.CreateEntry(str + s_pathSeperator.ToString());
+                    }
+                }
+                return outStream.GetBuffer();
+            }
+        }
+
+        public static MemoryStream DoCreateFromDirectory2(string sourceDirectoryName, CompressionLevel? compressionLevel, bool includeBaseDirectory)
+        {
+            sourceDirectoryName = Path.GetFullPath(sourceDirectoryName);
+            var outStream = new MemoryStream();
+            {
+                using (ZipArchive destination = new ZipArchive(outStream, ZipArchiveMode.Create, true))
+                {
+                    bool flag = true;
+                    DirectoryInfo directoryInfo = new DirectoryInfo(sourceDirectoryName);
+                    string fullName = directoryInfo.FullName;
+                    if (includeBaseDirectory && directoryInfo.Parent != null)
+                        fullName = directoryInfo.Parent.FullName;
+                    foreach (FileSystemInfo enumerateFileSystemInfo in directoryInfo.EnumerateFileSystemInfos("*", SearchOption.AllDirectories))
+                    {
+                        flag = false;
+                        int length = enumerateFileSystemInfo.FullName.Length - fullName.Length;
+                        string entryName = EntryFromPath(enumerateFileSystemInfo.FullName, fullName.Length, length);
+
+                        if (enumerateFileSystemInfo is FileInfo)
+                        {
+                            DoCreateEntryFromFile(destination, enumerateFileSystemInfo.FullName, entryName, compressionLevel);
+                        }
+                        else
+                        {
+                            DirectoryInfo possiblyEmptyDir = enumerateFileSystemInfo as DirectoryInfo;
+                            if (possiblyEmptyDir != null && IsDirEmpty(possiblyEmptyDir))
+                                destination.CreateEntry(entryName + s_pathSeperator.ToString());
+                        }
+                    }
+
                     if (!(includeBaseDirectory & flag))
-                        return outStream.ToArray();
+                    {
+                        outStream.Seek(0, SeekOrigin.Begin);
+                        return outStream;
+                    }
                     string str = directoryInfo.Name;
                     destination.CreateEntry(str + s_pathSeperator.ToString());
                 }
-                return outStream.ToArray();
+                outStream.Seek(0, SeekOrigin.Begin);
+                return outStream;
             }
         }
 

@@ -4,8 +4,8 @@
       "Name": "fat",
       "ServerList": [
         {
-          "Host": "127.0.0.1",
-          "Token": "aaaaa"
+          "Host": "localhost:8088",
+          "Token": "aaaa"
         }
       ]
     }

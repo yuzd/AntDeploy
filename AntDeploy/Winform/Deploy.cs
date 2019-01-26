@@ -368,7 +368,7 @@ namespace AntDeploy.Winform
             }
 
             this.rich_iis_log.Text = "";
-
+            DeployConfig.IIsConfig.WebSiteName = this.txt_iis_web_site_name.Text;
             new Task(async () =>
             {
                 this.Logger.Info("Start publish");
@@ -417,7 +417,7 @@ namespace AntDeploy.Winform
                 try
                 {
 
-                    zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, CompressionLevel.Optimal, false);
+                    zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, CompressionLevel.Optimal, true);
                 }
                 catch (Exception ex)
                 {
@@ -441,22 +441,35 @@ namespace AntDeploy.Winform
                         this.Logger.Warn($"{server.Host} Deploy skip,Token is null or empty!");
                         continue;
                     }
+
+                    ProgressPercentage = 0;
                     this.Logger.Info($"Start Uppload,Host:{server.Host}");
                     HttpRequestClient httpRequestClient = new HttpRequestClient();
+                    httpRequestClient.SetFieldValue("publishType", "iis");
+                    httpRequestClient.SetFieldValue("sdkType", DeployConfig.IIsConfig.SdkType);
+                    httpRequestClient.SetFieldValue("webSiteName", DeployConfig.IIsConfig.WebSiteName);
                     httpRequestClient.SetFieldValue("Token", server.Token);
                     httpRequestClient.SetFieldValue("publish","publish.zip", "application/octet-stream", zipBytes);
-                    var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/publish", (client) =>
+                    try
                     {
-                        client.UploadProgressChanged += ClientOnUploadProgressChanged;
-                    });
+                        var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/publish", (client) =>
+                        {
+                           client.UploadProgressChanged += ClientOnUploadProgressChanged;
+                        });
 
-                    if (uploadResult.Item1)
-                    {
-                        this.Logger.Info($"End Uppload,Host:{server.Host},Response:${uploadResult.Item2}");
+                        if (uploadResult.Item1)
+                        {
+                            this.Logger.Info($"End Uppload,Host:{server.Host},Response:{uploadResult.Item2}");
+                        }
+                        else
+                        {
+                            this.Logger.Error($"Fail Uppload,Host:{server.Host},Response:{uploadResult.Item2},Skip to Next");
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        this.Logger.Error($"Fail Uppload,Host:{server.Host},Response:${uploadResult.Item2},Skip to Next");
+
+                        this.Logger.Error($"Fail Uppload,Host:{server.Host},Response:{ex.Message},Skip to Next");
                     }
                     
                 }
@@ -469,9 +482,14 @@ namespace AntDeploy.Winform
 
         }
 
+        private int ProgressPercentage = 0;
         private void ClientOnUploadProgressChanged(object sender, UploadProgressChangedEventArgs e)
         {
-            this.Logger.Info($"Upload {e.ProgressPercentage} % complete...");
+            if (e.ProgressPercentage > ProgressPercentage)
+            {
+                ProgressPercentage = e.ProgressPercentage;
+                this.Logger.Info($"Upload {(e.ProgressPercentage != 100 ? e.ProgressPercentage * 2 : e.ProgressPercentage)} % complete...");
+            }
         }
 
 
@@ -495,5 +513,36 @@ namespace AntDeploy.Winform
             BeginInvoke(action, null);
         }
 
+        private void b_env_server_test_Click(object sender, EventArgs e)
+        {
+            var serverHost = this.txt_env_server_host.Text.Trim();
+            if (serverHost.Length < 1)
+            {
+                MessageBox.Show("please input server host");
+                return;
+            }
+
+            var serverTolen = this.txt_env_server_token.Text.Trim();
+            if (serverTolen.Length < 1)
+            {
+                MessageBox.Show("please input server Token");
+                return;
+            }
+
+            try
+            {
+                WebClient client = new WebClient();
+                var result = client.DownloadString($"http://{serverHost}/publish?Token={serverTolen}");
+                if (result.Equals("success"))
+                {
+                    MessageBox.Show("Connect Sussess");
+                    return;
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Connect Fail");
+            }
+        }
     }
 }
