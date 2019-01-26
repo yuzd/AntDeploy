@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.Web.Administration;
+using System;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Web.Administration;
 
 namespace AntDeployAgentWindows.Util
 {
@@ -34,11 +30,12 @@ namespace AntDeployAgentWindows.Util
             iis.Sites[siteName].Start();
         }
 
-        public static void WebsiteStop(string siteName)
+        public static Site WebsiteStop(string siteName)
         {
             ServerManager iis = new ServerManager();
-            iis.Sites[siteName].Stop();
-            Thread.Sleep(2000);
+            var site = iis.Sites[siteName];
+            site.Stop();
+            return site;
         }
 
 
@@ -49,7 +46,7 @@ namespace AntDeployAgentWindows.Util
 
 
 
-        public static Tuple<string,string,string> GetWebSiteLocationInIIS(string name,string sitename,Action<string> log)
+        public static Tuple<string, string, string> GetWebSiteLocationInIIS(string name, string sitename, Action<string> log)
         {
             try
             {
@@ -97,7 +94,7 @@ namespace AntDeployAgentWindows.Util
             }
             catch (Exception ex)
             {
-                log("get iis info err:"+ex.Message);
+                log("get iis info err:" + ex.Message);
                 return null;
             }
         }

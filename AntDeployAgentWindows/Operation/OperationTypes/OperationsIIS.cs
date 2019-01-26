@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using AntDeployAgentWindows.Util;
+using Microsoft.Web.Administration;
 
 namespace AntDeployAgentWindows.Operation.OperationTypes
 {
@@ -41,7 +43,15 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
         public override void Stop()
         {
             logger("Start to IIS WebsiteStop :" + this.args.SiteName);
-            IISHelper.WebsiteStop(this.args.SiteName);
+            var site = IISHelper.WebsiteStop(this.args.SiteName);
+            IISHelper.ApplicationPoolStop(this.args.ApplicationPoolName);
+            while (site.State != ObjectState.Stopped)
+            {
+                logger("wait for IIS WebsiteStop :" + this.args.SiteName);
+                Thread.Sleep(1000);
+            }
+            logger("wait for IIS WebsiteStop 5sencods :" + this.args.SiteName);
+            Thread.Sleep(5000);
             logger("Success to IIS WebsiteStop :" + this.args.SiteName);
             //IISHelper.ApplicationPoolStop(this.args.ApplicationPoolName);
         }
@@ -49,7 +59,6 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
         public override void Deploy()
         {
             logger("Start to Deploy," + this.args.DeployFolder + "=>" + this.args.AppFolder);
-
             base.Deploy();
             logger("End to Deploy");
         }
@@ -58,6 +67,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
         {
             logger("Start to IIS WebsiteStart :" + this.args.SiteName);
             IISHelper.WebsiteStart(this.args.SiteName);
+            IISHelper.ApplicationPoolStart(this.args.ApplicationPoolName);
             logger("Success to IIS WebsiteStart :" + this.args.SiteName);
             //IISHelper.WebsiteStart(this.args.SiteName);
         }
