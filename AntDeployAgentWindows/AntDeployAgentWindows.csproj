@@ -37,6 +37,7 @@
     <Reference Include="Microsoft.Owin, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Owin.4.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Web.Administration, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\ref\netstandard.dll</HintPath>
@@ -52,6 +53,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
     <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -72,7 +74,16 @@
     <Compile Include="MyApp\Service\IPublishProviderAPI.cs" />
     <Compile Include="MyApp\Service\PublishProviderBasicAPI.cs" />
     <Compile Include="MyApp\Service\PublishProviderFactory.cs" />
+    <Compile Include="Operation\Arguments.cs" />
+    <Compile Include="Operation\IOperations.cs" />
+    <Compile Include="Operation\OperationsBase.cs" />
+    <Compile Include="Operation\OperationsFactory.cs" />
+    <Compile Include="Operation\OperationStep.cs" />
+    <Compile Include="Operation\OperationTypes\OperationsIIS.cs" />
+    <Compile Include="Operation\OperationTypes\OperationsWINDOWSSERVICE.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Util\CopyHelper.cs" />
+    <Compile Include="Util\IISHelper.cs" />
     <Compile Include="WebSocketApp\MyWebSocketWork.cs" />
     <Compile Include="WebSocketApp\MyWebSocketWorkerBase.cs" />
     <Compile Include="Program.cs" />

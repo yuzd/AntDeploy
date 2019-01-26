@@ -64,6 +64,7 @@
             this.txt_env_name = new System.Windows.Forms.TextBox();
             this.b_env_add_by_name = new System.Windows.Forms.Button();
             this.combo_env_list = new System.Windows.Forms.ComboBox();
+            this.label9 = new System.Windows.Forms.Label();
             this.page_.SuspendLayout();
             this.page_web_iis.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -88,6 +89,7 @@
             // 
             // page_web_iis
             // 
+            this.page_web_iis.Controls.Add(this.label9);
             this.page_web_iis.Controls.Add(this.b_iis_deploy);
             this.page_web_iis.Controls.Add(this.combo_iis_env);
             this.page_web_iis.Controls.Add(this.label8);
@@ -119,7 +121,7 @@
             this.combo_iis_env.BackColor = System.Drawing.SystemColors.Window;
             this.combo_iis_env.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_iis_env.FormattingEnabled = true;
-            this.combo_iis_env.Location = new System.Drawing.Point(160, 94);
+            this.combo_iis_env.Location = new System.Drawing.Point(160, 105);
             this.combo_iis_env.Name = "combo_iis_env";
             this.combo_iis_env.Size = new System.Drawing.Size(193, 20);
             this.combo_iis_env.TabIndex = 8;
@@ -128,7 +130,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(83, 97);
+            this.label8.Location = new System.Drawing.Point(83, 108);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(59, 12);
             this.label8.TabIndex = 7;
@@ -163,7 +165,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(59, 66);
+            this.label7.Location = new System.Drawing.Point(59, 60);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(83, 12);
             this.label7.TabIndex = 2;
@@ -447,6 +449,15 @@
             this.combo_env_list.TabIndex = 0;
             this.combo_env_list.SelectedIndexChanged += new System.EventHandler(this.combo_env_list_SelectedIndexChanged);
             // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(158, 81);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(209, 12);
+            this.label9.TabIndex = 10;
+            this.label9.Text = "For example: Default Web Site/test";
+            // 
             // Deploy
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
@@ -514,5 +525,6 @@
         private System.Windows.Forms.TextBox txt_env_ignore;
         private System.Windows.Forms.ListBox list_env_ignore;
         private System.Windows.Forms.RichTextBox rich_iis_log;
+        private System.Windows.Forms.Label label9;
     }
 }

@@ -10,6 +10,7 @@ namespace AntDeployAgentWindows.Model
         public static string PublishPathFolder = "";
 
         public static string PublishIIsPathFolder = "";
+        public static string BackUpIIsPathFolder = "";
 
 
         public static void InitWebRoot(string rootPath)
@@ -35,6 +36,13 @@ namespace AntDeployAgentWindows.Model
             if (!Directory.Exists(PublishIIsPathFolder))
             {
                 Directory.CreateDirectory(PublishIIsPathFolder);
+            }
+
+            BackUpIIsPathFolder = Path.Combine(PublishPathFolder, "iis_backup");
+
+            if (!Directory.Exists(BackUpIIsPathFolder))
+            {
+                Directory.CreateDirectory(BackUpIIsPathFolder);
             }
         }
     }
