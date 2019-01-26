@@ -15,6 +15,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NLog;
+using NLog.Config;
 
 namespace AntDeploy.Winform
 {
@@ -30,8 +31,32 @@ namespace AntDeploy.Winform
 
             ReadPorjectConfig(projectPath);
 
+            var config = new LoggingConfiguration();
+            var richTarget = new RichTextBoxTarget
+            {
+                Name = "target2",
+                Layout = "${date:format=HH\\:mm\\:ss}|${uppercase:${level}}|${message} ${exception:format=tostring} ${rtb-link:inner=${event-properties:item=ShowLink}}",
+                FormName = "Deploy",
+                ControlName = "rich_iis_log",
+                AutoScroll = true,
+                MaxLines = 0,
+                AllowAccessoryFormCreation = true,
+                SupportLinks = true,
+                UseDefaultRowColoringRules = true
+
+            };
+            config.AddTarget("target2", richTarget);
+
+            LoggingRule rule1 = new LoggingRule("*", LogLevel.Debug, richTarget);
+
+            config.LoggingRules.Add(rule1);
+
+            LogManager.Configuration = config;
+
             Logger = NLog.LogManager.GetCurrentClassLogger();
-            RichTextBoxTarget.ReInitializeAllTextboxes(this);
+
+            RichLogInit();
+
         }
 
 
@@ -43,6 +68,9 @@ namespace AntDeploy.Winform
 
         private void Deploy_Load(object sender, EventArgs e)
         {
+
+            
+
             if (DeployConfig == null) DeployConfig = new DeployConfig();
             DeployConfig.EnvChangeEvent += DeployConfigOnEnvChangeEvent;
             if (DeployConfig.Env != null && DeployConfig.Env.Any())
@@ -92,8 +120,16 @@ namespace AntDeploy.Winform
             this.txt_env_server_host.Text = string.Empty;
             this.txt_env_server_token.Text = string.Empty;
 
+           
+        }
+
+
+        public void RichLogInit()
+        {
+            RichTextBoxTarget.ReInitializeAllTextboxes(this);
             RichTextBoxTarget.GetTargetByControl(rich_iis_log).LinkClicked += LinkClicked;
         }
+
 
         private void LinkClicked(RichTextBoxTarget sender, string linktext, LogEventInfo logevent)
         {
@@ -359,6 +395,7 @@ namespace AntDeploy.Winform
 
         private void b_iis_deploy_Click(object sender, EventArgs e)
         {
+            
             var websiteName = this.txt_iis_web_site_name.Text.Trim();
             if (websiteName.Length < 1)
             {

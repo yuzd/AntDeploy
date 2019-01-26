@@ -470,6 +470,7 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "AntDeploy";
+            this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Deploy_FormClosing);
             this.Load += new System.EventHandler(this.Deploy_Load);
             this.page_.ResumeLayout(false);

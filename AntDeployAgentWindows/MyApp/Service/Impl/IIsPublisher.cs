@@ -70,7 +70,14 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 var siteArr = _webSiteName.Split('/');
                 var level1 = siteArr[0];
                 var level2 = siteArr.Length==2? siteArr[1]:string.Empty;
-                var projectLocation = IISHelper.GetWebSiteLocationInIIS(level1, level2);
+
+
+                var projectLocation = IISHelper.GetWebSiteLocationInIIS(level1, level2,Log);
+                if (projectLocation == null)
+                {
+                    return $"read info from iis error";
+                }
+
                 if (string.IsNullOrEmpty(projectLocation.Item1))
                 {
                     return $"website : {_webSiteName} not found in iis" ;

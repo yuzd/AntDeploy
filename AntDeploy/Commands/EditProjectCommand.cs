@@ -1,6 +1,8 @@
 ﻿using AntDeploy.Models;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
+using AntDeploy.Winform;
 
 namespace AntDeploy.Commands
 {
@@ -47,7 +49,8 @@ namespace AntDeploy.Commands
 
         protected override void OnExecute()
         {
-           
+            Deploy deploy = new Deploy(_projectFile);
+            deploy.Show();
         }
     }
 }

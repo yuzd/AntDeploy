@@ -24,6 +24,7 @@ namespace AntDeploy.Models
                 case CS_CORE_PROJECT_KIND:
                 case FS_CORE_PROJECT_KIND:
                 case VB_CORE_PROJECT_KIND:
+                case Web_PROJECT_KIND:
                     return true;
 
                 default:
