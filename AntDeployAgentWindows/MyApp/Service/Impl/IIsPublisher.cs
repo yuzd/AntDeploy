@@ -111,7 +111,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 {
                     try
                     {
-                        ops.Rollback();
+                        //ops.Rollback();
 
                         return $"publish to iis err:{ex.Message}";
                     }

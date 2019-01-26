@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Web.Administration;
 
@@ -37,6 +38,7 @@ namespace AntDeployAgentWindows.Util
         {
             ServerManager iis = new ServerManager();
             iis.Sites[siteName].Stop();
+            Thread.Sleep(2000);
         }
 
 

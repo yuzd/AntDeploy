@@ -561,18 +561,18 @@ namespace AntDeploy.Winform
 
                         if (uploadResult.Item1)
                         {
-                            this.Logger.Info($"End Uppload,Host:{server.Host},Response:{uploadResult.Item2}");
+                            this.Logger.Info($"Host:{server.Host},Response:{uploadResult.Item2}");
                         }
                         else
                         {
                             this.Logger.Error(
-                                $"Fail Uppload,Host:{server.Host},Response:{uploadResult.Item2},Skip to Next");
+                                $"Host:{server.Host},Response:{uploadResult.Item2},Skip to Next");
                         }
                     }
                     catch (Exception ex)
                     {
 
-                        this.Logger.Error($"Fail Uppload,Host:{server.Host},Response:{ex.Message},Skip to Next");
+                        this.Logger.Error($"Fail Deploy,Host:{server.Host},Response:{ex.Message},Skip to Next");
                     }
                     finally
                     {

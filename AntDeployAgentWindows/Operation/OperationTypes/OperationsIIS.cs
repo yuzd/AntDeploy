@@ -40,28 +40,33 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
 
         public override void Stop()
         {
-            logger("Start to IIS ApplicationPoolStop :" + this.args.ApplicationPoolName);
-            IISHelper.ApplicationPoolStop(this.args.ApplicationPoolName);
-            logger("Success to IIS ApplicationPoolStop :" + this.args.ApplicationPoolName);
-            //IISHelper.WebsiteStop(this.args.SiteName);
+            logger("Start to IIS WebsiteStop :" + this.args.SiteName);
+            IISHelper.WebsiteStop(this.args.SiteName);
+            logger("Success to IIS WebsiteStop :" + this.args.SiteName);
+            //IISHelper.ApplicationPoolStop(this.args.ApplicationPoolName);
         }
 
         public override void Deploy()
         {
+            logger("Start to Deploy," + this.args.DeployFolder + "=>" + this.args.AppFolder);
+
             base.Deploy();
+            logger("End to Deploy");
         }
 
         public override void Start()
         {
-            logger("Start to IIS ApplicationPoolStart :" + this.args.ApplicationPoolName);
-            IISHelper.ApplicationPoolStart(this.args.ApplicationPoolName);
-            logger("Success to IIS ApplicationPoolStart :" + this.args.ApplicationPoolName);
+            logger("Start to IIS WebsiteStart :" + this.args.SiteName);
+            IISHelper.WebsiteStart(this.args.SiteName);
+            logger("Success to IIS WebsiteStart :" + this.args.SiteName);
             //IISHelper.WebsiteStart(this.args.SiteName);
         }
 
         public override void Execute()
         {
+            logger("Start to Execute");
             base.Execute();
+            logger("End to Execute");
         }
 
         public override void Rollback()
