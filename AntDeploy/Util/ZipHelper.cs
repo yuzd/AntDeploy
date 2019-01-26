@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Text.RegularExpressions;
 
 namespace AntDeploy.Util
 {
@@ -16,7 +17,7 @@ namespace AntDeploy.Util
         /// <param name="compressionLevel"></param>
         /// <param name="includeBaseDirectory"></param>
         /// <returns></returns>
-        public static byte[] DoCreateFromDirectory(string sourceDirectoryName,CompressionLevel? compressionLevel,bool includeBaseDirectory)
+        public static byte[] DoCreateFromDirectory(string sourceDirectoryName,CompressionLevel? compressionLevel,bool includeBaseDirectory,List<string> ignoreList = null)
         {
             sourceDirectoryName = Path.GetFullPath(sourceDirectoryName);
             using ( var outStream = new MemoryStream())
@@ -36,6 +37,24 @@ namespace AntDeploy.Util
 
                         if (enumerateFileSystemInfo is FileInfo)
                         {
+                            if (ignoreList != null)
+                            {
+                                var haveMatch = false;
+                                foreach (var ignorRule in ignoreList)
+                                {
+                                    var isMatch = Regex.Match(enumerateFileSystemInfo.Name, ignorRule);
+                                    if (isMatch.Success)
+                                    {
+                                        haveMatch = true;
+                                        break;
+                                    }
+                                }
+
+                                if (haveMatch)
+                                {
+                                    continue;
+                                }
+                            }
                             DoCreateEntryFromFile(destination, enumerateFileSystemInfo.FullName, entryName, compressionLevel);
                         }
                         else

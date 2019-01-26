@@ -15,8 +15,13 @@ namespace Test
         {
 
             var bytes= ZipHelper.DoCreateFromDirectory(
-                @"H:\Csharp\yuzd\AntDeploy\AntDeploy\WindowsFormsAppTest\Test\MyProject\bin\Release\netstandard2.0\publish",
-                CompressionLevel.Optimal, true);
+                @"H:\Csharp\yuzd\Lito\Lito\Lito.APP\bin\Release\netcoreapp2.1\publish",
+                CompressionLevel.Optimal, true,new List<string>
+                {
+                    "appsettings.*",
+                    "web.config",
+                    "QRCoder.dll"
+                });
 
             
             var filePath = Path.Combine(@"H:\Csharp\yuzd\AntDeploy\AntDeploy\WindowsFormsAppTest\Test\MyProject\bin\Release\netstandard2.0\unzip", "aa.zip");

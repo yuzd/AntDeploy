@@ -416,8 +416,7 @@ namespace AntDeploy.Winform
                 byte[] zipBytes;
                 try
                 {
-
-                    zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, CompressionLevel.Optimal, true);
+                    zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, CompressionLevel.Optimal, true,DeployConfig.IgnoreList);
                 }
                 catch (Exception ex)
                 {
