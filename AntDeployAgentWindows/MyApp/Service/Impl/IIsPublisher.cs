@@ -22,6 +22,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
         private FormHandler _formHandler;
 
         public override string ProviderName => "iis";
+        public override string ProjectName => _projectName;
 
         public override string DeployExcutor(FormHandler.FormItem fileItem)
         {
