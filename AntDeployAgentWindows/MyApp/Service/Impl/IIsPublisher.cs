@@ -95,6 +95,18 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 return $"sdkType value :{sdkTypeValue} is not suppored";
             }
 
+            if (sdkTypeValue.Equals("netcore"))
+            {
+                //检查是否安装了netcore iis 的host包
+                //https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis
+
+                var webConfig = Path.Combine(publishPath, "Web.Config");
+                if (!File.Exists(webConfig))
+                {
+                    this.Logger.Error("publish success ==> " + publishPath);
+                }
+            }
+
             _sdkTypeName = sdkTypeValue;
 
             var website = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("webSiteName"));

@@ -83,13 +83,21 @@ namespace AntDeploy.Util
             }
             catch (WebException ex)
             {
-                Stream responseStream = ex.Response.GetResponseStream();
-                responseBytes = new byte[ex.Response.ContentLength];
-                responseStream?.Read(responseBytes, 0, responseBytes.Length);
+                try
+                {
+                    Stream responseStream = ex.Response.GetResponseStream();
+                    responseBytes = new byte[ex.Response.ContentLength];
+                    responseStream?.Read(responseBytes, 0, responseBytes.Length);
+                    var responseText2 = System.Text.Encoding.UTF8.GetString(responseBytes);
+                    return new Tuple<bool, string>(false, responseText2);
+                }
+                catch (Exception)
+                {
+                    return new Tuple<bool, string>(false, ex.Message);
+                }
             }
 
-            var responseText2 = System.Text.Encoding.UTF8.GetString(responseBytes);
-            return new Tuple<bool, string>(false, responseText2);
+          
         }
 
         /// <summary>
@@ -132,4 +140,17 @@ namespace AntDeploy.Util
         }
         #endregion
     }
+
+    //public class WebClient : System.Net.WebClient
+    //{
+    //    public int Timeout { get; set; }
+
+    //    protected override WebRequest GetWebRequest(Uri uri)
+    //    {
+    //        WebRequest lWebRequest = base.GetWebRequest(uri);
+    //        lWebRequest.Timeout = Timeout;
+    //        ((HttpWebRequest)lWebRequest).ReadWriteTimeout = Timeout;
+    //        return lWebRequest;
+    //    }
+    //}
 }

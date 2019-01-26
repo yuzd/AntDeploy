@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using NLog.Windows.Forms;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -11,6 +12,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NLog;
 
 namespace AntDeploy.Winform
 {
@@ -86,6 +88,33 @@ namespace AntDeploy.Winform
 
             this.txt_env_server_host.Text = string.Empty;
             this.txt_env_server_token.Text = string.Empty;
+
+            RichTextBoxTarget.GetTargetByControl(rich_iis_log).LinkClicked += LinkClicked;
+        }
+
+        private void LinkClicked(RichTextBoxTarget sender, string linktext, LogEventInfo logevent)
+        {
+            BeginInvokeLambda(() =>
+                {
+                    try
+                    {
+                        if (linktext.StartsWith("http")||linktext.StartsWith("file:"))
+                        {
+                            ProcessStartInfo sInfo = new ProcessStartInfo(linktext);
+                            Process.Start(sInfo);
+                        }
+                        else
+                        {
+                            System.Windows.Forms.Clipboard.SetText(linktext);
+                            MessageBox.Show("copy to Clipboard success", sender.Name);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        //ignore
+                    }
+                }
+            );
         }
 
         private void DeployConfigOnEnvChangeEvent(Env changeEnv, bool isremove)
@@ -406,9 +435,26 @@ namespace AntDeploy.Winform
                     return;
                 }
 
-                var publishPath = publishPathArr[1];
-                this.Logger.Info("publish success ==> " + publishPath);
+                var publishPath = publishPathArr[1].Trim();
 
+                LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish success,  ==> ");
+                publisEvent.Properties["ShowLink"] = "file://"+publishPath.Replace("\\","\\\\");
+                this.Logger.Log(publisEvent);
+
+
+
+                //https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis
+
+                if (DeployConfig.IIsConfig.SdkType.Equals("netcore"))
+                {
+                    var webConfig = Path.Combine(publishPath, "Web.Config");
+                    if (!File.Exists(webConfig))
+                    {
+                        LogEventInfo theEvent = new LogEventInfo(LogLevel.Warn, "", "publish sdkType:netcore ,but web.config file missing!");
+                        theEvent.Properties["ShowLink"] = "https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis";
+                        this.Logger.Log(theEvent);
+                    }
+                }
 
 
                 //执行 打包
