@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFormsAppTest", "Wind
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntDeployAgentWindows", "AntDeployAgentWindows\AntDeployAgentWindows.csproj", "{821CEB3F-4E45-48D7-B5F8-A347D5284AF5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntDeployAgentWindowsService", "AntDeployAgentWindowsService\AntDeployAgentWindowsService.csproj", "{D9587A7D-E2E5-4EF4-BA90-5F45BE6C472A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{821CEB3F-4E45-48D7-B5F8-A347D5284AF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{821CEB3F-4E45-48D7-B5F8-A347D5284AF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{821CEB3F-4E45-48D7-B5F8-A347D5284AF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9587A7D-E2E5-4EF4-BA90-5F45BE6C472A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9587A7D-E2E5-4EF4-BA90-5F45BE6C472A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9587A7D-E2E5-4EF4-BA90-5F45BE6C472A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9587A7D-E2E5-4EF4-BA90-5F45BE6C472A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

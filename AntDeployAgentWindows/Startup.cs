@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AntDeployAgentWindows.Model;
 using AntDeployAgentWindows.WebApiCore;
 using AntDeployAgentWindows.WebSocket.WebSocketApp;
 using Microsoft.Owin.Builder;
 using Owin;
+using TinyFox;
 
 namespace AntDeployAgentWindows
 {
     /// <summary>
     /// WeB启动类
     /// </summary>
-    class Startup
+    public class Startup
     {
 
         /// <summary>
@@ -27,9 +29,11 @@ namespace AntDeployAgentWindows
             var builder = new AppBuilder();
             Configuration(builder);
             _owinAppFunc = builder.Build();
+            Setting.InitWebRoot(AppDomain.CurrentDomain.BaseDirectory);
         }
 
 
+       
         /// <summary>
         /// 启动类的配置方法，格式是 Microsoft.Owin 所要求的
         /// <para>必须是public，而且方法名和参数类型、参数数量都固定</para>
