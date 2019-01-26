@@ -7,6 +7,7 @@ using AntDeployAgentWindows.Model;
 using AntDeployAgentWindows.Operation;
 using AntDeployAgentWindows.Operation.OperationTypes;
 using AntDeployAgentWindows.Util;
+using AntDeployAgentWindows.WebSocketApp;
 
 namespace AntDeployAgentWindows.MyApp.Service.Impl
 {
@@ -16,6 +17,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
         private string _webSiteName;
         private string _sdkTypeName;
         private string _projectName;
+        private WebSocketApp.WebSocket WebSocket;
         private string _projectPublishFolder;
         private FormHandler _formHandler;
 
@@ -30,17 +32,20 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
             try
             {
+
                 var filePath = Path.Combine(_projectPublishFolder, fileItem.FileName);
                 using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
                 {
                     fs.Write(fileItem.FileBody, 0, fileItem.FileBody.Length);
                 }
 
+
                 if (!File.Exists(filePath))
                 {
                     return "publish file save fail";
                 }
 
+                Log("upload success ==>" + filePath);
                 //解压
                 try
                 {
@@ -50,6 +55,8 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 {
                     return "unzip publish file error:" + ex.Message;
                 }
+
+                Log("unzip success ==>" + _projectPublishFolder);
 
                 var deployFolder = Path.Combine(_projectPublishFolder, "publish");
 
@@ -67,7 +74,12 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 {
                     return $"website : {_webSiteName} not found in iis" ;
                 }
-                
+
+                Log("Start to deploy IIS:");
+                Log("SiteName ===>" + projectLocation.Item2);
+                Log("SiteFolder ===> " + projectLocation.Item1);
+                Log("SiteApplicationPoolName ===> " + projectLocation.Item3);
+
                 Arguments args = new Arguments
                 {
                     DeployType =  "IIS",
@@ -79,11 +91,13 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     SiteName = projectLocation.Item2
                 };
 
-                var ops = new OperationsIIS(args);
+                var ops = new OperationsIIS(args, Log);
 
                 try
                 {
                     ops.Execute();
+
+                    Log("Deploy IIS Execute Success");
                 }
                 catch (Exception ex)
                 {
@@ -125,6 +139,22 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
             }
         }
 
+
+        private void Log(string str)
+        {
+            try
+            {
+                if (WebSocket != null)
+                {
+                    WebSocket.Send(str + "@_@" + str.Length);
+                }
+            }
+            catch (Exception)
+            {
+                //ignore
+
+            }
+        }
 
         public override string CheckData(FormHandler formHandler)
         {
@@ -169,6 +199,13 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
             //}
 
             _projectName = siteNameArr.Last();
+
+            var wsKey = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("wsKey"));
+            if (wsKey != null  && !string.IsNullOrEmpty(wsKey.TextValue))
+            {
+                var _wsKey = wsKey.TextValue;
+                MyWebSocketWork.WebSockets.TryGetValue(_wsKey, out WebSocket);
+            }
 
             return string.Empty;
         }

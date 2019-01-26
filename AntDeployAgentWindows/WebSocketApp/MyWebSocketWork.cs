@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 
 namespace AntDeployAgentWindows.WebSocketApp
@@ -8,6 +9,8 @@ namespace AntDeployAgentWindows.WebSocketApp
     /// </summary>
     public sealed class MyWebSocketWork : MyWebSocketWorkerBase
     {
+
+        public static ConcurrentDictionary<string, WebSocket> WebSockets = new ConcurrentDictionary<string, WebSocket>();
 
         /// <summary>
         /// 构造函数
@@ -24,6 +27,9 @@ namespace AntDeployAgentWindows.WebSocketApp
         {
             //可以做一些初始化工作，比如登记客户IP地址之类的事情
 
+            WebSockets[WebSocket.RemoteIpAddress + ":" + WebSocket.RemotePort] = WebSocket;
+
+            WebSocket.Send("hostKey@"+ WebSocket.RemoteIpAddress + ":" + WebSocket.RemotePort);
         }
 
 
@@ -45,7 +51,7 @@ namespace AntDeployAgentWindows.WebSocketApp
             }
 
             //回应客户端发送过来的内容
-            WebSocket.Send(message);
+            //WebSocket.Send(message);
         }
 
 
@@ -69,8 +75,7 @@ namespace AntDeployAgentWindows.WebSocketApp
         /// <param name="sender"></param>
         protected override void OnClose(object sender)
         {
-
-            // your code;
+            WebSockets.TryRemove(WebSocket.RemoteIpAddress + ":" + WebSocket.RemotePort, out _);
         }
 
 

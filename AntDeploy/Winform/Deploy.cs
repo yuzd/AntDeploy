@@ -9,6 +9,8 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Net.WebSockets;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -18,6 +20,7 @@ namespace AntDeploy.Winform
 {
     public partial class Deploy : Form
     {
+     
         private string ProjectConfigPath;
         private string ProjectFolderPath;
         private NLog.Logger Logger;
@@ -495,12 +498,29 @@ namespace AntDeploy.Winform
                     httpRequestClient.SetFieldValue("webSiteName", DeployConfig.IIsConfig.WebSiteName);
                     httpRequestClient.SetFieldValue("Token", server.Token);
                     httpRequestClient.SetFieldValue("publish","publish.zip", "application/octet-stream", zipBytes);
+                    ClientWebSocket webSocket = null;
                     try
                     {
-                        var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/publish", (client) =>
+                        var hostKey = "";
+                        webSocket = await WebSocketHelper.Connect($"ws://{server.Host}/socket", (receiveMsg) =>
                         {
-                           client.UploadProgressChanged += ClientOnUploadProgressChanged;
+                            if (!string.IsNullOrEmpty(receiveMsg))
+                            {
+                                if (receiveMsg.StartsWith("hostKey@"))
+                                {
+                                    hostKey = receiveMsg.Replace("hostKey@", "");
+                                }
+                                else
+                                {
+                                    this.Logger.Info($"【Server】{receiveMsg}");
+                                }
+                            }
                         });
+
+                        httpRequestClient.SetFieldValue("wsKey", hostKey);
+
+                        var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/publish",
+                            (client) => { client.UploadProgressChanged += ClientOnUploadProgressChanged; });
 
                         if (uploadResult.Item1)
                         {
@@ -508,13 +528,18 @@ namespace AntDeploy.Winform
                         }
                         else
                         {
-                            this.Logger.Error($"Fail Uppload,Host:{server.Host},Response:{uploadResult.Item2},Skip to Next");
+                            this.Logger.Error(
+                                $"Fail Uppload,Host:{server.Host},Response:{uploadResult.Item2},Skip to Next");
                         }
                     }
                     catch (Exception ex)
                     {
 
                         this.Logger.Error($"Fail Uppload,Host:{server.Host},Response:{ex.Message},Skip to Next");
+                    }
+                    finally
+                    {
+                        webSocket?.Dispose();
                     }
                     
                 }
@@ -530,7 +555,7 @@ namespace AntDeploy.Winform
         private int ProgressPercentage = 0;
         private void ClientOnUploadProgressChanged(object sender, UploadProgressChangedEventArgs e)
         {
-            if (e.ProgressPercentage > ProgressPercentage)
+            if (e.ProgressPercentage > ProgressPercentage && e.ProgressPercentage!=100)
             {
                 ProgressPercentage = e.ProgressPercentage;
                 this.Logger.Info($"Upload {(e.ProgressPercentage != 100 ? e.ProgressPercentage * 2 : e.ProgressPercentage)} % complete...");

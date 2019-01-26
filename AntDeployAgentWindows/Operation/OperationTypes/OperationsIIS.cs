@@ -10,10 +10,12 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
 {
     class OperationsIIS : OperationsBase
     {
-        public OperationsIIS(Arguments args)
+        private Action<string> logger;
+        public OperationsIIS(Arguments args,Action<string> log)
             : base(args)
         {
             // do nothing
+            logger = log;
         }
 
         public override void ValidateArguments()
@@ -23,10 +25,12 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
 
         public override void Backup()
         {
+            logger("Start to Backup");
             string destDir = Path.Combine(this.args.BackupFolder, this.args.AppName);
             destDir = Path.Combine(destDir, DateTime.Now.ToString("Backup_yyyyMMdd_HHmmss"));
             this.args.RestorePath = destDir;
             CopyHelper.DirectoryCopy(this.args.AppFolder, destDir, true);
+            logger("Success Backup to folder:" + destDir);
         }
 
         public override void Restore()
@@ -36,7 +40,9 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
 
         public override void Stop()
         {
+            logger("Start to IIS ApplicationPoolStop :" + this.args.ApplicationPoolName);
             IISHelper.ApplicationPoolStop(this.args.ApplicationPoolName);
+            logger("Success to IIS ApplicationPoolStop :" + this.args.ApplicationPoolName);
             //IISHelper.WebsiteStop(this.args.SiteName);
         }
 
@@ -47,7 +53,9 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
 
         public override void Start()
         {
+            logger("Start to IIS ApplicationPoolStart :" + this.args.ApplicationPoolName);
             IISHelper.ApplicationPoolStart(this.args.ApplicationPoolName);
+            logger("Success to IIS ApplicationPoolStart :" + this.args.ApplicationPoolName);
             //IISHelper.WebsiteStart(this.args.SiteName);
         }
 

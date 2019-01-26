@@ -45,6 +45,10 @@ namespace AntDeployAgentWindows.MyApp
 
             
             FormHandler formHandler = new FormHandler(Context);
+
+            
+
+
             var publishType = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("publishType"));
             if (publishType == null || string.IsNullOrEmpty(publishType.TextValue))
             {

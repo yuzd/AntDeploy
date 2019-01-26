@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -60,6 +61,9 @@ namespace AntDeployAgentWindows.WebSocketApp
     /// </summary>
     public sealed class WebSocket
     {
+
+        
+
 
         /****************************************************************
          * 这是一个对OWIN WebSocket 进行了一定程度封装的对象，
@@ -238,6 +242,8 @@ namespace AntDeployAgentWindows.WebSocketApp
 
             _webSocketCompSource = new TaskCompletionSource<int>();
             // owinEnv.Get<string>("owin.RequestMethod");  GET/POST/....
+
+          
 
         }
 
