@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AntDeployAgentWindows.MyApp.Service.Impl;
+﻿using AntDeployAgentWindows.MyApp.Service.Impl;
+using System;
 
 namespace AntDeployAgentWindows.MyApp.Service
 {
     public class PublishProviderFactory
     {
-       
+
 
         public static IPublishProviderAPI GetProcessor(string key)
         {
@@ -17,6 +13,8 @@ namespace AntDeployAgentWindows.MyApp.Service
             {
                 case "iis":
                     return new IIsPublisher();
+                case "windowservice":
+                    return new WindowServicePublisher();
                 default:
                     throw new Exception($"key:{key} not supported");
             }

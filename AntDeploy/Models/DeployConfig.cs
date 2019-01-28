@@ -45,6 +45,7 @@ namespace AntDeploy.Models
     public class WindowsServiveConfig
     {
         public string ServiceName { get; set; }
+        public string StopTimeOutSeconds { get; set; }
         public string LastEnvName { get; set; }
     }
 

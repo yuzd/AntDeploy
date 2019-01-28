@@ -150,6 +150,11 @@ namespace AntDeploy.Winform
                 {
                     this.txt_windowservice_name.Text = DeployConfig.WindowsServiveConfig.ServiceName;
                 }
+
+                if (!string.IsNullOrEmpty(DeployConfig.WindowsServiveConfig.StopTimeOutSeconds))
+                {
+                    this.txt_windowservice_timeout.Text = DeployConfig.WindowsServiveConfig.StopTimeOutSeconds;
+                }
             }
 
 
@@ -407,9 +412,20 @@ namespace AntDeploy.Winform
             }
         }
 
+        private void combo_windowservice_env_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var selectName = this.combo_windowservice_env.SelectedItem as string;
+            if (!string.IsNullOrEmpty(selectName))
+            {
+                DeployConfig.WindowsServiveConfig.LastEnvName = selectName;
+            }
+        }
+
         private void Deploy_FormClosing(object sender, FormClosingEventArgs e)
         {
             DeployConfig.IIsConfig.WebSiteName = this.txt_iis_web_site_name.Text;
+            DeployConfig.WindowsServiveConfig.StopTimeOutSeconds = this.txt_windowservice_timeout.Text;
+            DeployConfig.WindowsServiveConfig.ServiceName = this.txt_windowservice_name.Text;
             var configJson = JsonConvert.SerializeObject(DeployConfig, Formatting.Indented);
             File.WriteAllText(ProjectConfigPath, configJson);
         }
@@ -724,6 +740,26 @@ namespace AntDeploy.Winform
                 return;
             }
 
+           
+            var stopSenconds = this.txt_windowservice_timeout.Text.Trim();
+            if (!string.IsNullOrEmpty(stopSenconds))
+            {
+                int.TryParse(stopSenconds,out var stopSencondsInt);
+                if (stopSencondsInt == 0)
+                {
+                    MessageBox.Show("please input right stopTimout value");
+                    return;
+                }
+                else
+                {
+                    DeployConfig.WindowsServiveConfig.StopTimeOutSeconds = stopSenconds;
+                }
+            }
+            else
+            {
+                DeployConfig.WindowsServiveConfig.StopTimeOutSeconds = "";
+            }
+
 
             var envName = this.combo_windowservice_env.SelectedItem as string;
             if (string.IsNullOrEmpty(envName))
@@ -826,9 +862,9 @@ namespace AntDeploy.Winform
                     ProgressPercentage = 0;
                     this.nlog_windowservice.Info($"Start Uppload,Host:{server.Host}");
                     HttpRequestClient httpRequestClient = new HttpRequestClient();
-                    httpRequestClient.SetFieldValue("publishType", "iis");
-                    httpRequestClient.SetFieldValue("sdkType", DeployConfig.IIsConfig.SdkType);
-                    httpRequestClient.SetFieldValue("webSiteName", DeployConfig.IIsConfig.WebSiteName);
+                    httpRequestClient.SetFieldValue("publishType", "windowservice");
+                    httpRequestClient.SetFieldValue("serviceName", DeployConfig.WindowsServiveConfig.ServiceName);
+                    httpRequestClient.SetFieldValue("stopTimeOut", DeployConfig.WindowsServiveConfig.StopTimeOutSeconds);
                     httpRequestClient.SetFieldValue("Token", server.Token);
                     httpRequestClient.SetFieldValue("publish","publish.zip", "application/octet-stream", zipBytes);
                     ClientWebSocket webSocket = null;
@@ -883,5 +919,7 @@ namespace AntDeploy.Winform
 
             }).Start();
         }
+
+       
     }
 }

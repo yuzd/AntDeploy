@@ -72,6 +72,9 @@
             this.txt_env_name = new System.Windows.Forms.TextBox();
             this.b_env_add_by_name = new System.Windows.Forms.Button();
             this.combo_env_list = new System.Windows.Forms.ComboBox();
+            this.txt_windowservice_timeout = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
             this.page_.SuspendLayout();
             this.page_web_iis.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -223,6 +226,9 @@
             // 
             // page_window_service
             // 
+            this.page_window_service.Controls.Add(this.label13);
+            this.page_window_service.Controls.Add(this.txt_windowservice_timeout);
+            this.page_window_service.Controls.Add(this.label12);
             this.page_window_service.Controls.Add(this.groupBox3);
             this.page_window_service.Controls.Add(this.b_windowservice_deploy);
             this.page_window_service.Controls.Add(this.combo_windowservice_env);
@@ -270,15 +276,16 @@
             this.combo_windowservice_env.BackColor = System.Drawing.SystemColors.Window;
             this.combo_windowservice_env.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_windowservice_env.FormattingEnabled = true;
-            this.combo_windowservice_env.Location = new System.Drawing.Point(145, 75);
+            this.combo_windowservice_env.Location = new System.Drawing.Point(158, 78);
             this.combo_windowservice_env.Name = "combo_windowservice_env";
             this.combo_windowservice_env.Size = new System.Drawing.Size(193, 20);
             this.combo_windowservice_env.TabIndex = 13;
+            this.combo_windowservice_env.SelectedIndexChanged += new System.EventHandler(this.combo_windowservice_env_SelectedIndexChanged);
             // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(68, 78);
+            this.label10.Location = new System.Drawing.Point(92, 81);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(59, 12);
             this.label10.TabIndex = 12;
@@ -286,7 +293,7 @@
             // 
             // txt_windowservice_name
             // 
-            this.txt_windowservice_name.Location = new System.Drawing.Point(145, 27);
+            this.txt_windowservice_name.Location = new System.Drawing.Point(158, 19);
             this.txt_windowservice_name.Name = "txt_windowservice_name";
             this.txt_windowservice_name.Size = new System.Drawing.Size(193, 21);
             this.txt_windowservice_name.TabIndex = 11;
@@ -294,7 +301,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(44, 30);
+            this.label11.Location = new System.Drawing.Point(68, 22);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(83, 12);
             this.label11.TabIndex = 10;
@@ -537,6 +544,31 @@
             this.combo_env_list.TabIndex = 0;
             this.combo_env_list.SelectedIndexChanged += new System.EventHandler(this.combo_env_list_SelectedIndexChanged);
             // 
+            // txt_windowservice_timeout
+            // 
+            this.txt_windowservice_timeout.Location = new System.Drawing.Point(158, 48);
+            this.txt_windowservice_timeout.Name = "txt_windowservice_timeout";
+            this.txt_windowservice_timeout.Size = new System.Drawing.Size(111, 21);
+            this.txt_windowservice_timeout.TabIndex = 17;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(20, 52);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(131, 12);
+            this.label12.TabIndex = 16;
+            this.label12.Text = "Service Stop Timeout:";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(275, 51);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(53, 12);
+            this.label13.TabIndex = 18;
+            this.label13.Text = "Senconds";
+            // 
             // Deploy
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
@@ -616,5 +648,8 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.RichTextBox rich_windowservice_log;
+        private System.Windows.Forms.TextBox txt_windowservice_timeout;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label13;
     }
 }
