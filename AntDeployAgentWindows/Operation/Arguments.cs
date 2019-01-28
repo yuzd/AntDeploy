@@ -11,6 +11,7 @@ namespace AntDeployAgentWindows.Operation
         public string DeployType { get;  set; }
         public string BackupFolder { get;  set; }
         public string AppName { get;  set; }
+        public int WaitForWindowsServiceStopTimeOut { get;  set; }
         public string AppFolder { get;  set; }
         public string DeployFolder { get;  set; }
         public string CategoryName { get;  set; }

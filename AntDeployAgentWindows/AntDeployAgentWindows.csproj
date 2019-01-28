@@ -72,6 +72,7 @@
     <Compile Include="MyApp\PublishService.cs" />
     <Compile Include="MyApp\Service\CommonProcessor.cs" />
     <Compile Include="MyApp\Service\ICommon.cs" />
+    <Compile Include="MyApp\Service\Impl\WindowServicePublisher.cs" />
     <Compile Include="MyApp\Service\Impl\IIsPublisher.cs" />
     <Compile Include="MyApp\Service\IPublishProviderAPI.cs" />
     <Compile Include="MyApp\Service\PublishProviderBasicAPI.cs" />
@@ -85,6 +86,7 @@
     <Compile Include="Operation\OperationTypes\OperationsWINDOWSSERVICE.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Util\CopyHelper.cs" />
+    <Compile Include="Util\WindowServiceHelper.cs" />
     <Compile Include="Util\IISHelper.cs" />
     <Compile Include="WebSocketApp\MyWebSocketWork.cs" />
     <Compile Include="WebSocketApp\MyWebSocketWorkerBase.cs" />

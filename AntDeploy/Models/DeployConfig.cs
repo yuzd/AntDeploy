@@ -28,6 +28,8 @@ namespace AntDeploy.Models
         public IIsConfig IIsConfig { get; set; } = new IIsConfig();
         #endregion
 
+        public WindowsServiveConfig WindowsServiveConfig { get; set; } = new WindowsServiveConfig();
+
     }
 
     public class IIsConfig
@@ -38,7 +40,13 @@ namespace AntDeploy.Models
 
         public string LastEnvName { get; set; }
     }
-   
+
+
+    public class WindowsServiveConfig
+    {
+        public string ServiceName { get; set; }
+        public string LastEnvName { get; set; }
+    }
 
     public class Env
     {

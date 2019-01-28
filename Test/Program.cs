@@ -14,6 +14,12 @@ namespace Test
         static void Main(string[] args)
         {
 
+
+            var buildResult = CommandHelper.RunMsbuild("E:\\WorkSpace\\github\\AntDeploy\\AntDeployAgentWindowsService\\AntDeployAgentWindowsService.csproj",
+                Console.WriteLine,Console.WriteLine);
+
+
+
             var bytes= ZipHelper.DoCreateFromDirectory(
                 @"H:\Csharp\yuzd\Lito\Lito\Lito.APP\bin\Release\netcoreapp2.1\publish",
                 CompressionLevel.Optimal, true,new List<string>
@@ -43,7 +49,7 @@ namespace Test
 
             return;
 
-            CommandHelper.RunDotnetExternalExe(@"H:\Csharp\yuzd\AntDeploy\AntDeploy\WindowsFormsAppTest\Test\MyProject",
+            CommandHelper.RunDotnetExternalExe(@"H:\Csharp\yuzd\AntDeploy\AntDeploy\WindowsFormsAppTest\Test\MyProject","dotnet",
                 "publish -c Release",
                 Console.WriteLine,
                 Console.WriteLine);

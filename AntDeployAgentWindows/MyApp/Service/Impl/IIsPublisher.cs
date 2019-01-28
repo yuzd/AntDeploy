@@ -13,11 +13,11 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 {
     public class IIsPublisher : PublishProviderBasicAPI
     {
-        private object obj = new object();
+      
         private string _webSiteName;
         private string _sdkTypeName;
         private string _projectName;
-        private WebSocketApp.WebSocket WebSocket;
+     
         private string _projectPublishFolder;
         private FormHandler _formHandler;
 
@@ -129,40 +129,10 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
         }
 
 
-        private void EnsureProjectFolder(string path)
-        {
-            try
-            {
-                lock (obj)
-                {
-                    if (!Directory.Exists(path))
-                    {
-                        Directory.CreateDirectory(path);
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                //ignore
-            }
-        }
 
 
-        private void Log(string str)
-        {
-            try
-            {
-                if (WebSocket != null)
-                {
-                    WebSocket.Send(str + "@_@" + str.Length);
-                }
-            }
-            catch (Exception)
-            {
-                //ignore
 
-            }
-        }
+      
 
         public override string CheckData(FormHandler formHandler)
         {
@@ -207,14 +177,6 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
             //}
 
             _projectName = siteNameArr.Last();
-
-            var wsKey = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("wsKey"));
-            if (wsKey != null  && !string.IsNullOrEmpty(wsKey.TextValue))
-            {
-                var _wsKey = wsKey.TextValue;
-                MyWebSocketWork.WebSockets.TryGetValue(_wsKey, out WebSocket);
-            }
-
             return string.Empty;
         }
     }

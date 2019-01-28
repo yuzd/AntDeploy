@@ -1,5 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using Microsoft.Build.Evaluation;
+using Microsoft.Build.Execution;
+using Microsoft.Build.Framework;
+using Microsoft.Build.Logging;
+using Microsoft.Build.Utilities;
 
 namespace AntDeploy.Util
 {
@@ -9,6 +15,69 @@ namespace AntDeploy.Util
     /// </summary>
     public class CommandHelper
     {
+        
+
+        public static bool RunMsbuild(string path,Action<string> logAction,Action<string> errLogAction)
+        {
+            var msBuild = GetMsBuildPath();
+            if (string.IsNullOrEmpty(msBuild))
+            {
+                return false;
+            }
+            return RunDotnetExternalExe(string.Empty,msBuild+"\\MsBuild.exe",
+                path + " /t:Rebuild /p:Configuration=Release",
+                logAction,errLogAction);
+        }
+
+
+        public static string GetMsBuildPath()
+        {
+            var getmS = ToolLocationHelper.GetPathToBuildTools(ToolLocationHelper.CurrentToolsVersion);
+            return getmS;
+
+
+            //try
+            //{
+               
+                
+
+              
+           
+            //    //var parms = new BuildParameters
+            //    //{
+            //    //    DetailedSummary = true,
+                    
+            //    //};
+
+            //    //var projectInstance = new ProjectInstance(path);
+            //    //projectInstance.SetProperty("Configuration", "Release");
+            //    //projectInstance.SetProperty("Platform", "Any CPU");
+            //    //var request = new BuildRequestData(projectInstance,  new string[] { "Rebuild" });
+                
+            //    //parms.Loggers = new List<Microsoft.Build.Framework.ILogger>
+            //    //{
+            //    //    new ConsoleLogger(LoggerVerbosity.Normal,
+            //    //        message => { log(message); }, color => { }, () => { })
+            //    //    {
+            //    //        ShowSummary = true
+            //    //    }
+            //    //};
+
+            //    //var result = BuildManager.DefaultBuildManager.Build(parms, request);
+            //    //if (result.OverallResult == BuildResultCode.Success)
+            //    //{
+            //    //    return string.Empty;
+            //    //}
+
+            //    return getmS;
+            //}
+            //catch (Exception e)
+            //{
+            //    return e.Message;
+            //}
+        }
+
+
         /// <summary>
         /// 执行dotnet Command命令
         /// </summary>
@@ -17,7 +86,7 @@ namespace AntDeploy.Util
         /// <param name="logAction"></param>
         /// <param name="errLogAction"></param>
         /// <returns></returns>
-        public static bool RunDotnetExternalExe(string projectPath,string arguments,Action<string> logAction,Action<string> errLogAction)
+        public static bool RunDotnetExternalExe(string projectPath,string fileName,string arguments,Action<string> logAction,Action<string> errLogAction)
         {
             try
             {
@@ -34,7 +103,7 @@ namespace AntDeploy.Util
                 var process = new Process();
 
                 process.StartInfo.WorkingDirectory = projectPath;
-                process.StartInfo.FileName = "dotnet";
+                process.StartInfo.FileName = fileName;
                 process.StartInfo.Arguments = arguments;
                 process.StartInfo.CreateNoWindow = true;
                 process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;

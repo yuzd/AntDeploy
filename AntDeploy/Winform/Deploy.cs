@@ -24,17 +24,19 @@ namespace AntDeploy.Winform
      
         private string ProjectConfigPath;
         private string ProjectFolderPath;
-        private NLog.Logger Logger;
+        private NLog.Logger nlog_iis;
+        private NLog.Logger nlog_windowservice;
         public Deploy(string projectPath)
         {
             InitializeComponent();
 
             ReadPorjectConfig(projectPath);
 
+            #region Nlog
             var config = new LoggingConfiguration();
             var richTarget = new RichTextBoxTarget
             {
-                Name = "target2",
+                Name = "rich_iis_log",
                 Layout = "${date:format=HH\\:mm\\:ss}|${uppercase:${level}}|${message} ${exception:format=tostring} ${rtb-link:inner=${event-properties:item=ShowLink}}",
                 FormName = "Deploy",
                 ControlName = "rich_iis_log",
@@ -45,17 +47,35 @@ namespace AntDeploy.Winform
                 UseDefaultRowColoringRules = true
 
             };
-            config.AddTarget("target2", richTarget);
-
+            config.AddTarget("rich_iis_log", richTarget);
             LoggingRule rule1 = new LoggingRule("*", LogLevel.Debug, richTarget);
-
             config.LoggingRules.Add(rule1);
+
+
+            var richTarget2 = new RichTextBoxTarget
+            {
+                Name = "rich_windowservice_log",
+                Layout = "${date:format=HH\\:mm\\:ss}|${uppercase:${level}}|${message} ${exception:format=tostring} ${rtb-link:inner=${event-properties:item=ShowLink}}",
+                FormName = "Deploy",
+                ControlName = "rich_windowservice_log",
+                AutoScroll = true,
+                MaxLines = 0,
+                AllowAccessoryFormCreation = true,
+                SupportLinks = true,
+                UseDefaultRowColoringRules = true
+
+            };
+            config.AddTarget("rich_windowservice_log", richTarget2);
+            LoggingRule rule2 = new LoggingRule("*", LogLevel.Debug, richTarget2);
+            config.LoggingRules.Add(rule2);
 
             LogManager.Configuration = config;
 
-            Logger = NLog.LogManager.GetCurrentClassLogger();
+            nlog_iis = NLog.LogManager.GetLogger("rich_iis_log");
+            nlog_windowservice = NLog.LogManager.GetLogger("rich_windowservice_log");
 
-            RichLogInit();
+            RichLogInit(); 
+            #endregion
 
         }
 
@@ -79,6 +99,7 @@ namespace AntDeploy.Winform
                 {
                     this.combo_env_list.Items.Add(env.Name);
                     this.combo_iis_env.Items.Add(env.Name);
+                    this.combo_windowservice_env.Items.Add(env.Name);
                 }
 
                 this.combo_env_list.SelectedIndex = 0;
@@ -114,6 +135,22 @@ namespace AntDeploy.Winform
                 }
             }
 
+            if (DeployConfig.WindowsServiveConfig != null)
+            {
+                
+                if (this.combo_windowservice_env.Items.Count > 0 &&
+                    !string.IsNullOrEmpty(DeployConfig.WindowsServiveConfig.LastEnvName)
+                    && this.combo_windowservice_env.Items.Cast<string>().Contains(DeployConfig.WindowsServiveConfig.LastEnvName))
+                {
+                    this.combo_windowservice_env.SelectedItem = DeployConfig.WindowsServiveConfig.LastEnvName;
+                }
+
+                if (!string.IsNullOrEmpty(DeployConfig.WindowsServiveConfig.ServiceName))
+                {
+                    this.txt_windowservice_name.Text = DeployConfig.WindowsServiveConfig.ServiceName;
+                }
+            }
+
 
 
 
@@ -128,6 +165,7 @@ namespace AntDeploy.Winform
         {
             RichTextBoxTarget.ReInitializeAllTextboxes(this);
             RichTextBoxTarget.GetTargetByControl(rich_iis_log).LinkClicked += LinkClicked;
+            RichTextBoxTarget.GetTargetByControl(rich_windowservice_log).LinkClicked += LinkClicked;
         }
 
 
@@ -159,11 +197,13 @@ namespace AntDeploy.Winform
         private void DeployConfigOnEnvChangeEvent(Env changeEnv, bool isremove)
         {
             this.combo_iis_env.Items.Clear();
+            this.combo_windowservice_env.Items.Clear();
             if (DeployConfig.Env.Any())
             {
                 foreach (var env in DeployConfig.Env)
                 {
                     this.combo_iis_env.Items.Add(env.Name);
+                    this.combo_windowservice_env.Items.Add(env.Name);
                 }
             }
 
@@ -422,7 +462,7 @@ namespace AntDeploy.Winform
 
             if (serverList == null || !serverList.Any())
             {
-                MessageBox.Show("select env have no server set yet!");
+                MessageBox.Show("selected env have no server set yet!");
                 return;
             }
 
@@ -437,25 +477,25 @@ namespace AntDeploy.Winform
             }
 
             this.rich_iis_log.Text = "";
-            DeployConfig.IIsConfig.WebSiteName = this.txt_iis_web_site_name.Text;
+            DeployConfig.IIsConfig.WebSiteName = websiteName;
             new Task(async () =>
             {
-                this.Logger.Info("Start publish");
+                this.nlog_iis.Info("Start publish");
                 Enable(false);
                 var publishLog = new List<string>();
                 //执行 publish
-                var isSuccess = CommandHelper.RunDotnetExternalExe(ProjectFolderPath,
+                var isSuccess = CommandHelper.RunDotnetExternalExe(ProjectFolderPath,"dotnet",
                     "publish -c Release",
                     (r) =>
                     {
-                        this.Logger.Info(r);
+                        this.nlog_iis.Info(r);
                         publishLog.Add(r);
                     },
-                    (er) => this.Logger.Error(er));
+                    (er) => this.nlog_iis.Error(er));
 
                 if (!isSuccess)
                 {
-                    this.Logger.Error("publish error");
+                    this.nlog_iis.Error("publish error");
                     return;
                 }
 
@@ -464,14 +504,14 @@ namespace AntDeploy.Winform
 
                 if (string.IsNullOrEmpty(publishPathLine))
                 {
-                    this.Logger.Error("can not find publishPath in log");
+                    this.nlog_iis.Error("can not find publishPath in log");
                     return;
                 }
 
                 var publishPathArr = publishPathLine.Split(new string[] { " ->" }, StringSplitOptions.None);
                 if (publishPathArr.Length != 2)
                 {
-                    this.Logger.Error("can not find publishPath in log");
+                    this.nlog_iis.Error("can not find publishPath in log");
                     return;
                 }
 
@@ -479,7 +519,7 @@ namespace AntDeploy.Winform
 
                 LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish success,  ==> ");
                 publisEvent.Properties["ShowLink"] = "file://"+publishPath.Replace("\\","\\\\");
-                this.Logger.Log(publisEvent);
+                this.nlog_iis.Log(publisEvent);
 
 
 
@@ -492,13 +532,13 @@ namespace AntDeploy.Winform
                     {
                         LogEventInfo theEvent = new LogEventInfo(LogLevel.Warn, "", "publish sdkType:netcore ,but web.config file missing!");
                         theEvent.Properties["ShowLink"] = "https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis";
-                        this.Logger.Log(theEvent);
+                        this.nlog_iis.Log(theEvent);
                     }
                 }
 
 
                 //执行 打包
-                this.Logger.Info("Start package");
+                this.nlog_iis.Info("Start package");
                 byte[] zipBytes;
                 try
                 {
@@ -506,29 +546,29 @@ namespace AntDeploy.Winform
                 }
                 catch (Exception ex)
                 {
-                    this.Logger.Error("package fail:" + ex.Message);
+                    this.nlog_iis.Error("package fail:" + ex.Message);
                     return;
                 }
 
                 if (zipBytes == null || zipBytes.Length < 1)
                 {
-                    this.Logger.Error("package fail");
+                    this.nlog_iis.Error("package fail");
                     return;
                 }
-                this.Logger.Info("package success");
+                this.nlog_iis.Info("package success");
 
                 //执行 上传
-                this.Logger.Info("Deploy Start");
+                this.nlog_iis.Info("Deploy Start");
                 foreach (var server in serverList)
                 {
                     if (string.IsNullOrEmpty(server.Token))
                     {
-                        this.Logger.Warn($"{server.Host} Deploy skip,Token is null or empty!");
+                        this.nlog_iis.Warn($"{server.Host} Deploy skip,Token is null or empty!");
                         continue;
                     }
 
                     ProgressPercentage = 0;
-                    this.Logger.Info($"Start Uppload,Host:{server.Host}");
+                    this.nlog_iis.Info($"Start Uppload,Host:{server.Host}");
                     HttpRequestClient httpRequestClient = new HttpRequestClient();
                     httpRequestClient.SetFieldValue("publishType", "iis");
                     httpRequestClient.SetFieldValue("sdkType", DeployConfig.IIsConfig.SdkType);
@@ -549,7 +589,7 @@ namespace AntDeploy.Winform
                                 }
                                 else
                                 {
-                                    this.Logger.Info($"【Server】{receiveMsg}");
+                                    this.nlog_iis.Info($"【Server】{receiveMsg}");
                                 }
                             }
                         });
@@ -561,18 +601,18 @@ namespace AntDeploy.Winform
 
                         if (uploadResult.Item1)
                         {
-                            this.Logger.Info($"Host:{server.Host},Response:{uploadResult.Item2}");
+                            this.nlog_iis.Info($"Host:{server.Host},Response:{uploadResult.Item2}");
                         }
                         else
                         {
-                            this.Logger.Error(
+                            this.nlog_iis.Error(
                                 $"Host:{server.Host},Response:{uploadResult.Item2},Skip to Next");
                         }
                     }
                     catch (Exception ex)
                     {
 
-                        this.Logger.Error($"Fail Deploy,Host:{server.Host},Response:{ex.Message},Skip to Next");
+                        this.nlog_iis.Error($"Fail Deploy,Host:{server.Host},Response:{ex.Message},Skip to Next");
                     }
                     finally
                     {
@@ -580,7 +620,7 @@ namespace AntDeploy.Winform
                     }
                     
                 }
-                this.Logger.Info("Deploy End");
+                this.nlog_iis.Info("Deploy End");
                 //交互
 
                 Enable(true);
@@ -595,7 +635,7 @@ namespace AntDeploy.Winform
             if (e.ProgressPercentage > ProgressPercentage && e.ProgressPercentage!=100)
             {
                 ProgressPercentage = e.ProgressPercentage;
-                this.Logger.Info($"Upload {(e.ProgressPercentage != 100 ? e.ProgressPercentage * 2 : e.ProgressPercentage)} % complete...");
+                this.nlog_iis.Info($"Upload {(e.ProgressPercentage != 100 ? e.ProgressPercentage * 2 : e.ProgressPercentage)} % complete...");
             }
         }
 
@@ -650,6 +690,197 @@ namespace AntDeploy.Winform
             {
                 MessageBox.Show("Connect Fail");
             }
+        }
+
+        private void b_windowservice_deploy_Click(object sender, EventArgs e)
+        {
+            var serviceName = this.txt_windowservice_name.Text.Trim();
+            if (serviceName.Length < 1)
+            {
+                MessageBox.Show("please input serviceName");
+                return;
+            }
+
+
+            var envName = this.combo_windowservice_env.SelectedItem as string;
+            if (string.IsNullOrEmpty(envName))
+            {
+                MessageBox.Show("please select env");
+                return;
+            }
+
+            var serverList = DeployConfig.Env.Where(r => r.Name.Equals(envName)).Select(r => r.ServerList)
+                .FirstOrDefault();
+
+            if (serverList == null || !serverList.Any())
+            {
+                MessageBox.Show("selected env have no server set yet!");
+                return;
+            }
+
+            var serverHostList = string.Join(Environment.NewLine, serverList.Select(r => r.Host).ToList());
+
+            var confirmResult = MessageBox.Show("Are you sure to deploy to Server: " + Environment.NewLine + serverHostList,
+                "Confirm Deploy!!",
+                MessageBoxButtons.YesNo);
+            if (confirmResult != DialogResult.Yes)
+            {
+                return;
+            }
+
+            this.rich_iis_log.Text = "";
+
+            DeployConfig.WindowsServiveConfig.ServiceName = serviceName;
+
+
+           new Task(async () =>
+            {
+                this.nlog_windowservice.Info("Start publish");
+                Enable(false);
+                var publishLog = new List<string>();
+                //执行 publish
+                var isSuccess = CommandHelper.RunDotnetExternalExe(ProjectFolderPath,"dotnet",
+                    "publish -c Release",
+                    (r) =>
+                    {
+                        this.nlog_iis.Info(r);
+                        publishLog.Add(r);
+                    },
+                    (er) => this.nlog_iis.Error(er));
+
+                if (!isSuccess)
+                {
+                    this.nlog_iis.Error("publish error");
+                    return;
+                }
+
+                var publishPathLine = publishLog
+                    .FirstOrDefault(r => !string.IsNullOrEmpty(r) && r.EndsWith("\\publish\\"));
+
+                if (string.IsNullOrEmpty(publishPathLine))
+                {
+                    this.nlog_iis.Error("can not find publishPath in log");
+                    return;
+                }
+
+                var publishPathArr = publishPathLine.Split(new string[] { " ->" }, StringSplitOptions.None);
+                if (publishPathArr.Length != 2)
+                {
+                    this.nlog_iis.Error("can not find publishPath in log");
+                    return;
+                }
+
+                var publishPath = publishPathArr[1].Trim();
+
+                LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish success,  ==> ");
+                publisEvent.Properties["ShowLink"] = "file://"+publishPath.Replace("\\","\\\\");
+                this.nlog_iis.Log(publisEvent);
+
+
+
+                //https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis
+
+                if (DeployConfig.IIsConfig.SdkType.Equals("netcore"))
+                {
+                    var webConfig = Path.Combine(publishPath, "Web.Config");
+                    if (!File.Exists(webConfig))
+                    {
+                        LogEventInfo theEvent = new LogEventInfo(LogLevel.Warn, "", "publish sdkType:netcore ,but web.config file missing!");
+                        theEvent.Properties["ShowLink"] = "https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis";
+                        this.nlog_iis.Log(theEvent);
+                    }
+                }
+
+
+                //执行 打包
+                this.nlog_iis.Info("Start package");
+                byte[] zipBytes;
+                try
+                {
+                    zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, CompressionLevel.Optimal, true,DeployConfig.IgnoreList);
+                }
+                catch (Exception ex)
+                {
+                    this.nlog_iis.Error("package fail:" + ex.Message);
+                    return;
+                }
+
+                if (zipBytes == null || zipBytes.Length < 1)
+                {
+                    this.nlog_iis.Error("package fail");
+                    return;
+                }
+                this.nlog_iis.Info("package success");
+
+                //执行 上传
+                this.nlog_iis.Info("Deploy Start");
+                foreach (var server in serverList)
+                {
+                    if (string.IsNullOrEmpty(server.Token))
+                    {
+                        this.nlog_iis.Warn($"{server.Host} Deploy skip,Token is null or empty!");
+                        continue;
+                    }
+
+                    ProgressPercentage = 0;
+                    this.nlog_iis.Info($"Start Uppload,Host:{server.Host}");
+                    HttpRequestClient httpRequestClient = new HttpRequestClient();
+                    httpRequestClient.SetFieldValue("publishType", "iis");
+                    httpRequestClient.SetFieldValue("sdkType", DeployConfig.IIsConfig.SdkType);
+                    httpRequestClient.SetFieldValue("webSiteName", DeployConfig.IIsConfig.WebSiteName);
+                    httpRequestClient.SetFieldValue("Token", server.Token);
+                    httpRequestClient.SetFieldValue("publish","publish.zip", "application/octet-stream", zipBytes);
+                    ClientWebSocket webSocket = null;
+                    try
+                    {
+                        var hostKey = "";
+                        webSocket = await WebSocketHelper.Connect($"ws://{server.Host}/socket", (receiveMsg) =>
+                        {
+                            if (!string.IsNullOrEmpty(receiveMsg))
+                            {
+                                if (receiveMsg.StartsWith("hostKey@"))
+                                {
+                                    hostKey = receiveMsg.Replace("hostKey@", "");
+                                }
+                                else
+                                {
+                                    this.nlog_iis.Info($"【Server】{receiveMsg}");
+                                }
+                            }
+                        });
+
+                        httpRequestClient.SetFieldValue("wsKey", hostKey);
+
+                        var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/publish",
+                            (client) => { client.UploadProgressChanged += ClientOnUploadProgressChanged; });
+
+                        if (uploadResult.Item1)
+                        {
+                            this.nlog_iis.Info($"Host:{server.Host},Response:{uploadResult.Item2}");
+                        }
+                        else
+                        {
+                            this.nlog_iis.Error(
+                                $"Host:{server.Host},Response:{uploadResult.Item2},Skip to Next");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        this.nlog_iis.Error($"Fail Deploy,Host:{server.Host},Response:{ex.Message},Skip to Next");
+                    }
+                    finally
+                    {
+                        webSocket?.Dispose();
+                    }
+                    
+                }
+                this.nlog_iis.Info("Deploy End");
+                //交互
+
+                Enable(true);
+
+            }).Start();
         }
     }
 }

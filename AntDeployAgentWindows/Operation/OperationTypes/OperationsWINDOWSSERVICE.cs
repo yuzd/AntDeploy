@@ -4,33 +4,21 @@ using System.Linq;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
+using AntDeployAgentWindows.Util;
 
 namespace AntDeployAgentWindows.Operation.OperationTypes
 {
     class OperationsWINDOWSSERVICE : OperationsBase
     {
-        public OperationsWINDOWSSERVICE(Arguments args)
-            : base(args)
+        
+        public OperationsWINDOWSSERVICE(Arguments args,Action<string> log)
+            : base(args,log)
         {
-            // do nothing
         }
 
         public override void ValidateArguments()
         {
             base.ValidateArguments();
-
-            if (!this.args.NoStop)
-            {
-                try
-                {
-                    ServiceController service = new ServiceController(this.args.AppName);
-                    ServiceControllerStatus status = service.Status;
-                }
-                catch (Exception)
-                {
-                    throw new ArgumentException(this.args.AppName + " windows service could not be found", "appName");
-                }
-            }
         }
 
         public override void Backup()
@@ -45,15 +33,28 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
 
         public override void Stop()
         {
-            ServiceController service = new ServiceController(this.args.AppName);
-            if (service.CanStop)
+            logger("Start to Windows Service Stop :" + this.args.AppName);
+            var service = WindowServiceHelper.GetWindowServiceByName(this.args.AppName);
+            if (service!=null)
             {
-                service.Stop();
-                service.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(120));
+                if (service.CanStop)
+                {
+                    var timeout = (this.args.WaitForWindowsServiceStopTimeOut > 0
+                        ? this.args.WaitForWindowsServiceStopTimeOut
+                        : 10);
+                    logger("Start to Windows Service Stop wait for "+timeout +"senconds :" + this.args.AppName);
+                    service.Stop();
+                    service.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(timeout));
+                    logger("Success to Windows Service Stop :" + this.args.AppName);
+                }
+                else
+                {
+                    logger("【Error】 Windows Service Stop :" + this.args.AppName + ",Err: windows service could not be stopped!");
+                }
             }
             else
             {
-                Console.WriteLine(this.args.AppName + " windows service could not be stopped");
+                logger("【Error】 Windows Service Stop :" + this.args.AppName + ",Err: service can not exist!");
             }
         }
 
@@ -64,9 +65,16 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
 
         public override void Start()
         {
-            ServiceController service = new ServiceController(this.args.AppName);
-            service.Start();
-            service.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(120));
+            logger("Start to Windows Service Start :" + this.args.SiteName);
+            var re = WindowServiceHelper.StartService(this.args.AppName, 120);
+            if (string.IsNullOrEmpty(re))
+            {
+                logger("Success to Windows Service Start :" + this.args.SiteName);
+            }
+            else
+            {
+                logger("【Error】 Windows Service Start :" + this.args.AppName + ",Err:"+re ) ;
+            }
         }
 
         public override void Execute()

@@ -30,6 +30,7 @@
         {
             this.page_ = new System.Windows.Forms.TabControl();
             this.page_web_iis = new System.Windows.Forms.TabPage();
+            this.label9 = new System.Windows.Forms.Label();
             this.b_iis_deploy = new System.Windows.Forms.Button();
             this.combo_iis_env = new System.Windows.Forms.ComboBox();
             this.label8 = new System.Windows.Forms.Label();
@@ -41,6 +42,13 @@
             this.label6 = new System.Windows.Forms.Label();
             this.page_docker = new System.Windows.Forms.TabPage();
             this.page_window_service = new System.Windows.Forms.TabPage();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.rich_windowservice_log = new System.Windows.Forms.RichTextBox();
+            this.b_windowservice_deploy = new System.Windows.Forms.Button();
+            this.combo_windowservice_env = new System.Windows.Forms.ComboBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.txt_windowservice_name = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
             this.page_set = new System.Windows.Forms.TabPage();
             this.groupBoxIgnore = new System.Windows.Forms.GroupBox();
             this.b_env_ignore_remove = new System.Windows.Forms.Button();
@@ -64,10 +72,11 @@
             this.txt_env_name = new System.Windows.Forms.TextBox();
             this.b_env_add_by_name = new System.Windows.Forms.Button();
             this.combo_env_list = new System.Windows.Forms.ComboBox();
-            this.label9 = new System.Windows.Forms.Label();
             this.page_.SuspendLayout();
             this.page_web_iis.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.page_window_service.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.page_set.SuspendLayout();
             this.groupBoxIgnore.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -105,6 +114,15 @@
             this.page_web_iis.TabIndex = 0;
             this.page_web_iis.Text = "IIS_Web";
             this.page_web_iis.UseVisualStyleBackColor = true;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(158, 81);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(209, 12);
+            this.label9.TabIndex = 10;
+            this.label9.Text = "For example: Default Web Site/test";
             // 
             // b_iis_deploy
             // 
@@ -205,12 +223,82 @@
             // 
             // page_window_service
             // 
+            this.page_window_service.Controls.Add(this.groupBox3);
+            this.page_window_service.Controls.Add(this.b_windowservice_deploy);
+            this.page_window_service.Controls.Add(this.combo_windowservice_env);
+            this.page_window_service.Controls.Add(this.label10);
+            this.page_window_service.Controls.Add(this.txt_windowservice_name);
+            this.page_window_service.Controls.Add(this.label11);
             this.page_window_service.Location = new System.Drawing.Point(4, 22);
             this.page_window_service.Name = "page_window_service";
             this.page_window_service.Size = new System.Drawing.Size(626, 422);
             this.page_window_service.TabIndex = 3;
             this.page_window_service.Text = "WindowsService";
             this.page_window_service.UseVisualStyleBackColor = true;
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.rich_windowservice_log);
+            this.groupBox3.Location = new System.Drawing.Point(8, 118);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(614, 301);
+            this.groupBox3.TabIndex = 15;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "LOG";
+            // 
+            // rich_windowservice_log
+            // 
+            this.rich_windowservice_log.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rich_windowservice_log.Location = new System.Drawing.Point(3, 17);
+            this.rich_windowservice_log.Name = "rich_windowservice_log";
+            this.rich_windowservice_log.Size = new System.Drawing.Size(608, 281);
+            this.rich_windowservice_log.TabIndex = 0;
+            this.rich_windowservice_log.Text = "";
+            // 
+            // b_windowservice_deploy
+            // 
+            this.b_windowservice_deploy.Location = new System.Drawing.Point(396, 52);
+            this.b_windowservice_deploy.Name = "b_windowservice_deploy";
+            this.b_windowservice_deploy.Size = new System.Drawing.Size(107, 43);
+            this.b_windowservice_deploy.TabIndex = 14;
+            this.b_windowservice_deploy.Text = "Deploy";
+            this.b_windowservice_deploy.UseVisualStyleBackColor = true;
+            this.b_windowservice_deploy.Click += new System.EventHandler(this.b_windowservice_deploy_Click);
+            // 
+            // combo_windowservice_env
+            // 
+            this.combo_windowservice_env.BackColor = System.Drawing.SystemColors.Window;
+            this.combo_windowservice_env.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.combo_windowservice_env.FormattingEnabled = true;
+            this.combo_windowservice_env.Location = new System.Drawing.Point(145, 75);
+            this.combo_windowservice_env.Name = "combo_windowservice_env";
+            this.combo_windowservice_env.Size = new System.Drawing.Size(193, 20);
+            this.combo_windowservice_env.TabIndex = 13;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(68, 78);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(59, 12);
+            this.label10.TabIndex = 12;
+            this.label10.Text = "Env Name:";
+            // 
+            // txt_windowservice_name
+            // 
+            this.txt_windowservice_name.Location = new System.Drawing.Point(145, 27);
+            this.txt_windowservice_name.Name = "txt_windowservice_name";
+            this.txt_windowservice_name.Size = new System.Drawing.Size(193, 21);
+            this.txt_windowservice_name.TabIndex = 11;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(44, 30);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(83, 12);
+            this.label11.TabIndex = 10;
+            this.label11.Text = "Service Name:";
             // 
             // page_set
             // 
@@ -449,15 +537,6 @@
             this.combo_env_list.TabIndex = 0;
             this.combo_env_list.SelectedIndexChanged += new System.EventHandler(this.combo_env_list_SelectedIndexChanged);
             // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(158, 81);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(209, 12);
-            this.label9.TabIndex = 10;
-            this.label9.Text = "For example: Default Web Site/test";
-            // 
             // Deploy
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
@@ -477,6 +556,9 @@
             this.page_web_iis.ResumeLayout(false);
             this.page_web_iis.PerformLayout();
             this.groupBox2.ResumeLayout(false);
+            this.page_window_service.ResumeLayout(false);
+            this.page_window_service.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
             this.page_set.ResumeLayout(false);
             this.groupBoxIgnore.ResumeLayout(false);
             this.groupBoxIgnore.PerformLayout();
@@ -527,5 +609,12 @@
         private System.Windows.Forms.ListBox list_env_ignore;
         private System.Windows.Forms.RichTextBox rich_iis_log;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Button b_windowservice_deploy;
+        private System.Windows.Forms.ComboBox combo_windowservice_env;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.TextBox txt_windowservice_name;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.RichTextBox rich_windowservice_log;
     }
 }

@@ -12,10 +12,11 @@ namespace AntDeployAgentWindows.Operation
     {
         protected Arguments args;
         protected OperationStep step = OperationStep.NONE;
-
-        public OperationsBase(Arguments args)
+        protected Action<string> logger;
+        public OperationsBase(Arguments args,Action<string> log)
         {
             this.args = args;
+            this.logger = log;
         }
 
         public virtual void ValidateArguments()
@@ -50,15 +51,19 @@ namespace AntDeployAgentWindows.Operation
 
         public virtual void Backup()
         {
+            logger("Start to Backup");
             string destDir = Path.Combine(this.args.BackupFolder, this.args.AppName);
             destDir = Path.Combine(destDir, DateTime.Now.ToString("Backup_yyyyMMdd_HHmmss"));
             this.args.RestorePath = destDir;
             CopyHelper.DirectoryCopy(this.args.AppFolder, destDir, true);
+            logger("Success Backup to folder:" + destDir);
         }
 
         public virtual void Restore()
         {
+            logger("Start to Restore");
             CopyHelper.DirectoryCopy(this.args.RestorePath, this.args.AppFolder, true);
+            logger("Success Restore from folder:[" + this.args.RestorePath+ "] to folder:[" + this.args.AppFolder + "]" );
         }
 
         public virtual void Stop()
@@ -68,7 +73,9 @@ namespace AntDeployAgentWindows.Operation
 
         public virtual void Deploy()
         {
+            logger("Start to Deploy");
             CopyHelper.DirectoryCopy(this.args.DeployFolder, this.args.AppFolder, true);
+            logger("Success Deploy from folder:[" + this.args.DeployFolder + "] to folder [" + this.args.AppFolder + "]");
         }
 
         public virtual void Start()
@@ -78,6 +85,7 @@ namespace AntDeployAgentWindows.Operation
 
         public virtual void Execute()
         {
+            logger("Start to Execute");
             this.args.Restore = true;
 
             if (!this.args.NoBackup)
@@ -104,6 +112,8 @@ namespace AntDeployAgentWindows.Operation
                 //Console.WriteLine(this.args.DeployType + " start complete...");
             }
             step = OperationStep.STARTED;
+
+            logger("End to Execute");
         }
 
         public virtual void Rollback()

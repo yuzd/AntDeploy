@@ -12,12 +12,9 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
 {
     class OperationsIIS : OperationsBase
     {
-        private Action<string> logger;
         public OperationsIIS(Arguments args,Action<string> log)
-            : base(args)
+            : base(args,log)
         {
-            // do nothing
-            logger = log;
         }
 
         public override void ValidateArguments()
@@ -27,12 +24,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
 
         public override void Backup()
         {
-            logger("Start to Backup");
-            string destDir = Path.Combine(this.args.BackupFolder, this.args.AppName);
-            destDir = Path.Combine(destDir, DateTime.Now.ToString("Backup_yyyyMMdd_HHmmss"));
-            this.args.RestorePath = destDir;
-            CopyHelper.DirectoryCopy(this.args.AppFolder, destDir, true);
-            logger("Success Backup to folder:" + destDir);
+            base.Backup();
         }
 
         public override void Restore()
@@ -58,9 +50,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
 
         public override void Deploy()
         {
-            logger("Start to Deploy," + this.args.DeployFolder + "=>" + this.args.AppFolder);
             base.Deploy();
-            logger("End to Deploy");
         }
 
         public override void Start()
@@ -74,9 +64,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
 
         public override void Execute()
         {
-            logger("Start to Execute");
             base.Execute();
-            logger("End to Execute");
         }
 
         public override void Rollback()
