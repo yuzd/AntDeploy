@@ -60,12 +60,13 @@ namespace AntDeployAgentWindows.Util
         }
 
 
-        public static string InstallSite(string name, string siteLocation, string port = "*:80:")
+        public static string InstallSite(string name, string siteLocation, string port = "80",string poolName=null)
         {
             try
             {
                 ServerManager iisManager = new ServerManager();
-                iisManager.Sites.Add(name, "http", port, siteLocation);
+                var mySite = iisManager.Sites.Add(name, "http", $"*:{port}:", siteLocation);
+                mySite.ApplicationDefaults.ApplicationPoolName = string.IsNullOrEmpty(poolName) ? "DefaultAppPool": poolName;
                 iisManager.CommitChanges();
                 return string.Empty;
             }
@@ -75,17 +76,26 @@ namespace AntDeployAgentWindows.Util
             }
         }
 
-        public static string InstallVirtualSite(string sitename,string virtualPath, string siteLocation)
+        public static string InstallVirtualSite(string sitename,string virtualPath, string siteLocation, string poolName = null)
         {
             try
             {
+                if (!virtualPath.StartsWith("/"))
+                {
+                    virtualPath = "/" + virtualPath;
+                }
                 ServerManager iisManager = new ServerManager();
-                Application app = iisManager.Sites[sitename].Applications["/"];
-                app.VirtualDirectories.Add(virtualPath, siteLocation);
+                var app = iisManager.Sites[sitename].Applications;
+                var application = app.Add(virtualPath, siteLocation);
+                if (!string.IsNullOrEmpty(poolName))
+                {
+                    application.ApplicationPoolName = poolName;
+                }
+                //app.VirtualDirectories.Add(virtualPath, siteLocation);
                 iisManager.CommitChanges();
                 return string.Empty;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 return e.Message;
             }

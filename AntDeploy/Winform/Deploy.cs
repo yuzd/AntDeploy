@@ -129,6 +129,7 @@ namespace AntDeploy.Winform
                     this.txt_iis_web_site_name.Text = DeployConfig.IIsConfig.WebSiteName;
                 }
 
+
                 if (this.combo_iis_env.Items.Count > 0 &&
                     !string.IsNullOrEmpty(DeployConfig.IIsConfig.LastEnvName)
                     && this.combo_iis_env.Items.Cast<string>().Contains(DeployConfig.IIsConfig.LastEnvName))
@@ -438,11 +439,10 @@ namespace AntDeploy.Winform
 
         private void Deploy_FormClosing(object sender, FormClosingEventArgs e)
         {
-            DeployConfig.IIsConfig.WebSiteName = this.txt_iis_web_site_name.Text;
+            DeployConfig.IIsConfig.WebSiteName = this.txt_iis_web_site_name.Text.Trim();
 
-
-            DeployConfig.WindowsServiveConfig.ServiceName = this.txt_windowservice_name.Text;
-            DeployConfig.WindowsServiveConfig.StopTimeOutSeconds = this.txt_windowservice_timeout.Text;
+            DeployConfig.WindowsServiveConfig.ServiceName = this.txt_windowservice_name.Text.Trim();
+            DeployConfig.WindowsServiveConfig.StopTimeOutSeconds = this.txt_windowservice_timeout.Text.Trim();
 
 
 
@@ -501,6 +501,9 @@ namespace AntDeploy.Winform
                 MessageBox.Show("please select env");
                 return;
             }
+
+            var Port = this.txt_iis_port.Text.Trim();
+            var PoolName = this.txt_pool_name.Text.Trim();
 
             var serverList = DeployConfig.Env.Where(r => r.Name.Equals(envName)).Select(r => r.ServerList)
                 .FirstOrDefault();
@@ -642,6 +645,8 @@ namespace AntDeploy.Winform
                         HttpRequestClient httpRequestClient = new HttpRequestClient();
                         httpRequestClient.SetFieldValue("publishType", "iis");
                         httpRequestClient.SetFieldValue("sdkType", DeployConfig.IIsConfig.SdkType);
+                        httpRequestClient.SetFieldValue("port", Port);
+                        httpRequestClient.SetFieldValue("poolName", PoolName);
                         httpRequestClient.SetFieldValue("webSiteName", DeployConfig.IIsConfig.WebSiteName);
                         httpRequestClient.SetFieldValue("Token", server.Token);
                         httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream", zipBytes);
@@ -732,6 +737,8 @@ namespace AntDeploy.Winform
             {
                 this.b_iis_deploy.Enabled = flag;
                 this.txt_iis_web_site_name.Enabled = flag;
+                this.txt_iis_port.Enabled = flag;
+                this.txt_pool_name.Enabled = flag;
                 this.combo_iis_env.Enabled = flag;
                 this.combo_iis_sdk_type.Enabled = flag;
                 this.page_set.Enabled = flag;
@@ -747,6 +754,8 @@ namespace AntDeploy.Winform
             {
                 this.b_windowservice_deploy.Enabled = flag;
                 this.combo_windowservice_env.Enabled = flag;
+                this.combo_windowservice_sdk_type.Enabled = flag;
+                this.txt_windowservice_name.Enabled = flag;
 
                 this.page_set.Enabled = flag;
                 this.page_docker.Enabled = flag;

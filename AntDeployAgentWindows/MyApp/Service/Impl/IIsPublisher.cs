@@ -16,6 +16,8 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
         private string _webSiteName;
         private string _sdkTypeName;
         private string _projectName;
+        private string _port;
+        private string _poolName;
 
         private string _projectPublishFolder;
         private FormHandler _formHandler;
@@ -78,18 +80,102 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 var isSiteExistResult = IISHelper.IsSiteExist(level1, level2);
                 if (!isSiteExistResult.Item1)
                 {
+                    if (IISHelper.GetIISVersion() <= 6)
+                    {
+                        return $"website : {_webSiteName} not found,start to create,but iis verison is too low!";
+                    }
+
+                    //准备好目录
+                    if (string.IsNullOrEmpty(_port))
+                    {
+                        return $"website : {_webSiteName} not found,start to create,but port is required!";
+                    }
+                    
+                    Log($"website : {_webSiteName} not found,start to create!");
+                    
+                    //创建发布目录
+                    var firstDeployFolder = Path.Combine(projectPath,"deploy");
+                    EnsureProjectFolder(firstDeployFolder);
+                    Log($"deploy folder create success : {firstDeployFolder} ");
+                    
+                    
+                    var rt = IISHelper.InstallSite(level1, firstDeployFolder,_port,_poolName);
+                    if (string.IsNullOrEmpty(rt))
+                    {
+                        Log($"create website : {level1} success ");
+                    }
+                    else
+                    {
+                        return $"create website : {level1} error: {rt} ";
+                    }
+                    
                     if (!string.IsNullOrEmpty(level2))
                     {
                         //创建一级 但是一级需要一个空的目录
-                        var rt = IISHelper.InstallSite(level1, "");
                         //创建二级虚拟目录 二级的目录才是正常程序所在目录
+                        var level2Folder = Path.Combine(firstDeployFolder, level2);
+                        EnsureProjectFolder(level2Folder);
 
+                        var rt2 = IISHelper.InstallVirtualSite(level1, level2, level2Folder,_poolName);
+                        if (string.IsNullOrEmpty(rt2))
+                        {
+                            Log($"create virtualSite :{level2} Of Website : {level1} success ");
+                        }
+                        else
+                        {
+                            return $"create virtualSite :{level2} website : {level1} error: {rt2} ";
+                        }
+                        
+                        //复制文件到发布目录
+                        CopyHelper.DirectoryCopy(deployFolder, level2Folder, true);
+                        
+                        Log($"copy files success from [{deployFolder}] to [{level2Folder}]");
+                        return String.Empty;
                     }
                     else
                     {
                         //只需要一级 就是程序所在目录
-
+                        //复制文件到发布目录
+                        CopyHelper.DirectoryCopy(deployFolder, firstDeployFolder, true);
+                        
+                        Log($"copy files success from [{deployFolder}] to [{firstDeployFolder}]");
+                        return String.Empty;
                     }
+                }
+                else if (isSiteExistResult.Item1 && !isSiteExistResult.Item2 && !string.IsNullOrEmpty(level2))
+                {
+                    if (IISHelper.GetIISVersion() <= 6)
+                    {
+                        return $"website : {_webSiteName} not found,start to create,but iis verison is too low!";
+                    }
+
+                    //有一级 但是需要创建二级
+
+                    Log($"website : {_webSiteName} not found,start to create!");
+                    //创建发布目录
+                    var firstDeployFolder = Path.Combine(projectPath, "deploy");
+                    EnsureProjectFolder(firstDeployFolder);
+                    Log($"deploy folder create success : {firstDeployFolder} ");
+
+                    var level2Folder = Path.Combine(firstDeployFolder, level2);
+                    EnsureProjectFolder(level2Folder);
+
+                    var rt2 = IISHelper.InstallVirtualSite(level1, level2, level2Folder, _poolName);
+                    if (string.IsNullOrEmpty(rt2))
+                    {
+                        Log($"create virtualSite :{level2} Of Website : {level1} success ");
+                    }
+                    else
+                    {
+                        return $"create virtualSite :{level2} website : {level1} error: {rt2} ";
+                    }
+
+                    //复制文件到发布目录
+                    CopyHelper.DirectoryCopy(deployFolder, level2Folder, true);
+
+                    Log($"copy files success from [{deployFolder}] to [{level2Folder}]");
+                    return String.Empty;
+
                 }
 
 
@@ -193,14 +279,24 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 return "webSiteName level limit is 2";
             }
 
-            //var projectName = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("projectName"));
-            //if (projectName == null || string.IsNullOrEmpty(projectName.TextValue))
-            //{
-            //    return "projectName required";
-            //}
+            var portItem = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("port"));
+            if (portItem != null && !string.IsNullOrEmpty(portItem.TextValue))
+            {
+                _port = portItem.TextValue;
+            }
 
-            _projectName = siteNameArr.Last();
+            var poolNameItem = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("poolName"));
+            if (poolNameItem != null && !string.IsNullOrEmpty(poolNameItem.TextValue))
+            {
+                _poolName = poolNameItem.TextValue;
+            }
+
+            
+            _projectName = getCorrectFolderName(_webSiteName);
             return string.Empty;
         }
+
+
+
     }
 }

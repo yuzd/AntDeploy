@@ -30,6 +30,8 @@
         {
             this.page_ = new System.Windows.Forms.TabControl();
             this.page_web_iis = new System.Windows.Forms.TabPage();
+            this.label15 = new System.Windows.Forms.Label();
+            this.txt_iis_port = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.b_iis_deploy = new System.Windows.Forms.Button();
             this.combo_iis_env = new System.Windows.Forms.ComboBox();
@@ -42,6 +44,10 @@
             this.label6 = new System.Windows.Forms.Label();
             this.page_docker = new System.Windows.Forms.TabPage();
             this.page_window_service = new System.Windows.Forms.TabPage();
+            this.txt_windowservice_name = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.combo_windowservice_sdk_type = new System.Windows.Forms.ComboBox();
+            this.label11 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.txt_windowservice_timeout = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
@@ -73,10 +79,9 @@
             this.txt_env_name = new System.Windows.Forms.TextBox();
             this.b_env_add_by_name = new System.Windows.Forms.Button();
             this.combo_env_list = new System.Windows.Forms.ComboBox();
-            this.combo_windowservice_sdk_type = new System.Windows.Forms.ComboBox();
-            this.label11 = new System.Windows.Forms.Label();
-            this.txt_windowservice_name = new System.Windows.Forms.TextBox();
-            this.label14 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.txt_pool_name = new System.Windows.Forms.TextBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.page_.SuspendLayout();
             this.page_web_iis.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -86,6 +91,7 @@
             this.groupBoxIgnore.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.environment.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // page_
@@ -103,6 +109,7 @@
             // 
             // page_web_iis
             // 
+            this.page_web_iis.Controls.Add(this.groupBox4);
             this.page_web_iis.Controls.Add(this.label9);
             this.page_web_iis.Controls.Add(this.b_iis_deploy);
             this.page_web_iis.Controls.Add(this.combo_iis_env);
@@ -120,6 +127,22 @@
             this.page_web_iis.Text = "IIS_Web";
             this.page_web_iis.UseVisualStyleBackColor = true;
             // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(27, 25);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(35, 12);
+            this.label15.TabIndex = 12;
+            this.label15.Text = "Port:";
+            // 
+            // txt_iis_port
+            // 
+            this.txt_iis_port.Location = new System.Drawing.Point(68, 22);
+            this.txt_iis_port.Name = "txt_iis_port";
+            this.txt_iis_port.Size = new System.Drawing.Size(62, 21);
+            this.txt_iis_port.TabIndex = 11;
+            // 
             // label9
             // 
             this.label9.AutoSize = true;
@@ -131,7 +154,7 @@
             // 
             // b_iis_deploy
             // 
-            this.b_iis_deploy.Location = new System.Drawing.Point(450, 66);
+            this.b_iis_deploy.Location = new System.Drawing.Point(419, 93);
             this.b_iis_deploy.Name = "b_iis_deploy";
             this.b_iis_deploy.Size = new System.Drawing.Size(107, 43);
             this.b_iis_deploy.TabIndex = 9;
@@ -247,6 +270,45 @@
             this.page_window_service.Text = "WindowsService";
             this.page_window_service.UseVisualStyleBackColor = true;
             // 
+            // txt_windowservice_name
+            // 
+            this.txt_windowservice_name.Location = new System.Drawing.Point(173, 33);
+            this.txt_windowservice_name.Name = "txt_windowservice_name";
+            this.txt_windowservice_name.Size = new System.Drawing.Size(193, 21);
+            this.txt_windowservice_name.TabIndex = 22;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(72, 36);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(83, 12);
+            this.label14.TabIndex = 21;
+            this.label14.Text = "Service Name:";
+            // 
+            // combo_windowservice_sdk_type
+            // 
+            this.combo_windowservice_sdk_type.BackColor = System.Drawing.SystemColors.Window;
+            this.combo_windowservice_sdk_type.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.combo_windowservice_sdk_type.FormattingEnabled = true;
+            this.combo_windowservice_sdk_type.Items.AddRange(new object[] {
+            "netframework",
+            "netcore"});
+            this.combo_windowservice_sdk_type.Location = new System.Drawing.Point(173, 7);
+            this.combo_windowservice_sdk_type.Name = "combo_windowservice_sdk_type";
+            this.combo_windowservice_sdk_type.Size = new System.Drawing.Size(121, 20);
+            this.combo_windowservice_sdk_type.TabIndex = 20;
+            this.combo_windowservice_sdk_type.SelectedIndexChanged += new System.EventHandler(this.combo_windowservice_sdk_type_SelectedIndexChanged);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(96, 15);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(59, 12);
+            this.label11.TabIndex = 19;
+            this.label11.Text = "SDK Type:";
+            // 
             // label13
             // 
             this.label13.AutoSize = true;
@@ -294,7 +356,7 @@
             // 
             // b_windowservice_deploy
             // 
-            this.b_windowservice_deploy.Location = new System.Drawing.Point(396, 52);
+            this.b_windowservice_deploy.Location = new System.Drawing.Point(412, 67);
             this.b_windowservice_deploy.Name = "b_windowservice_deploy";
             this.b_windowservice_deploy.Size = new System.Drawing.Size(107, 43);
             this.b_windowservice_deploy.TabIndex = 14;
@@ -559,44 +621,34 @@
             this.combo_env_list.TabIndex = 0;
             this.combo_env_list.SelectedIndexChanged += new System.EventHandler(this.combo_env_list_SelectedIndexChanged);
             // 
-            // combo_windowservice_sdk_type
+            // label16
             // 
-            this.combo_windowservice_sdk_type.BackColor = System.Drawing.SystemColors.Window;
-            this.combo_windowservice_sdk_type.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.combo_windowservice_sdk_type.FormattingEnabled = true;
-            this.combo_windowservice_sdk_type.Items.AddRange(new object[] {
-            "netframework",
-            "netcore"});
-            this.combo_windowservice_sdk_type.Location = new System.Drawing.Point(173, 7);
-            this.combo_windowservice_sdk_type.Name = "combo_windowservice_sdk_type";
-            this.combo_windowservice_sdk_type.Size = new System.Drawing.Size(121, 20);
-            this.combo_windowservice_sdk_type.TabIndex = 20;
-            this.combo_windowservice_sdk_type.SelectedIndexChanged += new System.EventHandler(this.combo_windowservice_sdk_type_SelectedIndexChanged);
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(6, 57);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(59, 12);
+            this.label16.TabIndex = 14;
+            this.label16.Text = "PoolName:";
             // 
-            // label11
+            // txt_pool_name
             // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(96, 15);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(59, 12);
-            this.label11.TabIndex = 19;
-            this.label11.Text = "SDK Type:";
+            this.txt_pool_name.Location = new System.Drawing.Point(68, 51);
+            this.txt_pool_name.Name = "txt_pool_name";
+            this.txt_pool_name.Size = new System.Drawing.Size(170, 21);
+            this.txt_pool_name.TabIndex = 13;
             // 
-            // txt_windowservice_name
+            // groupBox4
             // 
-            this.txt_windowservice_name.Location = new System.Drawing.Point(173, 33);
-            this.txt_windowservice_name.Name = "txt_windowservice_name";
-            this.txt_windowservice_name.Size = new System.Drawing.Size(193, 21);
-            this.txt_windowservice_name.TabIndex = 22;
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(72, 36);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(83, 12);
-            this.label14.TabIndex = 21;
-            this.label14.Text = "Service Name:";
+            this.groupBox4.Controls.Add(this.label15);
+            this.groupBox4.Controls.Add(this.txt_pool_name);
+            this.groupBox4.Controls.Add(this.label16);
+            this.groupBox4.Controls.Add(this.txt_iis_port);
+            this.groupBox4.Location = new System.Drawing.Point(373, 6);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(244, 81);
+            this.groupBox4.TabIndex = 15;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = " (create site required)";
             // 
             // Deploy
             // 
@@ -626,6 +678,8 @@
             this.groupBox1.PerformLayout();
             this.environment.ResumeLayout(false);
             this.environment.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -681,5 +735,10 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TextBox txt_windowservice_name;
         private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.TextBox txt_iis_port;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.TextBox txt_pool_name;
+        private System.Windows.Forms.Label label16;
     }
 }

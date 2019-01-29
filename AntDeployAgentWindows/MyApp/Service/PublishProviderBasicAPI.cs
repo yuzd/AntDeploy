@@ -98,6 +98,13 @@ namespace AntDeployAgentWindows.MyApp.Service
 
             }
         }
+
+        protected string getCorrectFolderName(string name)
+        {
+            foreach (char c in Path.GetInvalidFileNameChars())
+                name = name.Replace(System.Char.ToString(c), "");
+            return name;
+        }
     }
 
 
