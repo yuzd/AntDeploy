@@ -5,6 +5,7 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ClientWebSocket = System.Net.WebSockets.Managed.ClientWebSocket;
 
 namespace AntDeploy.Util
 {
@@ -18,7 +19,7 @@ namespace AntDeploy.Util
             ClientWebSocket webSocket = null;
             try
             {
-                webSocket = new ClientWebSocket();
+                webSocket =  new System.Net.WebSockets.Managed.ClientWebSocket();
                 await webSocket.ConnectAsync(new Uri(uri), CancellationToken.None);
                 await ReceiveFirst(webSocket, receiveAction);
                 new Task(async () =>

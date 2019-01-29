@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using AntDeploy.Winform;
+using EnvDTE;
 
 namespace AntDeploy.Commands
 {
@@ -17,6 +18,7 @@ namespace AntDeploy.Commands
         }
 
         private string _projectFile;
+        private Project _project;
 
         private EditProjectCommand(EditProjectPackage package)
             : base(package, Ids.CMD_SET, Ids.EDIT_PROJECT_MENU_COMMAND_ID)
@@ -25,21 +27,29 @@ namespace AntDeploy.Commands
 
         protected override void OnBeforeQueryStatus()
         {
+          
+
             var projects = SelectedProjects.ToArray();
             if (projects.Length == 1)
             {
-                var project = projects[0];
-                if (ProjectHelper.IsDotNetCoreProject(project))
-                {
-                    _projectFile = project.FullName;
-                    Text = "AntDeploy";
-                    Visible = true;
+                _project = projects[0];
+                _projectFile = _project.FullName;
+                Text = "AntDeploy";
+                Visible = true;
+                return;
+
+                //var project = projects[0];
+                //if (ProjectHelper.IsDotNetCoreProject(project))
+                //{
+                //    _projectFile = project.FullName;
+                //    Text = "AntDeploy";
+                //    Visible = true;
                     
-                }
-                else
-                {
-                    Visible = false;
-                }
+                //}
+                //else
+                //{
+                //    Visible = false;
+                //}
             }
             else
             {
@@ -49,7 +59,8 @@ namespace AntDeploy.Commands
 
         protected override void OnExecute()
         {
-            Deploy deploy = new Deploy(_projectFile);
+            //RootNamespace Title Product OutputFileName
+            Deploy deploy = new Deploy(_projectFile,_project);
             deploy.Show();
         }
     }

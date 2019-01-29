@@ -1,0 +1,23 @@
+{
+  "Env": [
+    {
+      "Name": "fat",
+      "ServerList": [
+        {
+          "Host": "localhost:8088",
+          "Token": "aaaa"
+        }
+      ]
+    }
+  ],
+  "IgnoreList": [],
+  "IIsConfig": {
+    "SdkType": null,
+    "WebSiteName": "",
+    "LastEnvName": null
+  },
+  "WindowsServiveConfig": {
+    "StopTimeOutSeconds": "",
+    "LastEnvName": "fat"
+  }
+}

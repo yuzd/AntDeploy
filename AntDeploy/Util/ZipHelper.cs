@@ -22,7 +22,7 @@ namespace AntDeploy.Util
             sourceDirectoryName = Path.GetFullPath(sourceDirectoryName);
             using ( var outStream = new MemoryStream())
             {
-                using (ZipArchive destination = new ZipArchive(outStream, ZipArchiveMode.Create, true))
+                using (ZipArchive destination = new ZipArchive(outStream, ZipArchiveMode.Create, false))
                 {
                     bool flag = true;
                     DirectoryInfo directoryInfo = new DirectoryInfo(sourceDirectoryName);
@@ -80,7 +80,7 @@ namespace AntDeploy.Util
             sourceDirectoryName = Path.GetFullPath(sourceDirectoryName);
             var outStream = new MemoryStream();
             {
-                using (ZipArchive destination = new ZipArchive(outStream, ZipArchiveMode.Create, true))
+                using (ZipArchive destination = new ZipArchive(outStream, ZipArchiveMode.Create, false))
                 {
                     bool flag = true;
                     DirectoryInfo directoryInfo = new DirectoryInfo(sourceDirectoryName);

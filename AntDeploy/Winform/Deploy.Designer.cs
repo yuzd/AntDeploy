@@ -42,13 +42,14 @@
             this.label6 = new System.Windows.Forms.Label();
             this.page_docker = new System.Windows.Forms.TabPage();
             this.page_window_service = new System.Windows.Forms.TabPage();
+            this.label13 = new System.Windows.Forms.Label();
+            this.txt_windowservice_timeout = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.rich_windowservice_log = new System.Windows.Forms.RichTextBox();
             this.b_windowservice_deploy = new System.Windows.Forms.Button();
             this.combo_windowservice_env = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
-            this.txt_windowservice_name = new System.Windows.Forms.TextBox();
-            this.label11 = new System.Windows.Forms.Label();
             this.page_set = new System.Windows.Forms.TabPage();
             this.groupBoxIgnore = new System.Windows.Forms.GroupBox();
             this.b_env_ignore_remove = new System.Windows.Forms.Button();
@@ -72,9 +73,6 @@
             this.txt_env_name = new System.Windows.Forms.TextBox();
             this.b_env_add_by_name = new System.Windows.Forms.Button();
             this.combo_env_list = new System.Windows.Forms.ComboBox();
-            this.txt_windowservice_timeout = new System.Windows.Forms.TextBox();
-            this.label12 = new System.Windows.Forms.Label();
-            this.label13 = new System.Windows.Forms.Label();
             this.page_.SuspendLayout();
             this.page_web_iis.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -172,6 +170,7 @@
             this.rich_iis_log.Dock = System.Windows.Forms.DockStyle.Fill;
             this.rich_iis_log.Location = new System.Drawing.Point(3, 17);
             this.rich_iis_log.Name = "rich_iis_log";
+            this.rich_iis_log.ReadOnly = true;
             this.rich_iis_log.Size = new System.Drawing.Size(608, 257);
             this.rich_iis_log.TabIndex = 0;
             this.rich_iis_log.Text = "";
@@ -233,14 +232,37 @@
             this.page_window_service.Controls.Add(this.b_windowservice_deploy);
             this.page_window_service.Controls.Add(this.combo_windowservice_env);
             this.page_window_service.Controls.Add(this.label10);
-            this.page_window_service.Controls.Add(this.txt_windowservice_name);
-            this.page_window_service.Controls.Add(this.label11);
             this.page_window_service.Location = new System.Drawing.Point(4, 22);
             this.page_window_service.Name = "page_window_service";
             this.page_window_service.Size = new System.Drawing.Size(626, 422);
             this.page_window_service.TabIndex = 3;
             this.page_window_service.Text = "WindowsService";
             this.page_window_service.UseVisualStyleBackColor = true;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(294, 37);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(53, 12);
+            this.label13.TabIndex = 18;
+            this.label13.Text = "Senconds";
+            // 
+            // txt_windowservice_timeout
+            // 
+            this.txt_windowservice_timeout.Location = new System.Drawing.Point(177, 34);
+            this.txt_windowservice_timeout.Name = "txt_windowservice_timeout";
+            this.txt_windowservice_timeout.Size = new System.Drawing.Size(111, 21);
+            this.txt_windowservice_timeout.TabIndex = 17;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(39, 38);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(131, 12);
+            this.label12.TabIndex = 16;
+            this.label12.Text = "Service Stop Timeout:";
             // 
             // groupBox3
             // 
@@ -257,6 +279,7 @@
             this.rich_windowservice_log.Dock = System.Windows.Forms.DockStyle.Fill;
             this.rich_windowservice_log.Location = new System.Drawing.Point(3, 17);
             this.rich_windowservice_log.Name = "rich_windowservice_log";
+            this.rich_windowservice_log.ReadOnly = true;
             this.rich_windowservice_log.Size = new System.Drawing.Size(608, 281);
             this.rich_windowservice_log.TabIndex = 0;
             this.rich_windowservice_log.Text = "";
@@ -276,7 +299,7 @@
             this.combo_windowservice_env.BackColor = System.Drawing.SystemColors.Window;
             this.combo_windowservice_env.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_windowservice_env.FormattingEnabled = true;
-            this.combo_windowservice_env.Location = new System.Drawing.Point(158, 78);
+            this.combo_windowservice_env.Location = new System.Drawing.Point(177, 64);
             this.combo_windowservice_env.Name = "combo_windowservice_env";
             this.combo_windowservice_env.Size = new System.Drawing.Size(193, 20);
             this.combo_windowservice_env.TabIndex = 13;
@@ -285,27 +308,11 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(92, 81);
+            this.label10.Location = new System.Drawing.Point(111, 67);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(59, 12);
             this.label10.TabIndex = 12;
             this.label10.Text = "Env Name:";
-            // 
-            // txt_windowservice_name
-            // 
-            this.txt_windowservice_name.Location = new System.Drawing.Point(158, 19);
-            this.txt_windowservice_name.Name = "txt_windowservice_name";
-            this.txt_windowservice_name.Size = new System.Drawing.Size(193, 21);
-            this.txt_windowservice_name.TabIndex = 11;
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(68, 22);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(83, 12);
-            this.label11.TabIndex = 10;
-            this.label11.Text = "Service Name:";
             // 
             // page_set
             // 
@@ -544,31 +551,6 @@
             this.combo_env_list.TabIndex = 0;
             this.combo_env_list.SelectedIndexChanged += new System.EventHandler(this.combo_env_list_SelectedIndexChanged);
             // 
-            // txt_windowservice_timeout
-            // 
-            this.txt_windowservice_timeout.Location = new System.Drawing.Point(158, 48);
-            this.txt_windowservice_timeout.Name = "txt_windowservice_timeout";
-            this.txt_windowservice_timeout.Size = new System.Drawing.Size(111, 21);
-            this.txt_windowservice_timeout.TabIndex = 17;
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(20, 52);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(131, 12);
-            this.label12.TabIndex = 16;
-            this.label12.Text = "Service Stop Timeout:";
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(275, 51);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(53, 12);
-            this.label13.TabIndex = 18;
-            this.label13.Text = "Senconds";
-            // 
             // Deploy
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
@@ -581,7 +563,6 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "AntDeploy";
-            this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Deploy_FormClosing);
             this.Load += new System.EventHandler(this.Deploy_Load);
             this.page_.ResumeLayout(false);
@@ -644,8 +625,6 @@
         private System.Windows.Forms.Button b_windowservice_deploy;
         private System.Windows.Forms.ComboBox combo_windowservice_env;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.TextBox txt_windowservice_name;
-        private System.Windows.Forms.Label label11;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.RichTextBox rich_windowservice_log;
         private System.Windows.Forms.TextBox txt_windowservice_timeout;

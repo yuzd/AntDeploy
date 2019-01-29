@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ServiceProcess;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using AntDeployAgentWindows.Util;
 
@@ -46,6 +47,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
                     service.Stop();
                     service.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(timeout));
                     logger("Success to Windows Service Stop :" + this.args.AppName);
+                    Thread.Sleep(2000);
                 }
                 else
                 {
@@ -65,11 +67,11 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
 
         public override void Start()
         {
-            logger("Start to Windows Service Start :" + this.args.SiteName);
+            logger("Start to Windows Service Start :" + this.args.AppName);
             var re = WindowServiceHelper.StartService(this.args.AppName, 120);
             if (string.IsNullOrEmpty(re))
             {
-                logger("Success to Windows Service Start :" + this.args.SiteName);
+                logger("Success to Windows Service Start :" + this.args.AppName);
             }
             else
             {

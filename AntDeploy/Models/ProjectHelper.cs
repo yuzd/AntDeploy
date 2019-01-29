@@ -11,12 +11,62 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.InteropServices;
+using System.ServiceProcess;
 
 namespace AntDeploy.Models
 {
     internal static class ProjectHelper
     {
+
+        /// <summary>
+        /// 获取Windows服务的名称
+        /// </summary>
+        /// <param name="serviceFileName">文件路径</param>
+        /// <returns>服务名称</returns>
+        public static string GetServiceNameByFile(string serviceFileName)
+        {
+            try
+            {
+
+                Assembly assembly = Assembly.LoadFrom(serviceFileName);
+                Type[] types = assembly.GetTypes();
+                foreach (Type myType in types)
+                {
+                    if (myType.IsClass && myType.BaseType == typeof(System.Configuration.Install.Installer))
+                    {
+                        FieldInfo[] fieldInfos = myType.GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Default | BindingFlags.Instance | BindingFlags.Static);
+                        foreach (FieldInfo myFieldInfo in fieldInfos)
+                        {
+                            if (myFieldInfo.FieldType == typeof(System.ServiceProcess.ServiceInstaller))
+                            {
+                                var re = "";
+                                var obj = Activator.CreateInstance(myType);
+                                using (ServiceInstaller serviceInstaller = (ServiceInstaller)myFieldInfo.GetValue(obj))
+                                {
+                                     re = serviceInstaller.ServiceName;
+                                }
+                               
+                                var dis = obj as IDisposable;
+                                if (dis != null)
+                                {
+                                    dis.Dispose();
+                                }
+                                return re;
+                            }
+                        }
+                    }
+                }
+                return "";
+            }
+            catch (Exception ex)
+            {
+                return "";
+            }
+        }
+
+
         public static bool IsDotNetCoreProject(Project project)
         {
             switch (project.Kind)

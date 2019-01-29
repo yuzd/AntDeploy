@@ -1,6 +1,9 @@
 ﻿using AntDeploy.Models;
 using AntDeploy.Util;
+using EnvDTE;
 using Newtonsoft.Json;
+using NLog;
+using NLog.Config;
 using NLog.Windows.Forms;
 using System;
 using System.Collections.Generic;
@@ -10,27 +13,26 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.WebSockets;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using NLog;
-using NLog.Config;
+using Process = System.Diagnostics.Process;
 
 namespace AntDeploy.Winform
 {
     public partial class Deploy : Form
     {
-     
+
         private string ProjectConfigPath;
         private string ProjectFolderPath;
         private string ProjectPath;
+        private Project _project;
         private NLog.Logger nlog_iis;
         private NLog.Logger nlog_windowservice;
-        public Deploy(string projectPath)
+        public Deploy(string projectPath, Project project)
         {
             InitializeComponent();
-            ProjectPath =projectPath;
+            ProjectPath = projectPath;
+            _project = project;
             ReadPorjectConfig(projectPath);
 
             #region Nlog
@@ -43,7 +45,7 @@ namespace AntDeploy.Winform
                 ControlName = "rich_iis_log",
                 AutoScroll = true,
                 MaxLines = 0,
-                AllowAccessoryFormCreation = true,
+                AllowAccessoryFormCreation = false,
                 SupportLinks = true,
                 UseDefaultRowColoringRules = true
 
@@ -61,7 +63,7 @@ namespace AntDeploy.Winform
                 ControlName = "rich_windowservice_log",
                 AutoScroll = true,
                 MaxLines = 0,
-                AllowAccessoryFormCreation = true,
+                AllowAccessoryFormCreation = false,
                 SupportLinks = true,
                 UseDefaultRowColoringRules = true
 
@@ -75,7 +77,7 @@ namespace AntDeploy.Winform
             nlog_iis = NLog.LogManager.GetLogger("rich_iis_log");
             nlog_windowservice = NLog.LogManager.GetLogger("rich_windowservice_log");
 
-            RichLogInit(); 
+            RichLogInit();
             #endregion
 
         }
@@ -90,7 +92,7 @@ namespace AntDeploy.Winform
         private void Deploy_Load(object sender, EventArgs e)
         {
 
-            
+
 
             if (DeployConfig == null) DeployConfig = new DeployConfig();
             DeployConfig.EnvChangeEvent += DeployConfigOnEnvChangeEvent;
@@ -138,17 +140,12 @@ namespace AntDeploy.Winform
 
             if (DeployConfig.WindowsServiveConfig != null)
             {
-                
+
                 if (this.combo_windowservice_env.Items.Count > 0 &&
                     !string.IsNullOrEmpty(DeployConfig.WindowsServiveConfig.LastEnvName)
                     && this.combo_windowservice_env.Items.Cast<string>().Contains(DeployConfig.WindowsServiveConfig.LastEnvName))
                 {
                     this.combo_windowservice_env.SelectedItem = DeployConfig.WindowsServiveConfig.LastEnvName;
-                }
-
-                if (!string.IsNullOrEmpty(DeployConfig.WindowsServiveConfig.ServiceName))
-                {
-                    this.txt_windowservice_name.Text = DeployConfig.WindowsServiveConfig.ServiceName;
                 }
 
                 if (!string.IsNullOrEmpty(DeployConfig.WindowsServiveConfig.StopTimeOutSeconds))
@@ -163,7 +160,7 @@ namespace AntDeploy.Winform
             this.txt_env_server_host.Text = string.Empty;
             this.txt_env_server_token.Text = string.Empty;
 
-           
+
         }
 
 
@@ -181,7 +178,7 @@ namespace AntDeploy.Winform
                 {
                     try
                     {
-                        if (linktext.StartsWith("http")||linktext.StartsWith("file:"))
+                        if (linktext.StartsWith("http") || linktext.StartsWith("file:"))
                         {
                             ProcessStartInfo sInfo = new ProcessStartInfo(linktext);
                             Process.Start(sInfo);
@@ -425,7 +422,6 @@ namespace AntDeploy.Winform
         {
             DeployConfig.IIsConfig.WebSiteName = this.txt_iis_web_site_name.Text;
             DeployConfig.WindowsServiveConfig.StopTimeOutSeconds = this.txt_windowservice_timeout.Text;
-            DeployConfig.WindowsServiveConfig.ServiceName = this.txt_windowservice_name.Text;
             var configJson = JsonConvert.SerializeObject(DeployConfig, Formatting.Indented);
             File.WriteAllText(ProjectConfigPath, configJson);
         }
@@ -452,7 +448,15 @@ namespace AntDeploy.Winform
 
         private void b_iis_deploy_Click(object sender, EventArgs e)
         {
-            
+
+            //判断当前项目是否是web项目
+
+            if (!ProjectHelper.IsDotNetCoreProject(_project))
+            {
+                MessageBox.Show("current project is not web project!");
+                return;
+            }
+
             var websiteName = this.txt_iis_web_site_name.Text.Trim();
             if (websiteName.Length < 1)
             {
@@ -499,148 +503,160 @@ namespace AntDeploy.Winform
             {
                 this.nlog_iis.Info("Start publish");
                 Enable(false);
-                var publishLog = new List<string>();
-                //执行 publish
-                var isSuccess = CommandHelper.RunDotnetExternalExe(ProjectFolderPath,"dotnet",
-                    "publish -c Release",
-                    (r) =>
-                    {
-                        this.nlog_iis.Info(r);
-                        publishLog.Add(r);
-                    },
-                    (er) => this.nlog_iis.Error(er));
-
-                if (!isSuccess)
-                {
-                    this.nlog_iis.Error("publish error");
-                    return;
-                }
-
-                var publishPathLine = publishLog
-                    .FirstOrDefault(r => !string.IsNullOrEmpty(r) && r.EndsWith("\\publish\\"));
-
-                if (string.IsNullOrEmpty(publishPathLine))
-                {
-                    this.nlog_iis.Error("can not find publishPath in log");
-                    return;
-                }
-
-                var publishPathArr = publishPathLine.Split(new string[] { " ->" }, StringSplitOptions.None);
-                if (publishPathArr.Length != 2)
-                {
-                    this.nlog_iis.Error("can not find publishPath in log");
-                    return;
-                }
-
-                var publishPath = publishPathArr[1].Trim();
-
-                LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish success,  ==> ");
-                publisEvent.Properties["ShowLink"] = "file://"+publishPath.Replace("\\","\\\\");
-                this.nlog_iis.Log(publisEvent);
-
-
-
-                //https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis
-
-                if (DeployConfig.IIsConfig.SdkType.Equals("netcore"))
-                {
-                    var webConfig = Path.Combine(publishPath, "Web.Config");
-                    if (!File.Exists(webConfig))
-                    {
-                        LogEventInfo theEvent = new LogEventInfo(LogLevel.Warn, "", "publish sdkType:netcore ,but web.config file missing!");
-                        theEvent.Properties["ShowLink"] = "https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis";
-                        this.nlog_iis.Log(theEvent);
-                    }
-                }
-
-
-                //执行 打包
-                this.nlog_iis.Info("Start package");
-                byte[] zipBytes;
                 try
                 {
-                    zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, CompressionLevel.Optimal, true,DeployConfig.IgnoreList);
-                }
-                catch (Exception ex)
-                {
-                    this.nlog_iis.Error("package fail:" + ex.Message);
-                    return;
-                }
 
-                if (zipBytes == null || zipBytes.Length < 1)
-                {
-                    this.nlog_iis.Error("package fail");
-                    return;
-                }
-                this.nlog_iis.Info("package success");
+                    var publishLog = new List<string>();
+                    //执行 publish
+                    var isSuccess = CommandHelper.RunDotnetExternalExe(ProjectFolderPath, "dotnet",
+                        "publish -c Release",
+                        (r) =>
+                        {
+                            this.nlog_iis.Info(r);
+                            publishLog.Add(r);
+                        },
+                        (er) => this.nlog_iis.Error(er));
 
-                //执行 上传
-                this.nlog_iis.Info("Deploy Start");
-                foreach (var server in serverList)
-                {
-                    if (string.IsNullOrEmpty(server.Token))
+                    if (!isSuccess)
                     {
-                        this.nlog_iis.Warn($"{server.Host} Deploy skip,Token is null or empty!");
-                        continue;
+                        this.nlog_iis.Error("publish error");
+                        return;
                     }
 
-                    ProgressPercentage = 0;
-                    this.nlog_iis.Info($"Start Uppload,Host:{server.Host}");
-                    HttpRequestClient httpRequestClient = new HttpRequestClient();
-                    httpRequestClient.SetFieldValue("publishType", "iis");
-                    httpRequestClient.SetFieldValue("sdkType", DeployConfig.IIsConfig.SdkType);
-                    httpRequestClient.SetFieldValue("webSiteName", DeployConfig.IIsConfig.WebSiteName);
-                    httpRequestClient.SetFieldValue("Token", server.Token);
-                    httpRequestClient.SetFieldValue("publish","publish.zip", "application/octet-stream", zipBytes);
-                    ClientWebSocket webSocket = null;
+                    var publishPathLine = publishLog
+                        .FirstOrDefault(r => !string.IsNullOrEmpty(r) && r.EndsWith("\\publish\\"));
+
+                    if (string.IsNullOrEmpty(publishPathLine))
+                    {
+                        this.nlog_iis.Error("can not find publishPath in log");
+                        return;
+                    }
+
+                    var publishPathArr = publishPathLine.Split(new string[] { " ->" }, StringSplitOptions.None);
+                    if (publishPathArr.Length != 2)
+                    {
+                        this.nlog_iis.Error("can not find publishPath in log");
+                        return;
+                    }
+
+                    var publishPath = publishPathArr[1].Trim();
+
+                    LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish success,  ==> ");
+                    publisEvent.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
+                    this.nlog_iis.Log(publisEvent);
+
+
+
+                    //https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis
+
+                    if (DeployConfig.IIsConfig.SdkType.Equals("netcore"))
+                    {
+                        var webConfig = Path.Combine(publishPath, "Web.Config");
+                        if (!File.Exists(webConfig))
+                        {
+                            LogEventInfo theEvent = new LogEventInfo(LogLevel.Warn, "", "publish sdkType:netcore ,but web.config file missing!");
+                            theEvent.Properties["ShowLink"] = "https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis";
+                            this.nlog_iis.Log(theEvent);
+                        }
+                    }
+
+
+                    //执行 打包
+                    this.nlog_iis.Info("Start package");
+                    byte[] zipBytes;
                     try
                     {
-                        var hostKey = "";
-                        webSocket = await WebSocketHelper.Connect($"ws://{server.Host}/socket", (receiveMsg) =>
-                        {
-                            if (!string.IsNullOrEmpty(receiveMsg))
-                            {
-                                if (receiveMsg.StartsWith("hostKey@"))
-                                {
-                                    hostKey = receiveMsg.Replace("hostKey@", "");
-                                }
-                                else
-                                {
-                                    this.nlog_iis.Info($"【Server】{receiveMsg}");
-                                }
-                            }
-                        });
-
-                        httpRequestClient.SetFieldValue("wsKey", hostKey);
-
-                        var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/publish",
-                            (client) => { client.UploadProgressChanged += ClientOnUploadProgressChanged; });
-
-                        if (uploadResult.Item1)
-                        {
-                            this.nlog_iis.Info($"Host:{server.Host},Response:{uploadResult.Item2}");
-                        }
-                        else
-                        {
-                            this.nlog_iis.Error(
-                                $"Host:{server.Host},Response:{uploadResult.Item2},Skip to Next");
-                        }
+                        zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, CompressionLevel.Optimal, true, DeployConfig.IgnoreList);
                     }
                     catch (Exception ex)
                     {
-
-                        this.nlog_iis.Error($"Fail Deploy,Host:{server.Host},Response:{ex.Message},Skip to Next");
+                        this.nlog_iis.Error("package fail:" + ex.Message);
+                        return;
                     }
-                    finally
+
+                    if (zipBytes == null || zipBytes.Length < 1)
                     {
-                        webSocket?.Dispose();
+                        this.nlog_iis.Error("package fail");
+                        return;
                     }
-                    
-                }
-                this.nlog_iis.Info("Deploy End");
-                //交互
+                    this.nlog_iis.Info("package success");
 
-                Enable(true);
+                    //执行 上传
+                    this.nlog_iis.Info("Deploy Start");
+                    foreach (var server in serverList)
+                    {
+                        if (string.IsNullOrEmpty(server.Token))
+                        {
+                            this.nlog_iis.Warn($"{server.Host} Deploy skip,Token is null or empty!");
+                            continue;
+                        }
+
+                        ProgressPercentage = 0;
+                        this.nlog_iis.Info($"Start Uppload,Host:{server.Host}");
+                        HttpRequestClient httpRequestClient = new HttpRequestClient();
+                        httpRequestClient.SetFieldValue("publishType", "iis");
+                        httpRequestClient.SetFieldValue("sdkType", DeployConfig.IIsConfig.SdkType);
+                        httpRequestClient.SetFieldValue("webSiteName", DeployConfig.IIsConfig.WebSiteName);
+                        httpRequestClient.SetFieldValue("Token", server.Token);
+                        httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream", zipBytes);
+                        System.Net.WebSockets.Managed.ClientWebSocket webSocket = null;
+                        try
+                        {
+                            var hostKey = "";
+                            webSocket = await WebSocketHelper.Connect($"ws://{server.Host}/socket", (receiveMsg) =>
+                            {
+                                if (!string.IsNullOrEmpty(receiveMsg))
+                                {
+                                    if (receiveMsg.StartsWith("hostKey@"))
+                                    {
+                                        hostKey = receiveMsg.Replace("hostKey@", "");
+                                    }
+                                    else
+                                    {
+                                        this.nlog_iis.Info($"【Server】{receiveMsg}");
+                                    }
+                                }
+                            });
+
+                            httpRequestClient.SetFieldValue("wsKey", hostKey);
+
+                            var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/publish",
+                                (client) => { client.UploadProgressChanged += ClientOnUploadProgressChanged; });
+
+                            if (uploadResult.Item1)
+                            {
+                                this.nlog_iis.Info($"Host:{server.Host},Response:{uploadResult.Item2}");
+                            }
+                            else
+                            {
+                                this.nlog_iis.Error(
+                                    $"Host:{server.Host},Response:{uploadResult.Item2},Skip to Next");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+
+                            this.nlog_iis.Error($"Fail Deploy,Host:{server.Host},Response:{ex.Message},Skip to Next");
+                        }
+                        finally
+                        {
+                            webSocket?.Dispose();
+                        }
+
+                    }
+                    this.nlog_iis.Info("Deploy End");
+                    //交互
+                }
+                catch (Exception ex1)
+                {
+                    this.nlog_iis.Error(ex1);
+                }
+                finally
+                {
+
+                    Enable(true);
+                }
+
 
             }).Start();
 
@@ -649,15 +665,15 @@ namespace AntDeploy.Winform
         private int ProgressPercentage = 0;
         private void ClientOnUploadProgressChanged(object sender, UploadProgressChangedEventArgs e)
         {
-            if (e.ProgressPercentage > ProgressPercentage && e.ProgressPercentage!=100)
+            if (e.ProgressPercentage > ProgressPercentage && e.ProgressPercentage != 100)
             {
                 ProgressPercentage = e.ProgressPercentage;
                 this.nlog_iis.Info($"Upload {(e.ProgressPercentage != 100 ? e.ProgressPercentage * 2 : e.ProgressPercentage)} % complete...");
             }
         }
-         private void ClientOnUploadProgressChanged2(object sender, UploadProgressChangedEventArgs e)
+        private void ClientOnUploadProgressChanged2(object sender, UploadProgressChangedEventArgs e)
         {
-            if (e.ProgressPercentage > ProgressPercentage && e.ProgressPercentage!=100)
+            if (e.ProgressPercentage > ProgressPercentage && e.ProgressPercentage != 100)
             {
                 ProgressPercentage = e.ProgressPercentage;
                 this.nlog_windowservice.Info($"Upload {(e.ProgressPercentage != 100 ? e.ProgressPercentage * 2 : e.ProgressPercentage)} % complete...");
@@ -684,7 +700,6 @@ namespace AntDeploy.Winform
             this.BeginInvokeLambda(() =>
             {
                 this.b_windowservice_deploy.Enabled = flag;
-                this.txt_windowservice_name.Enabled = flag;
                 this.combo_windowservice_env.Enabled = flag;
 
                 this.page_set.Enabled = flag;
@@ -733,18 +748,12 @@ namespace AntDeploy.Winform
 
         private void b_windowservice_deploy_Click(object sender, EventArgs e)
         {
-            var serviceName = this.txt_windowservice_name.Text.Trim();
-            if (serviceName.Length < 1)
-            {
-                MessageBox.Show("please input serviceName");
-                return;
-            }
 
-           
+
             var stopSenconds = this.txt_windowservice_timeout.Text.Trim();
             if (!string.IsNullOrEmpty(stopSenconds))
             {
-                int.TryParse(stopSenconds,out var stopSencondsInt);
+                int.TryParse(stopSenconds, out var stopSencondsInt);
                 if (stopSencondsInt == 0)
                 {
                     MessageBox.Show("please input right stopTimout value");
@@ -768,6 +777,28 @@ namespace AntDeploy.Winform
                 return;
             }
 
+#if DEBUG
+            var execFilePath = "AntDeployAgentWindowsService.exe";
+#else
+            var execFilePath = _project.GetProjectProperty("OutputFileName");
+            if (string.IsNullOrEmpty(execFilePath))
+            {
+                MessageBox.Show("get current project property:outputfilename error");
+                return;
+            }
+
+            if (!execFilePath.Trim().ToLower().EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+            {
+                MessageBox.Show("current project out file name is not exe!");
+                return;
+            }
+
+            this.nlog_windowservice.Info($"windows Service exe name:{execFilePath}");
+#endif
+
+
+
+
             var serverList = DeployConfig.Env.Where(r => r.Name.Equals(envName)).Select(r => r.ServerList)
                 .FirstOrDefault();
 
@@ -789,137 +820,182 @@ namespace AntDeploy.Winform
 
             this.rich_windowservice_log.Text = "";
 
-            DeployConfig.WindowsServiveConfig.ServiceName = serviceName;
+
+            new Task(async () =>
+             {
+                 this.nlog_windowservice.Info("Start publish");
+                 EnableForWindowsService(false);
+
+                 try
+                 {
+                     //执行 publish
+                     var isSuccess = CommandHelper.RunMsbuild(
+                         ProjectPath,
+                         (r) => { this.nlog_windowservice.Info(r); },
+                         (er) => this.nlog_windowservice.Error(er));
+
+                     if (!isSuccess)
+                     {
+                         this.nlog_windowservice.Error("publish error");
+                         return;
+                     }
+
+                     var publishPath = Path.Combine(ProjectFolderPath, "bin", "Release", "publish");
+
+                     if (string.IsNullOrEmpty(publishPath) || !Directory.Exists(publishPath))
+                     {
+                         this.nlog_windowservice.Error("can not find publishPath");
+                         return;
+                     }
+
+                     //判断是否是windows服务
+                     var serviceFile = Path.Combine(publishPath, execFilePath);
+                     if (!File.Exists(serviceFile))
+                     {
+                         this.nlog_windowservice.Error($"exe file can not find in publish folder: {serviceFile}");
+                         return;
+                     }
+
+                     //读取这个文件有风险 把他copy到temp 目录下进行处理
+                     var tempFolder = Path.GetTempPath();
+                     var tempDeployFolder = Path.Combine(tempFolder,"antdeploy");
+                     if (!Directory.Exists(tempDeployFolder))
+                     {
+                         Directory.CreateDirectory(tempDeployFolder);
+                     }
+
+                     var tempFolderForService = Path.Combine(tempDeployFolder,"deploy_window_service");
+                     if (!Directory.Exists(tempFolderForService))
+                     {
+                         Directory.CreateDirectory(tempFolderForService);
+                     }
+
+                     //复制进去之前先把之前的删除掉
+                     TempFileHelper.RemoveFileInTempFolder(tempFolderForService);
+
+                     var newserviceFile = TempFileHelper.CopyFileToTempFolder(serviceFile,tempFolderForService);
+
+                     var serviceNameByFile = ProjectHelper.GetServiceNameByFile(newserviceFile);
+                     if (string.IsNullOrEmpty(serviceNameByFile))
+                     {
+                         this.nlog_windowservice.Error($"file: {serviceFile} is not a windows service! ");
+                         return;
+                     }
 
 
-           new Task(async () =>
-            {
-                this.nlog_windowservice.Info("Start publish");
-                EnableForWindowsService(false);
-
-                //执行 publish
-                var isSuccess = CommandHelper.RunMsbuild(
-                    ProjectPath,
-                    (r) =>
-                    {
-                        this.nlog_windowservice.Info(r);
-                    },
-                    (er) => this.nlog_windowservice.Error(er));
-
-                if (!isSuccess)
-                {
-                    this.nlog_windowservice.Error("publish error");
-                    return;
-                }
-
-                var publishPath = Path.Combine(ProjectFolderPath,"bin","Release");
-
-                if (string.IsNullOrEmpty(publishPath) || !Directory.Exists(publishPath))
-                {
-                    this.nlog_windowservice.Error("can not find publishPath");
-                    return;
-                }
-
-               
-
-                LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish success,  ==> ");
-                publisEvent.Properties["ShowLink"] = "file://"+publishPath.Replace("\\","\\\\");
-                this.nlog_windowservice.Log(publisEvent);
-
-               
+                     LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish success,  ==> ");
+                     publisEvent.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
+                     this.nlog_windowservice.Log(publisEvent);
 
 
-                //执行 打包
-                this.nlog_windowservice.Info("Start package");
-                byte[] zipBytes;
-                try
-                {
-                    zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, CompressionLevel.Optimal, true,DeployConfig.IgnoreList);
-                }
-                catch (Exception ex)
-                {
-                    this.nlog_windowservice.Error("package fail:" + ex.Message);
-                    return;
-                }
 
-                if (zipBytes == null || zipBytes.Length < 1)
-                {
-                    this.nlog_windowservice.Error("package fail");
-                    return;
-                }
-                this.nlog_windowservice.Info("package success");
+                     //执行 打包
+                     this.nlog_windowservice.Info("Start package");
+                     byte[] zipBytes;
+                     try
+                     {
+                         zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, CompressionLevel.Optimal, true,
+                             DeployConfig.IgnoreList);
+                     }
+                     catch (Exception ex)
+                     {
+                         this.nlog_windowservice.Error("package fail:" + ex.Message);
+                         return;
+                     }
 
-                //执行 上传
-                this.nlog_windowservice.Info("Deploy Start");
-                foreach (var server in serverList)
-                {
-                    if (string.IsNullOrEmpty(server.Token))
-                    {
-                        this.nlog_windowservice.Warn($"{server.Host} Deploy skip,Token is null or empty!");
-                        continue;
-                    }
+                     if (zipBytes == null || zipBytes.Length < 1)
+                     {
+                         this.nlog_windowservice.Error("package fail");
+                         return;
+                     }
 
-                    ProgressPercentage = 0;
-                    this.nlog_windowservice.Info($"Start Uppload,Host:{server.Host}");
-                    HttpRequestClient httpRequestClient = new HttpRequestClient();
-                    httpRequestClient.SetFieldValue("publishType", "windowservice");
-                    httpRequestClient.SetFieldValue("serviceName", DeployConfig.WindowsServiveConfig.ServiceName);
-                    httpRequestClient.SetFieldValue("stopTimeOut", DeployConfig.WindowsServiveConfig.StopTimeOutSeconds);
-                    httpRequestClient.SetFieldValue("Token", server.Token);
-                    httpRequestClient.SetFieldValue("publish","publish.zip", "application/octet-stream", zipBytes);
-                    ClientWebSocket webSocket = null;
-                    try
-                    {
-                        var hostKey = "";
-                        webSocket = await WebSocketHelper.Connect($"ws://{server.Host}/socket", (receiveMsg) =>
-                        {
-                            if (!string.IsNullOrEmpty(receiveMsg))
-                            {
-                                if (receiveMsg.StartsWith("hostKey@"))
-                                {
-                                    hostKey = receiveMsg.Replace("hostKey@", "");
-                                }
-                                else
-                                {
-                                    this.nlog_windowservice.Info($"【Server】{receiveMsg}");
-                                }
-                            }
-                        });
+                     this.nlog_windowservice.Info("package success");
 
-                        httpRequestClient.SetFieldValue("wsKey", hostKey);
+                     //执行 上传
+                     this.nlog_windowservice.Info("Deploy Start");
+                     foreach (var server in serverList)
+                     {
+                         if (string.IsNullOrEmpty(server.Token))
+                         {
+                             this.nlog_windowservice.Warn($"{server.Host} Deploy skip,Token is null or empty!");
+                             continue;
+                         }
 
-                        var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/publish",
-                            (client) => { client.UploadProgressChanged += ClientOnUploadProgressChanged2; });
+                         ProgressPercentage = 0;
+                         this.nlog_windowservice.Info($"Start Uppload,Host:{server.Host}");
+                         HttpRequestClient httpRequestClient = new HttpRequestClient();
+                         httpRequestClient.SetFieldValue("publishType", "windowservice");
+                         httpRequestClient.SetFieldValue("serviceName", serviceNameByFile);
+                         httpRequestClient.SetFieldValue("execFilePath", execFilePath);
+                         httpRequestClient.SetFieldValue("stopTimeOut",
+                             DeployConfig.WindowsServiveConfig.StopTimeOutSeconds);
+                         httpRequestClient.SetFieldValue("Token", server.Token);
+                         httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream",
+                             zipBytes);
+                         System.Net.WebSockets.Managed.ClientWebSocket webSocket = null;
+                         try
+                         {
+                             var hostKey = "";
+                             webSocket = await WebSocketHelper.Connect($"ws://{server.Host}/socket", (receiveMsg) =>
+                             {
+                                 if (!string.IsNullOrEmpty(receiveMsg))
+                                 {
+                                     if (receiveMsg.StartsWith("hostKey@"))
+                                     {
+                                         hostKey = receiveMsg.Replace("hostKey@", "");
+                                     }
+                                     else
+                                     {
+                                         this.nlog_windowservice.Info($"【Server】{receiveMsg}");
+                                     }
+                                 }
+                             });
 
-                        if (uploadResult.Item1)
-                        {
-                            this.nlog_windowservice.Info($"Host:{server.Host},Response:{uploadResult.Item2}");
-                        }
-                        else
-                        {
-                            this.nlog_windowservice.Error(
-                                $"Host:{server.Host},Response:{uploadResult.Item2},Skip to Next");
-                        }
-                    }
-                    catch (Exception ex)
-                    {
+                             httpRequestClient.SetFieldValue("wsKey", hostKey);
 
-                        this.nlog_windowservice.Error($"Fail Deploy,Host:{server.Host},Response:{ex.Message},Skip to Next");
-                    }
-                    finally
-                    {
-                        webSocket?.Dispose();
-                    }
-                    
-                }
-                this.nlog_windowservice.Info("Deploy End");
-                //交互
+                             var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/publish",
+                                 (client) => { client.UploadProgressChanged += ClientOnUploadProgressChanged2; });
 
-                EnableForWindowsService(true);
+                             if (uploadResult.Item1)
+                             {
+                                 this.nlog_windowservice.Info($"Host:{server.Host},Response:{uploadResult.Item2}");
+                             }
+                             else
+                             {
+                                 this.nlog_windowservice.Error(
+                                     $"Host:{server.Host},Response:{uploadResult.Item2},Skip to Next");
+                             }
+                         }
+                         catch (Exception ex)
+                         {
 
-            }).Start();
+                             this.nlog_windowservice.Error(
+                                 $"Fail Deploy,Host:{server.Host},Response:{ex.Message},Skip to Next");
+                         }
+                         finally
+                         {
+                             webSocket?.Dispose();
+                         }
+
+                     }
+
+                     this.nlog_windowservice.Info("Deploy End");
+                     //交互
+                 }
+                 catch (Exception ex1)
+                 {
+                     this.nlog_windowservice.Error(ex1);
+                 }
+                 finally
+                 {
+                     EnableForWindowsService(true);
+                 }
+
+
+
+             }).Start();
         }
 
-       
+
     }
 }

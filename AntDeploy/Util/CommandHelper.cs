@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using Microsoft.Build.Evaluation;
 using Microsoft.Build.Execution;
 using Microsoft.Build.Framework;
@@ -24,8 +25,10 @@ namespace AntDeploy.Util
             {
                 return false;
             }
+
+            var outPath = Path.Combine(new FileInfo(path).Directory.FullName,"bin","Release","publish") + "\\";
             return RunDotnetExternalExe(string.Empty,msBuild+"\\MsBuild.exe",
-                path + " /t:Rebuild /p:Configuration=Release",
+                path + " /t:Rebuild /v:m /p:OutDir="+ outPath.Replace("\\\\","\\") +";Configuration=Release",
                 logAction,errLogAction);
         }
 
@@ -130,7 +133,17 @@ namespace AntDeploy.Util
                 process.BeginErrorReadLine();
 
                 process.WaitForExit();
+
+                try
+                {
+                    process.Kill();
+                }
+                catch (Exception)
+                {
+                    //ignore
+                }
                 return process.ExitCode == 0;
+
             }
             catch (Exception ex)
             {

@@ -14,6 +14,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
     {
       
         private string _serviceName;
+        private string _serviceExecName;
         private int _waitForServiceStopTimeOut = 5;
      
         private string _projectPublishFolder;
@@ -67,27 +68,78 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 var service = WindowServiceHelper.GetWindowServiceByName(this._serviceName);
                 if (service == null)
                 {
-                    return $"windowService : {_serviceName} not found" ;
+                    Log($"windowService : {_serviceName} not found,start to create!");
+
+                    //创建发布目录
+                    var firstDeployFolder = Path.Combine(projectPath,"deploy");
+                    EnsureProjectFolder(firstDeployFolder);
+
+                    Log($"deploy folder create success : {firstDeployFolder} ");
+
+                    //复制文件到发布目录
+                    CopyHelper.DirectoryCopy(deployFolder, firstDeployFolder, true);
+
+                    Log($"copy files success from [{deployFolder}] to [{firstDeployFolder}]");
+
+                    //部署windows service
+                    var execFullPath = Path.Combine(firstDeployFolder,_serviceExecName);
+                    if (!File.Exists(execFullPath))
+                    {
+                        try{ Directory.Delete(firstDeployFolder, true);}catch (Exception) {}
+                        return $"windows service exec file not found : {execFullPath} ";
+                    }
+
+                    //安装服务
+                    Log($"start to install windows service");
+                    Log($"service name:{_serviceName}");
+                    Log($"service path:{execFullPath}");
+                    var installResult = WindowServiceHelper.InstallWindowsService(execFullPath);
+                    if (!string.IsNullOrEmpty(installResult))
+                    {
+                        try{ Directory.Delete(firstDeployFolder, true);}catch (Exception) {}
+                        return installResult;
+                    }
+                    Log($"install windows service success");
+
+                    //部署成功 启动服务
+                    Log($"start windows service : " + _serviceName);
+                    var startResult = WindowServiceHelper.StartService(_serviceName,120);
+                    if (!string.IsNullOrEmpty(startResult))
+                    {
+                        try{ Directory.Delete(firstDeployFolder, true);}catch (Exception) {}
+                        return startResult;
+                    }
+                    Log($"start windows service success");
+                    return string.Empty;
                 }
 
-
+                 var projectLocationFolder = string.Empty;
                 var projectLocation = WindowServiceHelper.GetWindowServiceLocation(this._serviceName);
                 if (string.IsNullOrEmpty(projectLocation))
                 {
                     return $"can not find executable path of service:{_serviceName}";
                 }
 
+                try
+                {
+                    projectLocation = projectLocation.Replace("\"","");
+                    projectLocationFolder = new FileInfo(projectLocation).DirectoryName;
+                }
+                catch (Exception)
+                {
+                    return "ServiceFolder is not correct ===> " + projectLocationFolder;
+                }
 
                 Log("Start to deploy Windows Service:");
                 Log("ServiceName ===>" + _serviceName);
-                Log("ServiceFolder ===> " + projectLocation);
+                Log("ServiceFolder ===> " + projectLocationFolder);
 
                 Arguments args = new Arguments
                 {
                     DeployType =  "WindowsService",
                     BackupFolder = Setting.BackUpWindowServicePathFolder,
                     AppName = _serviceName,
-                    AppFolder = projectLocation,
+                    AppFolder = projectLocationFolder,
                     DeployFolder = deployFolder,
                     WaitForWindowsServiceStopTimeOut = _waitForServiceStopTimeOut
                 };
@@ -133,11 +185,20 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
             var serviceNameItem = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("serviceName"));
             if (serviceNameItem == null || string.IsNullOrEmpty(serviceNameItem.TextValue))
             {
-                return "webSiteName required";
+                return "serviceName required";
             }
 
             _serviceName = serviceNameItem.TextValue.Trim();
            
+
+            var serviceExecItem = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("execFilePath"));
+            if (serviceExecItem == null || string.IsNullOrEmpty(serviceExecItem.TextValue))
+            {
+                return "execFilePath required";
+            }
+
+            _serviceExecName = serviceExecItem.TextValue.Trim();
+
 
             var stopTimeOut = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("stopTimeOut"));
             if (stopTimeOut != null && !string.IsNullOrEmpty(stopTimeOut.TextValue))
