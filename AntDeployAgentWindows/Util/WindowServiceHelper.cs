@@ -35,46 +35,46 @@ namespace AntDeployAgentWindows.Util
         }
 
 
-        public static string InstallWindowsService(string exePath)
-        {
-            try
-            {
-                if (!exePath.Trim().ToLower().EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
-                {
-                    return $"{exePath} is not exe!";
-                }
+        //public static string InstallWindowsService(string exePath)
+        //{
+        //    try
+        //    {
+        //        if (!exePath.Trim().ToLower().EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+        //        {
+        //            return $"{exePath} is not exe!";
+        //        }
 
-                string serviceName = GetServiceNameByFile(exePath);
-                if (string.IsNullOrEmpty(serviceName))
-                {
-                    return $"{exePath} is not windows service!";
-                }
+        //        string serviceName = GetServiceNameByFile(exePath);
+        //        if (string.IsNullOrEmpty(serviceName))
+        //        {
+        //            return $"{exePath} is not windows service!";
+        //        }
 
-                if (ServiceIsExisted(serviceName))
-                {
-                    return $"{serviceName} is exist!";
-                }
+        //        if (ServiceIsExisted(serviceName))
+        //        {
+        //            return $"{serviceName} is exist!";
+        //        }
 
-                string[] cmdline = { };
-                using (TransactedInstaller transactedInstaller = new TransactedInstaller())
-                {
-                    using (AssemblyInstaller assemblyInstaller = new AssemblyInstaller(exePath, cmdline)
-                    {
-                        UseNewContext = true
-                    })
-                    {
-                        transactedInstaller.Installers.Add(assemblyInstaller);
-                        transactedInstaller.Install(new System.Collections.Hashtable());
-                    }
+        //        string[] cmdline = { };
+        //        using (TransactedInstaller transactedInstaller = new TransactedInstaller())
+        //        {
+        //            using (AssemblyInstaller assemblyInstaller = new AssemblyInstaller(exePath, cmdline)
+        //            {
+        //                UseNewContext = true
+        //            })
+        //            {
+        //                transactedInstaller.Installers.Add(assemblyInstaller);
+        //                transactedInstaller.Install(new System.Collections.Hashtable());
+        //            }
 
-                    return string.Empty;
-                }
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
-        }
+        //            return string.Empty;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return ex.Message;
+        //    }
+        //}
 
 
         /// <summary>
@@ -93,37 +93,37 @@ namespace AntDeployAgentWindows.Util
         /// </summary>
         /// <param name="serviceFileName">文件路径</param>
         /// <returns>服务名称</returns>
-        public static string GetServiceNameByFile(string serviceFileName)
-        {
-            try
-            {
+        //public static string GetServiceNameByFile(string serviceFileName)
+        //{
+        //    try
+        //    {
 
-                Assembly assembly = Assembly.LoadFrom(serviceFileName);
-                Type[] types = assembly.GetTypes();
-                foreach (Type myType in types)
-                {
-                    if (myType.IsClass && myType.BaseType == typeof(System.Configuration.Install.Installer))
-                    {
-                        FieldInfo[] fieldInfos = myType.GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Default | BindingFlags.Instance | BindingFlags.Static);
-                        foreach (FieldInfo myFieldInfo in fieldInfos)
-                        {
-                            if (myFieldInfo.FieldType == typeof(System.ServiceProcess.ServiceInstaller))
-                            {
-                                using (ServiceInstaller serviceInstaller = (ServiceInstaller)myFieldInfo.GetValue(Activator.CreateInstance(myType)))
-                                {
-                                    return serviceInstaller.ServiceName;
-                                }
-                            }
-                        }
-                    }
-                }
-                return "";
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
+        //        Assembly assembly = Assembly.LoadFrom(serviceFileName);
+        //        Type[] types = assembly.GetTypes();
+        //        foreach (Type myType in types)
+        //        {
+        //            if (myType.IsClass && myType.BaseType == typeof(System.Configuration.Install.Installer))
+        //            {
+        //                FieldInfo[] fieldInfos = myType.GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Default | BindingFlags.Instance | BindingFlags.Static);
+        //                foreach (FieldInfo myFieldInfo in fieldInfos)
+        //                {
+        //                    if (myFieldInfo.FieldType == typeof(System.ServiceProcess.ServiceInstaller))
+        //                    {
+        //                        using (ServiceInstaller serviceInstaller = (ServiceInstaller)myFieldInfo.GetValue(Activator.CreateInstance(myType)))
+        //                        {
+        //                            return serviceInstaller.ServiceName;
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        return "";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
 
         public static ServiceController GetWindowServiceByName(string serviceName)
         {

@@ -87,6 +87,7 @@
     <Compile Include="Operation\OperationTypes\OperationsWINDOWSSERVICE.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Util\CopyHelper.cs" />
+    <Compile Include="Util\ServiceInstaller.cs" />
     <Compile Include="Util\WindowServiceHelper.cs" />
     <Compile Include="Util\IISHelper.cs" />
     <Compile Include="WebSocketApp\MyWebSocketWork.cs" />
