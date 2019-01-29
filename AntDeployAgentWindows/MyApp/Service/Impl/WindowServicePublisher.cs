@@ -69,10 +69,10 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 var service = WindowServiceHelper.GetWindowServiceByName(this._serviceName);
                 if (service == null)
                 {
-                    if (!_isProjectInstallService)
-                    {
-                        return $"windowService : {_serviceName} not found";
-                    }
+                    //if (!_isProjectInstallService)
+                    //{
+                    //    return $"windowService : {_serviceName} not found";
+                    //}
 
                     Log($"windowService : {_serviceName} not found,start to create!");
 
@@ -99,24 +99,36 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     Log($"start to install windows service");
                     Log($"service name:{_serviceName}");
                     Log($"service path:{execFullPath}");
-                    var installResult = WindowServiceHelper.InstallWindowsService(execFullPath);
-                    if (!string.IsNullOrEmpty(installResult))
+                    try
                     {
-                        try{ Directory.Delete(firstDeployFolder, true);}catch (Exception) {}
-                        return installResult;
+                        ServiceInstaller.InstallAndStart(_serviceName, _serviceName, execFullPath);
+                        Log($"install windows service success");
+                        Log($"start windows service success");
+                        return string.Empty;
                     }
-                    Log($"install windows service success");
+                    catch (Exception e2)
+                    {
+                        return $"install windows service fail:" + e2.Message;
+                    }
 
-                    //部署成功 启动服务
-                    Log($"start windows service : " + _serviceName);
-                    var startResult = WindowServiceHelper.StartService(_serviceName,120);
-                    if (!string.IsNullOrEmpty(startResult))
-                    {
-                        try{ Directory.Delete(firstDeployFolder, true);}catch (Exception) {}
-                        return startResult;
-                    }
-                    Log($"start windows service success");
-                    return string.Empty;
+                    //var installResult = WindowServiceHelper.InstallWindowsService(execFullPath);
+                    //if (!string.IsNullOrEmpty(installResult))
+                    //{
+                    //    try{ Directory.Delete(firstDeployFolder, true);}catch (Exception) {}
+                    //    return installResult;
+                    //}
+                  
+
+                    ////部署成功 启动服务
+                    //Log($"start windows service : " + _serviceName);
+                    //var startResult = WindowServiceHelper.StartService(_serviceName,120);
+                    //if (!string.IsNullOrEmpty(startResult))
+                    //{
+                    //    try{ Directory.Delete(firstDeployFolder, true);}catch (Exception) {}
+                    //    return startResult;
+                    //}
+                    //Log($"start windows service success");
+                    //return string.Empty;
                 }
 
                 var projectLocationFolder = string.Empty;
