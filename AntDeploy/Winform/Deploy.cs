@@ -863,7 +863,7 @@ namespace AntDeploy.Winform
             }
 
 #if DEBUG
-            var execFilePath = "ConsoleApp2.exe";//"AntDeployAgentWindowsService.exe";
+            var execFilePath = "AntDeployAgentWindowsService.exe";
 #else
             var execFilePath = _project.GetProjectProperty("OutputFileName");
             if (string.IsNullOrEmpty(execFilePath))
