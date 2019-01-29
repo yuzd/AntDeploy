@@ -748,7 +748,11 @@ namespace AntDeploy.Winform
 
         private void b_windowservice_deploy_Click(object sender, EventArgs e)
         {
-
+            if (ProjectHelper.IsDotNetCoreProject(_project))
+            {
+                MessageBox.Show("current project is not windows service project!");
+                return;
+            }
 
             var stopSenconds = this.txt_windowservice_timeout.Text.Trim();
             if (!string.IsNullOrEmpty(stopSenconds))
