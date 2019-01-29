@@ -531,41 +531,61 @@ namespace AntDeploy.Winform
                 Enable(false);
                 try
                 {
+                    var isNetcore = false;
+                    var publishPath = string.Empty;
+                    if (DeployConfig.IIsConfig.SdkType.Equals("netcore"))
+                    {
+                        var publishLog = new List<string>();
+                        //执行 publish
+                        var isSuccess = CommandHelper.RunDotnetExternalExe(ProjectFolderPath, "dotnet",
+                            "publish -c Release",
+                            (r) =>
+                            {
+                                this.nlog_iis.Info(r);
+                                publishLog.Add(r);
+                            },
+                            (er) => this.nlog_iis.Error(er));
 
-                    var publishLog = new List<string>();
-                    //执行 publish
-                    var isSuccess = CommandHelper.RunDotnetExternalExe(ProjectFolderPath, "dotnet",
-                        "publish -c Release",
-                        (r) =>
+                        if (!isSuccess)
                         {
-                            this.nlog_iis.Info(r);
-                            publishLog.Add(r);
-                        },
-                        (er) => this.nlog_iis.Error(er));
+                            this.nlog_iis.Error("publish error");
+                            return;
+                        }
 
-                    if (!isSuccess)
+                        var publishPathLine = publishLog
+                            .FirstOrDefault(r => !string.IsNullOrEmpty(r) && r.EndsWith("\\publish\\"));
+
+                        if (string.IsNullOrEmpty(publishPathLine))
+                        {
+                            this.nlog_iis.Error("can not find publishPath in log");
+                            return;
+                        }
+
+                        var publishPathArr = publishPathLine.Split(new string[] { " ->" }, StringSplitOptions.None);
+                        if (publishPathArr.Length != 2)
+                        {
+                            this.nlog_iis.Error("can not find publishPath in log");
+                            return;
+                        }
+
+                        publishPath = publishPathArr[1].Trim();
+                    }
+                    else
                     {
-                        this.nlog_iis.Error("publish error");
-                        return;
+                         var isSuccess = CommandHelper.RunMsbuild(
+                             ProjectPath,
+                             (r) => { this.nlog_iis.Info(r); },
+                             (er) => this.nlog_iis.Error(er));
+
+                         if (!isSuccess)
+                         {
+                             this.nlog_iis.Error("publish error");
+                             return;
+                         }
+
+                         publishPath = Path.Combine(ProjectFolderPath, "bin", "Release", "publish");
                     }
 
-                    var publishPathLine = publishLog
-                        .FirstOrDefault(r => !string.IsNullOrEmpty(r) && r.EndsWith("\\publish\\"));
-
-                    if (string.IsNullOrEmpty(publishPathLine))
-                    {
-                        this.nlog_iis.Error("can not find publishPath in log");
-                        return;
-                    }
-
-                    var publishPathArr = publishPathLine.Split(new string[] { " ->" }, StringSplitOptions.None);
-                    if (publishPathArr.Length != 2)
-                    {
-                        this.nlog_iis.Error("can not find publishPath in log");
-                        return;
-                    }
-
-                    var publishPath = publishPathArr[1].Trim();
 
                     LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish success,  ==> ");
                     publisEvent.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
@@ -575,7 +595,7 @@ namespace AntDeploy.Winform
 
                     //https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis
 
-                    if (DeployConfig.IIsConfig.SdkType.Equals("netcore"))
+                    if (isNetcore)
                     {
                         var webConfig = Path.Combine(publishPath, "Web.Config");
                         if (!File.Exists(webConfig))
@@ -989,7 +1009,7 @@ namespace AntDeploy.Winform
                      }
                      else
                      {
-                         execFilePath = execFilePath.Replace(".dll",".exe");
+                         execFilePath = execFilePath.Replace(".dll", ".exe");
                          var serviceFile = Path.Combine(publishPath, execFilePath);
                          if (!File.Exists(serviceFile))
                          {
