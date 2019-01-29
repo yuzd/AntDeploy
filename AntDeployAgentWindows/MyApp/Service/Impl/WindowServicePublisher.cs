@@ -12,7 +12,8 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 {
     public class WindowServicePublisher : PublishProviderBasicAPI
     {
-      
+        private string _sdkTypeName;
+        private bool _isProjectInstallService;
         private string _serviceName;
         private string _serviceExecName;
         private int _waitForServiceStopTimeOut = 5;
@@ -68,6 +69,11 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 var service = WindowServiceHelper.GetWindowServiceByName(this._serviceName);
                 if (service == null)
                 {
+                    if (!_isProjectInstallService)
+                    {
+                        return $"windowService : {_serviceName} not found";
+                    }
+
                     Log($"windowService : {_serviceName} not found,start to create!");
 
                     //创建发布目录
@@ -113,7 +119,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     return string.Empty;
                 }
 
-                 var projectLocationFolder = string.Empty;
+                var projectLocationFolder = string.Empty;
                 var projectLocation = WindowServiceHelper.GetWindowServiceLocation(this._serviceName);
                 if (string.IsNullOrEmpty(projectLocation))
                 {
@@ -182,6 +188,22 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
         public override string CheckData(FormHandler formHandler)
         {
 
+            var sdkType = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("sdkType"));
+            if (sdkType == null || string.IsNullOrEmpty(sdkType.TextValue))
+            {
+                return "sdkType required";
+            }
+
+            var sdkTypeValue = sdkType.TextValue.ToLower();
+
+            if (!new string[] { "netframework", "netcore" }.Contains(sdkTypeValue))
+            {
+                return $"sdkType value :{sdkTypeValue} is not suppored";
+            }
+
+            _sdkTypeName = sdkTypeValue;
+
+
             var serviceNameItem = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("serviceName"));
             if (serviceNameItem == null || string.IsNullOrEmpty(serviceNameItem.TextValue))
             {
@@ -204,6 +226,12 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
             if (stopTimeOut != null && !string.IsNullOrEmpty(stopTimeOut.TextValue))
             {
                 _waitForServiceStopTimeOut = int.Parse(stopTimeOut.TextValue);
+            }
+
+            var isProjectInstallServiceItem = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("isProjectInstallService"));
+            if (isProjectInstallServiceItem != null && !string.IsNullOrEmpty(isProjectInstallServiceItem.TextValue))
+            {
+                _isProjectInstallService = isProjectInstallServiceItem.TextValue.Equals("yes");
             }
 
             return string.Empty;

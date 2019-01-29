@@ -73,6 +73,10 @@
             this.txt_env_name = new System.Windows.Forms.TextBox();
             this.b_env_add_by_name = new System.Windows.Forms.Button();
             this.combo_env_list = new System.Windows.Forms.ComboBox();
+            this.combo_windowservice_sdk_type = new System.Windows.Forms.ComboBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.txt_windowservice_name = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
             this.page_.SuspendLayout();
             this.page_web_iis.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -225,6 +229,10 @@
             // 
             // page_window_service
             // 
+            this.page_window_service.Controls.Add(this.txt_windowservice_name);
+            this.page_window_service.Controls.Add(this.label14);
+            this.page_window_service.Controls.Add(this.combo_windowservice_sdk_type);
+            this.page_window_service.Controls.Add(this.label11);
             this.page_window_service.Controls.Add(this.label13);
             this.page_window_service.Controls.Add(this.txt_windowservice_timeout);
             this.page_window_service.Controls.Add(this.label12);
@@ -242,7 +250,7 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(294, 37);
+            this.label13.Location = new System.Drawing.Point(290, 63);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(53, 12);
             this.label13.TabIndex = 18;
@@ -250,7 +258,7 @@
             // 
             // txt_windowservice_timeout
             // 
-            this.txt_windowservice_timeout.Location = new System.Drawing.Point(177, 34);
+            this.txt_windowservice_timeout.Location = new System.Drawing.Point(173, 60);
             this.txt_windowservice_timeout.Name = "txt_windowservice_timeout";
             this.txt_windowservice_timeout.Size = new System.Drawing.Size(111, 21);
             this.txt_windowservice_timeout.TabIndex = 17;
@@ -258,7 +266,7 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(39, 38);
+            this.label12.Location = new System.Drawing.Point(35, 64);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(131, 12);
             this.label12.TabIndex = 16;
@@ -299,7 +307,7 @@
             this.combo_windowservice_env.BackColor = System.Drawing.SystemColors.Window;
             this.combo_windowservice_env.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_windowservice_env.FormattingEnabled = true;
-            this.combo_windowservice_env.Location = new System.Drawing.Point(177, 64);
+            this.combo_windowservice_env.Location = new System.Drawing.Point(173, 90);
             this.combo_windowservice_env.Name = "combo_windowservice_env";
             this.combo_windowservice_env.Size = new System.Drawing.Size(193, 20);
             this.combo_windowservice_env.TabIndex = 13;
@@ -308,7 +316,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(111, 67);
+            this.label10.Location = new System.Drawing.Point(107, 93);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(59, 12);
             this.label10.TabIndex = 12;
@@ -551,6 +559,45 @@
             this.combo_env_list.TabIndex = 0;
             this.combo_env_list.SelectedIndexChanged += new System.EventHandler(this.combo_env_list_SelectedIndexChanged);
             // 
+            // combo_windowservice_sdk_type
+            // 
+            this.combo_windowservice_sdk_type.BackColor = System.Drawing.SystemColors.Window;
+            this.combo_windowservice_sdk_type.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.combo_windowservice_sdk_type.FormattingEnabled = true;
+            this.combo_windowservice_sdk_type.Items.AddRange(new object[] {
+            "netframework",
+            "netcore"});
+            this.combo_windowservice_sdk_type.Location = new System.Drawing.Point(173, 7);
+            this.combo_windowservice_sdk_type.Name = "combo_windowservice_sdk_type";
+            this.combo_windowservice_sdk_type.Size = new System.Drawing.Size(121, 20);
+            this.combo_windowservice_sdk_type.TabIndex = 20;
+            this.combo_windowservice_sdk_type.SelectedIndexChanged += new System.EventHandler(this.combo_windowservice_sdk_type_SelectedIndexChanged);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(96, 15);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(59, 12);
+            this.label11.TabIndex = 19;
+            this.label11.Text = "SDK Type:";
+            // 
+            // txt_windowservice_name
+            // 
+            this.txt_windowservice_name.Location = new System.Drawing.Point(173, 33);
+            this.txt_windowservice_name.Name = "txt_windowservice_name";
+            this.txt_windowservice_name.Size = new System.Drawing.Size(193, 21);
+            this.txt_windowservice_name.TabIndex = 22;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(72, 36);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(83, 12);
+            this.label14.TabIndex = 21;
+            this.label14.Text = "Service Name:";
+            // 
             // Deploy
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
@@ -630,5 +677,9 @@
         private System.Windows.Forms.TextBox txt_windowservice_timeout;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.ComboBox combo_windowservice_sdk_type;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.TextBox txt_windowservice_name;
+        private System.Windows.Forms.Label label14;
     }
 }

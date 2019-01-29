@@ -12,7 +12,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
-using System.Net.WebSockets;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Process = System.Diagnostics.Process;
@@ -140,12 +139,22 @@ namespace AntDeploy.Winform
 
             if (DeployConfig.WindowsServiveConfig != null)
             {
+                if (this.combo_windowservice_sdk_type.Items.Count > 0 && !string.IsNullOrEmpty(DeployConfig.WindowsServiveConfig.SdkType)
+                    && this.combo_windowservice_sdk_type.Items.Cast<string>().Contains(DeployConfig.WindowsServiveConfig.SdkType))
+                {
+                    this.combo_windowservice_sdk_type.SelectedItem = DeployConfig.WindowsServiveConfig.SdkType;
+                }
 
                 if (this.combo_windowservice_env.Items.Count > 0 &&
                     !string.IsNullOrEmpty(DeployConfig.WindowsServiveConfig.LastEnvName)
                     && this.combo_windowservice_env.Items.Cast<string>().Contains(DeployConfig.WindowsServiveConfig.LastEnvName))
                 {
                     this.combo_windowservice_env.SelectedItem = DeployConfig.WindowsServiveConfig.LastEnvName;
+                }
+
+                if (!string.IsNullOrEmpty(DeployConfig.WindowsServiveConfig.ServiceName))
+                {
+                    this.txt_windowservice_name.Text = DeployConfig.WindowsServiveConfig.ServiceName;
                 }
 
                 if (!string.IsNullOrEmpty(DeployConfig.WindowsServiveConfig.StopTimeOutSeconds))
@@ -400,6 +409,15 @@ namespace AntDeploy.Winform
             }
         }
 
+        private void combo_windowservice_sdk_type_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var selectName = this.combo_windowservice_sdk_type.SelectedItem as string;
+            if (!string.IsNullOrEmpty(selectName))
+            {
+                DeployConfig.WindowsServiveConfig.SdkType = selectName;
+            }
+        }
+
         private void combo_iis_env_SelectedIndexChanged(object sender, EventArgs e)
         {
             var selectName = this.combo_iis_env.SelectedItem as string;
@@ -421,7 +439,13 @@ namespace AntDeploy.Winform
         private void Deploy_FormClosing(object sender, FormClosingEventArgs e)
         {
             DeployConfig.IIsConfig.WebSiteName = this.txt_iis_web_site_name.Text;
+
+
+            DeployConfig.WindowsServiveConfig.ServiceName = this.txt_windowservice_name.Text;
             DeployConfig.WindowsServiveConfig.StopTimeOutSeconds = this.txt_windowservice_timeout.Text;
+
+
+
             var configJson = JsonConvert.SerializeObject(DeployConfig, Formatting.Indented);
             File.WriteAllText(ProjectConfigPath, configJson);
         }
@@ -451,7 +475,7 @@ namespace AntDeploy.Winform
 
             //判断当前项目是否是web项目
 
-            if (!ProjectHelper.IsDotNetCoreProject(_project))
+            if (!ProjectHelper.IsDotNetCoreProject(_project) && !ProjectHelper.IsWebProject(_project))
             {
                 MessageBox.Show("current project is not web project!");
                 return;
@@ -496,6 +520,8 @@ namespace AntDeploy.Winform
             {
                 return;
             }
+
+
 
             this.rich_iis_log.Text = "";
             DeployConfig.IIsConfig.WebSiteName = websiteName;
@@ -673,9 +699,9 @@ namespace AntDeploy.Winform
         }
         private void ClientOnUploadProgressChanged2(object sender, UploadProgressChangedEventArgs e)
         {
-            if (e.ProgressPercentage > ProgressPercentage && e.ProgressPercentage != 100)
+            if (e.ProgressPercentage > ProgressPercentageForWindowsService && e.ProgressPercentage != 100)
             {
-                ProgressPercentage = e.ProgressPercentage;
+                ProgressPercentageForWindowsService = e.ProgressPercentage;
                 this.nlog_windowservice.Info($"Upload {(e.ProgressPercentage != 100 ? e.ProgressPercentage * 2 : e.ProgressPercentage)} % complete...");
             }
         }
@@ -746,13 +772,39 @@ namespace AntDeploy.Winform
             }
         }
 
+        private int ProgressPercentageForWindowsService = 0;
         private void b_windowservice_deploy_Click(object sender, EventArgs e)
         {
-            if (ProjectHelper.IsDotNetCoreProject(_project))
+            if (ProjectHelper.IsWebProject(_project))
             {
                 MessageBox.Show("current project is not windows service project!");
                 return;
             }
+
+            var sdkTypeName = this.combo_windowservice_sdk_type.SelectedItem as string;
+            if (string.IsNullOrWhiteSpace(sdkTypeName))
+            {
+                MessageBox.Show("please select sdk type");
+                return;
+            }
+
+            if (sdkTypeName.Equals("netcore"))
+            {
+                if (!ProjectHelper.IsDotNetCoreProject(_project))
+                {
+                    MessageBox.Show("current project is not netcore project!");
+                    return;
+                }
+            }
+
+            var serviceName = this.txt_windowservice_name.Text.Trim();
+            if (serviceName.Length < 1)
+            {
+                MessageBox.Show("please input serviceName");
+                return;
+            }
+
+            DeployConfig.WindowsServiveConfig.ServiceName = serviceName;
 
             var stopSenconds = this.txt_windowservice_timeout.Text.Trim();
             if (!string.IsNullOrEmpty(stopSenconds))
@@ -782,7 +834,7 @@ namespace AntDeploy.Winform
             }
 
 #if DEBUG
-            var execFilePath = "AntDeployAgentWindowsService.exe";
+            var execFilePath = "ConsoleApp2.exe";//"AntDeployAgentWindowsService.exe";
 #else
             var execFilePath = _project.GetProjectProperty("OutputFileName");
             if (string.IsNullOrEmpty(execFilePath))
@@ -791,13 +843,13 @@ namespace AntDeploy.Winform
                 return;
             }
 
-            if (!execFilePath.Trim().ToLower().EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+            if (!DeployConfig.WindowsServiveConfig.SdkType.Equals("netcore") && !execFilePath.Trim().ToLower().EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
             {
                 MessageBox.Show("current project out file name is not exe!");
                 return;
             }
 
-            this.nlog_windowservice.Info($"windows Service exe name:{execFilePath}");
+            this.nlog_windowservice.Info($"windows Service exe name:{execFilePath.Replace(".dll",".exe")}");
 #endif
 
 
@@ -832,19 +884,62 @@ namespace AntDeploy.Winform
 
                  try
                  {
-                     //执行 publish
-                     var isSuccess = CommandHelper.RunMsbuild(
-                         ProjectPath,
-                         (r) => { this.nlog_windowservice.Info(r); },
-                         (er) => this.nlog_windowservice.Error(er));
-
-                     if (!isSuccess)
+                     var isNetcore = false;
+                     var publishPath = string.Empty;
+                     if (DeployConfig.WindowsServiveConfig.SdkType.Equals("netcore"))
                      {
-                         this.nlog_windowservice.Error("publish error");
-                         return;
+                         isNetcore = true;
+                         var publishLog = new List<string>();
+                         //执行 publish
+                         var isSuccess = CommandHelper.RunDotnetExternalExe(ProjectFolderPath, "dotnet",
+                             "publish -c Release --runtime win-x64",
+                             (r) =>
+                             {
+                                 this.nlog_iis.Info(r);
+                                 publishLog.Add(r);
+                             },
+                             (er) => this.nlog_windowservice.Error(er));
+
+                         if (!isSuccess)
+                         {
+                             this.nlog_windowservice.Error("publish error");
+                             return;
+                         }
+
+                         var publishPathLine = publishLog.FirstOrDefault(r => !string.IsNullOrEmpty(r) && r.EndsWith("\\publish\\"));
+
+                         if (string.IsNullOrEmpty(publishPathLine))
+                         {
+                             this.nlog_windowservice.Error("can not find publishPath in log");
+                             return;
+                         }
+
+                         var publishPathArr = publishPathLine.Split(new string[] { " ->" }, StringSplitOptions.None);
+                         if (publishPathArr.Length != 2)
+                         {
+                             this.nlog_windowservice.Error("can not find publishPath in log");
+                             return;
+                         }
+
+                         publishPath = publishPathArr[1].Trim();
+                     }
+                     else
+                     {
+                         //执行 publish
+                         var isSuccess = CommandHelper.RunMsbuild(
+                             ProjectPath,
+                             (r) => { this.nlog_windowservice.Info(r); },
+                             (er) => this.nlog_windowservice.Error(er));
+
+                         if (!isSuccess)
+                         {
+                             this.nlog_windowservice.Error("publish error");
+                             return;
+                         }
+
+                         publishPath = Path.Combine(ProjectFolderPath, "bin", "Release", "publish");
                      }
 
-                     var publishPath = Path.Combine(ProjectFolderPath, "bin", "Release", "publish");
 
                      if (string.IsNullOrEmpty(publishPath) || !Directory.Exists(publishPath))
                      {
@@ -852,39 +947,57 @@ namespace AntDeploy.Winform
                          return;
                      }
 
-                     //判断是否是windows服务
-                     var serviceFile = Path.Combine(publishPath, execFilePath);
-                     if (!File.Exists(serviceFile))
+                     var isProjectInstallService = false;
+                     if (!isNetcore)
                      {
-                         this.nlog_windowservice.Error($"exe file can not find in publish folder: {serviceFile}");
-                         return;
+                         //判断是否是windows PorjectInstall的服务
+                         var serviceFile = Path.Combine(publishPath, execFilePath);
+                         if (!File.Exists(serviceFile))
+                         {
+                             this.nlog_windowservice.Error($"exe file can not find in publish folder: {serviceFile}");
+                             return;
+                         }
+
+                         //读取这个文件有风险 把他copy到temp 目录下进行处理
+                         var tempFolder = Path.GetTempPath();
+                         var tempDeployFolder = Path.Combine(tempFolder, "antdeploy");
+                         if (!Directory.Exists(tempDeployFolder))
+                         {
+                             Directory.CreateDirectory(tempDeployFolder);
+                         }
+
+                         var tempFolderForService = Path.Combine(tempDeployFolder, "deploy_window_service");
+                         if (!Directory.Exists(tempFolderForService))
+                         {
+                             Directory.CreateDirectory(tempFolderForService);
+                         }
+
+                         //复制进去之前先把之前的删除掉
+                         TempFileHelper.RemoveFileInTempFolder(tempFolderForService);
+
+                         var newserviceFile = TempFileHelper.CopyFileToTempFolder(serviceFile, tempFolderForService);
+
+                         var serviceNameByFile = ProjectHelper.GetServiceNameByFile(newserviceFile);
+                         if (!string.IsNullOrEmpty(serviceNameByFile))
+                         {
+                             //this.nlog_windowservice.Error($"file: {serviceFile} is not a windows service! ");
+                             //return;
+                             isProjectInstallService = true;
+                             serviceName = serviceNameByFile;
+                         }
+
+                     }
+                     else
+                     {
+                         execFilePath = execFilePath.Replace(".dll",".exe");
+                         var serviceFile = Path.Combine(publishPath, execFilePath);
+                         if (!File.Exists(serviceFile))
+                         {
+                             this.nlog_windowservice.Error($"exe file can not find in publish folder: {serviceFile}");
+                             return;
+                         }
                      }
 
-                     //读取这个文件有风险 把他copy到temp 目录下进行处理
-                     var tempFolder = Path.GetTempPath();
-                     var tempDeployFolder = Path.Combine(tempFolder,"antdeploy");
-                     if (!Directory.Exists(tempDeployFolder))
-                     {
-                         Directory.CreateDirectory(tempDeployFolder);
-                     }
-
-                     var tempFolderForService = Path.Combine(tempDeployFolder,"deploy_window_service");
-                     if (!Directory.Exists(tempFolderForService))
-                     {
-                         Directory.CreateDirectory(tempFolderForService);
-                     }
-
-                     //复制进去之前先把之前的删除掉
-                     TempFileHelper.RemoveFileInTempFolder(tempFolderForService);
-
-                     var newserviceFile = TempFileHelper.CopyFileToTempFolder(serviceFile,tempFolderForService);
-
-                     var serviceNameByFile = ProjectHelper.GetServiceNameByFile(newserviceFile);
-                     if (string.IsNullOrEmpty(serviceNameByFile))
-                     {
-                         this.nlog_windowservice.Error($"file: {serviceFile} is not a windows service! ");
-                         return;
-                     }
 
 
                      LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish success,  ==> ");
@@ -925,17 +1038,17 @@ namespace AntDeploy.Winform
                              continue;
                          }
 
-                         ProgressPercentage = 0;
+                         ProgressPercentageForWindowsService = 0;
                          this.nlog_windowservice.Info($"Start Uppload,Host:{server.Host}");
                          HttpRequestClient httpRequestClient = new HttpRequestClient();
                          httpRequestClient.SetFieldValue("publishType", "windowservice");
-                         httpRequestClient.SetFieldValue("serviceName", serviceNameByFile);
+                         httpRequestClient.SetFieldValue("serviceName", serviceName);
+                         httpRequestClient.SetFieldValue("sdkType", DeployConfig.WindowsServiveConfig.SdkType);
+                         httpRequestClient.SetFieldValue("isProjectInstallService", isProjectInstallService ? "yes" : "no");
                          httpRequestClient.SetFieldValue("execFilePath", execFilePath);
-                         httpRequestClient.SetFieldValue("stopTimeOut",
-                             DeployConfig.WindowsServiveConfig.StopTimeOutSeconds);
+                         httpRequestClient.SetFieldValue("stopTimeOut", DeployConfig.WindowsServiveConfig.StopTimeOutSeconds);
                          httpRequestClient.SetFieldValue("Token", server.Token);
-                         httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream",
-                             zipBytes);
+                         httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream", zipBytes);
                          System.Net.WebSockets.Managed.ClientWebSocket webSocket = null;
                          try
                          {
@@ -999,7 +1112,6 @@ namespace AntDeploy.Winform
 
              }).Start();
         }
-
 
     }
 }

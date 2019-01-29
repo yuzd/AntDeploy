@@ -42,9 +42,21 @@ namespace AntDeploy.Models
     }
 
 
+    /// <summary>
+    /// 如果是netcore的话 需要 dotnet publish -c Release --runtime win-x64 （第一次会需要很长时间）
+    /// 然后目录会有一个 win-x64 的文件夹 这个是需要publish的目录 里面会有exe 可以作为windowsservice发布
+    /// 
+    /// 如果是netframework的话 需要调用msbuild 来进行 release 编译
+    /// 需要取一个参数来看一看是否是 用了projectInstall技术开发的。如果是的话是可以 远程服务器上没有的话可以直接创建
+    /// 否则的话不可以
+    /// </summary>
     public class WindowsServiveConfig
     {
         public string StopTimeOutSeconds { get; set; }
+        public string ServiceName { get; set; }
+
+        public string SdkType { get; set; }
+
         public string LastEnvName { get; set; }
     }
 

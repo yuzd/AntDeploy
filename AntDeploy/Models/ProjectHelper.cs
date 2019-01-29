@@ -66,25 +66,48 @@ namespace AntDeploy.Models
             }
         }
 
-
+        public static bool IsWebProject(Project project)
+        {
+            try
+            {
+                switch (project.Kind)
+                {
+                    case Web_PROJECT_KIND:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
         public static bool IsDotNetCoreProject(Project project)
         {
-            switch (project.Kind)
+            try
             {
-                case CS_CORE_PROJECT_KIND:
-                case FS_CORE_PROJECT_KIND:
-                case VB_CORE_PROJECT_KIND:
-                case Web_PROJECT_KIND:
-                    return true;
+                switch (project.Kind)
+                {
+                    case CS_CORE_PROJECT_KIND:
+                    case FS_CORE_PROJECT_KIND:
+                    case VB_CORE_PROJECT_KIND:
+                        return true;
 
-                default:
-                    var solution = Package.GetGlobalService(typeof(SVsSolution)) as IVsSolution;
-                    if (solution.GetProjectOfUniqueName(project.UniqueName, out var hierarchy) == 0)
-                    {
-                        return IsCpsProject(hierarchy);
-                    }
+                    default:
+                        var solution = Package.GetGlobalService(typeof(SVsSolution)) as IVsSolution;
+                        if (solution.GetProjectOfUniqueName(project.UniqueName, out var hierarchy) == 0)
+                        {
+                            return IsCpsProject(hierarchy);
+                        }
 
-                    return false;
+                        return false;
+                }
+            }
+            catch (Exception)
+            {
+
+                return true;
             }
         }
 

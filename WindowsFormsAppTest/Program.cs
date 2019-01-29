@@ -18,7 +18,7 @@ namespace WindowsFormsAppTest
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Deploy("E:\\WorkSpace\\github\\AntDeploy\\AntDeployAgentWindowsService\\AntDeployAgentWindowsService.csproj",null));
+            Application.Run(new Deploy(@"d:\Users\zdyu\source\repos\ConsoleApp2\ConsoleApp2\ConsoleApp2.csproj",null));
         }
     }
 }

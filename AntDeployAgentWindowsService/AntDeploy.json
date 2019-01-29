@@ -18,6 +18,8 @@
   },
   "WindowsServiveConfig": {
     "StopTimeOutSeconds": "",
+    "ServiceName": "aaaa",
+    "SdkType": "netframework",
     "LastEnvName": "fat"
   }
 }
