@@ -1,23 +1,22 @@
-﻿using AntDeployAgentWindows.WebApiCore;
+﻿using AntDeployAgentWindows.Model;
+using AntDeployAgentWindows.Operation;
+using AntDeployAgentWindows.Operation.OperationTypes;
+using AntDeployAgentWindows.Util;
+using AntDeployAgentWindows.WebApiCore;
 using System;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using AntDeployAgentWindows.Model;
-using AntDeployAgentWindows.Operation;
-using AntDeployAgentWindows.Operation.OperationTypes;
-using AntDeployAgentWindows.Util;
-using AntDeployAgentWindows.WebSocketApp;
 
 namespace AntDeployAgentWindows.MyApp.Service.Impl
 {
     public class IIsPublisher : PublishProviderBasicAPI
     {
-      
+
         private string _webSiteName;
         private string _sdkTypeName;
         private string _projectName;
-     
+
         private string _projectPublishFolder;
         private FormHandler _formHandler;
 
@@ -68,11 +67,35 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
                 //查找 IIS 里面是否存在
                 var siteArr = _webSiteName.Split('/');
+                if (siteArr.Length > 2)
+                {
+                    return $"website level limit is 2！";
+                }
+
                 var level1 = siteArr[0];
-                var level2 = siteArr.Length==2? siteArr[1]:string.Empty;
+                var level2 = siteArr.Length == 2 ? siteArr[1] : string.Empty;
+
+                var isSiteExistResult = IISHelper.IsSiteExist(level1, level2);
+                if (!isSiteExistResult.Item1)
+                {
+                    if (!string.IsNullOrEmpty(level2))
+                    {
+                        //创建一级 但是一级需要一个空的目录
+                        var rt = IISHelper.InstallSite(level1, "");
+                        //创建二级虚拟目录 二级的目录才是正常程序所在目录
+
+                    }
+                    else
+                    {
+                        //只需要一级 就是程序所在目录
+
+                    }
+                }
 
 
-                var projectLocation = IISHelper.GetWebSiteLocationInIIS(level1, level2,Log);
+
+
+                var projectLocation = IISHelper.GetWebSiteLocationInIIS(level1, level2, Log);
                 if (projectLocation == null)
                 {
                     return $"read info from iis error";
@@ -80,7 +103,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
                 if (string.IsNullOrEmpty(projectLocation.Item1))
                 {
-                    return $"website : {_webSiteName} not found in iis" ;
+                    return $"website : {_webSiteName} not found in iis";
                 }
 
                 Log("Start to deploy IIS:");
@@ -90,7 +113,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
                 Arguments args = new Arguments
                 {
-                    DeployType =  "IIS",
+                    DeployType = "IIS",
                     BackupFolder = Setting.BackUpIIsPathFolder,
                     AppName = _projectName,
                     ApplicationPoolName = projectLocation.Item3,
@@ -132,7 +155,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
 
 
-      
+
 
         public override string CheckData(FormHandler formHandler)
         {
