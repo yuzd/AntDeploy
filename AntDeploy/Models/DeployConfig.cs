@@ -64,6 +64,7 @@ namespace AntDeploy.Models
     {
         public string Name { get; set; }
         public List<Server> ServerList { get; set; } = new List<Server>();
+        public List<LinuxServr> LinuxServerList { get; set; } = new List<LinuxServr>();
     }
 
 
@@ -71,5 +72,12 @@ namespace AntDeploy.Models
     {
         public string Host { get; set; }
         public string Token { get; set; }
+    }
+
+    public class LinuxServr
+    {
+        public string Host { get; set; }
+        public string UserName { get; set; }
+        public string Pwd { get; set; }
     }
 }
