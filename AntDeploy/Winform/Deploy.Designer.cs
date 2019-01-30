@@ -65,36 +65,36 @@
             this.b_env_ignore_add = new System.Windows.Forms.Button();
             this.txt_env_ignore = new System.Windows.Forms.TextBox();
             this.list_env_ignore = new System.Windows.Forms.ListBox();
-            this.b_env_server_test = new System.Windows.Forms.Button();
+            this.environment = new System.Windows.Forms.GroupBox();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.page_winserver = new System.Windows.Forms.TabPage();
             this.label5 = new System.Windows.Forms.Label();
-            this.b_env_server_add = new System.Windows.Forms.Button();
-            this.b_env_server_remove = new System.Windows.Forms.Button();
-            this.txt_env_server_token = new System.Windows.Forms.TextBox();
+            this.b_env_server_test = new System.Windows.Forms.Button();
             this.combo_env_server_list = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
+            this.b_env_server_add = new System.Windows.Forms.Button();
             this.txt_env_server_host = new System.Windows.Forms.TextBox();
-            this.environment = new System.Windows.Forms.GroupBox();
+            this.b_env_server_remove = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
+            this.txt_env_server_token = new System.Windows.Forms.TextBox();
+            this.page_linux_server = new System.Windows.Forms.TabPage();
+            this.label20 = new System.Windows.Forms.Label();
+            this.combo_linux_server_list = new System.Windows.Forms.ComboBox();
+            this.txt_linux_pwd = new System.Windows.Forms.TextBox();
+            this.label19 = new System.Windows.Forms.Label();
+            this.txt_linux_username = new System.Windows.Forms.TextBox();
+            this.label18 = new System.Windows.Forms.Label();
+            this.b_linux_server_test = new System.Windows.Forms.Button();
+            this.b_add_linux_server = new System.Windows.Forms.Button();
+            this.b_linux_server_remove = new System.Windows.Forms.Button();
+            this.txt_linux_host = new System.Windows.Forms.TextBox();
+            this.label17 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.b_env_remove = new System.Windows.Forms.Button();
             this.txt_env_name = new System.Windows.Forms.TextBox();
             this.b_env_add_by_name = new System.Windows.Forms.Button();
             this.combo_env_list = new System.Windows.Forms.ComboBox();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.page_winserver = new System.Windows.Forms.TabPage();
-            this.page_linux_server = new System.Windows.Forms.TabPage();
-            this.txt_linux_host = new System.Windows.Forms.TextBox();
-            this.label17 = new System.Windows.Forms.Label();
-            this.b_linux_server_test = new System.Windows.Forms.Button();
-            this.b_add_linux_server = new System.Windows.Forms.Button();
-            this.b_linux_server_remove = new System.Windows.Forms.Button();
-            this.txt_linux_username = new System.Windows.Forms.TextBox();
-            this.label18 = new System.Windows.Forms.Label();
-            this.txt_linux_pwd = new System.Windows.Forms.TextBox();
-            this.label19 = new System.Windows.Forms.Label();
-            this.label20 = new System.Windows.Forms.Label();
-            this.combo_linux_server_list = new System.Windows.Forms.ComboBox();
             this.page_.SuspendLayout();
             this.page_web_iis.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -490,16 +490,50 @@
             this.list_env_ignore.Size = new System.Drawing.Size(292, 124);
             this.list_env_ignore.TabIndex = 15;
             // 
-            // b_env_server_test
+            // environment
             // 
-            this.b_env_server_test.Enabled = false;
-            this.b_env_server_test.Location = new System.Drawing.Point(207, 53);
-            this.b_env_server_test.Name = "b_env_server_test";
-            this.b_env_server_test.Size = new System.Drawing.Size(129, 23);
-            this.b_env_server_test.TabIndex = 11;
-            this.b_env_server_test.Text = "Connect Test";
-            this.b_env_server_test.UseVisualStyleBackColor = true;
-            this.b_env_server_test.Click += new System.EventHandler(this.b_env_server_test_Click);
+            this.environment.Controls.Add(this.tabControl1);
+            this.environment.Controls.Add(this.label2);
+            this.environment.Controls.Add(this.label1);
+            this.environment.Controls.Add(this.b_env_remove);
+            this.environment.Controls.Add(this.txt_env_name);
+            this.environment.Controls.Add(this.b_env_add_by_name);
+            this.environment.Controls.Add(this.combo_env_list);
+            this.environment.Location = new System.Drawing.Point(19, 17);
+            this.environment.Name = "environment";
+            this.environment.Size = new System.Drawing.Size(599, 246);
+            this.environment.TabIndex = 0;
+            this.environment.TabStop = false;
+            this.environment.Text = "Environment";
+            // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.page_winserver);
+            this.tabControl1.Controls.Add(this.page_linux_server);
+            this.tabControl1.Location = new System.Drawing.Point(9, 88);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(584, 147);
+            this.tabControl1.TabIndex = 3;
+            // 
+            // page_winserver
+            // 
+            this.page_winserver.Controls.Add(this.label5);
+            this.page_winserver.Controls.Add(this.b_env_server_test);
+            this.page_winserver.Controls.Add(this.combo_env_server_list);
+            this.page_winserver.Controls.Add(this.label4);
+            this.page_winserver.Controls.Add(this.b_env_server_add);
+            this.page_winserver.Controls.Add(this.txt_env_server_host);
+            this.page_winserver.Controls.Add(this.b_env_server_remove);
+            this.page_winserver.Controls.Add(this.label3);
+            this.page_winserver.Controls.Add(this.txt_env_server_token);
+            this.page_winserver.Location = new System.Drawing.Point(4, 22);
+            this.page_winserver.Name = "page_winserver";
+            this.page_winserver.Padding = new System.Windows.Forms.Padding(3);
+            this.page_winserver.Size = new System.Drawing.Size(576, 121);
+            this.page_winserver.TabIndex = 0;
+            this.page_winserver.Text = "win_server";
+            this.page_winserver.UseVisualStyleBackColor = true;
             // 
             // label5
             // 
@@ -510,35 +544,16 @@
             this.label5.TabIndex = 9;
             this.label5.Text = "Server List：";
             // 
-            // b_env_server_add
+            // b_env_server_test
             // 
-            this.b_env_server_add.Enabled = false;
-            this.b_env_server_add.Location = new System.Drawing.Point(14, 53);
-            this.b_env_server_add.Name = "b_env_server_add";
-            this.b_env_server_add.Size = new System.Drawing.Size(129, 23);
-            this.b_env_server_add.TabIndex = 7;
-            this.b_env_server_add.Text = "Add Server";
-            this.b_env_server_add.UseVisualStyleBackColor = true;
-            this.b_env_server_add.Click += new System.EventHandler(this.b_env_server_add_Click);
-            // 
-            // b_env_server_remove
-            // 
-            this.b_env_server_remove.Enabled = false;
-            this.b_env_server_remove.ForeColor = System.Drawing.Color.Red;
-            this.b_env_server_remove.Location = new System.Drawing.Point(414, 53);
-            this.b_env_server_remove.Name = "b_env_server_remove";
-            this.b_env_server_remove.Size = new System.Drawing.Size(140, 23);
-            this.b_env_server_remove.TabIndex = 8;
-            this.b_env_server_remove.Text = "Remove Selected";
-            this.b_env_server_remove.UseVisualStyleBackColor = true;
-            this.b_env_server_remove.Click += new System.EventHandler(this.b_env_server_remove_Click);
-            // 
-            // txt_env_server_token
-            // 
-            this.txt_env_server_token.Location = new System.Drawing.Point(262, 16);
-            this.txt_env_server_token.Name = "txt_env_server_token";
-            this.txt_env_server_token.Size = new System.Drawing.Size(303, 21);
-            this.txt_env_server_token.TabIndex = 3;
+            this.b_env_server_test.Enabled = false;
+            this.b_env_server_test.Location = new System.Drawing.Point(207, 53);
+            this.b_env_server_test.Name = "b_env_server_test";
+            this.b_env_server_test.Size = new System.Drawing.Size(129, 23);
+            this.b_env_server_test.TabIndex = 11;
+            this.b_env_server_test.Text = "Connect Test";
+            this.b_env_server_test.UseVisualStyleBackColor = true;
+            this.b_env_server_test.Click += new System.EventHandler(this.b_env_server_test_Click);
             // 
             // combo_env_server_list
             // 
@@ -559,6 +574,36 @@
             this.label4.TabIndex = 9;
             this.label4.Text = "Token：";
             // 
+            // b_env_server_add
+            // 
+            this.b_env_server_add.Enabled = false;
+            this.b_env_server_add.Location = new System.Drawing.Point(14, 53);
+            this.b_env_server_add.Name = "b_env_server_add";
+            this.b_env_server_add.Size = new System.Drawing.Size(129, 23);
+            this.b_env_server_add.TabIndex = 7;
+            this.b_env_server_add.Text = "Add Server";
+            this.b_env_server_add.UseVisualStyleBackColor = true;
+            this.b_env_server_add.Click += new System.EventHandler(this.b_env_server_add_Click);
+            // 
+            // txt_env_server_host
+            // 
+            this.txt_env_server_host.Location = new System.Drawing.Point(59, 16);
+            this.txt_env_server_host.Name = "txt_env_server_host";
+            this.txt_env_server_host.Size = new System.Drawing.Size(125, 21);
+            this.txt_env_server_host.TabIndex = 2;
+            // 
+            // b_env_server_remove
+            // 
+            this.b_env_server_remove.Enabled = false;
+            this.b_env_server_remove.ForeColor = System.Drawing.Color.Red;
+            this.b_env_server_remove.Location = new System.Drawing.Point(414, 53);
+            this.b_env_server_remove.Name = "b_env_server_remove";
+            this.b_env_server_remove.Size = new System.Drawing.Size(140, 23);
+            this.b_env_server_remove.TabIndex = 8;
+            this.b_env_server_remove.Text = "Remove Selected";
+            this.b_env_server_remove.UseVisualStyleBackColor = true;
+            this.b_env_server_remove.Click += new System.EventHandler(this.b_env_server_remove_Click);
+            // 
             // label3
             // 
             this.label3.AutoSize = true;
@@ -568,28 +613,130 @@
             this.label3.TabIndex = 8;
             this.label3.Text = "Host：";
             // 
-            // txt_env_server_host
+            // txt_env_server_token
             // 
-            this.txt_env_server_host.Location = new System.Drawing.Point(59, 16);
-            this.txt_env_server_host.Name = "txt_env_server_host";
-            this.txt_env_server_host.Size = new System.Drawing.Size(125, 21);
-            this.txt_env_server_host.TabIndex = 2;
+            this.txt_env_server_token.Location = new System.Drawing.Point(262, 16);
+            this.txt_env_server_token.Name = "txt_env_server_token";
+            this.txt_env_server_token.Size = new System.Drawing.Size(303, 21);
+            this.txt_env_server_token.TabIndex = 3;
             // 
-            // environment
+            // page_linux_server
             // 
-            this.environment.Controls.Add(this.tabControl1);
-            this.environment.Controls.Add(this.label2);
-            this.environment.Controls.Add(this.label1);
-            this.environment.Controls.Add(this.b_env_remove);
-            this.environment.Controls.Add(this.txt_env_name);
-            this.environment.Controls.Add(this.b_env_add_by_name);
-            this.environment.Controls.Add(this.combo_env_list);
-            this.environment.Location = new System.Drawing.Point(19, 17);
-            this.environment.Name = "environment";
-            this.environment.Size = new System.Drawing.Size(599, 246);
-            this.environment.TabIndex = 0;
-            this.environment.TabStop = false;
-            this.environment.Text = "Environment";
+            this.page_linux_server.Controls.Add(this.label20);
+            this.page_linux_server.Controls.Add(this.combo_linux_server_list);
+            this.page_linux_server.Controls.Add(this.txt_linux_pwd);
+            this.page_linux_server.Controls.Add(this.label19);
+            this.page_linux_server.Controls.Add(this.txt_linux_username);
+            this.page_linux_server.Controls.Add(this.label18);
+            this.page_linux_server.Controls.Add(this.b_linux_server_test);
+            this.page_linux_server.Controls.Add(this.b_add_linux_server);
+            this.page_linux_server.Controls.Add(this.b_linux_server_remove);
+            this.page_linux_server.Controls.Add(this.txt_linux_host);
+            this.page_linux_server.Controls.Add(this.label17);
+            this.page_linux_server.Location = new System.Drawing.Point(4, 22);
+            this.page_linux_server.Name = "page_linux_server";
+            this.page_linux_server.Padding = new System.Windows.Forms.Padding(3);
+            this.page_linux_server.Size = new System.Drawing.Size(576, 121);
+            this.page_linux_server.TabIndex = 1;
+            this.page_linux_server.Text = "linux_server";
+            this.page_linux_server.UseVisualStyleBackColor = true;
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(5, 98);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(83, 12);
+            this.label20.TabIndex = 20;
+            this.label20.Text = "Server List：";
+            // 
+            // combo_linux_server_list
+            // 
+            this.combo_linux_server_list.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.combo_linux_server_list.FormattingEnabled = true;
+            this.combo_linux_server_list.Location = new System.Drawing.Point(94, 95);
+            this.combo_linux_server_list.Name = "combo_linux_server_list";
+            this.combo_linux_server_list.Size = new System.Drawing.Size(464, 20);
+            this.combo_linux_server_list.TabIndex = 19;
+            // 
+            // txt_linux_pwd
+            // 
+            this.txt_linux_pwd.Location = new System.Drawing.Point(437, 11);
+            this.txt_linux_pwd.Name = "txt_linux_pwd";
+            this.txt_linux_pwd.Size = new System.Drawing.Size(125, 21);
+            this.txt_linux_pwd.TabIndex = 17;
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(398, 20);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(35, 12);
+            this.label19.TabIndex = 18;
+            this.label19.Text = "Pwd：";
+            // 
+            // txt_linux_username
+            // 
+            this.txt_linux_username.Location = new System.Drawing.Point(264, 11);
+            this.txt_linux_username.Name = "txt_linux_username";
+            this.txt_linux_username.Size = new System.Drawing.Size(115, 21);
+            this.txt_linux_username.TabIndex = 15;
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(196, 20);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(65, 12);
+            this.label18.TabIndex = 16;
+            this.label18.Text = "UserName：";
+            // 
+            // b_linux_server_test
+            // 
+            this.b_linux_server_test.Enabled = false;
+            this.b_linux_server_test.Location = new System.Drawing.Point(211, 49);
+            this.b_linux_server_test.Name = "b_linux_server_test";
+            this.b_linux_server_test.Size = new System.Drawing.Size(129, 23);
+            this.b_linux_server_test.TabIndex = 14;
+            this.b_linux_server_test.Text = "Connect Test";
+            this.b_linux_server_test.UseVisualStyleBackColor = true;
+            // 
+            // b_add_linux_server
+            // 
+            this.b_add_linux_server.Enabled = false;
+            this.b_add_linux_server.Location = new System.Drawing.Point(18, 49);
+            this.b_add_linux_server.Name = "b_add_linux_server";
+            this.b_add_linux_server.Size = new System.Drawing.Size(129, 23);
+            this.b_add_linux_server.TabIndex = 12;
+            this.b_add_linux_server.Text = "Add Server";
+            this.b_add_linux_server.UseVisualStyleBackColor = true;
+            // 
+            // b_linux_server_remove
+            // 
+            this.b_linux_server_remove.Enabled = false;
+            this.b_linux_server_remove.ForeColor = System.Drawing.Color.Red;
+            this.b_linux_server_remove.Location = new System.Drawing.Point(418, 49);
+            this.b_linux_server_remove.Name = "b_linux_server_remove";
+            this.b_linux_server_remove.Size = new System.Drawing.Size(140, 23);
+            this.b_linux_server_remove.TabIndex = 13;
+            this.b_linux_server_remove.Text = "Remove Selected";
+            this.b_linux_server_remove.UseVisualStyleBackColor = true;
+            // 
+            // txt_linux_host
+            // 
+            this.txt_linux_host.Location = new System.Drawing.Point(57, 11);
+            this.txt_linux_host.Name = "txt_linux_host";
+            this.txt_linux_host.Size = new System.Drawing.Size(128, 21);
+            this.txt_linux_host.TabIndex = 9;
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(10, 20);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(41, 12);
+            this.label17.TabIndex = 10;
+            this.label17.Text = "Host：";
             // 
             // label2
             // 
@@ -647,153 +794,6 @@
             this.combo_env_list.TabIndex = 0;
             this.combo_env_list.SelectedIndexChanged += new System.EventHandler(this.combo_env_list_SelectedIndexChanged);
             // 
-            // tabControl1
-            // 
-            this.tabControl1.Controls.Add(this.page_winserver);
-            this.tabControl1.Controls.Add(this.page_linux_server);
-            this.tabControl1.Location = new System.Drawing.Point(9, 88);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(584, 147);
-            this.tabControl1.TabIndex = 3;
-            // 
-            // page_winserver
-            // 
-            this.page_winserver.Controls.Add(this.label5);
-            this.page_winserver.Controls.Add(this.b_env_server_test);
-            this.page_winserver.Controls.Add(this.combo_env_server_list);
-            this.page_winserver.Controls.Add(this.label4);
-            this.page_winserver.Controls.Add(this.b_env_server_add);
-            this.page_winserver.Controls.Add(this.txt_env_server_host);
-            this.page_winserver.Controls.Add(this.b_env_server_remove);
-            this.page_winserver.Controls.Add(this.label3);
-            this.page_winserver.Controls.Add(this.txt_env_server_token);
-            this.page_winserver.Location = new System.Drawing.Point(4, 22);
-            this.page_winserver.Name = "page_winserver";
-            this.page_winserver.Padding = new System.Windows.Forms.Padding(3);
-            this.page_winserver.Size = new System.Drawing.Size(576, 121);
-            this.page_winserver.TabIndex = 0;
-            this.page_winserver.Text = "win_server";
-            this.page_winserver.UseVisualStyleBackColor = true;
-            // 
-            // page_linux_server
-            // 
-            this.page_linux_server.Controls.Add(this.label20);
-            this.page_linux_server.Controls.Add(this.combo_linux_server_list);
-            this.page_linux_server.Controls.Add(this.txt_linux_pwd);
-            this.page_linux_server.Controls.Add(this.label19);
-            this.page_linux_server.Controls.Add(this.txt_linux_username);
-            this.page_linux_server.Controls.Add(this.label18);
-            this.page_linux_server.Controls.Add(this.b_linux_server_test);
-            this.page_linux_server.Controls.Add(this.b_add_linux_server);
-            this.page_linux_server.Controls.Add(this.b_linux_server_remove);
-            this.page_linux_server.Controls.Add(this.txt_linux_host);
-            this.page_linux_server.Controls.Add(this.label17);
-            this.page_linux_server.Location = new System.Drawing.Point(4, 22);
-            this.page_linux_server.Name = "page_linux_server";
-            this.page_linux_server.Padding = new System.Windows.Forms.Padding(3);
-            this.page_linux_server.Size = new System.Drawing.Size(576, 121);
-            this.page_linux_server.TabIndex = 1;
-            this.page_linux_server.Text = "linux_server";
-            this.page_linux_server.UseVisualStyleBackColor = true;
-            // 
-            // txt_linux_host
-            // 
-            this.txt_linux_host.Location = new System.Drawing.Point(57, 11);
-            this.txt_linux_host.Name = "txt_linux_host";
-            this.txt_linux_host.Size = new System.Drawing.Size(128, 21);
-            this.txt_linux_host.TabIndex = 9;
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(10, 20);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(41, 12);
-            this.label17.TabIndex = 10;
-            this.label17.Text = "Host：";
-            // 
-            // b_linux_server_test
-            // 
-            this.b_linux_server_test.Enabled = false;
-            this.b_linux_server_test.Location = new System.Drawing.Point(211, 49);
-            this.b_linux_server_test.Name = "b_linux_server_test";
-            this.b_linux_server_test.Size = new System.Drawing.Size(129, 23);
-            this.b_linux_server_test.TabIndex = 14;
-            this.b_linux_server_test.Text = "Connect Test";
-            this.b_linux_server_test.UseVisualStyleBackColor = true;
-            // 
-            // b_add_linux_server
-            // 
-            this.b_add_linux_server.Enabled = false;
-            this.b_add_linux_server.Location = new System.Drawing.Point(18, 49);
-            this.b_add_linux_server.Name = "b_add_linux_server";
-            this.b_add_linux_server.Size = new System.Drawing.Size(129, 23);
-            this.b_add_linux_server.TabIndex = 12;
-            this.b_add_linux_server.Text = "Add Server";
-            this.b_add_linux_server.UseVisualStyleBackColor = true;
-            // 
-            // b_linux_server_remove
-            // 
-            this.b_linux_server_remove.Enabled = false;
-            this.b_linux_server_remove.ForeColor = System.Drawing.Color.Red;
-            this.b_linux_server_remove.Location = new System.Drawing.Point(418, 49);
-            this.b_linux_server_remove.Name = "b_linux_server_remove";
-            this.b_linux_server_remove.Size = new System.Drawing.Size(140, 23);
-            this.b_linux_server_remove.TabIndex = 13;
-            this.b_linux_server_remove.Text = "Remove Selected";
-            this.b_linux_server_remove.UseVisualStyleBackColor = true;
-            // 
-            // txt_linux_username
-            // 
-            this.txt_linux_username.Location = new System.Drawing.Point(264, 11);
-            this.txt_linux_username.Name = "txt_linux_username";
-            this.txt_linux_username.Size = new System.Drawing.Size(115, 21);
-            this.txt_linux_username.TabIndex = 15;
-            // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(196, 20);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(65, 12);
-            this.label18.TabIndex = 16;
-            this.label18.Text = "UserName：";
-            // 
-            // txt_linux_pwd
-            // 
-            this.txt_linux_pwd.Location = new System.Drawing.Point(437, 11);
-            this.txt_linux_pwd.Name = "txt_linux_pwd";
-            this.txt_linux_pwd.Size = new System.Drawing.Size(125, 21);
-            this.txt_linux_pwd.TabIndex = 17;
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(398, 20);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(35, 12);
-            this.label19.TabIndex = 18;
-            this.label19.Text = "Pwd：";
-            // 
-            // label20
-            // 
-            this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(5, 98);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(83, 12);
-            this.label20.TabIndex = 20;
-            this.label20.Text = "Server List：";
-            // 
-            // combo_linux_server_list
-            // 
-            this.combo_linux_server_list.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.combo_linux_server_list.FormattingEnabled = true;
-            this.combo_linux_server_list.Location = new System.Drawing.Point(94, 95);
-            this.combo_linux_server_list.Name = "combo_linux_server_list";
-            this.combo_linux_server_list.Size = new System.Drawing.Size(464, 20);
-            this.combo_linux_server_list.TabIndex = 19;
-            // 
             // Deploy
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
@@ -803,7 +803,6 @@
             this.MaximizeBox = false;
             this.Name = "Deploy";
             this.ShowIcon = false;
-            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "AntDeploy";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Deploy_FormClosing);
