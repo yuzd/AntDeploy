@@ -12,6 +12,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
 {
     class OperationsIIS : OperationsBase
     {
+        private int retryTimes = 0;
         public OperationsIIS(Arguments args,Action<string> log)
             : base(args,log)
         {
@@ -35,8 +36,18 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
         public override void Stop()
         {
             logger("Start to IIS WebsiteStop :" + this.args.SiteName);
+            if (IISHelper.IsWebsiteStop(this.args.SiteName))
+            {
+                logger("Success to IIS WebsiteStop :" + this.args.SiteName);
+                return;
+            }
+
             var site = IISHelper.WebsiteStop(this.args.SiteName);
-            IISHelper.ApplicationPoolStop(this.args.ApplicationPoolName);
+            if (!IISHelper.IsApplicationPoolStop(this.args.ApplicationPoolName))
+            {
+                IISHelper.ApplicationPoolStop(this.args.ApplicationPoolName);
+            }
+
             while (site.State != ObjectState.Stopped)
             {
                 logger("wait for IIS WebsiteStop :" + this.args.SiteName);
@@ -50,7 +61,24 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
 
         public override void Deploy()
         {
-            base.Deploy();
+            try
+            {
+                base.Deploy();
+            }
+            catch (Exception exception)
+            {
+                logger("Copy File Fail :" + exception.Message);
+                retryTimes++;
+                logger("Wait 5Sencond to Retry :" + retryTimes);
+                Thread.Sleep(5000);
+                if (retryTimes > 3)
+                {
+                    logger("Retry Copy Limit ");
+                    throw;
+                }
+
+                Deploy();
+            }
         }
 
         public override void Start()
@@ -64,6 +92,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
 
         public override void Execute()
         {
+            retryTimes = 0;
             base.Execute();
         }
 

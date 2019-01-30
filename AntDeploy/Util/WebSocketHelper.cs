@@ -5,6 +5,7 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using ClientWebSocket = System.Net.WebSockets.Managed.ClientWebSocket;
 
 namespace AntDeploy.Util
@@ -82,6 +83,23 @@ namespace AntDeploy.Util
             }
         }
 
+
+        public static async Task SendText(ClientWebSocket webSocket,string text)
+        {
+            try
+            {
+                if (webSocket.State == WebSocketState.Open)
+                {
+                    ArraySegment<byte> textBytes = new ArraySegment<byte>(Encoding.UTF8.GetBytes(text));
+                    await webSocket.SendAsync(textBytes, WebSocketMessageType.Text, true, CancellationToken.None);
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
         private static async Task Receive(ClientWebSocket webSocket, Action<string> receiveAction)
         {
             byte[] buffer = new byte[2048];
@@ -95,8 +113,12 @@ namespace AntDeploy.Util
                 else
                 {
                     var text = Encoding.UTF8.GetString(buffer).TrimEnd('\0');
-                    var arr = text.Split(new string[] {"@_@"}, StringSplitOptions.None);
-                    receiveAction(arr[0]);
+                    if (!text.StartsWith("@hello@"))
+                    {
+                        var arr = text.Split(new string[] { "@_@" }, StringSplitOptions.None);
+                        receiveAction(arr[0]);
+                    }
+                   
                 }
             }
         }

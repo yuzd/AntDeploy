@@ -33,6 +33,12 @@ namespace AntDeployAgentWindows.Util
             iis.ApplicationPools[applicationPoolName].Stop();
         }
 
+        public static bool IsApplicationPoolStop(string applicationPoolName)
+        {
+            ServerManager iis = new ServerManager();
+            return iis.ApplicationPools[applicationPoolName].State == ObjectState.Stopped;
+        }
+
         public static void ApplicationPoolStart(string applicationPoolName)
         {
             ServerManager iis = new ServerManager();
@@ -52,7 +58,12 @@ namespace AntDeployAgentWindows.Util
             site.Stop();
             return site;
         }
-
+        public static bool IsWebsiteStop(string siteName)
+        {
+            ServerManager iis = new ServerManager();
+            var site = iis.Sites[siteName];
+            return site.State == ObjectState.Stopped;
+        }
 
         public static bool IsDefaultWebSite(string name)
         {

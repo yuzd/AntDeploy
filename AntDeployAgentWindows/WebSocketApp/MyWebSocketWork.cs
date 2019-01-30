@@ -51,7 +51,11 @@ namespace AntDeployAgentWindows.WebSocketApp
             }
 
             //回应客户端发送过来的内容
-            //WebSocket.Send(message);
+
+            if (message == "@hello@")
+            {
+                WebSocket.Send(message);
+            }
         }
 
 
