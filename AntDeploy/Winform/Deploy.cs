@@ -13,6 +13,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -35,8 +36,13 @@ namespace AntDeploy.Winform
 
         public Deploy(string projectPath, Project project)
         {
-           
-            this.Icon =  new Icon("Resources/Logo.ico");
+
+            Assembly assembly = typeof(Deploy).Assembly;
+            using (Stream stream = assembly.GetManifestResourceStream("AntDeploy.Resources.Logo1.ico"))
+            {
+                if(stream!=null)this.Icon =  new Icon(stream);
+            }
+            
 
             InitializeComponent();
             ProjectPath = projectPath;
