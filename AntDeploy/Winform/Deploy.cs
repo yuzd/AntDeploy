@@ -909,6 +909,11 @@ namespace AntDeploy.Winform
                 this.page_set.Enabled = flag;
                 this.page_docker.Enabled = flag;
                 this.page_window_service.Enabled = flag;
+
+                if (flag)
+                {
+                    this.rich_windowservice_log.Text = "";
+                }
             });
 
         }
@@ -959,6 +964,11 @@ namespace AntDeploy.Winform
                 this.page_set.Enabled = flag;
                 this.page_docker.Enabled = flag;
                 this.page_web_iis.Enabled = flag;
+
+                if (flag)
+                {
+                    this.rich_iis_log.Text = "";
+                }
             });
 
         }
