@@ -83,9 +83,13 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
 
         public override void Start()
         {
-            logger("Start to IIS WebsiteStart :" + this.args.SiteName);
-            IISHelper.WebsiteStart(this.args.SiteName);
+            logger("Start to ApplicationPool :" + this.args.ApplicationPoolName);
             IISHelper.ApplicationPoolStart(this.args.ApplicationPoolName);
+            logger("Success to Start ApplicationPool:" + this.args.ApplicationPoolName);
+
+            logger("Start to IIS WebsiteStart wait 5senconds:" + this.args.SiteName);
+            Thread.Sleep(5000);
+            IISHelper.WebsiteStart(this.args.SiteName);
             logger("Success to IIS WebsiteStart :" + this.args.SiteName);
             //IISHelper.WebsiteStart(this.args.SiteName);
         }
