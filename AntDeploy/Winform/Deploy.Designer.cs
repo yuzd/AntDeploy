@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Deploy));
             this.page_ = new System.Windows.Forms.TabControl();
             this.page_web_iis = new System.Windows.Forms.TabPage();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
@@ -95,10 +96,18 @@
             this.txt_env_name = new System.Windows.Forms.TextBox();
             this.b_env_add_by_name = new System.Windows.Forms.Button();
             this.combo_env_list = new System.Windows.Forms.ComboBox();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.label21 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.label22 = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.page_.SuspendLayout();
             this.page_web_iis.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.page_docker.SuspendLayout();
             this.page_window_service.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.page_set.SuspendLayout();
@@ -107,6 +116,7 @@
             this.tabControl1.SuspendLayout();
             this.page_winserver.SuspendLayout();
             this.page_linux_server.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // page_
@@ -287,6 +297,12 @@
             // 
             // page_docker
             // 
+            this.page_docker.Controls.Add(this.groupBox1);
+            this.page_docker.Controls.Add(this.button1);
+            this.page_docker.Controls.Add(this.comboBox2);
+            this.page_docker.Controls.Add(this.label22);
+            this.page_docker.Controls.Add(this.comboBox1);
+            this.page_docker.Controls.Add(this.label21);
             this.page_docker.Location = new System.Drawing.Point(4, 22);
             this.page_docker.Name = "page_docker";
             this.page_docker.Size = new System.Drawing.Size(626, 422);
@@ -658,13 +674,14 @@
             this.combo_linux_server_list.Name = "combo_linux_server_list";
             this.combo_linux_server_list.Size = new System.Drawing.Size(464, 20);
             this.combo_linux_server_list.TabIndex = 19;
+            this.combo_linux_server_list.SelectedIndexChanged += new System.EventHandler(this.combo_linux_server_list_SelectedIndexChanged);
             // 
             // txt_linux_pwd
             // 
             this.txt_linux_pwd.Location = new System.Drawing.Point(437, 11);
             this.txt_linux_pwd.Name = "txt_linux_pwd";
             this.txt_linux_pwd.Size = new System.Drawing.Size(125, 21);
-            this.txt_linux_pwd.TabIndex = 17;
+            this.txt_linux_pwd.TabIndex = 11;
             // 
             // label19
             // 
@@ -680,7 +697,7 @@
             this.txt_linux_username.Location = new System.Drawing.Point(264, 11);
             this.txt_linux_username.Name = "txt_linux_username";
             this.txt_linux_username.Size = new System.Drawing.Size(115, 21);
-            this.txt_linux_username.TabIndex = 15;
+            this.txt_linux_username.TabIndex = 10;
             // 
             // label18
             // 
@@ -700,6 +717,7 @@
             this.b_linux_server_test.TabIndex = 14;
             this.b_linux_server_test.Text = "Connect Test";
             this.b_linux_server_test.UseVisualStyleBackColor = true;
+            this.b_linux_server_test.Click += new System.EventHandler(this.b_linux_server_test_Click);
             // 
             // b_add_linux_server
             // 
@@ -710,6 +728,7 @@
             this.b_add_linux_server.TabIndex = 12;
             this.b_add_linux_server.Text = "Add Server";
             this.b_add_linux_server.UseVisualStyleBackColor = true;
+            this.b_add_linux_server.Click += new System.EventHandler(this.b_add_linux_server_Click);
             // 
             // b_linux_server_remove
             // 
@@ -721,6 +740,7 @@
             this.b_linux_server_remove.TabIndex = 13;
             this.b_linux_server_remove.Text = "Remove Selected";
             this.b_linux_server_remove.UseVisualStyleBackColor = true;
+            this.b_linux_server_remove.Click += new System.EventHandler(this.b_linux_server_remove_Click);
             // 
             // txt_linux_host
             // 
@@ -794,6 +814,76 @@
             this.combo_env_list.TabIndex = 0;
             this.combo_env_list.SelectedIndexChanged += new System.EventHandler(this.combo_env_list_SelectedIndexChanged);
             // 
+            // comboBox1
+            // 
+            this.comboBox1.BackColor = System.Drawing.SystemColors.Window;
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "netframework",
+            "netcore"});
+            this.comboBox1.Location = new System.Drawing.Point(173, 9);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(121, 20);
+            this.comboBox1.TabIndex = 3;
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(96, 17);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(59, 12);
+            this.label21.TabIndex = 2;
+            this.label21.Text = "SDK Type:";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(432, 34);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(107, 43);
+            this.button1.TabIndex = 12;
+            this.button1.Text = "Deploy";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
+            // comboBox2
+            // 
+            this.comboBox2.BackColor = System.Drawing.SystemColors.Window;
+            this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox2.FormattingEnabled = true;
+            this.comboBox2.Location = new System.Drawing.Point(173, 46);
+            this.comboBox2.Name = "comboBox2";
+            this.comboBox2.Size = new System.Drawing.Size(193, 20);
+            this.comboBox2.TabIndex = 11;
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(96, 49);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(59, 12);
+            this.label22.TabIndex = 10;
+            this.label22.Text = "Env Name:";
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.richTextBox1);
+            this.groupBox1.Location = new System.Drawing.Point(8, 97);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(610, 322);
+            this.groupBox1.TabIndex = 13;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "LOG";
+            // 
+            // richTextBox1
+            // 
+            this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.richTextBox1.Location = new System.Drawing.Point(3, 17);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.ReadOnly = true;
+            this.richTextBox1.Size = new System.Drawing.Size(604, 302);
+            this.richTextBox1.TabIndex = 0;
+            this.richTextBox1.Text = "";
+            // 
             // Deploy
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
@@ -802,7 +892,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.Name = "Deploy";
-            this.ShowIcon = false;
+            this.ShowIcon = true;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "AntDeploy";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Deploy_FormClosing);
@@ -813,6 +903,8 @@
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.groupBox2.ResumeLayout(false);
+            this.page_docker.ResumeLayout(false);
+            this.page_docker.PerformLayout();
             this.page_window_service.ResumeLayout(false);
             this.page_window_service.PerformLayout();
             this.groupBox3.ResumeLayout(false);
@@ -826,6 +918,7 @@
             this.page_winserver.PerformLayout();
             this.page_linux_server.ResumeLayout(false);
             this.page_linux_server.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -899,5 +992,12 @@
         private System.Windows.Forms.Button b_linux_server_remove;
         private System.Windows.Forms.TextBox txt_linux_host;
         private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ComboBox comboBox2;
+        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Label label21;
     }
 }

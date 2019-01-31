@@ -8,10 +8,12 @@ using NLog.Windows.Forms;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Process = System.Diagnostics.Process;
@@ -27,8 +29,15 @@ namespace AntDeploy.Winform
         private Project _project;
         private NLog.Logger nlog_iis;
         private NLog.Logger nlog_windowservice;
+
+        private int ProgressPercentage = 0;
+        private int ProgressPercentageForWindowsService = 0;
+
         public Deploy(string projectPath, Project project)
         {
+           
+            this.Icon =  new Icon("Resources/Logo.ico");
+
             InitializeComponent();
             ProjectPath = projectPath;
             _project = project;
@@ -81,11 +90,9 @@ namespace AntDeploy.Winform
 
         }
 
-
-
-
-
         public DeployConfig DeployConfig { get; set; }
+
+        #region Form
 
 
         private void Deploy_Load(object sender, EventArgs e)
@@ -207,21 +214,29 @@ namespace AntDeploy.Winform
             );
         }
 
-        private void DeployConfigOnEnvChangeEvent(Env changeEnv, bool isremove)
-        {
-            this.combo_iis_env.Items.Clear();
-            this.combo_windowservice_env.Items.Clear();
-            if (DeployConfig.Env.Any())
-            {
-                foreach (var env in DeployConfig.Env)
-                {
-                    this.combo_iis_env.Items.Add(env.Name);
-                    this.combo_windowservice_env.Items.Add(env.Name);
-                }
-            }
 
+        private void Deploy_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            DeployConfig.IIsConfig.WebSiteName = this.txt_iis_web_site_name.Text.Trim();
+
+            DeployConfig.WindowsServiveConfig.ServiceName = this.txt_windowservice_name.Text.Trim();
+            DeployConfig.WindowsServiveConfig.StopTimeOutSeconds = this.txt_windowservice_timeout.Text.Trim();
+
+
+
+            var configJson = JsonConvert.SerializeObject(DeployConfig, Formatting.Indented);
+            File.WriteAllText(ProjectConfigPath, configJson, Encoding.UTF8);
         }
 
+
+        #endregion
+
+        #region setting page
+        /// <summary>
+        /// 添加环境
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void b_env_add_by_name_Click(object sender, EventArgs e)
         {
             var env_name = this.txt_env_name.Text.Trim();
@@ -250,55 +265,11 @@ namespace AntDeploy.Winform
             }
         }
 
-        private void combo_env_list_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            this.combo_env_server_list.Items.Clear();
-            var selectedEnv = this.combo_env_list.SelectedItem as string;
-            if (string.IsNullOrEmpty(selectedEnv))
-            {
-                this.b_env_server_add.Enabled = false;
-                this.b_env_server_remove.Enabled = false;
-                this.b_env_server_test.Enabled = false;
-                this.txt_env_server_host.Text = string.Empty;
-                this.txt_env_server_token.Text = string.Empty;
-                return;
-            }
-
-            this.b_env_server_add.Enabled = true;
-            this.b_env_server_remove.Enabled = true;
-            this.b_env_server_test.Enabled = true;
-
-            var env = this.DeployConfig.Env.FirstOrDefault(r => r.Name.Equals(selectedEnv));
-
-            if (env != null)
-            {
-                // ReSharper disable once CoVariantArrayConversion
-                this.combo_env_server_list.Items.AddRange(items: env.ServerList.Select(r => r.Host + "@_@" + r.Token).ToArray());
-            }
-            if (this.combo_env_server_list.Items.Count > 0) this.combo_env_server_list.SelectedIndex = 0;
-
-        }
-
-        private void combo_env_server_list_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-            this.txt_env_server_host.Text = string.Empty;
-            this.txt_env_server_token.Text = string.Empty;
-            var seletedServer = this.combo_env_server_list.SelectedItem as string;
-            if (string.IsNullOrEmpty(seletedServer))
-            {
-                return;
-            }
-
-            var arr = seletedServer.Split(new string[] { "@_@" }, StringSplitOptions.None);
-            if (arr.Length == 2)
-            {
-                this.txt_env_server_host.Text = arr[0];
-                this.txt_env_server_token.Text = arr[1];
-            }
-
-        }
-
+        /// <summary>
+        /// 删除环境
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void b_env_remove_Click(object sender, EventArgs e)
         {
             var selectedEnv = this.combo_env_list.SelectedItem as string;
@@ -320,6 +291,91 @@ namespace AntDeploy.Winform
 
         }
 
+        /// <summary>
+        /// 环境改变事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void combo_env_list_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            this.combo_env_server_list.Items.Clear();
+            this.combo_linux_server_list.Items.Clear();
+
+            var selectedEnv = this.combo_env_list.SelectedItem as string;
+            if (string.IsNullOrEmpty(selectedEnv))
+            {
+                this.b_env_server_add.Enabled = false;
+                this.b_env_server_remove.Enabled = false;
+                this.b_env_server_test.Enabled = false;
+                this.txt_env_server_host.Text = string.Empty;
+                this.txt_env_server_token.Text = string.Empty;
+
+                this.b_linux_server_test.Enabled = false;
+                this.b_linux_server_remove.Enabled = false;
+                this.b_add_linux_server.Enabled = false;
+             
+                this.txt_linux_username.Text = string.Empty;
+                this.txt_linux_host.Text = string.Empty;
+                this.txt_linux_pwd.Text = string.Empty;
+
+                return;
+            }
+
+            this.b_env_server_add.Enabled = true;
+            this.b_env_server_remove.Enabled = true;
+            this.b_env_server_test.Enabled = true;
+
+            this.b_linux_server_test.Enabled = true;
+            this.b_linux_server_remove.Enabled = true;
+            this.b_add_linux_server.Enabled = true;
+
+            var env = this.DeployConfig.Env.FirstOrDefault(r => r.Name.Equals(selectedEnv));
+
+            if (env != null)
+            {
+                // ReSharper disable once CoVariantArrayConversion
+                this.combo_env_server_list.Items.AddRange(items: env.ServerList.Select(r => r.Host + "@_@" + r.Token).ToArray());
+
+                // ReSharper disable once CoVariantArrayConversion
+                this.combo_linux_server_list.Items.AddRange(items: env.LinuxServerList.Select(r => r.Host + "@_@" + r.UserName).ToArray());
+
+            }
+            if (this.combo_env_server_list.Items.Count > 0) this.combo_env_server_list.SelectedIndex = 0;
+            if (this.combo_linux_server_list.Items.Count > 0) this.combo_linux_server_list.SelectedIndex = 0;
+        }
+
+
+        /// <summary>
+        /// window server 改变事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void combo_env_server_list_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            this.txt_env_server_host.Text = string.Empty;
+            this.txt_env_server_token.Text = string.Empty;
+            var seletedServer = this.combo_env_server_list.SelectedItem as string;
+            if (string.IsNullOrEmpty(seletedServer))
+            {
+                return;
+            }
+
+            var arr = seletedServer.Split(new string[] { "@_@" }, StringSplitOptions.None);
+            if (arr.Length == 2)
+            {
+                this.txt_env_server_host.Text = arr[0];
+                this.txt_env_server_token.Text = arr[1];
+            }
+
+        }
+    
+
+        /// <summary>
+        /// 删除window server
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void b_env_server_remove_Click(object sender, EventArgs e)
         {
             var seletedServer = this.combo_env_server_list.SelectedItem as string;
@@ -332,6 +388,11 @@ namespace AntDeploy.Winform
             this.combo_env_server_list.Items.Remove(seletedServer);
         }
 
+        /// <summary>
+        /// 添加window server
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void b_env_server_add_Click(object sender, EventArgs e)
         {
             var serverHost = this.txt_env_server_host.Text.Trim();
@@ -369,6 +430,48 @@ namespace AntDeploy.Winform
             this.txt_env_server_token.Text = string.Empty;
         }
 
+        /// <summary>
+        /// window server 链接测试
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void b_env_server_test_Click(object sender, EventArgs e)
+        {
+            var serverHost = this.txt_env_server_host.Text.Trim();
+            if (serverHost.Length < 1)
+            {
+                MessageBox.Show("please input server host");
+                return;
+            }
+
+            var serverTolen = this.txt_env_server_token.Text.Trim();
+            if (serverTolen.Length < 1)
+            {
+                MessageBox.Show("please input server Token");
+                return;
+            }
+
+            try
+            {
+                WebClient client = new WebClient();
+                var result = client.DownloadString($"http://{serverHost}/publish?Token={serverTolen}");
+                if (result.Equals("success"))
+                {
+                    MessageBox.Show("Connect Sussess");
+                    return;
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Connect Fail");
+            }
+        }
+
+        /// <summary>
+        /// 添加ignore
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void b_env_ignore_add_Click(object sender, EventArgs e)
         {
             var ignoreTxt = this.txt_env_ignore.Text.Trim();
@@ -392,6 +495,11 @@ namespace AntDeploy.Winform
             }
         }
 
+        /// <summary>
+        /// 删除Ignore
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void b_env_ignore_remove_Click(object sender, EventArgs e)
         {
             if (this.list_env_ignore.SelectedIndex < 0) return;
@@ -400,22 +508,123 @@ namespace AntDeploy.Winform
             if (this.list_env_ignore.Items.Count >= 0)
                 this.list_env_ignore.SelectedIndex = this.list_env_ignore.Items.Count - 1;
         }
+  
+        
+        /// <summary>
+        /// 添加linux server
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void b_add_linux_server_Click(object sender, EventArgs e)
+        {
+            var serverHost = this.txt_linux_host.Text.Trim();
+            if (serverHost.Length < 1)
+            {
+                MessageBox.Show("please input server host");
+                return;
+            }
 
+            var userName = this.txt_linux_username.Text.Trim();
+            if (userName.Length < 1)
+            {
+                MessageBox.Show("please input server userName");
+                return;
+            }
+
+            var pwd = this.txt_linux_pwd.Text.Trim();
+            if (pwd.Length < 1)
+            {
+                MessageBox.Show("please input server pwd");
+                return;
+            }
+
+            var pwd2 = CodingHelper.AESEncrypt(pwd);
+            var existServer = this.combo_linux_server_list.Items.Cast<string>()
+                .Select(r => r.Split(new string[] { "@_@" }, StringSplitOptions.None)[0])
+                .FirstOrDefault(r => r.Equals(serverHost));
+
+            if (!string.IsNullOrEmpty(existServer))
+            {
+                MessageBox.Show("input server host is exist!");
+                return;
+            }
+            var newServer = serverHost + "@_@" + userName + "@_@" + pwd2;
+            this.combo_linux_server_list.Items.Add(newServer);
+            DeployConfig.Env[this.combo_env_list.SelectedIndex].LinuxServerList.Add(new LinuxServr
+            {
+                Host = serverHost,
+                UserName = userName,
+                Pwd = pwd2
+            });
+
+            this.combo_linux_server_list.SelectedItem = newServer;
+            this.txt_linux_host.Text = string.Empty;
+            this.txt_linux_username.Text = string.Empty;
+            this.txt_linux_pwd.Text = string.Empty;
+        }
+
+        /// <summary>
+        /// 删除linux server
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void b_linux_server_remove_Click(object sender, EventArgs e)
+        {
+            var seletedServer = this.combo_linux_server_list.SelectedItem as string;
+            if (string.IsNullOrEmpty(seletedServer))
+            {
+                return;
+            }
+
+            this.DeployConfig.Env[this.combo_env_list.SelectedIndex].LinuxServerList.RemoveAt(this.combo_linux_server_list.SelectedIndex);
+            this.combo_linux_server_list.Items.Remove(seletedServer);
+        }
+
+        /// <summary>
+        /// linux server 测试
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void b_linux_server_test_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        /// <summary>
+        /// linux server 改变事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void combo_linux_server_list_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            this.txt_linux_host.Text = string.Empty;
+            this.txt_linux_username.Text = string.Empty;
+            this.txt_linux_pwd.Text = string.Empty;
+
+            var seletedServer = this.combo_linux_server_list.SelectedItem as string;
+            if (string.IsNullOrEmpty(seletedServer))
+            {
+                return;
+            }
+
+            var arr = seletedServer.Split(new string[] { "@_@" }, StringSplitOptions.None);
+            if (arr.Length == 3)
+            {
+                this.txt_linux_host.Text = arr[0];
+                this.txt_linux_username.Text = arr[1];
+                this.txt_linux_pwd.Text = arr[2];
+
+            }
+        }
+        #endregion
+
+        #region iis page
         private void combo_iis_sdk_type_SelectedIndexChanged(object sender, EventArgs e)
         {
             var selectName = this.combo_iis_sdk_type.SelectedItem as string;
             if (!string.IsNullOrEmpty(selectName))
             {
                 DeployConfig.IIsConfig.SdkType = selectName;
-            }
-        }
-
-        private void combo_windowservice_sdk_type_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            var selectName = this.combo_windowservice_sdk_type.SelectedItem as string;
-            if (!string.IsNullOrEmpty(selectName))
-            {
-                DeployConfig.WindowsServiveConfig.SdkType = selectName;
             }
         }
 
@@ -428,48 +637,7 @@ namespace AntDeploy.Winform
             }
         }
 
-        private void combo_windowservice_env_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            var selectName = this.combo_windowservice_env.SelectedItem as string;
-            if (!string.IsNullOrEmpty(selectName))
-            {
-                DeployConfig.WindowsServiveConfig.LastEnvName = selectName;
-            }
-        }
-
-        private void Deploy_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            DeployConfig.IIsConfig.WebSiteName = this.txt_iis_web_site_name.Text.Trim();
-
-            DeployConfig.WindowsServiveConfig.ServiceName = this.txt_windowservice_name.Text.Trim();
-            DeployConfig.WindowsServiveConfig.StopTimeOutSeconds = this.txt_windowservice_timeout.Text.Trim();
-
-
-
-            var configJson = JsonConvert.SerializeObject(DeployConfig, Formatting.Indented);
-            File.WriteAllText(ProjectConfigPath, configJson);
-        }
-
-        private void ReadPorjectConfig(string projectPath)
-        {
-            if (File.Exists(projectPath))
-            {
-                ProjectFolderPath = new FileInfo(projectPath).DirectoryName;
-                ProjectConfigPath = Path.Combine(ProjectFolderPath, "AntDeploy.json");
-                if (File.Exists(ProjectConfigPath))
-                {
-                    var config = File.ReadAllText(ProjectConfigPath);
-                    if (!string.IsNullOrEmpty(config))
-                    {
-                        DeployConfig = JsonConvert.DeserializeObject<DeployConfig>(config);
-                        if (DeployConfig.Env == null) DeployConfig.Env = new List<Env>();
-                        if (DeployConfig.IIsConfig == null) DeployConfig.IIsConfig = new IIsConfig();
-                        if (DeployConfig.IgnoreList == null) DeployConfig.IgnoreList = new List<string>();
-                    }
-                }
-            }
-        }
-
+        
         private void b_iis_deploy_Click(object sender, EventArgs e)
         {
 
@@ -575,18 +743,18 @@ namespace AntDeploy.Winform
                     }
                     else
                     {
-                         var isSuccess = CommandHelper.RunMsbuild(
-                             ProjectPath,
-                             (r) => { this.nlog_iis.Info(r); },
-                             (er) => this.nlog_iis.Error(er));
+                        var isSuccess = CommandHelper.RunMsbuild(
+                            ProjectPath,
+                            (r) => { this.nlog_iis.Info(r); },
+                            (er) => this.nlog_iis.Error(er));
 
-                         if (!isSuccess)
-                         {
-                             this.nlog_iis.Error("publish error");
-                             return;
-                         }
+                        if (!isSuccess)
+                        {
+                            this.nlog_iis.Error("publish error");
+                            return;
+                        }
 
-                         publishPath = Path.Combine(ProjectFolderPath, "bin", "Release", "publish");
+                        publishPath = Path.Combine(ProjectFolderPath, "bin", "Release", "publish");
                     }
 
 
@@ -713,21 +881,12 @@ namespace AntDeploy.Winform
 
         }
 
-        private int ProgressPercentage = 0;
         private void ClientOnUploadProgressChanged(object sender, UploadProgressChangedEventArgs e)
         {
             if (e.ProgressPercentage > ProgressPercentage && e.ProgressPercentage != 100)
             {
                 ProgressPercentage = e.ProgressPercentage;
                 this.nlog_iis.Info($"Upload {(e.ProgressPercentage != 100 ? e.ProgressPercentage * 2 : e.ProgressPercentage)} % complete...");
-            }
-        }
-        private void ClientOnUploadProgressChanged2(object sender, UploadProgressChangedEventArgs e)
-        {
-            if (e.ProgressPercentage > ProgressPercentageForWindowsService && e.ProgressPercentage != 100)
-            {
-                ProgressPercentageForWindowsService = e.ProgressPercentage;
-                this.nlog_windowservice.Info($"Upload {(e.ProgressPercentage != 100 ? e.ProgressPercentage * 2 : e.ProgressPercentage)} % complete...");
             }
         }
 
@@ -747,6 +906,40 @@ namespace AntDeploy.Winform
             });
 
         }
+        #endregion
+
+        #region windowsService page
+
+        private void combo_windowservice_sdk_type_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var selectName = this.combo_windowservice_sdk_type.SelectedItem as string;
+            if (!string.IsNullOrEmpty(selectName))
+            {
+                DeployConfig.WindowsServiveConfig.SdkType = selectName;
+            }
+        }
+
+
+        private void combo_windowservice_env_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var selectName = this.combo_windowservice_env.SelectedItem as string;
+            if (!string.IsNullOrEmpty(selectName))
+            {
+                DeployConfig.WindowsServiveConfig.LastEnvName = selectName;
+            }
+        }
+
+
+        private void ClientOnUploadProgressChanged2(object sender, UploadProgressChangedEventArgs e)
+        {
+            if (e.ProgressPercentage > ProgressPercentageForWindowsService && e.ProgressPercentage != 100)
+            {
+                ProgressPercentageForWindowsService = e.ProgressPercentage;
+                this.nlog_windowservice.Info($"Upload {(e.ProgressPercentage != 100 ? e.ProgressPercentage * 2 : e.ProgressPercentage)} % complete...");
+            }
+        }
+
+
 
         private void EnableForWindowsService(bool flag)
         {
@@ -764,44 +957,7 @@ namespace AntDeploy.Winform
 
         }
 
-        private void BeginInvokeLambda(Action action)
-        {
-            BeginInvoke(action, null);
-        }
 
-        private void b_env_server_test_Click(object sender, EventArgs e)
-        {
-            var serverHost = this.txt_env_server_host.Text.Trim();
-            if (serverHost.Length < 1)
-            {
-                MessageBox.Show("please input server host");
-                return;
-            }
-
-            var serverTolen = this.txt_env_server_token.Text.Trim();
-            if (serverTolen.Length < 1)
-            {
-                MessageBox.Show("please input server Token");
-                return;
-            }
-
-            try
-            {
-                WebClient client = new WebClient();
-                var result = client.DownloadString($"http://{serverHost}/publish?Token={serverTolen}");
-                if (result.Equals("success"))
-                {
-                    MessageBox.Show("Connect Sussess");
-                    return;
-                }
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("Connect Fail");
-            }
-        }
-
-        private int ProgressPercentageForWindowsService = 0;
         private void b_windowservice_deploy_Click(object sender, EventArgs e)
         {
             if (ProjectHelper.IsWebProject(_project))
@@ -1142,5 +1298,53 @@ namespace AntDeploy.Winform
              }).Start();
         }
 
+
+        #endregion
+
+        #region Common
+
+        private void DeployConfigOnEnvChangeEvent(Env changeEnv, bool isremove)
+        {
+            this.combo_iis_env.Items.Clear();
+            this.combo_windowservice_env.Items.Clear();
+            if (DeployConfig.Env.Any())
+            {
+                foreach (var env in DeployConfig.Env)
+                {
+                    this.combo_iis_env.Items.Add(env.Name);
+                    this.combo_windowservice_env.Items.Add(env.Name);
+                }
+            }
+
+        }
+
+        private void ReadPorjectConfig(string projectPath)
+        {
+            if (File.Exists(projectPath))
+            {
+                ProjectFolderPath = new FileInfo(projectPath).DirectoryName;
+                ProjectConfigPath = Path.Combine(ProjectFolderPath, "AntDeploy.json");
+                if (File.Exists(ProjectConfigPath))
+                {
+                    var config = File.ReadAllText(ProjectConfigPath, Encoding.UTF8);
+                    if (!string.IsNullOrEmpty(config))
+                    {
+                        DeployConfig = JsonConvert.DeserializeObject<DeployConfig>(config);
+                        if (DeployConfig.Env == null) DeployConfig.Env = new List<Env>();
+                        if (DeployConfig.IIsConfig == null) DeployConfig.IIsConfig = new IIsConfig();
+                        if (DeployConfig.IgnoreList == null) DeployConfig.IgnoreList = new List<string>();
+                    }
+                }
+            }
+        }
+
+        private void BeginInvokeLambda(Action action)
+        {
+            BeginInvoke(action, null);
+        }
+
+        #endregion
+
+       
     }
 }
