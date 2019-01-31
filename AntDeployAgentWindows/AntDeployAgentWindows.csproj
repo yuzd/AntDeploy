@@ -68,8 +68,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\LoggerModel.cs" />
     <Compile Include="Model\DeployResult.cs" />
     <Compile Include="Model\Setting.cs" />
+    <Compile Include="MyApp\LoggerService.cs" />
     <Compile Include="MyApp\PublishService.cs" />
     <Compile Include="MyApp\Service\CommonProcessor.cs" />
     <Compile Include="MyApp\Service\ICommon.cs" />

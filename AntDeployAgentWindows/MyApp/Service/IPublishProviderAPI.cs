@@ -11,6 +11,7 @@ namespace AntDeployAgentWindows.MyApp.Service
     public interface IPublishProviderAPI
     {
         string ProviderName { get; }
+        string LoggerKey { get;  set;}
 
         /// <summary>
         /// 发布

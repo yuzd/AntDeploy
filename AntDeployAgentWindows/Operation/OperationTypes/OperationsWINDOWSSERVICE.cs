@@ -68,15 +68,24 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
         public override void Start()
         {
             logger("Start to Windows Service Start :" + this.args.AppName);
-            var re = WindowServiceHelper.StartService(this.args.AppName, 120);
-            if (string.IsNullOrEmpty(re))
+            var service = WindowServiceHelper.GetWindowServiceByName(this.args.AppName);
+            if (service.Status == ServiceControllerStatus.Stopped)
             {
-                logger("Success to Windows Service Start :" + this.args.AppName);
+                var re = WindowServiceHelper.StartService(this.args.AppName, 120);
+                if (string.IsNullOrEmpty(re))
+                {
+                    logger("Success to Windows Service Start :" + this.args.AppName);
+                }
+                else
+                {
+                    logger("【Error】 Windows Service Start :" + this.args.AppName + ",Err:"+re ) ;
+                }
             }
             else
             {
-                logger("【Error】 Windows Service Start :" + this.args.AppName + ",Err:"+re ) ;
+                logger($"Windows Service:{this.args.AppName} Status is not Stopped ");
             }
+           
         }
 
         public override void Execute()

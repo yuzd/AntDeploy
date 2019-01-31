@@ -797,7 +797,7 @@ namespace AntDeploy.Winform
                         return;
                     }
                     this.nlog_iis.Info("package success");
-
+                    var loggerId = Guid.NewGuid().ToString("N");
                     //执行 上传
                     this.nlog_iis.Info("Deploy Start");
                     foreach (var server in serverList)
@@ -814,14 +814,22 @@ namespace AntDeploy.Winform
                         httpRequestClient.SetFieldValue("publishType", "iis");
                         httpRequestClient.SetFieldValue("sdkType", DeployConfig.IIsConfig.SdkType);
                         httpRequestClient.SetFieldValue("port", Port);
+                        httpRequestClient.SetFieldValue("id", loggerId);
                         httpRequestClient.SetFieldValue("poolName", PoolName);
                         httpRequestClient.SetFieldValue("webSiteName", DeployConfig.IIsConfig.WebSiteName);
                         httpRequestClient.SetFieldValue("Token", server.Token);
                         httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream", zipBytes);
                         System.Net.WebSockets.Managed.ClientWebSocket webSocket = null;
+                        HttpLogger HttpLogger = null;
                         try
                         {
                             var hostKey = "";
+                           
+                            HttpLogger = new HttpLogger
+                            {
+                                Key = loggerId,
+                                Url = $"http://{server.Host}/logger?key="+loggerId
+                            };
                             webSocket = await WebSocketHelper.Connect($"ws://{server.Host}/socket", (receiveMsg) =>
                             {
                                 if (!string.IsNullOrEmpty(receiveMsg))
@@ -835,7 +843,7 @@ namespace AntDeploy.Winform
                                         this.nlog_iis.Info($"【Server】{receiveMsg}");
                                     }
                                 }
-                            });
+                            },HttpLogger);
 
                             httpRequestClient.SetFieldValue("wsKey", hostKey);
 
@@ -848,22 +856,20 @@ namespace AntDeploy.Winform
                             }
                             else
                             {
-                                this.nlog_iis.Error(
-                                    $"Host:{server.Host},Response:{uploadResult.Item2},Skip to Next");
+                                this.nlog_iis.Error($"Host:{server.Host},Response:{uploadResult.Item2},Skip to Next");
                             }
                         }
                         catch (Exception ex)
                         {
-
                             this.nlog_iis.Error($"Fail Deploy,Host:{server.Host},Response:{ex.Message},Skip to Next");
                         }
                         finally
                         {
                             webSocket?.Dispose();
+                            HttpLogger?.Dispose();
                         }
 
                     }
-                    this.nlog_iis.Info("Deploy End");
                     //交互
                 }
                 catch (Exception ex1)
@@ -1212,7 +1218,7 @@ namespace AntDeploy.Winform
                      }
 
                      this.nlog_windowservice.Info("package success");
-
+                     var loggerId = Guid.NewGuid().ToString("N");
                      //执行 上传
                      this.nlog_windowservice.Info("Deploy Start");
                      foreach (var server in serverList)
@@ -1235,9 +1241,15 @@ namespace AntDeploy.Winform
                          httpRequestClient.SetFieldValue("Token", server.Token);
                          httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream", zipBytes);
                          System.Net.WebSockets.Managed.ClientWebSocket webSocket = null;
+                         HttpLogger HttpLogger = null;
                          try
                          {
                              var hostKey = "";
+                             HttpLogger = new HttpLogger
+                             {
+                                 Key = loggerId,
+                                 Url = $"http://{server.Host}/logger?key="+loggerId
+                             };
                              webSocket = await WebSocketHelper.Connect($"ws://{server.Host}/socket", (receiveMsg) =>
                              {
                                  if (!string.IsNullOrEmpty(receiveMsg))
@@ -1251,7 +1263,7 @@ namespace AntDeploy.Winform
                                          this.nlog_windowservice.Info($"【Server】{receiveMsg}");
                                      }
                                  }
-                             });
+                             },HttpLogger);
 
                              httpRequestClient.SetFieldValue("wsKey", hostKey);
 
@@ -1277,11 +1289,11 @@ namespace AntDeploy.Winform
                          finally
                          {
                              webSocket?.Dispose();
+                             HttpLogger?.Dispose();
                          }
 
                      }
 
-                     this.nlog_windowservice.Info("Deploy End");
                      //交互
                  }
                  catch (Exception ex1)

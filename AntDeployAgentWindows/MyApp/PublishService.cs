@@ -1,8 +1,10 @@
-﻿using AntDeployAgentWindows.Model;
+﻿using System.Collections.Generic;
+using AntDeployAgentWindows.Model;
 using AntDeployAgentWindows.MyApp.Service;
 using AntDeployAgentWindows.WebApiCore;
 using Newtonsoft.Json;
 using System.Linq;
+using AntDeployAgentWindows.WebSocketApp;
 
 namespace AntDeployAgentWindows.MyApp
 {
@@ -71,20 +73,37 @@ namespace AntDeployAgentWindows.MyApp
                 return;
             }
 
-
-            var checkResult = publisher.Check(formHandler);
-            if (!string.IsNullOrEmpty(checkResult))
+            var loggerKeyValue = string.Empty;
+            var loggerKey = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("id"));
+            if (loggerKey != null  && !string.IsNullOrEmpty(loggerKey.TextValue))
             {
-                WriteError(checkResult);
-                return;
+                loggerKeyValue = publisher.LoggerKey = loggerKey.TextValue;
+                LoggerService.loggerCollection.TryAdd(publisher.LoggerKey, new List<LoggerModel>());
             }
 
-
-            var publisResult = publisher.Deploy(file);
-            if (!string.IsNullOrEmpty(publisResult))
+            try
             {
-                WriteError(publisResult);
-                return;
+                var checkResult = publisher.Check(formHandler);
+                if (!string.IsNullOrEmpty(checkResult))
+                {
+                    WriteError(checkResult);
+                    return;
+                }
+
+
+                var publisResult = publisher.Deploy(file);
+                if (!string.IsNullOrEmpty(publisResult))
+                {
+                    WriteError(publisResult);
+                    return;
+                }
+            }
+            finally
+            {
+                if (!string.IsNullOrEmpty(loggerKeyValue))
+                {
+                    LoggerService.Remove(loggerKeyValue);
+                }
             }
 
             WriteSuccess();

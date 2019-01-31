@@ -5,15 +5,18 @@ using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using AntDeployAgentWindows.Model;
 
 namespace AntDeployAgentWindows.MyApp.Service
 {
     public abstract class PublishProviderBasicAPI : CommonProcessor, IPublishProviderAPI
     {
         private object obj = new object();
-        private WebSocketApp.WebSocket WebSocket;
+       
         private static readonly ConcurrentDictionary<string, ReaderWriterLockSlim> locker = new ConcurrentDictionary<string, ReaderWriterLockSlim>();
         public abstract string ProviderName { get; }
+        public string LoggerKey { get; set; }
+        public WebSocketApp.WebSocket WebSocket { get; set; }
         public abstract string ProjectName { get; }
         public abstract string DeployExcutor(FormHandler.FormItem fileItem);
         public abstract string CheckData(FormHandler formHandler);
@@ -59,7 +62,11 @@ namespace AntDeployAgentWindows.MyApp.Service
             if (wsKey != null  && !string.IsNullOrEmpty(wsKey.TextValue))
             {
                 var _wsKey = wsKey.TextValue;
-                MyWebSocketWork.WebSockets.TryGetValue(_wsKey, out WebSocket);
+
+                if (MyWebSocketWork.WebSockets.TryGetValue(_wsKey, out var sockert))
+                {
+                    WebSocket = sockert;
+                }
             }
 
             return CheckData(formHandler);
@@ -89,7 +96,42 @@ namespace AntDeployAgentWindows.MyApp.Service
             {
                 if (WebSocket != null)
                 {
-                    WebSocket.Send(str + "@_@" + str.Length);
+                    try
+                    {
+                        WebSocket.Send(str + "@_@" + str.Length);
+                    }
+                    catch (Exception)
+                    {
+                        //WebSocket发送失败
+                        if (!string.IsNullOrEmpty(LoggerKey))
+                        {
+                            if (LoggerService.loggerCollection.TryGetValue(LoggerKey, out var list))
+                            {
+                                list.Add(new LoggerModel
+                                {
+                                    Date = DateTime.Now,
+                                    IsActive = false,
+                                    Msg = str
+                                });
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    //WebSocket发送失败
+                    if (!string.IsNullOrEmpty(LoggerKey))
+                    {
+                        if (LoggerService.loggerCollection.TryGetValue(LoggerKey, out var list))
+                        {
+                            list.Add(new LoggerModel
+                            {
+                                Date = DateTime.Now,
+                                IsActive = false,
+                                Msg = str
+                            });
+                        }
+                    }
                 }
             }
             catch (Exception)

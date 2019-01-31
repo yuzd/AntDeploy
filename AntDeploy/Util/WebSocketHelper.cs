@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
@@ -10,11 +11,23 @@ using ClientWebSocket = System.Net.WebSockets.Managed.ClientWebSocket;
 
 namespace AntDeploy.Util
 {
+    public class HttpLogger:IDisposable
+    {
+        public string Key { get; set; }
+        public string Url { get; set; }
+        public bool IsDispose { get; set; }
+
+        public void Dispose()
+        {
+            IsDispose = true;
+        }
+    }
+
     public class WebSocketHelper
     {
         //private static UTF8Encoding encoding = new UTF8Encoding();
 
-        public static async Task<ClientWebSocket> Connect(string uri,Action<string> receiveAction)
+        public static async Task<ClientWebSocket> Connect(string uri,Action<string> receiveAction,HttpLogger loggerKey = null)
         {
 
             ClientWebSocket webSocket = null;
@@ -39,6 +52,17 @@ namespace AntDeploy.Util
                         {
 
                         }
+                    }
+                }).Start();
+                
+                new Task( () =>
+                {
+                    try
+                    {
+                         ReceiveHttp(receiveAction,loggerKey);
+                    }
+                    catch (Exception)
+                    {
                     }
                 }).Start();
             }
@@ -100,6 +124,25 @@ namespace AntDeploy.Util
             }
         }
 
+
+        private static void ReceiveHttp(Action<string> receiveAction, HttpLogger logger)
+        {
+            var client = new WebClient();
+            while (!logger.IsDispose)
+            {
+                var result =  client.DownloadString(new Uri(logger.Url));
+                if (!string.IsNullOrEmpty(result))
+                {
+                    var list = JsonConvert.DeserializeObject<List<LoggerModel>>(result);
+                    foreach (var li in list)
+                    {
+                        receiveAction(li.Msg);
+                    }
+                }
+                Thread.Sleep(1000);
+            }
+        }
+
         private static async Task Receive(ClientWebSocket webSocket, Action<string> receiveAction)
         {
             byte[] buffer = new byte[2048];
@@ -122,6 +165,14 @@ namespace AntDeploy.Util
                 }
             }
         }
+
+    }
+
+    class LoggerModel
+    {
+        public string Msg { get; set; }
+        public DateTime Date { get; set; }
+        public bool IsActive { get; set; }
 
     }
 }
