@@ -12,6 +12,7 @@ namespace AntDeployAgentWindows.MyApp.Service
     public abstract class PublishProviderBasicAPI : CommonProcessor, IPublishProviderAPI
     {
         private object obj = new object();
+        private bool webSocketDisposed = false;
        
         private static readonly ConcurrentDictionary<string, ReaderWriterLockSlim> locker = new ConcurrentDictionary<string, ReaderWriterLockSlim>();
         public abstract string ProviderName { get; }
@@ -66,6 +67,7 @@ namespace AntDeployAgentWindows.MyApp.Service
                 if (MyWebSocketWork.WebSockets.TryGetValue(_wsKey, out var sockert))
                 {
                     WebSocket = sockert;
+                    WebSocket.OnClose += sender => { webSocketDisposed = true; };
                 }
             }
 
@@ -94,7 +96,7 @@ namespace AntDeployAgentWindows.MyApp.Service
         {
             try
             {
-                if (WebSocket != null)
+                if (WebSocket != null && !webSocketDisposed)
                 {
                     try
                     {
