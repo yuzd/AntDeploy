@@ -343,7 +343,7 @@ namespace AntDeployAgentWindows.WebSocketApp
             }
 
             if (_isClosed) throw new Exception("WebSocket Is Closed.");
-            if (_writting) throw new Exception("WebSocket Is Writting.");
+            //if (_writting) throw new Exception("WebSocket Is Writting.");
 
             _writting = true;
             try

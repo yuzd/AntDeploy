@@ -130,16 +130,23 @@ namespace AntDeploy.Util
             var client = new WebClient();
             while (!logger.IsDispose)
             {
-                var result =  client.DownloadString(new Uri(logger.Url));
-                if (!string.IsNullOrEmpty(result))
+                try
                 {
-                    var list = JsonConvert.DeserializeObject<List<LoggerModel>>(result);
-                    foreach (var li in list)
+                    var result = client.DownloadString(new Uri(logger.Url));
+                    if (!string.IsNullOrEmpty(result))
                     {
-                        receiveAction(li.Msg);
+                        var list = JsonConvert.DeserializeObject<List<LoggerModel>>(result);
+                        foreach (var li in list)
+                        {
+                            receiveAction(li.Msg);
+                        }
                     }
+                    Thread.Sleep(1000);
                 }
-                Thread.Sleep(1000);
+                catch (Exception)
+                {
+
+                }
             }
         }
 
@@ -148,20 +155,27 @@ namespace AntDeploy.Util
             byte[] buffer = new byte[2048];
             while (webSocket.State == WebSocketState.Open)
             {
-                var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-                if (result.MessageType == WebSocketMessageType.Close)
+                try
                 {
-                    await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
-                }
-                else
-                {
-                    var text = Encoding.UTF8.GetString(buffer).TrimEnd('\0');
-                    if (!text.StartsWith("@hello@"))
+                    var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                    if (result.MessageType == WebSocketMessageType.Close)
                     {
-                        var arr = text.Split(new string[] { "@_@" }, StringSplitOptions.None);
-                        receiveAction(arr[0]);
+                        await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
                     }
-                   
+                    else
+                    {
+                        var text = Encoding.UTF8.GetString(buffer).TrimEnd('\0');
+                        if (!text.StartsWith("@hello@"))
+                        {
+                            var arr = text.Split(new string[] { "@_@" }, StringSplitOptions.None);
+                            receiveAction(arr[0]);
+                        }
+
+                    }
+                }
+                catch (Exception)
+                {
+
                 }
             }
         }

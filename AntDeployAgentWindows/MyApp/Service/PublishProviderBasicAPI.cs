@@ -102,7 +102,7 @@ namespace AntDeployAgentWindows.MyApp.Service
                     {
                         WebSocket.Send(str + "@_@" + str.Length);
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         //WebSocket发送失败
                         if (!string.IsNullOrEmpty(LoggerKey))
