@@ -37,6 +37,8 @@ namespace AntDeploy.Winform
         public Deploy(string projectPath, Project project)
         {
 
+            this.Text += $"(Version:{Vsix.VERSION})";
+
             Assembly assembly = typeof(Deploy).Assembly;
             using (Stream stream = assembly.GetManifestResourceStream("AntDeploy.Resources.Logo1.ico"))
             {
@@ -1250,6 +1252,7 @@ namespace AntDeploy.Winform
                          HttpRequestClient httpRequestClient = new HttpRequestClient();
                          httpRequestClient.SetFieldValue("publishType", "windowservice");
                          httpRequestClient.SetFieldValue("serviceName", serviceName);
+                         httpRequestClient.SetFieldValue("id", loggerId);
                          httpRequestClient.SetFieldValue("sdkType", DeployConfig.WindowsServiveConfig.SdkType);
                          httpRequestClient.SetFieldValue("isProjectInstallService", isProjectInstallService ? "yes" : "no");
                          httpRequestClient.SetFieldValue("execFilePath", execFilePath);
