@@ -20,7 +20,7 @@ namespace AntDeployAgentWindows.MyApp
 
         static LoggerService()
         {
-            mDetectionTimer = new System.Threading.Timer(OnVerifyClients , null, 1000*10, 1000*10);
+            mDetectionTimer = new System.Threading.Timer(OnVerifyClients , null, 1000*60*10, 1000*60*10);
         }
 
         protected override void ProcessRequest()
@@ -76,7 +76,7 @@ namespace AntDeployAgentWindows.MyApp
             catch { }
             finally
             {
-                mDetectionTimer.Change(10*1000, 10*1000);
+                mDetectionTimer.Change(1000*60*10, 1000*60*10);
             }
         }
 
