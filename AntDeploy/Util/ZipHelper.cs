@@ -17,10 +17,10 @@ namespace AntDeploy.Util
         /// <param name="compressionLevel"></param>
         /// <param name="includeBaseDirectory"></param>
         /// <returns></returns>
-        public static byte[] DoCreateFromDirectory(string sourceDirectoryName,CompressionLevel? compressionLevel,bool includeBaseDirectory,List<string> ignoreList = null)
+        public static byte[] DoCreateFromDirectory(string sourceDirectoryName, CompressionLevel? compressionLevel, bool includeBaseDirectory, List<string> ignoreList = null)
         {
             sourceDirectoryName = Path.GetFullPath(sourceDirectoryName);
-            using ( var outStream = new MemoryStream())
+            using (var outStream = new MemoryStream())
             {
                 using (ZipArchive destination = new ZipArchive(outStream, ZipArchiveMode.Create, false))
                 {
@@ -75,47 +75,61 @@ namespace AntDeploy.Util
             }
         }
 
-        public static MemoryStream DoCreateFromDirectory2(string sourceDirectoryName, CompressionLevel? compressionLevel, bool includeBaseDirectory)
+        public static MemoryStream DoCreateFromDirectory2(string sourceDirectoryName, CompressionLevel? compressionLevel, bool includeBaseDirectory, List<string> ignoreList = null)
         {
             sourceDirectoryName = Path.GetFullPath(sourceDirectoryName);
             var outStream = new MemoryStream();
+            using (ZipArchive destination = new ZipArchive(outStream, ZipArchiveMode.Create, true))
             {
-                using (ZipArchive destination = new ZipArchive(outStream, ZipArchiveMode.Create, false))
+                bool flag = true;
+                DirectoryInfo directoryInfo = new DirectoryInfo(sourceDirectoryName);
+                string fullName = directoryInfo.FullName;
+                if (includeBaseDirectory && directoryInfo.Parent != null)
+                    fullName = directoryInfo.Parent.FullName;
+                foreach (FileSystemInfo enumerateFileSystemInfo in directoryInfo.EnumerateFileSystemInfos("*", SearchOption.AllDirectories))
                 {
-                    bool flag = true;
-                    DirectoryInfo directoryInfo = new DirectoryInfo(sourceDirectoryName);
-                    string fullName = directoryInfo.FullName;
-                    if (includeBaseDirectory && directoryInfo.Parent != null)
-                        fullName = directoryInfo.Parent.FullName;
-                    foreach (FileSystemInfo enumerateFileSystemInfo in directoryInfo.EnumerateFileSystemInfos("*", SearchOption.AllDirectories))
-                    {
-                        flag = false;
-                        int length = enumerateFileSystemInfo.FullName.Length - fullName.Length;
-                        string entryName = EntryFromPath(enumerateFileSystemInfo.FullName, fullName.Length, length);
+                    flag = false;
+                    int length = enumerateFileSystemInfo.FullName.Length - fullName.Length;
+                    string entryName = EntryFromPath(enumerateFileSystemInfo.FullName, fullName.Length, length);
 
-                        if (enumerateFileSystemInfo is FileInfo)
-                        {
-                            DoCreateEntryFromFile(destination, enumerateFileSystemInfo.FullName, entryName, compressionLevel);
-                        }
-                        else
-                        {
-                            DirectoryInfo possiblyEmptyDir = enumerateFileSystemInfo as DirectoryInfo;
-                            if (possiblyEmptyDir != null && IsDirEmpty(possiblyEmptyDir))
-                                destination.CreateEntry(entryName + s_pathSeperator.ToString());
-                        }
-                    }
-
-                    if (!(includeBaseDirectory & flag))
+                    if (enumerateFileSystemInfo is FileInfo)
                     {
-                        outStream.Seek(0, SeekOrigin.Begin);
-                        return outStream;
+                        if (ignoreList != null)
+                        {
+                            var haveMatch = false;
+                            foreach (var ignorRule in ignoreList)
+                            {
+                                var isMatch = Regex.Match(enumerateFileSystemInfo.Name, ignorRule);
+                                if (isMatch.Success)
+                                {
+                                    haveMatch = true;
+                                    break;
+                                }
+                            }
+
+                            if (haveMatch)
+                            {
+                                continue;
+                            }
+                        }
+                        DoCreateEntryFromFile(destination, enumerateFileSystemInfo.FullName, entryName, compressionLevel);
                     }
+                    else
+                    {
+                        DirectoryInfo possiblyEmptyDir = enumerateFileSystemInfo as DirectoryInfo;
+                        if (possiblyEmptyDir != null && IsDirEmpty(possiblyEmptyDir))
+                            destination.CreateEntry(entryName + s_pathSeperator.ToString());
+                    }
+                }
+
+                if ((includeBaseDirectory & flag))
+                {
                     string str = directoryInfo.Name;
                     destination.CreateEntry(str + s_pathSeperator.ToString());
                 }
-                outStream.Seek(0, SeekOrigin.Begin);
-                return outStream;
             }
+            outStream.Seek(0, SeekOrigin.Begin);
+            return outStream;
         }
 
         internal static ZipArchiveEntry DoCreateEntryFromFile(

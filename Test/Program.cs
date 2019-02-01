@@ -15,8 +15,24 @@ namespace Test
         {
 
 
-            var buildResult = CommandHelper.RunMsbuild("E:\\WorkSpace\\github\\AntDeploy\\AntDeployAgentWindowsService\\AntDeployAgentWindowsService.csproj",
-                Console.WriteLine,Console.WriteLine);
+            //var buildResult = CommandHelper.RunMsbuild("E:\\WorkSpace\\github\\AntDeploy\\AntDeployAgentWindowsService\\AntDeployAgentWindowsService.csproj",
+            //    Console.WriteLine,Console.WriteLine);
+
+            var stream = ZipHelper.DoCreateFromDirectory2(
+                @"H:\Csharp\yuzd\Lito\Lito\Lito.APP\bin\Release\netcoreapp2.1\publish",
+                CompressionLevel.Optimal, true, new List<string>
+                {
+                    "appsettings.*",
+                    "web.config",
+                    "QRCoder.dll"
+                });
+
+
+
+
+            SSHClient sshClient = new SSHClient("192.168.0.7:22","root","kawayiyi@1",Console.WriteLine);
+            sshClient.Connect();
+            sshClient.PublishZip(stream,"/publisher","publish.zip");
 
 
 
@@ -28,6 +44,7 @@ namespace Test
                     "web.config",
                     "QRCoder.dll"
                 });
+
 
             
             var filePath = Path.Combine(@"H:\Csharp\yuzd\AntDeploy\AntDeploy\WindowsFormsAppTest\Test\MyProject\bin\Release\netstandard2.0\unzip", "aa.zip");
