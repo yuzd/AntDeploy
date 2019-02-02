@@ -1,7 +1,9 @@
 ﻿using Renci.SshNet;
 using Renci.SshNet.Sftp;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 
@@ -126,28 +128,43 @@ namespace AntDeploy.Util
            
         }
 
-        public void PublishZip(Stream stream, string destinationFolder, string fileName)
+
+
+
+        public void PublishZip(string zipFolder,List<string> ignorList, string destinationFolder, string fileName)
         {
-            if (!destinationFolder.EndsWith("/")) destinationFolder = destinationFolder + "/";
-
-            Upload(stream, destinationFolder, fileName);
-
-            var zipPath = destinationFolder + fileName;
-            if (!_sftpClient.Exists(zipPath))
+            using (var stream = ZipHelper.DoCreateFromDirectory2(zipFolder,CompressionLevel.Optimal,true, ignorList))
             {
-                _logger($"upload fail, {zipPath} not exist!");
-                return;
+
+                if (!destinationFolder.EndsWith("/")) destinationFolder = destinationFolder + "/";
+
+                Upload(stream, destinationFolder, fileName);
+
+                var zipPath = destinationFolder + fileName;
+                if (!_sftpClient.Exists(zipPath))
+                {
+                    _logger($"upload fail, {zipPath} not exist!");
+                    return;
+                }
+
+                _logger($"unzip start: {zipPath}");
+                RunSheell($"cd {destinationFolder} && unzip publish.zip");
+                var publishFolder = $"{destinationFolder}publish/";
+                _logger($"unzip success: {publishFolder}");
+                //_sftpClient.ChangeDirectory(publishFolder);
+                //_logger($"Changed directory to {publishFolder}");
+
+
+                //执行Docker命令
+
+                //先查看本地是否有dockerFile
+
+                
+
+                //
+
             }
 
-            _logger($"unzip start: {zipPath}");
-            RunSheell($"cd {destinationFolder} && unzip publish.zip");
-            var publishFolder = $"{destinationFolder}publish/";
-            _logger($"unzip success: {publishFolder}");
-            //_sftpClient.ChangeDirectory(publishFolder);
-            //_logger($"Changed directory to {publishFolder}");
-
-
-            //执行Docker命令
 
         }
 
