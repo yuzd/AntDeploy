@@ -20,14 +20,22 @@ namespace Test
 
 
 
-            SSHClient sshClient = new SSHClient("192.168.0.7:22","root","kawayiyi@1",Console.WriteLine);
-            sshClient.Connect();
-            sshClient.PublishZip(@"H:\Csharp\yuzd\Lito\Lito\Lito.APP\bin\Release\netcoreapp2.1\publish", new List<string>
+            //SSHClient sshClient = new SSHClient("192.168.0.7:22","root","kawayiyi@1",Console.WriteLine);
+            using (SSHClient sshClient = new SSHClient("192.168.159.131:22","root","admin",Console.WriteLine)
+            {
+                NetCoreENTRYPOINT = "Lito.APP.dll",
+                NetCoreVersion = "2.1",
+                NetCorePort = "5004",
+
+            })
+            {
+                sshClient.Connect();
+                sshClient.PublishZip(@"E:\WorkSpace\github\Lito\Lito\Lito.APP\bin\Debug\netcoreapp2.1\publish\", new List<string>
                 {
-                    "appsettings.*",
-                    "web.config",
-                    "QRCoder.dll"
-                }, "/publisher","publish.zip");
+                    "web.config"
+                }, "publisher","publish.zip");
+            }
+            
 
 
 
