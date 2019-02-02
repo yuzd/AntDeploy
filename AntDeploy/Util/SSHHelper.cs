@@ -42,36 +42,42 @@ namespace AntDeploy.Util
         private object lockObject = new object();
         public SSHClient(string host, string userName, string pwd, Action<string> logger)
         {
-            this.Host = host;
             this.UserName = userName;
             this.Pwd = pwd;
             _logger = logger;
-            _sftpClient = new SftpClient(host.Split(':')[0], int.Parse(host.Split(':')[1]), userName, pwd);
-            _sshClient = new SshClient(host.Split(':')[0], int.Parse(host.Split(':')[1]), userName, pwd);
-            _sftpClient.BufferSize = 4 * 1024; // bypass Payload error large files
+            var harr = host.Split(':');
+            this.Host = harr[0];
+            var hPort = 22;
+            if (harr.Length==2)
+            {
+                hPort = int.Parse(harr[1]);
+            }
+            _sftpClient = new SftpClient( this.Host, hPort, userName, pwd);
+            _sshClient = new SshClient( this.Host, hPort, userName, pwd);
+            _sftpClient.BufferSize = 6 * 1024; // bypass Payload error large files
         }
 
 
-        public bool Connect()
+        public bool Connect(bool ignoreLog = false)
         {
             try
             {
-                _logger("ssh Connecting " + Host + "... ");
+                if(!ignoreLog)_logger("ssh Connecting " + Host + "... ");
                 _sshClient.Connect();
                 _sftpClient.Connect();
                 if (_sshClient.IsConnected && _sftpClient.IsConnected)
                 {
-                    _logger($"ssh connect success:{Host}");
+                    if(!ignoreLog)_logger($"ssh connect success:{Host}");
                     return true;
 
                 }
 
-                _logger($"ssh connect fail");
+                if(!ignoreLog)_logger($"ssh connect fail");
                 return false;
             }
             catch (Exception ex)
             {
-                _logger($"ssh connect fail:{ex.Message}");
+                if(!ignoreLog)_logger($"ssh connect fail:{ex.Message}");
                 return false;
             }
         }
@@ -189,8 +195,9 @@ namespace AntDeploy.Util
             //执行Docker命令
 
             //先查看本地是否有dockerFile
-            var dockFilePath = publishFolder2 + "/" + "Dockerfile";
-            var isExistDockFile = _sftpClient.Exists(dockFilePath);
+            var dockFilePath = publishFolder + "Dockerfile";
+            var dockFilePath2 = publishFolder2 + "/" + "Dockerfile";
+            var isExistDockFile = _sftpClient.Exists(dockFilePath2);
             //如果本地存在dockerfile 那么就根据此创建image
             //如果不存在的话 就根据当前的netcore sdk的版本 进行创建相对应的 dockfile
             if (!isExistDockFile)
@@ -200,19 +207,12 @@ namespace AntDeploy.Util
             }
 
             //执行docker build 生成一个镜像
-            _logger($"sudo docker build --rm -t {PorjectName} -f {dockFilePath} {publishFolder} ");
             RunSheell($"sudo docker build --rm -t {PorjectName} -f {dockFilePath} {publishFolder} ");
 
             var continarName = "d_" + PorjectName;
 
             //查看容器有没有在runing 如果有就干掉它
-            _logger($"sudo docker ps -q --filter \"name={continarName}\" | grep -q . && sudo docker rm -f {continarName} || true");
-            var result = _sshClient.RunCommand($"sudo docker ps -q --filter \"name={continarName}\" | grep -q . && sudo docker rm -f {continarName} || true");
-            if (result.ExitStatus != 0)
-            {
-                _logger($"excute command error,return status is not 0");
-                return;
-            }
+            _sshClient.RunCommand($"sudo docker rm -f {continarName}");
 
             string port = NetCorePort;
             if (string.IsNullOrEmpty(port))
@@ -225,8 +225,9 @@ namespace AntDeploy.Util
 
             //查看是否有<none>的image 把它删掉 因为我们创建image的时候每次都会覆盖所以会产生一些没有的image
 
-            _logger($"if sudo docker images -f \"dangling=true\" | grep ago --quiet; then sudo docker rmi -f $(sudo docker images -f \"dangling=true\" -q); fi");
             _sshClient.RunCommand($"if sudo docker images -f \"dangling=true\" | grep ago --quiet; then sudo docker rmi -f $(sudo docker images -f \"dangling=true\" -q); fi");
+
+
         }
 
         public void PublishZip(string zipFolder, List<string> ignorList, string destinationFolder, string destinationfileName)
@@ -275,8 +276,8 @@ namespace AntDeploy.Util
                     writer.WriteLine($"WORKDIR /publish");
                     _logger($"WORKDIR /publish");
 
-                    writer.WriteLine($"ENV ASPNETCORE_URLS=http://+:{port}");
-                    _logger($"ENV ASPNETCORE_URLS=http://+:{port}");
+                    writer.WriteLine($"ENV ASPNETCORE_URLS=http://*:{port}");
+                    _logger($"ENV ASPNETCORE_URLS=http://*:{port}");
 
                     if (!string.IsNullOrEmpty(environment))
                     {
@@ -287,9 +288,18 @@ namespace AntDeploy.Util
                     writer.WriteLine($"EXPOSE {port}");
                     _logger($"EXPOSE {port}");
 
+                    var excuteLine = $"ENTRYPOINT [\"dotnet\", \"{dllName}\"]";
+                    //var excuteCMDLine = $"CMD [\"--server.urls\", \"http://*:{port}\"";
 
-                    writer.WriteLine($"ENTRYPOINT [\"dotnet\", \"{dllName}\"]");
-                    _logger($"ENTRYPOINT [\"dotnet\", \"{dllName}\"]");
+                    //if (!string.IsNullOrEmpty(environment))
+                    //{
+                    //     excuteCMDLine+= $",\"--environment\", \"{environment}\"";
+                    //}
+                    //excuteCMDLine+="]";
+                    writer.WriteLine(excuteLine);
+                     _logger(excuteLine);
+                    //writer.WriteLine(excuteCMDLine);
+                    //_logger(excuteCMDLine);
 
                     writer.Flush();
                 }

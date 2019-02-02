@@ -38,16 +38,17 @@ namespace AntDeploy.Winform
         public Deploy(string projectPath, Project project)
         {
 
+            InitializeComponent();
+
+
             this.Text += $"(Version:{Vsix.VERSION})";
 
             Assembly assembly = typeof(Deploy).Assembly;
             using (Stream stream = assembly.GetManifestResourceStream("AntDeploy.Resources.Logo1.ico"))
             {
-                if(stream!=null)this.Icon =  new Icon(stream);
+                if (stream != null) this.Icon = new Icon(stream);
             }
-            
 
-            InitializeComponent();
             ProjectPath = projectPath;
             _project = project;
             ReadPorjectConfig(projectPath);
@@ -222,6 +223,9 @@ namespace AntDeploy.Winform
 
             this.txt_env_server_host.Text = string.Empty;
             this.txt_env_server_token.Text = string.Empty;
+            this.txt_linux_host.Text = string.Empty;
+            this.txt_linux_username.Text = string.Empty;
+            this.txt_linux_pwd.Text = string.Empty;
 
 
         }
@@ -364,7 +368,7 @@ namespace AntDeploy.Winform
                 this.b_linux_server_test.Enabled = false;
                 this.b_linux_server_remove.Enabled = false;
                 this.b_add_linux_server.Enabled = false;
-             
+
                 this.txt_linux_username.Text = string.Empty;
                 this.txt_linux_host.Text = string.Empty;
                 this.txt_linux_pwd.Text = string.Empty;
@@ -391,8 +395,16 @@ namespace AntDeploy.Winform
                 this.combo_linux_server_list.Items.AddRange(items: env.LinuxServerList.Select(r => r.Host + "@_@" + r.UserName).ToArray());
 
             }
-            if (this.combo_env_server_list.Items.Count > 0) this.combo_env_server_list.SelectedIndex = 0;
-            if (this.combo_linux_server_list.Items.Count > 0) this.combo_linux_server_list.SelectedIndex = 0;
+            if (this.combo_env_server_list.Items.Count > 0)
+            {
+                this.combo_env_server_list.Tag = "active";
+                this.combo_env_server_list.SelectedIndex = 0;
+            }
+            if (this.combo_linux_server_list.Items.Count > 0)
+            {
+                 this.combo_linux_server_list.Tag = "active";
+                 this.combo_linux_server_list.SelectedIndex = 0;
+            }
         }
 
 
@@ -404,11 +416,18 @@ namespace AntDeploy.Winform
         private void combo_env_server_list_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+
             this.txt_env_server_host.Text = string.Empty;
             this.txt_env_server_token.Text = string.Empty;
             var seletedServer = this.combo_env_server_list.SelectedItem as string;
             if (string.IsNullOrEmpty(seletedServer))
             {
+                return;
+            }
+
+            if (combo_env_server_list.Tag != null)
+            {
+                combo_env_server_list.Tag = null;
                 return;
             }
 
@@ -420,7 +439,7 @@ namespace AntDeploy.Winform
             }
 
         }
-    
+
 
         /// <summary>
         /// 删除window server
@@ -466,7 +485,7 @@ namespace AntDeploy.Winform
 
             if (!string.IsNullOrEmpty(existServer))
             {
-                MessageBox.Show("input server host is exist!");
+                MessageBox.Show("input server host is exist!" + Environment.NewLine + "if you want to modify,please remove and readd");
                 return;
             }
             var newServer = serverHost + "@_@" + serverTolen;
@@ -559,8 +578,8 @@ namespace AntDeploy.Winform
             if (this.list_env_ignore.Items.Count >= 0)
                 this.list_env_ignore.SelectedIndex = this.list_env_ignore.Items.Count - 1;
         }
-  
-        
+
+
         /// <summary>
         /// 添加linux server
         /// </summary>
@@ -596,10 +615,10 @@ namespace AntDeploy.Winform
 
             if (!string.IsNullOrEmpty(existServer))
             {
-                MessageBox.Show("input server host is exist!");
+                MessageBox.Show("input server host is exist!" + Environment.NewLine + "if you want to modify,please remove and readd");
                 return;
             }
-            var newServer = serverHost + "@_@" + userName + "@_@" + pwd2;
+            var newServer = serverHost + "@_@" + userName;
             this.combo_linux_server_list.Items.Add(newServer);
             DeployConfig.Env[this.combo_env_list.SelectedIndex].LinuxServerList.Add(new LinuxServr
             {
@@ -639,7 +658,46 @@ namespace AntDeploy.Winform
         private void b_linux_server_test_Click(object sender, EventArgs e)
         {
             //看ssh是否能链接的通
+            var serverHost = this.txt_linux_host.Text.Trim();
+            if (serverHost.Length < 1)
+            {
+                MessageBox.Show("please input server host");
+                return;
+            }
 
+            var userName = this.txt_linux_username.Text.Trim();
+            if (userName.Length < 1)
+            {
+                MessageBox.Show("please input server userName");
+                return;
+            }
+
+            var pwd = this.txt_linux_pwd.Text.Trim();
+            if (pwd.Length < 1)
+            {
+                MessageBox.Show("please input server pwd");
+                return;
+            }
+
+            try
+            {
+                using (SSHClient sshClient = new SSHClient(serverHost, userName, pwd, Console.WriteLine))
+                {
+                    var r = sshClient.Connect(true);
+                    if (r)
+                    {
+                        MessageBox.Show("Connect Success");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Connect Fail");
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Connect Fail");
+            }
         }
 
         /// <summary>
@@ -659,12 +717,18 @@ namespace AntDeploy.Winform
                 return;
             }
 
+            if (combo_linux_server_list.Tag != null)
+            {
+                combo_linux_server_list.Tag = null;
+                return;
+            }
+
             var arr = seletedServer.Split(new string[] { "@_@" }, StringSplitOptions.None);
-            if (arr.Length == 3)
+            if (arr.Length >= 2)
             {
                 this.txt_linux_host.Text = arr[0];
                 this.txt_linux_username.Text = arr[1];
-                this.txt_linux_pwd.Text = arr[2];
+                //this.txt_linux_pwd.Text = CodingHelper.AESDecrypt(arr[2]);
 
             }
         }
@@ -689,7 +753,7 @@ namespace AntDeploy.Winform
             }
         }
 
-        
+
         private void b_iis_deploy_Click(object sender, EventArgs e)
         {
 
@@ -876,11 +940,11 @@ namespace AntDeploy.Winform
                         try
                         {
                             var hostKey = "";
-                           
+
                             HttpLogger = new HttpLogger
                             {
                                 Key = loggerId,
-                                Url = $"http://{server.Host}/logger?key="+loggerId
+                                Url = $"http://{server.Host}/logger?key=" + loggerId
                             };
                             webSocket = await WebSocketHelper.Connect($"ws://{server.Host}/socket", (receiveMsg) =>
                             {
@@ -895,7 +959,7 @@ namespace AntDeploy.Winform
                                         this.nlog_iis.Info($"【Server】{receiveMsg}");
                                     }
                                 }
-                            },HttpLogger);
+                            }, HttpLogger);
 
                             httpRequestClient.SetFieldValue("wsKey", hostKey);
 
@@ -1139,7 +1203,7 @@ namespace AntDeploy.Winform
             }
 
             this.rich_windowservice_log.Text = "";
-            this.nlog_windowservice.Info($"windows Service exe name:{execFilePath.Replace(".dll",".exe")}");
+            this.nlog_windowservice.Info($"windows Service exe name:{execFilePath.Replace(".dll", ".exe")}");
 
             new Task(async () =>
              {
@@ -1322,7 +1386,7 @@ namespace AntDeploy.Winform
                              HttpLogger = new HttpLogger
                              {
                                  Key = loggerId,
-                                 Url = $"http://{server.Host}/logger?key="+loggerId
+                                 Url = $"http://{server.Host}/logger?key=" + loggerId
                              };
                              webSocket = await WebSocketHelper.Connect($"ws://{server.Host}/socket", (receiveMsg) =>
                              {
@@ -1337,7 +1401,7 @@ namespace AntDeploy.Winform
                                          this.nlog_windowservice.Info($"【Server】{receiveMsg}");
                                      }
                                  }
-                             },HttpLogger);
+                             }, HttpLogger);
 
                              httpRequestClient.SetFieldValue("wsKey", hostKey);
 
@@ -1505,8 +1569,8 @@ namespace AntDeploy.Winform
                 return;
             }
 
-#if !DEBUG
-            var ENTRYPOINT = "";
+#if DEBUG
+            var ENTRYPOINT = "Lito.APP.dll";
             var SDKVersion = "2.1";
 #else
             //必须是netcore应用
@@ -1554,155 +1618,164 @@ namespace AntDeploy.Winform
             }
 
             this.rich_docker_log.Text = "";
-            this.nlog_docker.Info($"ENTRYPOINT name:{ENTRYPOINT}");
+            this.nlog_docker.Info($"The Porject ENTRYPOINT name:{ENTRYPOINT}");
 
-             new Task(async () =>
-             {
-                 this.nlog_docker.Info("Start publish");
-                 EnableForDocker(false);
+            new Task(async () =>
+            {
+                this.nlog_docker.Info("Start publish");
+                EnableForDocker(false);
 
-                 try
-                 {
-                     var publishLog = new List<string>();
+                try
+                {
+                    var publishLog = new List<string>();
                      //执行 publish
                      var isSuccess = CommandHelper.RunDotnetExternalExe(ProjectFolderPath, "dotnet",
-                         "publish -c Release",
-                         (r) =>
-                         {
-                             this.nlog_docker.Info(r);
-                             publishLog.Add(r);
-                         },
-                         (er) => this.nlog_docker.Error(er));
+                        "publish -c Release",
+                        (r) =>
+                        {
+                            this.nlog_docker.Info(r);
+                            publishLog.Add(r);
+                        },
+                        (er) => this.nlog_docker.Error(er));
 
-                     if (!isSuccess)
-                     {
-                         this.nlog_docker.Error("publish error");
-                         return;
-                     }
+                    if (!isSuccess)
+                    {
+                        this.nlog_docker.Error("publish error");
+                        return;
+                    }
 
-                     var publishPathLine = publishLog.FirstOrDefault(r => !string.IsNullOrEmpty(r) && r.EndsWith("\\publish\\"));
+                    var publishPathLine = publishLog.FirstOrDefault(r => !string.IsNullOrEmpty(r) && r.EndsWith("\\publish\\"));
 
-                     if (string.IsNullOrEmpty(publishPathLine))
-                     {
-                         this.nlog_docker.Error("can not find publishPath in log");
-                         return;
-                     }
+                    if (string.IsNullOrEmpty(publishPathLine))
+                    {
+                        this.nlog_docker.Error("can not find publishPath in log");
+                        return;
+                    }
 
-                     var publishPathArr = publishPathLine.Split(new string[] { " ->" }, StringSplitOptions.None);
-                     if (publishPathArr.Length != 2)
-                     {
-                         this.nlog_docker.Error("can not find publishPath in log");
-                         return;
-                     }
+                    var publishPathArr = publishPathLine.Split(new string[] { " ->" }, StringSplitOptions.None);
+                    if (publishPathArr.Length != 2)
+                    {
+                        this.nlog_docker.Error("can not find publishPath in log");
+                        return;
+                    }
 
-                     var publishPath = publishPathArr[1].Trim();
+                    var publishPath = publishPathArr[1].Trim();
 
-                     if (string.IsNullOrEmpty(publishPath) || !Directory.Exists(publishPath))
-                     {
-                         this.nlog_docker.Error("can not find publishPath");
-                         return;
-                     }
+                    if (string.IsNullOrEmpty(publishPath) || !Directory.Exists(publishPath))
+                    {
+                        this.nlog_docker.Error("can not find publishPath");
+                        return;
+                    }
 
 
-                     var serviceFile = Path.Combine(publishPath, ENTRYPOINT);
-                     if (!File.Exists(serviceFile))
-                     {
-                         this.nlog_docker.Error($"ENTRYPOINT file can not find in publish folder: {serviceFile}");
-                         return;
-                     }
+                    var serviceFile = Path.Combine(publishPath, ENTRYPOINT);
+                    if (!File.Exists(serviceFile))
+                    {
+                        this.nlog_docker.Error($"ENTRYPOINT file can not find in publish folder: {serviceFile}");
+                        return;
+                    }
 
-                     LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish success,  ==> ");
-                     publisEvent.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
-                     this.nlog_docker.Log(publisEvent);
+                    LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish success,  ==> ");
+                    publisEvent.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
+                    this.nlog_docker.Log(publisEvent);
 
 
 
                      //执行 打包
                      this.nlog_docker.Info("Start package");
-                     MemoryStream zipBytes;
-                     try
-                     {
-                         zipBytes = ZipHelper.DoCreateFromDirectory2(publishPath, CompressionLevel.Optimal, true,
-                             DeployConfig.IgnoreList);
-                     }
-                     catch (Exception ex)
-                     {
-                         this.nlog_docker.Error("package fail:" + ex.Message);
-                         return;
-                     }
+                    MemoryStream zipBytes;
+                    try
+                    {
+                        zipBytes = ZipHelper.DoCreateFromDirectory2(publishPath, CompressionLevel.Optimal, true,
+                            DeployConfig.IgnoreList);
+                    }
+                    catch (Exception ex)
+                    {
+                        this.nlog_docker.Error("package fail:" + ex.Message);
+                        return;
+                    }
 
-                     if (zipBytes == null || zipBytes.Length < 1)
-                     {
-                         this.nlog_docker.Error("package fail");
-                         return;
-                     }
+                    if (zipBytes == null || zipBytes.Length < 1)
+                    {
+                        this.nlog_docker.Error("package fail");
+                        return;
+                    }
 
-                     this.nlog_docker.Info("package success");
+                    this.nlog_docker.Info("package success");
                      //执行 上传
                      this.nlog_docker.Info("Deploy Start");
-                     foreach (var server in serverList)
-                     {
+                    foreach (var server in serverList)
+                    {
                          #region 参数Check
 
                          if (string.IsNullOrEmpty(server.Host))
-                         {
-                             this.nlog_docker.Error("Server Host is Empty");
-                             continue;
-                         }
-                         if (string.IsNullOrEmpty(server.UserName))
-                         {
-                             this.nlog_docker.Error("Server UserName is Empty");
-                             continue;
-                         }
-                         if (string.IsNullOrEmpty(server.Pwd))
-                         {
-                             this.nlog_docker.Error("Server Pwd is Empty");
-                             continue;
-                         }
-
+                        {
+                            this.nlog_docker.Error("Server Host is Empty");
+                            continue;
+                        }
+                        if (string.IsNullOrEmpty(server.UserName))
+                        {
+                            this.nlog_docker.Error("Server UserName is Empty");
+                            continue;
+                        }
+                        if (string.IsNullOrEmpty(server.Pwd))
+                        {
+                            this.nlog_docker.Error("Server Pwd is Empty");
+                            continue;
+                        }
+                        var pwd = CodingHelper.AESDecrypt(server.Pwd);
+                        if (string.IsNullOrEmpty(pwd))
+                        {
+                            this.nlog_docker.Error("Server Pwd is Empty");
+                            continue;
+                        }
                          #endregion
 
-                         using (SSHClient sshClient = new SSHClient(server.Host,server.UserName,server.Pwd, (str) =>
-                         {
-                             this.nlog_docker.Info("【Server】" + str);
-                         })
-                         {
-                             NetCoreENTRYPOINT = ENTRYPOINT,
-                             NetCoreVersion = SDKVersion,
-                             NetCorePort = DeployConfig.DockerConfig.Prot,
-                             NetCoreEnvironment = DeployConfig.DockerConfig.AspNetCoreEnv
-                         })
-                         {
-                             var connectResult = sshClient.Connect();
-                             if (!connectResult)
-                             {
-                                 this.nlog_docker.Error($"Deploy Host:{server.Host} Fail: connect fail");
-                                 continue;
-                             }
+                        zipBytes.Seek(0, SeekOrigin.Begin);
+                        using (SSHClient sshClient = new SSHClient(server.Host, server.UserName, pwd, (str) =>
+                           {
+                            this.nlog_docker.Info("【Server】" + str);
+                        })
+                        {
+                            NetCoreENTRYPOINT = ENTRYPOINT,
+                            NetCoreVersion = SDKVersion,
+                            NetCorePort = DeployConfig.DockerConfig.Prot,
+                            NetCoreEnvironment = DeployConfig.DockerConfig.AspNetCoreEnv
+                        })
+                        {
+                            var connectResult = sshClient.Connect();
+                            if (!connectResult)
+                            {
+                                this.nlog_docker.Error($"Deploy Host:{server.Host} Fail: connect fail");
+                                continue;
+                            }
 
-                             try
-                             {
-                                 sshClient.PublishZip(zipBytes, "publisher", "publish.zip");
-                             }
-                             catch (Exception ex)
-                             {
-                                 this.nlog_docker.Error($"Deploy Host:{server.Host} Fail:" + ex.Message);
-                             }
-                         }
-                     }
-                 }
-                 catch (Exception ex1)
-                 {
-                     this.nlog_docker.Error(ex1);
-                 }
-                 finally
-                 {
-                     EnableForDocker(true);
-                 }
+                            try
+                            {
+                                sshClient.PublishZip(zipBytes, "publisher", "publish.zip");
+
+                                this.nlog_docker.Info($"publish Host: {server.Host} End");
+                            }
+                            catch (Exception ex)
+                            {
+                                this.nlog_docker.Error($"Deploy Host:{server.Host} Fail:" + ex.Message);
+                            }
+                        }
+                    }
+                    this.nlog_docker.Info("Deploy End");
+                }
+                catch (Exception ex1)
+                {
+                    this.nlog_docker.Error(ex1);
+                }
+                finally
+                {
+                    EnableForDocker(true);
+                }
 
 
 
-             }).Start();
+            }).Start();
         }
 
         private void EnableForDocker(bool flag)
@@ -1746,6 +1819,6 @@ namespace AntDeploy.Winform
         }
         #endregion
 
-       
+
     }
 }

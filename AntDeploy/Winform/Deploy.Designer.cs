@@ -917,11 +917,11 @@
             // label24
             // 
             this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(259, 130);
+            this.label24.Location = new System.Drawing.Point(96, 130);
             this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(125, 12);
+            this.label24.Size = new System.Drawing.Size(299, 12);
             this.label24.TabIndex = 15;
-            this.label24.Text = "PS:Linux Server Only";
+            this.label24.Text = "PS:Linux Server Only And Required Docker install ";
             // 
             // Deploy
             // 

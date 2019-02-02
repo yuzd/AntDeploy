@@ -9,30 +9,37 @@ namespace AntDeploy.Util
         public static string AESDecrypt(string hexString, string key ="56dPz3VDYwGpJYqe7dFG0g==")
         {
 
-            using (AesCryptoServiceProvider aesProvider = new AesCryptoServiceProvider())
+            try
             {
-                aesProvider.Key = Convert.FromBase64String(key);
-                aesProvider.Mode = CipherMode.ECB;
-                aesProvider.Padding = PaddingMode.PKCS7;
-                using (ICryptoTransform cryptoTransform = aesProvider.CreateDecryptor())
+                using (AesCryptoServiceProvider aesProvider = new AesCryptoServiceProvider())
                 {
-                    hexString = hexString.ToLower();
-                    byte[] byteArray = new byte[hexString.Length >> 1];
-                    int index = 0;
-                    for (int i = 0; i < hexString.Length; i++)
+                    aesProvider.Key = Convert.FromBase64String(key);
+                    aesProvider.Mode = CipherMode.ECB;
+                    aesProvider.Padding = PaddingMode.PKCS7;
+                    using (ICryptoTransform cryptoTransform = aesProvider.CreateDecryptor())
                     {
-                        if (index > hexString.Length - 1) continue;
-                        byte highDit = (byte)(Digit(hexString[index], 16) & 0xFF);
-                        byte lowDit = (byte)(Digit(hexString[index + 1], 16) & 0xFF);
-                        byteArray[i] = (byte)(highDit << 4 | lowDit & 0xFF);
-                        index += 2;
-                    }
+                        hexString = hexString.ToLower();
+                        byte[] byteArray = new byte[hexString.Length >> 1];
+                        int index = 0;
+                        for (int i = 0; i < hexString.Length; i++)
+                        {
+                            if (index > hexString.Length - 1) continue;
+                            byte highDit = (byte)(Digit(hexString[index], 16) & 0xFF);
+                            byte lowDit = (byte)(Digit(hexString[index + 1], 16) & 0xFF);
+                            byteArray[i] = (byte)(highDit << 4 | lowDit & 0xFF);
+                            index += 2;
+                        }
 
-                    byte[] inputBuffers = byteArray;
-                    byte[] results = cryptoTransform.TransformFinalBlock(inputBuffers, 0, inputBuffers.Length);
-                    aesProvider.Clear();
-                    return Encoding.UTF8.GetString(results);
+                        byte[] inputBuffers = byteArray;
+                        byte[] results = cryptoTransform.TransformFinalBlock(inputBuffers, 0, inputBuffers.Length);
+                        aesProvider.Clear();
+                        return Encoding.UTF8.GetString(results);
+                    }
                 }
+            }
+            catch (Exception)
+            {
+                return string.Empty;
             }
 
         }
