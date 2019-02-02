@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Deploy));
             this.page_ = new System.Windows.Forms.TabControl();
             this.page_web_iis = new System.Windows.Forms.TabPage();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
@@ -47,6 +46,11 @@
             this.combo_iis_sdk_type = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.page_docker = new System.Windows.Forms.TabPage();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.rich_docker_log = new System.Windows.Forms.RichTextBox();
+            this.b_docker_deploy = new System.Windows.Forms.Button();
+            this.combo_docker_env = new System.Windows.Forms.ComboBox();
+            this.label22 = new System.Windows.Forms.Label();
             this.page_window_service = new System.Windows.Forms.TabPage();
             this.txt_windowservice_name = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
@@ -96,18 +100,18 @@
             this.txt_env_name = new System.Windows.Forms.TextBox();
             this.b_env_add_by_name = new System.Windows.Forms.Button();
             this.combo_env_list = new System.Windows.Forms.ComboBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.label21 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
-            this.label22 = new System.Windows.Forms.Label();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.txt_docker_envname = new System.Windows.Forms.TextBox();
+            this.label23 = new System.Windows.Forms.Label();
+            this.txt_docker_port = new System.Windows.Forms.TextBox();
+            this.label24 = new System.Windows.Forms.Label();
             this.page_.SuspendLayout();
             this.page_web_iis.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.page_docker.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.page_window_service.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.page_set.SuspendLayout();
@@ -116,7 +120,7 @@
             this.tabControl1.SuspendLayout();
             this.page_winserver.SuspendLayout();
             this.page_linux_server.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
             // page_
@@ -131,6 +135,7 @@
             this.page_.SelectedIndex = 0;
             this.page_.Size = new System.Drawing.Size(634, 448);
             this.page_.TabIndex = 0;
+            this.page_.SelectedIndexChanged += new System.EventHandler(this.page__SelectedIndexChanged);
             // 
             // page_web_iis
             // 
@@ -179,7 +184,7 @@
             this.txt_pool_name.Location = new System.Drawing.Point(68, 51);
             this.txt_pool_name.Name = "txt_pool_name";
             this.txt_pool_name.Size = new System.Drawing.Size(170, 21);
-            this.txt_pool_name.TabIndex = 13;
+            this.txt_pool_name.TabIndex = 5;
             // 
             // label16
             // 
@@ -195,7 +200,7 @@
             this.txt_iis_port.Location = new System.Drawing.Point(68, 22);
             this.txt_iis_port.Name = "txt_iis_port";
             this.txt_iis_port.Size = new System.Drawing.Size(62, 21);
-            this.txt_iis_port.TabIndex = 11;
+            this.txt_iis_port.TabIndex = 4;
             // 
             // label9
             // 
@@ -297,18 +302,68 @@
             // 
             // page_docker
             // 
+            this.page_docker.Controls.Add(this.label24);
+            this.page_docker.Controls.Add(this.groupBox5);
             this.page_docker.Controls.Add(this.groupBox1);
-            this.page_docker.Controls.Add(this.button1);
-            this.page_docker.Controls.Add(this.comboBox2);
+            this.page_docker.Controls.Add(this.b_docker_deploy);
+            this.page_docker.Controls.Add(this.combo_docker_env);
             this.page_docker.Controls.Add(this.label22);
-            this.page_docker.Controls.Add(this.comboBox1);
-            this.page_docker.Controls.Add(this.label21);
             this.page_docker.Location = new System.Drawing.Point(4, 22);
             this.page_docker.Name = "page_docker";
             this.page_docker.Size = new System.Drawing.Size(626, 422);
             this.page_docker.TabIndex = 2;
             this.page_docker.Text = "Docker";
             this.page_docker.UseVisualStyleBackColor = true;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.rich_docker_log);
+            this.groupBox1.Location = new System.Drawing.Point(8, 145);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(610, 274);
+            this.groupBox1.TabIndex = 13;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "LOG";
+            // 
+            // rich_docker_log
+            // 
+            this.rich_docker_log.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rich_docker_log.Location = new System.Drawing.Point(3, 17);
+            this.rich_docker_log.Name = "rich_docker_log";
+            this.rich_docker_log.ReadOnly = true;
+            this.rich_docker_log.Size = new System.Drawing.Size(604, 254);
+            this.rich_docker_log.TabIndex = 0;
+            this.rich_docker_log.Text = "";
+            // 
+            // b_docker_deploy
+            // 
+            this.b_docker_deploy.Location = new System.Drawing.Point(405, 91);
+            this.b_docker_deploy.Name = "b_docker_deploy";
+            this.b_docker_deploy.Size = new System.Drawing.Size(107, 43);
+            this.b_docker_deploy.TabIndex = 12;
+            this.b_docker_deploy.Text = "Deploy";
+            this.b_docker_deploy.UseVisualStyleBackColor = true;
+            this.b_docker_deploy.Click += new System.EventHandler(this.b_docker_deploy_Click);
+            // 
+            // combo_docker_env
+            // 
+            this.combo_docker_env.BackColor = System.Drawing.SystemColors.Window;
+            this.combo_docker_env.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.combo_docker_env.FormattingEnabled = true;
+            this.combo_docker_env.Location = new System.Drawing.Point(173, 103);
+            this.combo_docker_env.Name = "combo_docker_env";
+            this.combo_docker_env.Size = new System.Drawing.Size(193, 20);
+            this.combo_docker_env.TabIndex = 11;
+            this.combo_docker_env.SelectedIndexChanged += new System.EventHandler(this.combo_docker_env_SelectedIndexChanged);
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(96, 106);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(59, 12);
+            this.label22.TabIndex = 10;
+            this.label22.Text = "Env Name:";
             // 
             // page_window_service
             // 
@@ -383,7 +438,7 @@
             this.txt_windowservice_timeout.Location = new System.Drawing.Point(173, 60);
             this.txt_windowservice_timeout.Name = "txt_windowservice_timeout";
             this.txt_windowservice_timeout.Size = new System.Drawing.Size(111, 21);
-            this.txt_windowservice_timeout.TabIndex = 17;
+            this.txt_windowservice_timeout.TabIndex = 23;
             // 
             // label12
             // 
@@ -814,75 +869,59 @@
             this.combo_env_list.TabIndex = 0;
             this.combo_env_list.SelectedIndexChanged += new System.EventHandler(this.combo_env_list_SelectedIndexChanged);
             // 
-            // comboBox1
+            // groupBox5
             // 
-            this.comboBox1.BackColor = System.Drawing.SystemColors.Window;
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
-            "netframework",
-            "netcore"});
-            this.comboBox1.Location = new System.Drawing.Point(173, 9);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 20);
-            this.comboBox1.TabIndex = 3;
+            this.groupBox5.Controls.Add(this.label21);
+            this.groupBox5.Controls.Add(this.txt_docker_envname);
+            this.groupBox5.Controls.Add(this.label23);
+            this.groupBox5.Controls.Add(this.txt_docker_port);
+            this.groupBox5.Location = new System.Drawing.Point(65, 11);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(517, 60);
+            this.groupBox5.TabIndex = 16;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = " (create Dockerfile required)";
             // 
             // label21
             // 
             this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(96, 17);
+            this.label21.Location = new System.Drawing.Point(27, 25);
             this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(59, 12);
-            this.label21.TabIndex = 2;
-            this.label21.Text = "SDK Type:";
+            this.label21.Size = new System.Drawing.Size(35, 12);
+            this.label21.TabIndex = 12;
+            this.label21.Text = "Port:";
             // 
-            // button1
+            // txt_docker_envname
             // 
-            this.button1.Location = new System.Drawing.Point(432, 34);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(107, 43);
-            this.button1.TabIndex = 12;
-            this.button1.Text = "Deploy";
-            this.button1.UseVisualStyleBackColor = true;
+            this.txt_docker_envname.Location = new System.Drawing.Point(307, 20);
+            this.txt_docker_envname.Name = "txt_docker_envname";
+            this.txt_docker_envname.Size = new System.Drawing.Size(170, 21);
+            this.txt_docker_envname.TabIndex = 12;
             // 
-            // comboBox2
+            // label23
             // 
-            this.comboBox2.BackColor = System.Drawing.SystemColors.Window;
-            this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(173, 46);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(193, 20);
-            this.comboBox2.TabIndex = 11;
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(158, 23);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(143, 12);
+            this.label23.TabIndex = 14;
+            this.label23.Text = "ASPNETCORE_ENVIRONMENT:";
             // 
-            // label22
+            // txt_docker_port
             // 
-            this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(96, 49);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(59, 12);
-            this.label22.TabIndex = 10;
-            this.label22.Text = "Env Name:";
+            this.txt_docker_port.Location = new System.Drawing.Point(68, 22);
+            this.txt_docker_port.Name = "txt_docker_port";
+            this.txt_docker_port.Size = new System.Drawing.Size(62, 21);
+            this.txt_docker_port.TabIndex = 11;
             // 
-            // groupBox1
+            // label24
             // 
-            this.groupBox1.Controls.Add(this.richTextBox1);
-            this.groupBox1.Location = new System.Drawing.Point(8, 97);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(610, 322);
-            this.groupBox1.TabIndex = 13;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "LOG";
-            // 
-            // richTextBox1
-            // 
-            this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.richTextBox1.Location = new System.Drawing.Point(3, 17);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.ReadOnly = true;
-            this.richTextBox1.Size = new System.Drawing.Size(604, 302);
-            this.richTextBox1.TabIndex = 0;
-            this.richTextBox1.Text = "";
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(259, 130);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(125, 12);
+            this.label24.TabIndex = 15;
+            this.label24.Text = "PS:Linux Server Only";
             // 
             // Deploy
             // 
@@ -892,7 +931,6 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.Name = "Deploy";
-            this.ShowIcon = true;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "AntDeploy";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Deploy_FormClosing);
@@ -905,6 +943,7 @@
             this.groupBox2.ResumeLayout(false);
             this.page_docker.ResumeLayout(false);
             this.page_docker.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
             this.page_window_service.ResumeLayout(false);
             this.page_window_service.PerformLayout();
             this.groupBox3.ResumeLayout(false);
@@ -918,7 +957,8 @@
             this.page_winserver.PerformLayout();
             this.page_linux_server.ResumeLayout(false);
             this.page_linux_server.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -993,11 +1033,15 @@
         private System.Windows.Forms.TextBox txt_linux_host;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.RichTextBox richTextBox1;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.ComboBox comboBox2;
+        private System.Windows.Forms.RichTextBox rich_docker_log;
+        private System.Windows.Forms.Button b_docker_deploy;
+        private System.Windows.Forms.ComboBox combo_docker_env;
         private System.Windows.Forms.Label label22;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.TextBox txt_docker_envname;
+        private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.TextBox txt_docker_port;
+        private System.Windows.Forms.Label label24;
     }
 }

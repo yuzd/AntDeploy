@@ -29,6 +29,7 @@ namespace AntDeploy.Models
         #endregion
 
         public WindowsServiveConfig WindowsServiveConfig { get; set; } = new WindowsServiveConfig();
+        public DockerConfig DockerConfig { get; set; } = new DockerConfig();
 
     }
 
@@ -57,6 +58,14 @@ namespace AntDeploy.Models
 
         public string SdkType { get; set; }
 
+        public string LastEnvName { get; set; }
+    }
+
+
+    public class DockerConfig
+    {
+        public string Prot { get; set; }
+        public string AspNetCoreEnv { get; set; }
         public string LastEnvName { get; set; }
     }
 

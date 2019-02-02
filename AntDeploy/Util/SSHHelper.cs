@@ -59,7 +59,7 @@ namespace AntDeploy.Util
                 _logger("ssh Connecting " + Host + "... ");
                 _sshClient.Connect();
                 _sftpClient.Connect();
-                if (_sshClient.IsConnected &&  _sftpClient.IsConnected)
+                if (_sshClient.IsConnected && _sftpClient.IsConnected)
                 {
                     _logger($"ssh connect success:{Host}");
                     return true;
@@ -86,11 +86,11 @@ namespace AntDeploy.Util
         {
             if (!destinationFolder.EndsWith("/")) destinationFolder = destinationFolder + "/";
 
-            
+
 
             //创建文件夹
             CreateServerDirectoryIfItDoesntExist(destinationFolder);
-           
+
 
             //按照项目来区分文件夹 例如
             //  /publisher/aaa
@@ -124,7 +124,7 @@ namespace AntDeploy.Util
 
         }
 
-        private void uploadProgress(long size,ulong uploadedSize )
+        private void uploadProgress(long size, ulong uploadedSize)
         {
             lock (lockObject)
             {
@@ -148,93 +148,100 @@ namespace AntDeploy.Util
                 _logger($"uploaded {lastProgressNumber} %");
 
             }
-           
+
         }
 
 
-
-
-        public void PublishZip(string zipFolder,List<string> ignorList, string destinationFolder, string destinationfileName)
+        public void PublishZip(Stream stream, string destinationFolder,
+            string destinationfileName)
         {
-            using (var stream = ZipHelper.DoCreateFromDirectory2(zipFolder,CompressionLevel.Optimal,true, ignorList))
+            if (!destinationFolder.EndsWith("/")) destinationFolder = destinationFolder + "/";
+
+            destinationFolder = destinationFolder + PorjectName + "/";
+
+            Upload(stream, destinationFolder, destinationfileName);
+
+            if (!_sftpClient.Exists(destinationfileName))
+            {
+                _logger($"upload fail, {destinationfileName} not exist!");
+                return;
+            }
+
+            _logger($"unzip -q {destinationFolder + destinationfileName}");
+            var unzipresult = _sshClient.RunCommand($"cd {destinationFolder} && unzip -q {destinationfileName}");
+            if (unzipresult.ExitStatus != 0)
+            {
+                _logger($"excute unzip error,return status is not 0");
+                return;
+            }
+            var publishFolder = $"{destinationFolder}publish/";
+            var publishFolder2 = $"publish";
+            if (!_sftpClient.Exists(publishFolder2))
+            {
+                _logger($"unzip fail: {publishFolder}");
+                return;
+            }
+            _logger($"unzip success: {publishFolder}");
+            //_sftpClient.ChangeDirectory(publishFolder);
+            //_logger($"Changed directory to {publishFolder}");
+
+
+            //执行Docker命令
+
+            //先查看本地是否有dockerFile
+            var dockFilePath = publishFolder2 + "/" + "Dockerfile";
+            var isExistDockFile = _sftpClient.Exists(dockFilePath);
+            //如果本地存在dockerfile 那么就根据此创建image
+            //如果不存在的话 就根据当前的netcore sdk的版本 进行创建相对应的 dockfile
+            if (!isExistDockFile)
+            {
+                var createDockerFileResult = CreateDockerFile(dockFilePath);
+                if (!createDockerFileResult) return;
+            }
+
+            //执行docker build 生成一个镜像
+            _logger($"sudo docker build --rm -t {PorjectName} -f {dockFilePath} {publishFolder} ");
+            RunSheell($"sudo docker build --rm -t {PorjectName} -f {dockFilePath} {publishFolder} ");
+
+            var continarName = "d_" + PorjectName;
+
+            //查看容器有没有在runing 如果有就干掉它
+            _logger($"sudo docker ps -q --filter \"name={continarName}\" | grep -q . && sudo docker rm -f {continarName} || true");
+            var result = _sshClient.RunCommand($"sudo docker ps -q --filter \"name={continarName}\" | grep -q . && sudo docker rm -f {continarName} || true");
+            if (result.ExitStatus != 0)
+            {
+                _logger($"excute command error,return status is not 0");
+                return;
+            }
+
+            string port = NetCorePort;
+            if (string.IsNullOrEmpty(port))
+            {
+                port = "5000";
+            }
+
+            // 根据image启动一个容器
+            RunSheell($"sudo docker run --name {continarName} -d -p {port}:{port} {PorjectName}:latest");
+
+            //查看是否有<none>的image 把它删掉 因为我们创建image的时候每次都会覆盖所以会产生一些没有的image
+
+            _logger($"if sudo docker images -f \"dangling=true\" | grep ago --quiet; then sudo docker rmi -f $(sudo docker images -f \"dangling=true\" -q); fi");
+            _sshClient.RunCommand($"if sudo docker images -f \"dangling=true\" | grep ago --quiet; then sudo docker rmi -f $(sudo docker images -f \"dangling=true\" -q); fi");
+        }
+
+        public void PublishZip(string zipFolder, List<string> ignorList, string destinationFolder, string destinationfileName)
+        {
+            using (var stream = ZipHelper.DoCreateFromDirectory2(zipFolder, CompressionLevel.Optimal, true, ignorList))
             {
 
-                if (!destinationFolder.EndsWith("/")) destinationFolder = destinationFolder + "/";
-
-                Upload(stream, destinationFolder, destinationfileName);
-
-                if (!_sftpClient.Exists(destinationfileName))
-                {
-                    _logger($"upload fail, {destinationfileName} not exist!");
-                    return;
-                }
-
-                _logger($"unzip -q {destinationFolder+destinationfileName}");
-                var unzipresult =_sshClient.RunCommand($"cd {destinationFolder} && unzip -q {destinationfileName}");
-                if (unzipresult.ExitStatus != 0)
-                {
-                    _logger($"excute unzip error,return status is not 0");
-                    return;
-                }
-                var publishFolder = $"{destinationFolder}publish/";
-                var publishFolder2 = $"publish";
-                if (!_sftpClient.Exists(publishFolder2))
-                {
-                    _logger($"unzip fail: {publishFolder}");
-                    return;
-                }
-                _logger($"unzip success: {publishFolder}");
-                //_sftpClient.ChangeDirectory(publishFolder);
-                //_logger($"Changed directory to {publishFolder}");
-
-
-                //执行Docker命令
-
-                //先查看本地是否有dockerFile
-                var dockFilePath = publishFolder2 + "/" + "Dockerfile";
-                var isExistDockFile = _sftpClient.Exists(dockFilePath);
-                //如果本地存在dockerfile 那么就根据此创建image
-                //如果不存在的话 就根据当前的netcore sdk的版本 进行创建相对应的 dockfile
-                if (!isExistDockFile)
-                {
-                    var createDockerFileResult = CreateDockerFile(dockFilePath);
-                    if (!createDockerFileResult) return;
-                }
-               
-                //执行docker build 生成一个镜像
-                RunSheell($"sudo docker build --rm -t {PorjectName} -f {dockFilePath} {publishFolder} ");
-
-                var continarName = "d_" + PorjectName;
-
-                //查看容器有没有在runing 如果有就干掉它
-                _logger($"sudo docker ps -q --filter \"name={continarName}\" | grep -q . && sudo docker rm -f {continarName} || true");
-                var result= _sshClient.RunCommand($"sudo docker ps -q --filter \"name={continarName}\" | grep -q . && sudo docker rm -f {continarName} || true");
-                if (result.ExitStatus != 0)
-                {
-                    _logger($"excute command error,return status is not 0");
-                    return;
-                }
-
-                string port =NetCorePort;
-                if (string.IsNullOrEmpty(port))
-                {
-                    port = "5000";
-                }
-
-                // 根据image启动一个容器
-                RunSheell($"sudo docker run --name {continarName} -d -p {port}:{port} {PorjectName}:latest");
-
-                //查看是否有<none>的image 把它删掉 因为我们创建image的时候每次都会覆盖所以会产生一些没有的image
-
-                _logger($"if sudo docker images -f \"dangling=true\" | grep ago --quiet; then sudo docker rmi -f $(sudo docker images -f \"dangling=true\" -q); fi");
-                 _sshClient.RunCommand($"if sudo docker images -f \"dangling=true\" | grep ago --quiet; then sudo docker rmi -f $(sudo docker images -f \"dangling=true\" -q); fi");
+                PublishZip(stream, destinationFolder, destinationfileName);
 
             }
 
 
         }
 
-        
+
 
         private bool CreateDockerFile(string path)
         {
@@ -242,13 +249,13 @@ namespace AntDeploy.Util
             {
                 string dllName = NetCoreENTRYPOINT;
 
-                string sdkVersion= NetCoreVersion;
+                string sdkVersion = NetCoreVersion;
                 if (string.IsNullOrEmpty(sdkVersion))
                 {
                     sdkVersion = "2.1";
                 }
 
-                string port =NetCorePort;
+                string port = NetCorePort;
                 if (string.IsNullOrEmpty(port))
                 {
                     port = "5000";
@@ -270,7 +277,7 @@ namespace AntDeploy.Util
 
                     writer.WriteLine($"ENV ASPNETCORE_URLS=http://+:{port}");
                     _logger($"ENV ASPNETCORE_URLS=http://+:{port}");
-                    
+
                     if (!string.IsNullOrEmpty(environment))
                     {
                         writer.WriteLine($"ENV ASPNETCORE_ENVIRONMENT={environment}");
@@ -279,11 +286,11 @@ namespace AntDeploy.Util
 
                     writer.WriteLine($"EXPOSE {port}");
                     _logger($"EXPOSE {port}");
-                   
+
 
                     writer.WriteLine($"ENTRYPOINT [\"dotnet\", \"{dllName}\"]");
                     _logger($"ENTRYPOINT [\"dotnet\", \"{dllName}\"]");
-                    
+
                     writer.Flush();
                 }
                 _logger($"create docker file success: {path}");
@@ -358,7 +365,7 @@ namespace AntDeploy.Util
 
             }
         }
-        private  void DeleteDirectory(string path)
+        private void DeleteDirectory(string path)
         {
             foreach (SftpFile file in _sftpClient.ListDirectory(path))
             {
@@ -403,10 +410,10 @@ namespace AntDeploy.Util
             {
                 projectName = projectName.Replace(System.Char.ToString(c), "");
             }
-             var aa = Regex.Replace(projectName, "[ \\[ \\] \\^ \\-_*×――(^)（^）$%~!@#$…&%￥—+=<>《》!！??？:：•`·、。，；,.;\"‘’“”-]", "");
-             aa = aa.Replace(" ", "").Replace("　", "");
-             aa = Regex.Replace(aa, @"[~!@#\$%\^&\*\(\)\+=\|\\\}\]\{\[:;<,>\?\/""]+","");
-             return aa;
+            var aa = Regex.Replace(projectName, "[ \\[ \\] \\^ \\-_*×――(^)（^）$%~!@#$…&%￥—+=<>《》!！??？:：•`·、。，；,.;\"‘’“”-]", "");
+            aa = aa.Replace(" ", "").Replace("　", "");
+            aa = Regex.Replace(aa, @"[~!@#\$%\^&\*\(\)\+=\|\\\}\]\{\[:;<,>\?\/""]+", "");
+            return aa;
         }
     }
 }

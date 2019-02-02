@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
+using System.Text.RegularExpressions;
 
 namespace AntDeploy.Models
 {
@@ -83,6 +84,25 @@ namespace AntDeploy.Models
                 return false;
             }
         }
+
+
+        public static string GetProjectSkdInNetCoreProject(string projectPath)
+        {
+            try
+            {
+                var info = File.ReadAllText(projectPath);
+                var TargetFramework = info.Split(new string[] { "TargetFramework>" }, StringSplitOptions.None)[1]
+                    .Split(new string[] { "</TargetFramework" }, StringSplitOptions.None)[0];
+
+                return Regex.Replace(TargetFramework, "[a-zA-Z]+", "");
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+
+        }
+
         public static bool IsDotNetCoreProject(Project project)
         {
             try

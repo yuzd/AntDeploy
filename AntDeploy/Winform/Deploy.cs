@@ -30,6 +30,7 @@ namespace AntDeploy.Winform
         private Project _project;
         private NLog.Logger nlog_iis;
         private NLog.Logger nlog_windowservice;
+        private NLog.Logger nlog_docker;
 
         private int ProgressPercentage = 0;
         private int ProgressPercentageForWindowsService = 0;
@@ -88,10 +89,28 @@ namespace AntDeploy.Winform
             LoggingRule rule2 = new LoggingRule("*", LogLevel.Debug, richTarget2);
             config.LoggingRules.Add(rule2);
 
+            var richTarget3 = new RichTextBoxTarget
+            {
+                Name = "rich_docker_log",
+                Layout = "${date:format=HH\\:mm\\:ss}|${uppercase:${level}}|${message} ${exception:format=tostring} ${rtb-link:inner=${event-properties:item=ShowLink}}",
+                FormName = "Deploy",
+                ControlName = "rich_docker_log",
+                AutoScroll = true,
+                MaxLines = 0,
+                AllowAccessoryFormCreation = false,
+                SupportLinks = true,
+                UseDefaultRowColoringRules = true
+
+            };
+            config.AddTarget("rich_docker_log", richTarget3);
+            LoggingRule rule3 = new LoggingRule("*", LogLevel.Debug, richTarget3);
+            config.LoggingRules.Add(rule3);
+
             LogManager.Configuration = config;
 
             nlog_iis = NLog.LogManager.GetLogger("rich_iis_log");
             nlog_windowservice = NLog.LogManager.GetLogger("rich_windowservice_log");
+            nlog_docker = NLog.LogManager.GetLogger("rich_docker_log");
 
             RichLogInit();
             #endregion
@@ -117,6 +136,7 @@ namespace AntDeploy.Winform
                     this.combo_env_list.Items.Add(env.Name);
                     this.combo_iis_env.Items.Add(env.Name);
                     this.combo_windowservice_env.Items.Add(env.Name);
+                    this.combo_docker_env.Items.Add(env.Name);
                 }
 
                 this.combo_env_list.SelectedIndex = 0;
@@ -179,7 +199,25 @@ namespace AntDeploy.Winform
                 }
             }
 
+            if (DeployConfig.DockerConfig != null)
+            {
+                if (this.combo_docker_env.Items.Count > 0 &&
+                    !string.IsNullOrEmpty(DeployConfig.DockerConfig.LastEnvName)
+                    && this.combo_docker_env.Items.Cast<string>().Contains(DeployConfig.DockerConfig.LastEnvName))
+                {
+                    this.combo_docker_env.SelectedItem = DeployConfig.DockerConfig.LastEnvName;
+                }
 
+                if (!string.IsNullOrEmpty(DeployConfig.DockerConfig.Prot))
+                {
+                    this.txt_docker_port.Text = DeployConfig.DockerConfig.Prot;
+                }
+
+                if (!string.IsNullOrEmpty(DeployConfig.DockerConfig.AspNetCoreEnv))
+                {
+                    this.txt_docker_envname.Text = DeployConfig.DockerConfig.AspNetCoreEnv;
+                }
+            }
 
 
             this.txt_env_server_host.Text = string.Empty;
@@ -194,6 +232,7 @@ namespace AntDeploy.Winform
             RichTextBoxTarget.ReInitializeAllTextboxes(this);
             RichTextBoxTarget.GetTargetByControl(rich_iis_log).LinkClicked += LinkClicked;
             RichTextBoxTarget.GetTargetByControl(rich_windowservice_log).LinkClicked += LinkClicked;
+            RichTextBoxTarget.GetTargetByControl(rich_docker_log).LinkClicked += LinkClicked;
         }
 
 
@@ -230,7 +269,8 @@ namespace AntDeploy.Winform
             DeployConfig.WindowsServiveConfig.ServiceName = this.txt_windowservice_name.Text.Trim();
             DeployConfig.WindowsServiveConfig.StopTimeOutSeconds = this.txt_windowservice_timeout.Text.Trim();
 
-
+            DeployConfig.DockerConfig.Prot = this.txt_docker_port.Text.Trim();
+            DeployConfig.DockerConfig.AspNetCoreEnv = this.txt_docker_envname.Text.Trim();
 
             var configJson = JsonConvert.SerializeObject(DeployConfig, Formatting.Indented);
             File.WriteAllText(ProjectConfigPath, configJson, Encoding.UTF8);
@@ -269,6 +309,9 @@ namespace AntDeploy.Winform
                 this.combo_env_list.SelectedItem = env_name;
                 this.txt_env_server_host.Text = string.Empty;
                 this.txt_env_server_token.Text = string.Empty;
+                this.txt_linux_host.Text = string.Empty;
+                this.txt_linux_username.Text = string.Empty;
+                this.txt_linux_pwd.Text = string.Empty;
                 this.txt_env_name.Text = string.Empty;
             }
         }
@@ -595,6 +638,7 @@ namespace AntDeploy.Winform
         /// <param name="e"></param>
         private void b_linux_server_test_Click(object sender, EventArgs e)
         {
+            //看ssh是否能链接的通
 
         }
 
@@ -908,6 +952,7 @@ namespace AntDeploy.Winform
         {
             this.BeginInvokeLambda(() =>
             {
+
                 this.b_iis_deploy.Enabled = flag;
                 this.txt_iis_web_site_name.Enabled = flag;
                 this.txt_iis_port.Enabled = flag;
@@ -921,6 +966,10 @@ namespace AntDeploy.Winform
                 if (flag)
                 {
                     this.rich_windowservice_log.Text = "";
+                }
+                else
+                {
+                    page_.Tag = "0";
                 }
             });
 
@@ -976,10 +1025,16 @@ namespace AntDeploy.Winform
                 if (flag)
                 {
                     this.rich_iis_log.Text = "";
+                    this.rich_docker_log.Text = "";
+                }
+                else
+                {
+                    page_.Tag = "2";
                 }
             });
 
         }
+
 
 
         private void b_windowservice_deploy_Click(object sender, EventArgs e)
@@ -1058,7 +1113,7 @@ namespace AntDeploy.Winform
                 return;
             }
 
-            this.nlog_windowservice.Info($"windows Service exe name:{execFilePath.Replace(".dll",".exe")}");
+            
 #endif
 
 
@@ -1084,7 +1139,7 @@ namespace AntDeploy.Winform
             }
 
             this.rich_windowservice_log.Text = "";
-
+            this.nlog_windowservice.Info($"windows Service exe name:{execFilePath.Replace(".dll",".exe")}");
 
             new Task(async () =>
              {
@@ -1333,17 +1388,53 @@ namespace AntDeploy.Winform
         #endregion
 
         #region Common
+        private void page__SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string pase = page_.Tag as string;
+            if (string.IsNullOrEmpty(pase))
+            {
+                return;
+            }
 
+            int.TryParse(pase, out var excutePageIndex);
+            if (excutePageIndex < 0)
+            {
+                return;
+            }
+            if (page_.SelectedIndex == 0)
+            {
+                if (excutePageIndex != page_.SelectedIndex)
+                {
+                    this.rich_iis_log.Text = "";
+                }
+            }
+            else if (page_.SelectedIndex == 1)
+            {
+                if (excutePageIndex != page_.SelectedIndex)
+                {
+                    this.rich_docker_log.Text = "";
+                }
+            }
+            else if (page_.SelectedIndex == 2)
+            {
+                if (excutePageIndex != page_.SelectedIndex)
+                {
+                    this.rich_windowservice_log.Text = "";
+                }
+            }
+        }
         private void DeployConfigOnEnvChangeEvent(Env changeEnv, bool isremove)
         {
             this.combo_iis_env.Items.Clear();
             this.combo_windowservice_env.Items.Clear();
+            this.combo_docker_env.Items.Clear();
             if (DeployConfig.Env.Any())
             {
                 foreach (var env in DeployConfig.Env)
                 {
                     this.combo_iis_env.Items.Add(env.Name);
                     this.combo_windowservice_env.Items.Add(env.Name);
+                    this.combo_docker_env.Items.Add(env.Name);
                 }
             }
 
@@ -1374,6 +1465,285 @@ namespace AntDeploy.Winform
             BeginInvoke(action, null);
         }
 
+
+        #endregion
+
+
+        #region Docker
+
+        private void b_docker_deploy_Click(object sender, EventArgs e)
+        {
+            var port = this.txt_docker_port.Text.Trim();
+            if (!string.IsNullOrEmpty(port))
+            {
+                int.TryParse(port, out var dockerPort);
+                if (dockerPort == 0)
+                {
+                    MessageBox.Show("please input right port value");
+                    return;
+                }
+                else
+                {
+                    DeployConfig.DockerConfig.Prot = port;
+                }
+            }
+            else
+            {
+                DeployConfig.DockerConfig.Prot = "";
+            }
+
+            var aspnetcoreEnvName = this.txt_docker_envname.Text.Trim();
+            if (aspnetcoreEnvName.Length > 0)
+            {
+                DeployConfig.DockerConfig.AspNetCoreEnv = aspnetcoreEnvName;
+            }
+
+            var envName = this.combo_docker_env.SelectedItem as string;
+            if (string.IsNullOrEmpty(envName))
+            {
+                MessageBox.Show("please select env");
+                return;
+            }
+
+#if !DEBUG
+            var ENTRYPOINT = "";
+            var SDKVersion = "2.1";
+#else
+            //必须是netcore应用
+            var isNetcoreProject = ProjectHelper.IsDotNetCoreProject(_project);
+            if (!isNetcoreProject)
+            {
+                MessageBox.Show("current project is not netcore");
+                return;
+            }
+
+            var ENTRYPOINT = _project.GetProjectProperty("OutputFileName");
+            if (string.IsNullOrEmpty(ENTRYPOINT))
+            {
+                MessageBox.Show("get current project property:outputfilename error");
+                return;
+            }
+
+            var SDKVersion = ProjectHelper.GetProjectSkdInNetCoreProject(ProjectPath);
+            if (string.IsNullOrEmpty(SDKVersion))
+            {
+                MessageBox.Show("get current project skd version error");
+                return;
+            }
+
+           
+#endif
+
+            var serverList = DeployConfig.Env.Where(r => r.Name.Equals(envName)).Select(r => r.LinuxServerList)
+                .FirstOrDefault();
+
+            if (serverList == null || !serverList.Any())
+            {
+                MessageBox.Show("selected env have no linux server set yet!");
+                return;
+            }
+
+            var serverHostList = string.Join(Environment.NewLine, serverList.Select(r => r.Host).ToList());
+
+            var confirmResult = MessageBox.Show("Are you sure to deploy to Linux Server: " + Environment.NewLine + serverHostList,
+                "Confirm Deploy!!",
+                MessageBoxButtons.YesNo);
+            if (confirmResult != DialogResult.Yes)
+            {
+                return;
+            }
+
+            this.rich_docker_log.Text = "";
+            this.nlog_docker.Info($"ENTRYPOINT name:{ENTRYPOINT}");
+
+             new Task(async () =>
+             {
+                 this.nlog_docker.Info("Start publish");
+                 EnableForDocker(false);
+
+                 try
+                 {
+                     var publishLog = new List<string>();
+                     //执行 publish
+                     var isSuccess = CommandHelper.RunDotnetExternalExe(ProjectFolderPath, "dotnet",
+                         "publish -c Release",
+                         (r) =>
+                         {
+                             this.nlog_docker.Info(r);
+                             publishLog.Add(r);
+                         },
+                         (er) => this.nlog_docker.Error(er));
+
+                     if (!isSuccess)
+                     {
+                         this.nlog_docker.Error("publish error");
+                         return;
+                     }
+
+                     var publishPathLine = publishLog.FirstOrDefault(r => !string.IsNullOrEmpty(r) && r.EndsWith("\\publish\\"));
+
+                     if (string.IsNullOrEmpty(publishPathLine))
+                     {
+                         this.nlog_docker.Error("can not find publishPath in log");
+                         return;
+                     }
+
+                     var publishPathArr = publishPathLine.Split(new string[] { " ->" }, StringSplitOptions.None);
+                     if (publishPathArr.Length != 2)
+                     {
+                         this.nlog_docker.Error("can not find publishPath in log");
+                         return;
+                     }
+
+                     var publishPath = publishPathArr[1].Trim();
+
+                     if (string.IsNullOrEmpty(publishPath) || !Directory.Exists(publishPath))
+                     {
+                         this.nlog_docker.Error("can not find publishPath");
+                         return;
+                     }
+
+
+                     var serviceFile = Path.Combine(publishPath, ENTRYPOINT);
+                     if (!File.Exists(serviceFile))
+                     {
+                         this.nlog_docker.Error($"ENTRYPOINT file can not find in publish folder: {serviceFile}");
+                         return;
+                     }
+
+                     LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish success,  ==> ");
+                     publisEvent.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
+                     this.nlog_docker.Log(publisEvent);
+
+
+
+                     //执行 打包
+                     this.nlog_docker.Info("Start package");
+                     MemoryStream zipBytes;
+                     try
+                     {
+                         zipBytes = ZipHelper.DoCreateFromDirectory2(publishPath, CompressionLevel.Optimal, true,
+                             DeployConfig.IgnoreList);
+                     }
+                     catch (Exception ex)
+                     {
+                         this.nlog_docker.Error("package fail:" + ex.Message);
+                         return;
+                     }
+
+                     if (zipBytes == null || zipBytes.Length < 1)
+                     {
+                         this.nlog_docker.Error("package fail");
+                         return;
+                     }
+
+                     this.nlog_docker.Info("package success");
+                     //执行 上传
+                     this.nlog_docker.Info("Deploy Start");
+                     foreach (var server in serverList)
+                     {
+                         #region 参数Check
+
+                         if (string.IsNullOrEmpty(server.Host))
+                         {
+                             this.nlog_docker.Error("Server Host is Empty");
+                             continue;
+                         }
+                         if (string.IsNullOrEmpty(server.UserName))
+                         {
+                             this.nlog_docker.Error("Server UserName is Empty");
+                             continue;
+                         }
+                         if (string.IsNullOrEmpty(server.Pwd))
+                         {
+                             this.nlog_docker.Error("Server Pwd is Empty");
+                             continue;
+                         }
+
+                         #endregion
+
+                         using (SSHClient sshClient = new SSHClient(server.Host,server.UserName,server.Pwd, (str) =>
+                         {
+                             this.nlog_docker.Info("【Server】" + str);
+                         })
+                         {
+                             NetCoreENTRYPOINT = ENTRYPOINT,
+                             NetCoreVersion = SDKVersion,
+                             NetCorePort = DeployConfig.DockerConfig.Prot,
+                             NetCoreEnvironment = DeployConfig.DockerConfig.AspNetCoreEnv
+                         })
+                         {
+                             var connectResult = sshClient.Connect();
+                             if (!connectResult)
+                             {
+                                 this.nlog_docker.Error($"Deploy Host:{server.Host} Fail: connect fail");
+                                 continue;
+                             }
+
+                             try
+                             {
+                                 sshClient.PublishZip(zipBytes, "publisher", "publish.zip");
+                             }
+                             catch (Exception ex)
+                             {
+                                 this.nlog_docker.Error($"Deploy Host:{server.Host} Fail:" + ex.Message);
+                             }
+                         }
+                     }
+                 }
+                 catch (Exception ex1)
+                 {
+                     this.nlog_docker.Error(ex1);
+                 }
+                 finally
+                 {
+                     EnableForDocker(true);
+                 }
+
+
+
+             }).Start();
+        }
+
+        private void EnableForDocker(bool flag)
+        {
+            this.BeginInvokeLambda(() =>
+            {
+                this.b_docker_deploy.Enabled = flag;
+                this.combo_docker_env.Enabled = flag;
+                this.txt_docker_port.Enabled = flag;
+                this.txt_docker_envname.Enabled = flag;
+
+                this.page_set.Enabled = flag;
+                this.page_window_service.Enabled = flag;
+                this.page_web_iis.Enabled = flag;
+
+                if (flag)
+                {
+                    this.rich_iis_log.Text = "";
+                    this.rich_windowservice_log.Text = "";
+                }
+                else
+                {
+                    page_.Tag = "1";
+                }
+            });
+
+        }
+
+        /// <summary>
+        /// docker env 环境切换
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void combo_docker_env_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var selectName = this.combo_docker_env.SelectedItem as string;
+            if (!string.IsNullOrEmpty(selectName))
+            {
+                DeployConfig.DockerConfig.LastEnvName = selectName;
+            }
+        }
         #endregion
 
        
