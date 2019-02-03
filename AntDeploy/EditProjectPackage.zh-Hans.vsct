@@ -9,7 +9,7 @@
         <!--Visual Studio 2015 doesn't have such menu, we have to define a new Group-->
         <!--<Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_PROJECT_EDITFILE" />-->
         <Parent guid="guidCmdSet" id="EDIT_PROJECT_GROUP_ID" />
-        <Icon guid="ImageCatalogGuid" id="Open" />
+        <Icon guid="ImageCatalogGuid" id="PublishCurrentWebSite" />
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultInvisible</CommandFlag>
         <CommandFlag>TextChanges</CommandFlag>
@@ -21,7 +21,7 @@
       </Button>
       <Button guid="guidCmdSet" id="EDIT_PROJECTS_CMD_ID" priority="0x0100" type="Button">
         <Parent guid="guidCmdSet" id="EDIT_PROJECTS_GROUP_ID" />
-        <Icon guid="ImageCatalogGuid" id="Open" />
+        <Icon guid="ImageCatalogGuid" id="PublishCurrentWebSite" />
         <CommandFlag>IconAndText</CommandFlag>
         <CommandFlag>IconIsMoniker</CommandFlag>
         <Strings>

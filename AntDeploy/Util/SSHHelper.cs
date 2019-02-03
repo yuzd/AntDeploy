@@ -374,6 +374,16 @@ namespace AntDeploy.Util
             {
 
             }
+
+            try
+            {
+                _sshClient.Disconnect();
+                _sshClient.Dispose();
+            }
+            catch (Exception)
+            {
+
+            }
         }
         private void DeleteDirectory(string path)
         {
