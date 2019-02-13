@@ -7,6 +7,7 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace AntDeployAgentWindows.MyApp.Service.Impl
 {
@@ -35,6 +36,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
             try
             {
 
+                var isNetcore = _sdkTypeName.ToLower().Equals("netcore");
                 var filePath = Path.Combine(_projectPublishFolder, fileItem.FileName);
                 using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
                 {
@@ -64,6 +66,20 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
                 if (!Directory.Exists(deployFolder))
                 {
+                 
+                    if (Directory.Exists(_projectPublishFolder))
+                    {
+                        var temp = new DirectoryInfo(_projectPublishFolder);
+                        var tempFolderList = temp.GetDirectories();
+                        if (tempFolderList.Length==1)
+                        {
+                            deployFolder = tempFolderList.First().FullName;
+                        }
+                    }
+                }
+
+                if (!Directory.Exists(deployFolder))
+                {
                     return "unzip publish file error,Path not found:" + deployFolder;
                 }
 
@@ -78,7 +94,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 var level2 = siteArr.Length == 2 ? siteArr[1] : string.Empty;
 
                 var isSiteExistResult = IISHelper.IsSiteExist(level1, level2);
-                if (!isSiteExistResult.Item1)
+                if (!isSiteExistResult.Item1)//一级都不存在
                 {
                     if (IISHelper.GetIISVersion() <= 6)
                     {
@@ -99,7 +115,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     Log($"deploy folder create success : {firstDeployFolder} ");
                     
                     
-                    var rt = IISHelper.InstallSite(level1, firstDeployFolder,_port,_poolName);
+                    var rt = IISHelper.InstallSite(level1, firstDeployFolder,_port,(string.IsNullOrEmpty(_poolName) ? _projectName : _poolName), isNetcore);
                     if (string.IsNullOrEmpty(rt))
                     {
                         Log($"create website : {level1} success ");
@@ -116,7 +132,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                         var level2Folder = Path.Combine(firstDeployFolder, level2);
                         EnsureProjectFolder(level2Folder);
 
-                        var rt2 = IISHelper.InstallVirtualSite(level1, level2, level2Folder,_poolName);
+                        var rt2 = IISHelper.InstallVirtualSite(level1, level2, level2Folder, (string.IsNullOrEmpty(_poolName) ? _projectName : _poolName), isNetcore);
                         if (string.IsNullOrEmpty(rt2))
                         {
                             Log($"create virtualSite :{level2} Of Website : {level1} success ");
@@ -160,7 +176,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     var level2Folder = Path.Combine(firstDeployFolder, level2);
                     EnsureProjectFolder(level2Folder);
 
-                    var rt2 = IISHelper.InstallVirtualSite(level1, level2, level2Folder, _poolName);
+                    var rt2 = IISHelper.InstallVirtualSite(level1, level2, level2Folder,  (string.IsNullOrEmpty(_poolName) ? _projectName : _poolName), isNetcore);
                     if (string.IsNullOrEmpty(rt2))
                     {
                         Log($"create virtualSite :{level2} Of Website : {level1} success ");

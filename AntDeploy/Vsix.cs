@@ -2,7 +2,7 @@
 {
     internal static class Vsix
     {
-        public const string VERSION = "1.6";
+        public const string VERSION = "1.7";
         public const string PRODUCT = "yuzd";
         public const string PACKAGE = "AntDeploy";
         public const string URL = "https://github.com/yuzd";

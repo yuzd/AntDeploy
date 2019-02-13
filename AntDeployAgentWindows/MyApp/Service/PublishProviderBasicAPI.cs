@@ -4,6 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using AntDeployAgentWindows.Model;
 
@@ -146,8 +147,13 @@ namespace AntDeployAgentWindows.MyApp.Service
         protected string getCorrectFolderName(string name)
         {
             foreach (char c in Path.GetInvalidFileNameChars())
+            {
                 name = name.Replace(System.Char.ToString(c), "");
-            return name;
+            }
+            var aa = Regex.Replace(name, "[ \\[ \\] \\^ \\-_*×――(^)（^）$%~!@#$…&%￥—+=<>《》!！??？:：•`·、。，；,.;\"‘’“”-]", "");
+            aa = aa.Replace(" ", "").Replace("　", "");
+            aa = Regex.Replace(aa, @"[~!@#\$%\^&\*\(\)\+=\|\\\}\]\{\[:;<,>\?\/""]+", "");
+            return aa;
         }
     }
 

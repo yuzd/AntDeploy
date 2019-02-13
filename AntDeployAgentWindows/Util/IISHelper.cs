@@ -23,46 +23,71 @@ namespace AntDeployAgentWindows.Util
 
         public static void ApplicationPoolRecycle(string applicationPoolName)
         {
-            ServerManager iis = new ServerManager();
-            iis.ApplicationPools[applicationPoolName].Recycle();
+            using (ServerManager iis = new ServerManager())
+            {
+                iis.ApplicationPools[applicationPoolName].Recycle();
+            }
+        }
+
+        public static bool IsApplicationPoolExist(string applicationPoolName)
+        {
+            try
+            {
+                using (ServerManager iis = new ServerManager())
+                {
+                    var pool = iis.ApplicationPools[applicationPoolName];
+                    if (pool != null) return true;
+                }
+
+                return false;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
         }
 
         public static void ApplicationPoolStop(string applicationPoolName)
         {
-            ServerManager iis = new ServerManager();
-            iis.ApplicationPools[applicationPoolName].Stop();
+            using (ServerManager iis = new ServerManager())
+                iis.ApplicationPools[applicationPoolName].Stop();
         }
 
         public static bool IsApplicationPoolStop(string applicationPoolName)
         {
-            ServerManager iis = new ServerManager();
-            return iis.ApplicationPools[applicationPoolName].State == ObjectState.Stopped;
+            using (ServerManager iis = new ServerManager())
+                return iis.ApplicationPools[applicationPoolName].State == ObjectState.Stopped;
         }
 
         public static void ApplicationPoolStart(string applicationPoolName)
         {
-            ServerManager iis = new ServerManager();
-            iis.ApplicationPools[applicationPoolName].Start();
+            using (ServerManager iis = new ServerManager())
+                iis.ApplicationPools[applicationPoolName].Start();
         }
 
         public static void WebsiteStart(string siteName)
         {
-            ServerManager iis = new ServerManager();
-            iis.Sites[siteName].Start();
+            using (ServerManager iis = new ServerManager())
+                iis.Sites[siteName].Start();
         }
 
         public static Site WebsiteStop(string siteName)
         {
-            ServerManager iis = new ServerManager();
-            var site = iis.Sites[siteName];
-            site.Stop();
-            return site;
+            using (ServerManager iis = new ServerManager())
+            {
+                var site = iis.Sites[siteName];
+                site.Stop();
+                return site;
+            }
         }
         public static bool IsWebsiteStop(string siteName)
         {
-            ServerManager iis = new ServerManager();
-            var site = iis.Sites[siteName];
-            return site.State == ObjectState.Stopped;
+            using (ServerManager iis = new ServerManager())
+            {
+                var site = iis.Sites[siteName];
+                return site.State == ObjectState.Stopped;
+            }
         }
 
         public static bool IsDefaultWebSite(string name)
@@ -71,15 +96,29 @@ namespace AntDeployAgentWindows.Util
         }
 
 
-        public static string InstallSite(string name, string siteLocation, string port = "80",string poolName=null)
+        public static string InstallSite(string name, string siteLocation, string port = "80",string poolName=null,bool isnetcore = false)
         {
             try
             {
-                ServerManager iisManager = new ServerManager();
-                var mySite = iisManager.Sites.Add(name, "http", $"*:{port}:", siteLocation);
-                mySite.ApplicationDefaults.ApplicationPoolName = string.IsNullOrEmpty(poolName) ? "DefaultAppPool": poolName;
-                iisManager.CommitChanges();
-                return string.Empty;
+                using (ServerManager iisManager = new ServerManager())
+                {
+                    var mySite = iisManager.Sites.Add(name, "http", $"*:{port}:", siteLocation);
+                    if (!string.IsNullOrEmpty(poolName))
+                    {
+                        //看pool是否存在 
+                        var isPoolExist = IsApplicationPoolExist(poolName);
+                        if (!isPoolExist)
+                        {
+                            //不存在就创建
+                            ApplicationPool newPool = iisManager.ApplicationPools.Add(poolName);
+                            newPool.ManagedRuntimeVersion = !isnetcore ? "v4.0" : null;
+                            newPool.ManagedPipelineMode = ManagedPipelineMode.Integrated;
+                        }
+                    }
+                    mySite.ApplicationDefaults.ApplicationPoolName = string.IsNullOrEmpty(poolName) ? "DefaultAppPool" : poolName;
+                    iisManager.CommitChanges();
+                    return string.Empty;
+                }
             }
             catch (Exception e)
             {
@@ -87,7 +126,7 @@ namespace AntDeployAgentWindows.Util
             }
         }
 
-        public static string InstallVirtualSite(string sitename,string virtualPath, string siteLocation, string poolName = null)
+        public static string InstallVirtualSite(string sitename,string virtualPath, string siteLocation, string poolName = null,bool isnetcore=false)
         {
             try
             {
@@ -95,16 +134,29 @@ namespace AntDeployAgentWindows.Util
                 {
                     virtualPath = "/" + virtualPath;
                 }
-                ServerManager iisManager = new ServerManager();
-                var app = iisManager.Sites[sitename].Applications;
-                var application = app.Add(virtualPath, siteLocation);
-                if (!string.IsNullOrEmpty(poolName))
+
+                using (ServerManager iisManager = new ServerManager())
                 {
-                    application.ApplicationPoolName = poolName;
+                    var app = iisManager.Sites[sitename].Applications;
+                    var application = app.Add(virtualPath, siteLocation);
+                    if (!string.IsNullOrEmpty(poolName))
+                    {
+                        //看pool是否存在 
+                        var isPoolExist = IsApplicationPoolExist(poolName);
+                        if (!isPoolExist)
+                        {
+                            //不存在就创建
+                            ApplicationPool newPool = iisManager.ApplicationPools.Add(poolName);
+                            newPool.ManagedRuntimeVersion = !isnetcore ? "v4.0" : null;
+                            newPool.ManagedPipelineMode = ManagedPipelineMode.Integrated;
+                        }
+
+                        application.ApplicationPoolName = poolName;
+                    }
+                    //app.VirtualDirectories.Add(virtualPath, siteLocation);
+                    iisManager.CommitChanges();
+                    return string.Empty;
                 }
-                //app.VirtualDirectories.Add(virtualPath, siteLocation);
-                iisManager.CommitChanges();
-                return string.Empty;
             }
             catch (Exception e)
             {
@@ -134,21 +186,23 @@ namespace AntDeployAgentWindows.Util
                 }
                 var siteExist = false;
                 var visualExist = false;
-                ServerManager iis = new ServerManager();
-                var siteList = iis.Sites.ToList();
-                var site = siteList.Where(r => r.Name.ToLower().Equals(name.ToLower())).ToList();
-                if (site.Count == 1)
+                using (ServerManager iis = new ServerManager())
                 {
-                    siteExist = true;
-                    var target = site[0];
-                    var applicationRoot = target.Applications.FirstOrDefault(r => r.Path.ToLower().Equals(sitename.ToLower()));
-                    if (applicationRoot != null)
+                    var siteList = iis.Sites.ToList();
+                    var site = siteList.Where(r => r.Name.ToLower().Equals(name.ToLower())).ToList();
+                    if (site.Count == 1)
                     {
-                        visualExist = true;
-                    }
+                        siteExist = true;
+                        var target = site[0];
+                        var applicationRoot = target.Applications.FirstOrDefault(r => r.Path.ToLower().Equals(sitename.ToLower()));
+                        if (applicationRoot != null)
+                        {
+                            visualExist = true;
+                        }
 
+                    }
+                    return new Tuple<bool, bool>(siteExist, visualExist);
                 }
-                return new Tuple<bool, bool>(siteExist, visualExist);
             }
             catch (Exception)
             {
@@ -177,31 +231,33 @@ namespace AntDeployAgentWindows.Util
                     name = "Default Web Site";
                 }
 
-                ServerManager iis = new ServerManager();
-                var siteList = iis.Sites.ToList();
-                var site = siteList.Where(r => r.Name.ToLower().Equals(name.ToLower())).ToList();
-                if (site.Count == 0)
+                using (ServerManager iis = new ServerManager())
                 {
-                    return null;
-                }
-                if (site.Count > 1)
-                {
-                    throw new Exception($"get website by name:{name} but found {site.Count} in iis.");
-                }
-                else
-                {
-                    var target = site[0];
-
-                    var applicationRoot = target.Applications.FirstOrDefault(r => r.Path.ToLower().Equals(sitename.ToLower()));
-                    if (applicationRoot == null)
+                    var siteList = iis.Sites.ToList();
+                    var site = siteList.Where(r => r.Name.ToLower().Equals(name.ToLower())).ToList();
+                    if (site.Count == 0)
                     {
                         return null;
                     }
+                    if (site.Count > 1)
+                    {
+                        throw new Exception($"get website by name:{name} but found {site.Count} in iis.");
+                    }
+                    else
+                    {
+                        var target = site[0];
 
-                    var virtualRoot = applicationRoot.VirtualDirectories.Single(v => v.Path == "/");
+                        var applicationRoot = target.Applications.FirstOrDefault(r => r.Path.ToLower().Equals(sitename.ToLower()));
+                        if (applicationRoot == null)
+                        {
+                            return null;
+                        }
 
-                    return new Tuple<string, string, string>(virtualRoot.PhysicalPath, target.Name, applicationRoot.ApplicationPoolName);
+                        var virtualRoot = applicationRoot.VirtualDirectories.Single(v => v.Path == "/");
 
+                        return new Tuple<string, string, string>(virtualRoot.PhysicalPath, target.Name, applicationRoot.ApplicationPoolName);
+
+                    }
                 }
             }
             catch (Exception ex)

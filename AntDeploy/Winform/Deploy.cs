@@ -758,8 +758,22 @@ namespace AntDeploy.Winform
         {
 
             //判断当前项目是否是web项目
+            bool isWeb = ProjectHelper.IsDotNetCoreProject(_project) || ProjectHelper.IsWebProject(_project);
 
-            if (!ProjectHelper.IsDotNetCoreProject(_project) && !ProjectHelper.IsWebProject(_project))
+            if (!isWeb)
+            {
+                //检查工程文件里面是否含有 WebProjectProperties字样
+                if (!string.IsNullOrEmpty(ProjectPath) && File.Exists(ProjectPath))
+                {
+                    var fileInfo = File.ReadAllText(ProjectPath);
+                    if (fileInfo.Contains("<WebProjectProperties>") && fileInfo.Contains("</WebProjectProperties>"))
+                    {
+                        isWeb = true;
+                    }
+                }
+            }
+
+            if (!isWeb)
             {
                 MessageBox.Show("current project is not web project!");
                 return;
@@ -871,6 +885,21 @@ namespace AntDeploy.Winform
                         }
 
                         publishPath = Path.Combine(ProjectFolderPath, "bin", "Release", "publish");
+
+                        if (Directory.Exists(publishPath))
+                        {
+                            var webPublishPath = Path.Combine(publishPath, "_PublishedWebsites");
+                            if (Directory.Exists(webPublishPath))
+                            {
+                                var webPublishFolder = new DirectoryInfo(webPublishPath);
+                                var targetFolder = webPublishFolder.GetDirectories().FirstOrDefault();
+                                if (targetFolder != null)
+                                {
+                                    //targetFolder.MoveTo(Path.Combine(targetFolder.Parent.FullName, "publish"));
+                                    publishPath = targetFolder.FullName;
+                                }
+                            }
+                        }
                     }
 
 

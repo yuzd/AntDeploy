@@ -20,7 +20,7 @@ namespace AntDeployAgentWindows
             var startup = new Startup();
             var port = System.Configuration.ConfigurationManager.AppSettings["Port"];
             TinyFoxService.Port = string.IsNullOrEmpty(port)?8088:int.Parse(port);                           //服务端口（默认是8088）
-            TinyFoxService.WebRoot = @"A:\Users\Administrator\AppData\Local\tx\1877682825\FileRecv\TinyFox181113\TinyFox\Demo\Demo0\bin\Debug\site";           //网站根文件夹(默认路径是：应用程序/site/wwwroot)
+            //TinyFoxService.WebRoot = @"A:\Users\Administrator\AppData\Local\tx\1877682825\FileRecv\TinyFox181113\TinyFox\Demo\Demo0\bin\Debug\site";           //网站根文件夹(默认路径是：应用程序/site/wwwroot)
             // 启动服务
             TinyFoxService.Start(startup.OwinMain);       //启动服务（非阻塞的）
 

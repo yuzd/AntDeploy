@@ -17,6 +17,7 @@ namespace AntDeployAgentWindows.MyApp
 
 
         private static readonly System.Threading.Timer mDetectionTimer;
+        private static readonly object lockObject = new  object();
 
         static LoggerService()
         {
@@ -26,35 +27,45 @@ namespace AntDeployAgentWindows.MyApp
         protected override void ProcessRequest()
         {
             Response.ContentType = "text/plain";
-            if (Request.Method.ToUpper() != "GET")
+            try
             {
-                Response.Write("");
-                return;
-            }
-
-            var key = Request.Query.Get("key");
-            if (string.IsNullOrEmpty(key))
-            {
-                Response.Write("key required");
-                return;
-            }
-
-            var now = DateTime.Now;
-            if (loggerCollection.TryGetValue(key, out List<LoggerModel> logList))
-            {
-                if (logList != null)
+                if (Request.Method.ToUpper() != "GET")
                 {
-                    var result = logList.Where(r => !r.IsActive && r.Date <= now).ToList();
-                    if (result.Any())
+                    Response.Write("");
+                    return;
+                }
+
+                var key = Request.Query.Get("key");
+                if (string.IsNullOrEmpty(key))
+                {
+                    Response.Write("key required");
+                    return;
+                }
+
+                var now = DateTime.Now;
+                lock (lockObject)
+                {
+                    if (loggerCollection.TryGetValue(key, out List<LoggerModel> logList))
                     {
-                        result.ForEach(r=>r.IsActive=true);
-                        Response.Write(JsonConvert.SerializeObject(result));
-                        return;
+                        if (logList != null)
+                        {
+                            var result = logList.Where(r => !r.IsActive && r.Date <= now).ToList();
+                            if (result.Any())
+                            {
+                                result.ForEach(r => r.IsActive = true);
+                                Response.Write(JsonConvert.SerializeObject(result));
+                                return;
+                            }
+                        }
                     }
                 }
+
+                Response.Write("");
             }
-           
-            Response.Write("");
+            catch (Exception)
+            {
+                Response.Write("");
+            }
         }
 
 
@@ -65,22 +76,26 @@ namespace AntDeployAgentWindows.MyApp
 
         private static void OnVerifyClients(object state)
         {
-            mDetectionTimer.Change(-1, -1);
-            try
+            lock (lockObject)
             {
-                if (removeLoggerConllection.TryDequeue(out var key))
+                mDetectionTimer.Change(-1, -1);
+                try
                 {
-                    loggerCollection.TryRemove(key, out _);
+                    if (removeLoggerConllection.TryDequeue(out var key))
+                    {
+                        loggerCollection.TryRemove(key, out _);
+                    }
+                }
+                catch
+                {
+                    // ignored
+                }
+                finally
+                {
+                    mDetectionTimer.Change(1000 * 60 * 10, 1000 * 60 * 10);
                 }
             }
-            catch
-            {
-                // ignored
-            }
-            finally
-            {
-                mDetectionTimer.Change(1000*60*10, 1000*60*10);
-            }
+          
         }
 
     }

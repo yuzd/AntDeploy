@@ -74,6 +74,12 @@ namespace AntDeploy.Models
                 switch (project.Kind)
                 {
                     case Web_PROJECT_KIND:
+                    case Web_PROJECT_KIND_MVC1:
+                    case Web_PROJECT_KIND_MVC2:
+                    case Web_PROJECT_KIND_MVC3:
+                    case Web_PROJECT_KIND_MVC4:
+                    case Web_Application:
+                    case Web_ASPNET5:
                         return true;
                     default:
                         return false;
