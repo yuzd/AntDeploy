@@ -276,8 +276,12 @@ namespace AntDeploy.Winform
             DeployConfig.DockerConfig.Prot = this.txt_docker_port.Text.Trim();
             DeployConfig.DockerConfig.AspNetCoreEnv = this.txt_docker_envname.Text.Trim();
 
-            var configJson = JsonConvert.SerializeObject(DeployConfig, Formatting.Indented);
-            File.WriteAllText(ProjectConfigPath, configJson, Encoding.UTF8);
+            if (!string.IsNullOrEmpty(ProjectConfigPath))
+            {
+                var configJson = JsonConvert.SerializeObject(DeployConfig, Formatting.Indented);
+                File.WriteAllText(ProjectConfigPath, configJson, Encoding.UTF8);
+            }
+            
         }
 
 
@@ -870,6 +874,7 @@ namespace AntDeploy.Winform
                         }
 
                         publishPath = publishPathArr[1].Trim();
+                        isNetcore = true;
                     }
                     else
                     {
@@ -1558,6 +1563,11 @@ namespace AntDeploy.Winform
             BeginInvoke(action, null);
         }
 
+        private void label_check_update_Click(object sender, EventArgs e)
+        {
+            ProcessStartInfo sInfo = new ProcessStartInfo("https://marketplace.visualstudio.com/items?itemName=nainaigu.AntDeploy");
+            Process.Start(sInfo);
+        }
 
         #endregion
 
@@ -1846,8 +1856,9 @@ namespace AntDeploy.Winform
                 DeployConfig.DockerConfig.LastEnvName = selectName;
             }
         }
+
         #endregion
 
-
+      
     }
 }

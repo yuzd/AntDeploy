@@ -138,7 +138,7 @@ namespace AntDeploy.Util
                         var list = JsonConvert.DeserializeObject<List<LoggerModel>>(result);
                         foreach (var li in list)
                         {
-                            receiveAction(li.Msg);
+                            receiveAction("**"+li.Msg);
                         }
                     }
                     Thread.Sleep(1000);
@@ -168,7 +168,7 @@ namespace AntDeploy.Util
                         if (!text.StartsWith("@hello@"))
                         {
                             var arr = text.Split(new string[] { "@_@" }, StringSplitOptions.None);
-                            receiveAction(arr[0]);
+                            receiveAction("*"+arr[0]);
                         }
 
                     }

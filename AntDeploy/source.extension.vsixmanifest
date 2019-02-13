@@ -3,7 +3,7 @@
     <Metadata>
         <Identity Id="AntDeploy.51be3f7e-0e8b-4ad4-b2c9-126445f2ce6a" Version="1.7" Language="en-US" Publisher="nainaigu" />
         <DisplayName>AntDeploy</DisplayName>
-        <Description xml:space="preserve">AntDeploy(增加docker部署)</Description>
+        <Description xml:space="preserve">AntDeploy(优化iis部署传统framework mvc &amp; webapi)</Description>
         <MoreInfo>https://github.com/yuzd</MoreInfo>
         <Icon>Resources\__TemplateIcon.png</Icon>
         <Tags>deploy</Tags>

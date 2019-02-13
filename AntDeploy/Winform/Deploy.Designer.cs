@@ -46,6 +46,12 @@
             this.combo_iis_sdk_type = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.page_docker = new System.Windows.Forms.TabPage();
+            this.label24 = new System.Windows.Forms.Label();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.label21 = new System.Windows.Forms.Label();
+            this.txt_docker_envname = new System.Windows.Forms.TextBox();
+            this.label23 = new System.Windows.Forms.Label();
+            this.txt_docker_port = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.rich_docker_log = new System.Windows.Forms.RichTextBox();
             this.b_docker_deploy = new System.Windows.Forms.Button();
@@ -100,17 +106,13 @@
             this.txt_env_name = new System.Windows.Forms.TextBox();
             this.b_env_add_by_name = new System.Windows.Forms.Button();
             this.combo_env_list = new System.Windows.Forms.ComboBox();
-            this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.label21 = new System.Windows.Forms.Label();
-            this.txt_docker_envname = new System.Windows.Forms.TextBox();
-            this.label23 = new System.Windows.Forms.Label();
-            this.txt_docker_port = new System.Windows.Forms.TextBox();
-            this.label24 = new System.Windows.Forms.Label();
+            this.label_check_update = new System.Windows.Forms.Label();
             this.page_.SuspendLayout();
             this.page_web_iis.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.page_docker.SuspendLayout();
+            this.groupBox5.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.page_window_service.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -120,7 +122,6 @@
             this.tabControl1.SuspendLayout();
             this.page_winserver.SuspendLayout();
             this.page_linux_server.SuspendLayout();
-            this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
             // page_
@@ -315,6 +316,60 @@
             this.page_docker.Text = "Docker";
             this.page_docker.UseVisualStyleBackColor = true;
             // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(96, 130);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(299, 12);
+            this.label24.TabIndex = 15;
+            this.label24.Text = "PS:Linux Server Only And Required Docker install ";
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.label21);
+            this.groupBox5.Controls.Add(this.txt_docker_envname);
+            this.groupBox5.Controls.Add(this.label23);
+            this.groupBox5.Controls.Add(this.txt_docker_port);
+            this.groupBox5.Location = new System.Drawing.Point(65, 11);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(517, 60);
+            this.groupBox5.TabIndex = 16;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = " (create Dockerfile required)";
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(27, 25);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(35, 12);
+            this.label21.TabIndex = 12;
+            this.label21.Text = "Port:";
+            // 
+            // txt_docker_envname
+            // 
+            this.txt_docker_envname.Location = new System.Drawing.Point(307, 20);
+            this.txt_docker_envname.Name = "txt_docker_envname";
+            this.txt_docker_envname.Size = new System.Drawing.Size(170, 21);
+            this.txt_docker_envname.TabIndex = 12;
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(158, 23);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(143, 12);
+            this.label23.TabIndex = 14;
+            this.label23.Text = "ASPNETCORE_ENVIRONMENT:";
+            // 
+            // txt_docker_port
+            // 
+            this.txt_docker_port.Location = new System.Drawing.Point(68, 22);
+            this.txt_docker_port.Name = "txt_docker_port";
+            this.txt_docker_port.Size = new System.Drawing.Size(62, 21);
+            this.txt_docker_port.TabIndex = 11;
+            // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.rich_docker_log);
@@ -501,6 +556,7 @@
             // 
             // page_set
             // 
+            this.page_set.Controls.Add(this.label_check_update);
             this.page_set.Controls.Add(this.groupBoxIgnore);
             this.page_set.Controls.Add(this.environment);
             this.page_set.Location = new System.Drawing.Point(4, 22);
@@ -869,59 +925,16 @@
             this.combo_env_list.TabIndex = 0;
             this.combo_env_list.SelectedIndexChanged += new System.EventHandler(this.combo_env_list_SelectedIndexChanged);
             // 
-            // groupBox5
+            // label_check_update
             // 
-            this.groupBox5.Controls.Add(this.label21);
-            this.groupBox5.Controls.Add(this.txt_docker_envname);
-            this.groupBox5.Controls.Add(this.label23);
-            this.groupBox5.Controls.Add(this.txt_docker_port);
-            this.groupBox5.Location = new System.Drawing.Point(65, 11);
-            this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(517, 60);
-            this.groupBox5.TabIndex = 16;
-            this.groupBox5.TabStop = false;
-            this.groupBox5.Text = " (create Dockerfile required)";
-            // 
-            // label21
-            // 
-            this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(27, 25);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(35, 12);
-            this.label21.TabIndex = 12;
-            this.label21.Text = "Port:";
-            // 
-            // txt_docker_envname
-            // 
-            this.txt_docker_envname.Location = new System.Drawing.Point(307, 20);
-            this.txt_docker_envname.Name = "txt_docker_envname";
-            this.txt_docker_envname.Size = new System.Drawing.Size(170, 21);
-            this.txt_docker_envname.TabIndex = 12;
-            // 
-            // label23
-            // 
-            this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(158, 23);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(143, 12);
-            this.label23.TabIndex = 14;
-            this.label23.Text = "ASPNETCORE_ENVIRONMENT:";
-            // 
-            // txt_docker_port
-            // 
-            this.txt_docker_port.Location = new System.Drawing.Point(68, 22);
-            this.txt_docker_port.Name = "txt_docker_port";
-            this.txt_docker_port.Size = new System.Drawing.Size(62, 21);
-            this.txt_docker_port.TabIndex = 11;
-            // 
-            // label24
-            // 
-            this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(96, 130);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(299, 12);
-            this.label24.TabIndex = 15;
-            this.label24.Text = "PS:Linux Server Only And Required Docker install ";
+            this.label_check_update.AutoSize = true;
+            this.label_check_update.ForeColor = System.Drawing.Color.RoyalBlue;
+            this.label_check_update.Location = new System.Drawing.Point(543, 3);
+            this.label_check_update.Name = "label_check_update";
+            this.label_check_update.Size = new System.Drawing.Size(77, 12);
+            this.label_check_update.TabIndex = 3;
+            this.label_check_update.Text = "Check Update";
+            this.label_check_update.Click += new System.EventHandler(this.label_check_update_Click);
             // 
             // Deploy
             // 
@@ -943,11 +956,14 @@
             this.groupBox2.ResumeLayout(false);
             this.page_docker.ResumeLayout(false);
             this.page_docker.PerformLayout();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.page_window_service.ResumeLayout(false);
             this.page_window_service.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.page_set.ResumeLayout(false);
+            this.page_set.PerformLayout();
             this.groupBoxIgnore.ResumeLayout(false);
             this.groupBoxIgnore.PerformLayout();
             this.environment.ResumeLayout(false);
@@ -957,8 +973,6 @@
             this.page_winserver.PerformLayout();
             this.page_linux_server.ResumeLayout(false);
             this.page_linux_server.PerformLayout();
-            this.groupBox5.ResumeLayout(false);
-            this.groupBox5.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1043,5 +1057,6 @@
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.TextBox txt_docker_port;
         private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.Label label_check_update;
     }
 }

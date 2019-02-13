@@ -71,29 +71,44 @@ namespace AntDeployAgentWindows.MyApp
 
         public static void Remove(string key)
         {
-            removeLoggerConllection.Enqueue(key);
+            try
+            {
+                removeLoggerConllection.Enqueue(key);
+            }
+            catch (Exception)
+            {
+
+              //igrnoe
+            }
         }
 
         private static void OnVerifyClients(object state)
         {
-            lock (lockObject)
+            try
             {
-                mDetectionTimer.Change(-1, -1);
-                try
+                lock (lockObject)
                 {
-                    if (removeLoggerConllection.TryDequeue(out var key))
+                    mDetectionTimer.Change(-1, -1);
+                    try
                     {
-                        loggerCollection.TryRemove(key, out _);
+                        if (removeLoggerConllection.TryDequeue(out var key))
+                        {
+                            loggerCollection.TryRemove(key, out _);
+                        }
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
+                    finally
+                    {
+                        mDetectionTimer.Change(1000 * 60 * 10, 1000 * 60 * 10);
                     }
                 }
-                catch
-                {
-                    // ignored
-                }
-                finally
-                {
-                    mDetectionTimer.Change(1000 * 60 * 10, 1000 * 60 * 10);
-                }
+            }
+            catch (Exception)
+            {
+                //ignore
             }
           
         }
