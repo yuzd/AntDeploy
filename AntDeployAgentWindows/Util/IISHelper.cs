@@ -2,6 +2,7 @@
 using Microsoft.Win32;
 using System;
 using System.Linq;
+using System.Security.AccessControl;
 
 namespace AntDeployAgentWindows.Util
 {
@@ -48,10 +49,19 @@ namespace AntDeployAgentWindows.Util
 
         }
 
-        public static void ApplicationPoolStop(string applicationPoolName)
+        public static string ApplicationPoolStop(string applicationPoolName)
         {
-            using (ServerManager iis = new ServerManager())
-                iis.ApplicationPools[applicationPoolName].Stop();
+            try
+            {
+                using (ServerManager iis = new ServerManager())
+                    iis.ApplicationPools[applicationPoolName].Stop();
+
+                return string.Empty;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
         }
 
         public static bool IsApplicationPoolStop(string applicationPoolName)
@@ -60,25 +70,49 @@ namespace AntDeployAgentWindows.Util
                 return iis.ApplicationPools[applicationPoolName].State == ObjectState.Stopped;
         }
 
-        public static void ApplicationPoolStart(string applicationPoolName)
+        public static string ApplicationPoolStart(string applicationPoolName)
         {
-            using (ServerManager iis = new ServerManager())
-                iis.ApplicationPools[applicationPoolName].Start();
-        }
-
-        public static void WebsiteStart(string siteName)
-        {
-            using (ServerManager iis = new ServerManager())
-                iis.Sites[siteName].Start();
-        }
-
-        public static Site WebsiteStop(string siteName)
-        {
-            using (ServerManager iis = new ServerManager())
+            try
             {
-                var site = iis.Sites[siteName];
-                site.Stop();
-                return site;
+                using (ServerManager iis = new ServerManager())
+                    iis.ApplicationPools[applicationPoolName].Start();
+
+                return string.Empty;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        public static string WebsiteStart(string siteName)
+        {
+            try
+            {
+                using (ServerManager iis = new ServerManager())
+                    iis.Sites[siteName].Start();
+                return string.Empty;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        public static string WebsiteStop(string siteName)
+        {
+            try
+            {
+                using (ServerManager iis = new ServerManager())
+                {
+                    var site = iis.Sites[siteName];
+                    site.Stop();
+                    return string.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
             }
         }
         public static bool IsWebsiteStop(string siteName)

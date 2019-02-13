@@ -89,4 +89,11 @@ namespace AntDeploy.Models
         public string UserName { get; set; }
         public string Pwd { get; set; }
     }
+
+    public class DeployResult
+    {
+        public bool Success { get; set; }
+        public string Msg { get; set; }
+
+    }
 }

@@ -1,11 +1,26 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.Text;
+using AntDeploy.Models;
+using Newtonsoft.Json;
 
 namespace AntDeploy.Util
 {
-    public class CodingHelper
+    public static class CodingHelper
     {
+        public static T JsonToObject<T>(this string str)
+        {
+            try
+            {
+                var resultModel = JsonConvert.DeserializeObject<T>(str);
+                return resultModel;
+            }
+            catch (Exception)
+            {
+                return default(T);
+            }
+        }
+
         public static string AESDecrypt(string hexString, string key ="56dPz3VDYwGpJYqe7dFG0g==")
         {
 

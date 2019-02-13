@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace AntDeploy.Util
@@ -17,7 +18,7 @@ namespace AntDeploy.Util
         /// <param name="compressionLevel"></param>
         /// <param name="includeBaseDirectory"></param>
         /// <returns></returns>
-        public static byte[] DoCreateFromDirectory(string sourceDirectoryName, CompressionLevel? compressionLevel, bool includeBaseDirectory, List<string> ignoreList = null)
+        public static byte[] DoCreateFromDirectory(string sourceDirectoryName, CompressionLevel? compressionLevel, bool includeBaseDirectory, List<string> ignoreList = null,Action<int> progress = null)
         {
             sourceDirectoryName = Path.GetFullPath(sourceDirectoryName);
             using (var outStream = new MemoryStream())
@@ -29,8 +30,14 @@ namespace AntDeploy.Util
                     string fullName = directoryInfo.FullName;
                     if (includeBaseDirectory && directoryInfo.Parent != null)
                         fullName = directoryInfo.Parent.FullName;
-                    foreach (FileSystemInfo enumerateFileSystemInfo in directoryInfo.EnumerateFileSystemInfos("*", SearchOption.AllDirectories))
+                    var allFile = directoryInfo.EnumerateFileSystemInfos("*", SearchOption.AllDirectories).ToList();
+                    var allFileLength = allFile.Count();
+                    var index = 0;
+                    foreach (FileSystemInfo enumerateFileSystemInfo in allFile)
                     {
+                        index++;
+                        var lastProgressNumber = (((long)index * 100 / allFileLength));
+                        progress?.Invoke((int)lastProgressNumber);
                         flag = false;
                         int length = enumerateFileSystemInfo.FullName.Length - fullName.Length;
                         string entryName = EntryFromPath(enumerateFileSystemInfo.FullName, fullName.Length, length);

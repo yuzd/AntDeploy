@@ -18,8 +18,8 @@ namespace WindowsFormsAppTest
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new Deploy(@"H:\Csharp\yuzd\Lito\Lito\Lito.APP\Lito.APP.csproj", null));
-            Application.Run(new Deploy(@"E:\WorkSpace\github\Lito\Lito\Lito.APP\Lito.APP.csproj", null));
+            Application.Run(new Deploy(@"H:\Csharp\yuzd\Lito\Lito\Lito.APP\Lito.APP.csproj", null));
+            //Application.Run(new Deploy(@"E:\WorkSpace\github\Lito\Lito\Lito.APP\Lito.APP.csproj", null));
         }
     }
 }

@@ -33,6 +33,7 @@ namespace AntDeploy.Winform
         private NLog.Logger nlog_docker;
 
         private int ProgressPercentage = 0;
+        private string ProgressCurrentHost = null;
         private int ProgressPercentageForWindowsService = 0;
 
         public Deploy(string projectPath, Project project)
@@ -754,6 +755,44 @@ namespace AntDeploy.Winform
             if (!string.IsNullOrEmpty(selectName))
             {
                 DeployConfig.IIsConfig.LastEnvName = selectName;
+
+                //生成进度
+                if (this.tabPage_progress.Tag is Dictionary<string, ProgressBox> progressBoxList)
+                {
+                    foreach (var box in progressBoxList)
+                    {
+                        this.tabPage_progress.Controls.Remove(box.Value);
+                    }
+
+                }
+
+                var newBoxList = new Dictionary<string,ProgressBox>();
+
+                var serverList = DeployConfig.Env.Where(r => r.Name.Equals(selectName)).Select(r => r.ServerList)
+                    .FirstOrDefault();
+
+                if (serverList == null || !serverList.Any())
+                {
+                    return;
+                }
+
+                var serverHostList = serverList.Select(r => r.Host).ToList();
+
+                for (int i = 0; i < serverHostList.Count; i++)
+                {
+                    var serverHost = serverHostList[i];
+                    ProgressBox newBox = new ProgressBox(new System.Drawing.Point(22, 15 + (i * 110)))
+                    {
+                        Text = serverHost,
+                    };
+
+                    newBoxList.Add(serverHost,newBox);
+                    this.tabPage_progress.Controls.Add(newBox);
+                }
+
+                this.tabPage_progress.Tag = newBoxList;
+
+
             }
         }
 
@@ -826,14 +865,14 @@ namespace AntDeploy.Winform
                 return;
             }
 
-
+            combo_iis_env_SelectedIndexChanged(null,null);
 
             this.rich_iis_log.Text = "";
             DeployConfig.IIsConfig.WebSiteName = websiteName;
             new Task(async () =>
             {
                 this.nlog_iis.Info("Start publish");
-                Enable(false);
+                Enable(false);//第一台开始编译
                 try
                 {
                     var isNetcore = false;
@@ -907,7 +946,7 @@ namespace AntDeploy.Winform
                         }
                     }
 
-
+                    IIsBuildEnd();//第一台结束编译
                     LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish success,  ==> ");
                     publisEvent.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
                     this.nlog_iis.Log(publisEvent);
@@ -933,7 +972,11 @@ namespace AntDeploy.Winform
                     byte[] zipBytes;
                     try
                     {
-                        zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, CompressionLevel.Optimal, true, DeployConfig.IgnoreList);
+                        zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, CompressionLevel.Optimal, true, DeployConfig.IgnoreList,
+                            (progressValue) =>
+                            {
+                                UpdateIIsPackageProgress(null, progressValue);//打印打包记录
+                            });
                     }
                     catch (Exception ex)
                     {
@@ -950,6 +993,7 @@ namespace AntDeploy.Winform
                     var loggerId = Guid.NewGuid().ToString("N");
                     //执行 上传
                     this.nlog_iis.Info("Deploy Start");
+                    var index = 0;
                     foreach (var server in serverList)
                     {
                         if (string.IsNullOrEmpty(server.Token))
@@ -958,7 +1002,14 @@ namespace AntDeploy.Winform
                             continue;
                         }
 
+                        if (index != 0)//因为编译和打包只会占用第一台服务器的时间
+                        {
+                            IIsBuildEnd(server.Host);
+                            UpdateIIsPackageProgress(server.Host,100);
+                        }
+
                         ProgressPercentage = 0;
+                        ProgressCurrentHost = server.Host;
                         this.nlog_iis.Info($"Start Uppload,Host:{server.Host}");
                         HttpRequestClient httpRequestClient = new HttpRequestClient();
                         httpRequestClient.SetFieldValue("publishType", "iis");
@@ -1000,25 +1051,33 @@ namespace AntDeploy.Winform
                             var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/publish",
                                 (client) => { client.UploadProgressChanged += ClientOnUploadProgressChanged; });
 
+                            if(ProgressPercentage<100) UpdateIIsUploadProgress(ProgressCurrentHost, 100);//结束上传
+
                             if (uploadResult.Item1)
                             {
                                 this.nlog_iis.Info($"Host:{server.Host},Response:{uploadResult.Item2}");
+
+                                UpdateIIsDeployProgress(server.Host,true);
                             }
                             else
                             {
                                 this.nlog_iis.Error($"Host:{server.Host},Response:{uploadResult.Item2},Skip to Next");
+                                UpdateIIsDeployProgress(server.Host, false);
                             }
                         }
                         catch (Exception ex)
                         {
                             this.nlog_iis.Error($"Fail Deploy,Host:{server.Host},Response:{ex.Message},Skip to Next");
+                            UpdateIIsDeployProgress(server.Host, false);
                         }
                         finally
                         {
                             webSocket?.Dispose();
                             HttpLogger?.Dispose();
+
                         }
 
+                        index++;
                     }
                     //交互
                 }
@@ -1028,7 +1087,8 @@ namespace AntDeploy.Winform
                 }
                 finally
                 {
-
+                    ProgressPercentage = 0;
+                    ProgressCurrentHost = null;
                     Enable(true);
                 }
 
@@ -1042,7 +1102,9 @@ namespace AntDeploy.Winform
             if (e.ProgressPercentage > ProgressPercentage && e.ProgressPercentage != 100)
             {
                 ProgressPercentage = e.ProgressPercentage;
-                this.nlog_iis.Info($"Upload {(e.ProgressPercentage != 100 ? e.ProgressPercentage * 2 : e.ProgressPercentage)} % complete...");
+                var showValue = (e.ProgressPercentage != 100 ? e.ProgressPercentage * 2 : e.ProgressPercentage);
+                if(!string.IsNullOrEmpty(ProgressCurrentHost))UpdateIIsUploadProgress(ProgressCurrentHost, showValue);
+                this.nlog_iis.Info($"Upload {showValue} % complete...");
             }
         }
 
@@ -1068,10 +1130,112 @@ namespace AntDeploy.Winform
                 else
                 {
                     page_.Tag = "0";
+                    if (this.tabPage_progress.Tag is Dictionary<string, ProgressBox> progressBoxList)
+                    {
+                        foreach (var box in progressBoxList)
+                        {
+                            box.Value.StartBuild();
+                            break;
+                        }
+
+                    }
                 }
             });
 
         }
+
+        private void IIsBuildEnd(string host = null)
+        {
+            this.BeginInvokeLambda(() =>
+            {
+                if (this.tabPage_progress.Tag is Dictionary<string, ProgressBox> progressBoxList)
+                {
+                    foreach (var box in progressBoxList)
+                    {
+                        if (host == null)
+                        {
+                            box.Value.BuildEnd();
+                            break;
+                        }
+
+                        if (box.Key.Equals(host))
+                        {
+                            box.Value.BuildEnd();
+                            break;
+                        }
+                    }
+                }
+            });
+        }
+
+        
+
+        private void UpdateIIsPackageProgress(string host,int value)
+        {
+            this.BeginInvokeLambda(() =>
+            {
+                if (this.tabPage_progress.Tag is Dictionary<string, ProgressBox> progressBoxList)
+                {
+                    foreach (var box in progressBoxList)
+                    {
+                        if (host == null)
+                        {
+                            box.Value.UpdatePackageProgress(value);
+                            break;
+                        }
+
+                        if (box.Key.Equals(host))
+                        {
+                            box.Value.UpdatePackageProgress(value);
+                            break;
+                        }
+                    }
+                }
+            });
+        }
+
+        private void UpdateIIsUploadProgress(string host, int value)
+        {
+            this.BeginInvokeLambda(() =>
+            {
+                if (this.tabPage_progress.Tag is Dictionary<string, ProgressBox> progressBoxList)
+                {
+                    foreach (var box in progressBoxList)
+                    {
+                        if (host == null)
+                        {
+                            box.Value.UpdateUploadProgress(value);
+                            break;
+                        }
+                        if (box.Key.Equals(host))
+                        {
+                            box.Value.UpdateUploadProgress(value);
+                            break;
+                        }
+                    }
+                }
+            });
+        }
+
+        private void UpdateIIsDeployProgress(string host, bool value)
+        {
+            this.BeginInvokeLambda(() =>
+            {
+                if (this.tabPage_progress.Tag is Dictionary<string, ProgressBox> progressBoxList)
+                {
+                    foreach (var box in progressBoxList)
+                    {
+
+                        if (box.Key.Equals(host))
+                        {
+                            box.Value.UpdateDeployProgress(value);
+                            break;
+                        }
+                    }
+                }
+            });
+        }
+
         #endregion
 
         #region windowsService page

@@ -6,6 +6,8 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using AntDeploy.Models;
+using Newtonsoft.Json;
 
 namespace AntDeploy.Util
 {
@@ -79,6 +81,23 @@ namespace AntDeploy.Util
             {
                 responseBytes = await webClient.UploadDataTaskAsync(requestUrl, bytes);
                 var responseText = System.Text.Encoding.UTF8.GetString(responseBytes);
+                if (!string.IsNullOrEmpty(responseText))
+                {
+                    var model = responseText.JsonToObject<DeployResult>();
+                    if (model == null)
+                    {
+                        return new Tuple<bool, string>(false, responseText);
+                    }
+
+                    if (model.Success)
+                    {
+                        return new Tuple<bool, string>(true, "Deploy Success");
+                    }
+                    else
+                    {
+                        return new Tuple<bool, string>(false, responseText);
+                    }
+                }
                 return new Tuple<bool, string>(true,responseText);
             }
             catch (WebException ex)

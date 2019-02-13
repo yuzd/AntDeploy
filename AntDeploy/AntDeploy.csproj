@@ -55,6 +55,9 @@
     <Compile Include="EditProjectPackage.cs" />
     <Compile Include="Ids.cs" />
     <Compile Include="Models\DeployConfig.cs" />
+    <Compile Include="Models\ProgressBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Models\ProjectHelper.cs" />
     <Compile Include="Models\ProjectKinds.cs" />
     <Compile Include="Models\TempFileHelper.cs" />
@@ -99,6 +102,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="CircularProgressBar, Version=2.6.6823.24527, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CircularProgressBar.2.6.6823.24527\lib\net35-client\CircularProgressBar.dll</HintPath>
+    </Reference>
     <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
       <Private>False</Private>
@@ -271,6 +277,9 @@
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="WinFormAnimation, Version=1.5.6298.3372, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WinFormAnimation.1.5.6298.3372\lib\net35-client\WinFormAnimation.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <VSCTCompile Include="EditProjectPackage.en.vsct">
