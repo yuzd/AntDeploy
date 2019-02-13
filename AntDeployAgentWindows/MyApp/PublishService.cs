@@ -15,7 +15,7 @@ namespace AntDeployAgentWindows.MyApp
         {
             Token = System.Configuration.ConfigurationManager.AppSettings["Token"];
         }
-        protected override async void ProcessRequest()
+        protected override void ProcessRequest()
         {
 
             if (Request.Method.ToUpper() != "POST")

@@ -12,8 +12,8 @@ namespace AntDeployAgentWindows.MyApp
 {
     public class LoggerService: BaseWebApi
     {
-        public static ConcurrentDictionary<string,List<LoggerModel>>  loggerCollection = new ConcurrentDictionary<string, List<LoggerModel>>();
-        public static ConcurrentQueue<string> removeLoggerConllection = new ConcurrentQueue<string>();
+        public static readonly ConcurrentDictionary<string,List<LoggerModel>>  loggerCollection = new ConcurrentDictionary<string, List<LoggerModel>>();
+        private static readonly ConcurrentQueue<string> removeLoggerConllection = new ConcurrentQueue<string>();
 
 
         private static readonly System.Threading.Timer mDetectionTimer;
@@ -73,7 +73,10 @@ namespace AntDeployAgentWindows.MyApp
                     loggerCollection.TryRemove(key, out _);
                 }
             }
-            catch { }
+            catch
+            {
+                // ignored
+            }
             finally
             {
                 mDetectionTimer.Change(1000*60*10, 1000*60*10);

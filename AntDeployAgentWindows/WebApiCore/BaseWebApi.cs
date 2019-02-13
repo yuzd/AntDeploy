@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AntDeployAgentWindows.Model;
 using Microsoft.Owin;
+using Newtonsoft.Json;
 
 namespace AntDeployAgentWindows.WebApiCore
 {
@@ -45,7 +47,19 @@ namespace AntDeployAgentWindows.WebApiCore
             Context = context;
             Response = context.Response;
             Request = context.Request;
-            return Task.Factory.StartNew(ProcessRequest);
+            return Task.Factory.StartNew(() =>
+            {
+                try
+                {
+                    ProcessRequest();
+                }
+                catch (Exception ex)
+                {
+                    DeployResult obj = new DeployResult {Success = false, Msg = ex.Message};
+                    Response.ContentType = "application/json";
+                    Response.Write(JsonConvert.SerializeObject(obj));
+                }
+            });
         }
 
         /// <summary>
