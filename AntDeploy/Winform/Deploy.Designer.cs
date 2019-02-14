@@ -30,6 +30,10 @@
         {
             this.page_ = new System.Windows.Forms.TabControl();
             this.page_web_iis = new System.Windows.Forms.TabPage();
+            this.tab_iis = new System.Windows.Forms.TabControl();
+            this.tabPage_progress = new System.Windows.Forms.TabPage();
+            this.tabPage_iis_log = new System.Windows.Forms.TabPage();
+            this.rich_iis_log = new System.Windows.Forms.RichTextBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.label15 = new System.Windows.Forms.Label();
             this.txt_pool_name = new System.Windows.Forms.TextBox();
@@ -39,7 +43,6 @@
             this.b_iis_deploy = new System.Windows.Forms.Button();
             this.combo_iis_env = new System.Windows.Forms.ComboBox();
             this.label8 = new System.Windows.Forms.Label();
-            this.rich_iis_log = new System.Windows.Forms.RichTextBox();
             this.txt_iis_web_site_name = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.combo_iis_sdk_type = new System.Windows.Forms.ComboBox();
@@ -51,8 +54,6 @@
             this.txt_docker_envname = new System.Windows.Forms.TextBox();
             this.label23 = new System.Windows.Forms.Label();
             this.txt_docker_port = new System.Windows.Forms.TextBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.rich_docker_log = new System.Windows.Forms.RichTextBox();
             this.b_docker_deploy = new System.Windows.Forms.Button();
             this.combo_docker_env = new System.Windows.Forms.ComboBox();
             this.label22 = new System.Windows.Forms.Label();
@@ -64,8 +65,6 @@
             this.label13 = new System.Windows.Forms.Label();
             this.txt_windowservice_timeout = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.rich_windowservice_log = new System.Windows.Forms.RichTextBox();
             this.b_windowservice_deploy = new System.Windows.Forms.Button();
             this.combo_windowservice_env = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
@@ -106,25 +105,32 @@
             this.txt_env_name = new System.Windows.Forms.TextBox();
             this.b_env_add_by_name = new System.Windows.Forms.Button();
             this.combo_env_list = new System.Windows.Forms.ComboBox();
-            this.tab_iis = new System.Windows.Forms.TabControl();
-            this.tabPage_progress = new System.Windows.Forms.TabPage();
-            this.tabPage_iis_log = new System.Windows.Forms.TabPage();
+            this.tabControl_docker = new System.Windows.Forms.TabControl();
+            this.tabPage_docker = new System.Windows.Forms.TabPage();
+            this.tabPage_docker_log = new System.Windows.Forms.TabPage();
+            this.rich_docker_log = new System.Windows.Forms.RichTextBox();
+            this.tabControl_window_service = new System.Windows.Forms.TabControl();
+            this.tabPage_windows_service = new System.Windows.Forms.TabPage();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.rich_windowservice_log = new System.Windows.Forms.RichTextBox();
             this.page_.SuspendLayout();
             this.page_web_iis.SuspendLayout();
+            this.tab_iis.SuspendLayout();
+            this.tabPage_iis_log.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.page_docker.SuspendLayout();
             this.groupBox5.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             this.page_window_service.SuspendLayout();
-            this.groupBox3.SuspendLayout();
             this.page_set.SuspendLayout();
             this.groupBoxIgnore.SuspendLayout();
             this.environment.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.page_winserver.SuspendLayout();
             this.page_linux_server.SuspendLayout();
-            this.tab_iis.SuspendLayout();
-            this.tabPage_iis_log.SuspendLayout();
+            this.tabControl_docker.SuspendLayout();
+            this.tabPage_docker_log.SuspendLayout();
+            this.tabControl_window_service.SuspendLayout();
+            this.tabPage2.SuspendLayout();
             this.SuspendLayout();
             // 
             // page_
@@ -160,6 +166,49 @@
             this.page_web_iis.TabIndex = 0;
             this.page_web_iis.Text = "IIS_Web";
             this.page_web_iis.UseVisualStyleBackColor = true;
+            // 
+            // tab_iis
+            // 
+            this.tab_iis.Controls.Add(this.tabPage_progress);
+            this.tab_iis.Controls.Add(this.tabPage_iis_log);
+            this.tab_iis.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.tab_iis.Location = new System.Drawing.Point(3, 142);
+            this.tab_iis.Name = "tab_iis";
+            this.tab_iis.SelectedIndex = 0;
+            this.tab_iis.Size = new System.Drawing.Size(620, 277);
+            this.tab_iis.TabIndex = 16;
+            // 
+            // tabPage_progress
+            // 
+            this.tabPage_progress.AutoScroll = true;
+            this.tabPage_progress.Location = new System.Drawing.Point(4, 22);
+            this.tabPage_progress.Name = "tabPage_progress";
+            this.tabPage_progress.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_progress.Size = new System.Drawing.Size(612, 251);
+            this.tabPage_progress.TabIndex = 0;
+            this.tabPage_progress.Text = "Progress";
+            this.tabPage_progress.UseVisualStyleBackColor = true;
+            // 
+            // tabPage_iis_log
+            // 
+            this.tabPage_iis_log.Controls.Add(this.rich_iis_log);
+            this.tabPage_iis_log.Location = new System.Drawing.Point(4, 22);
+            this.tabPage_iis_log.Name = "tabPage_iis_log";
+            this.tabPage_iis_log.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_iis_log.Size = new System.Drawing.Size(612, 251);
+            this.tabPage_iis_log.TabIndex = 1;
+            this.tabPage_iis_log.Text = "LOG";
+            this.tabPage_iis_log.UseVisualStyleBackColor = true;
+            // 
+            // rich_iis_log
+            // 
+            this.rich_iis_log.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rich_iis_log.Location = new System.Drawing.Point(3, 3);
+            this.rich_iis_log.Name = "rich_iis_log";
+            this.rich_iis_log.ReadOnly = true;
+            this.rich_iis_log.Size = new System.Drawing.Size(606, 245);
+            this.rich_iis_log.TabIndex = 0;
+            this.rich_iis_log.Text = "";
             // 
             // groupBox4
             // 
@@ -245,16 +294,6 @@
             this.label8.TabIndex = 7;
             this.label8.Text = "Env Name:";
             // 
-            // rich_iis_log
-            // 
-            this.rich_iis_log.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rich_iis_log.Location = new System.Drawing.Point(3, 3);
-            this.rich_iis_log.Name = "rich_iis_log";
-            this.rich_iis_log.ReadOnly = true;
-            this.rich_iis_log.Size = new System.Drawing.Size(606, 245);
-            this.rich_iis_log.TabIndex = 0;
-            this.rich_iis_log.Text = "";
-            // 
             // txt_iis_web_site_name
             // 
             this.txt_iis_web_site_name.Location = new System.Drawing.Point(160, 57);
@@ -296,9 +335,9 @@
             // 
             // page_docker
             // 
+            this.page_docker.Controls.Add(this.tabControl_docker);
             this.page_docker.Controls.Add(this.label24);
             this.page_docker.Controls.Add(this.groupBox5);
-            this.page_docker.Controls.Add(this.groupBox1);
             this.page_docker.Controls.Add(this.b_docker_deploy);
             this.page_docker.Controls.Add(this.combo_docker_env);
             this.page_docker.Controls.Add(this.label22);
@@ -314,9 +353,9 @@
             this.label24.AutoSize = true;
             this.label24.Location = new System.Drawing.Point(96, 130);
             this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(299, 12);
+            this.label24.Size = new System.Drawing.Size(305, 12);
             this.label24.TabIndex = 15;
-            this.label24.Text = "PS:Linux Server Only And Required Docker install ";
+            this.label24.Text = "PS:Linux Server Only And Required Docker installed";
             // 
             // groupBox5
             // 
@@ -363,26 +402,6 @@
             this.txt_docker_port.Size = new System.Drawing.Size(62, 21);
             this.txt_docker_port.TabIndex = 11;
             // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.rich_docker_log);
-            this.groupBox1.Location = new System.Drawing.Point(8, 145);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(610, 274);
-            this.groupBox1.TabIndex = 13;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "LOG";
-            // 
-            // rich_docker_log
-            // 
-            this.rich_docker_log.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rich_docker_log.Location = new System.Drawing.Point(3, 17);
-            this.rich_docker_log.Name = "rich_docker_log";
-            this.rich_docker_log.ReadOnly = true;
-            this.rich_docker_log.Size = new System.Drawing.Size(604, 254);
-            this.rich_docker_log.TabIndex = 0;
-            this.rich_docker_log.Text = "";
-            // 
             // b_docker_deploy
             // 
             this.b_docker_deploy.Location = new System.Drawing.Point(405, 91);
@@ -415,6 +434,7 @@
             // 
             // page_window_service
             // 
+            this.page_window_service.Controls.Add(this.tabControl_window_service);
             this.page_window_service.Controls.Add(this.txt_windowservice_name);
             this.page_window_service.Controls.Add(this.label14);
             this.page_window_service.Controls.Add(this.combo_windowservice_sdk_type);
@@ -422,7 +442,6 @@
             this.page_window_service.Controls.Add(this.label13);
             this.page_window_service.Controls.Add(this.txt_windowservice_timeout);
             this.page_window_service.Controls.Add(this.label12);
-            this.page_window_service.Controls.Add(this.groupBox3);
             this.page_window_service.Controls.Add(this.b_windowservice_deploy);
             this.page_window_service.Controls.Add(this.combo_windowservice_env);
             this.page_window_service.Controls.Add(this.label10);
@@ -496,26 +515,6 @@
             this.label12.Size = new System.Drawing.Size(131, 12);
             this.label12.TabIndex = 16;
             this.label12.Text = "Service Stop Timeout:";
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.rich_windowservice_log);
-            this.groupBox3.Location = new System.Drawing.Point(8, 118);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(614, 301);
-            this.groupBox3.TabIndex = 15;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "LOG";
-            // 
-            // rich_windowservice_log
-            // 
-            this.rich_windowservice_log.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rich_windowservice_log.Location = new System.Drawing.Point(3, 17);
-            this.rich_windowservice_log.Name = "rich_windowservice_log";
-            this.rich_windowservice_log.ReadOnly = true;
-            this.rich_windowservice_log.Size = new System.Drawing.Size(608, 281);
-            this.rich_windowservice_log.TabIndex = 0;
-            this.rich_windowservice_log.Text = "";
             // 
             // b_windowservice_deploy
             // 
@@ -929,38 +928,89 @@
             this.combo_env_list.TabIndex = 0;
             this.combo_env_list.SelectedIndexChanged += new System.EventHandler(this.combo_env_list_SelectedIndexChanged);
             // 
-            // tab_iis
+            // tabControl_docker
             // 
-            this.tab_iis.Controls.Add(this.tabPage_progress);
-            this.tab_iis.Controls.Add(this.tabPage_iis_log);
-            this.tab_iis.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.tab_iis.Location = new System.Drawing.Point(3, 142);
-            this.tab_iis.Name = "tab_iis";
-            this.tab_iis.SelectedIndex = 0;
-            this.tab_iis.Size = new System.Drawing.Size(620, 277);
-            this.tab_iis.TabIndex = 16;
+            this.tabControl_docker.Controls.Add(this.tabPage_docker);
+            this.tabControl_docker.Controls.Add(this.tabPage_docker_log);
+            this.tabControl_docker.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.tabControl_docker.Location = new System.Drawing.Point(0, 160);
+            this.tabControl_docker.Name = "tabControl_docker";
+            this.tabControl_docker.SelectedIndex = 0;
+            this.tabControl_docker.Size = new System.Drawing.Size(626, 262);
+            this.tabControl_docker.TabIndex = 18;
             // 
-            // tabPage_progress
+            // tabPage_docker
             // 
-            this.tabPage_progress.AutoScroll = true;
-            this.tabPage_progress.Location = new System.Drawing.Point(4, 22);
-            this.tabPage_progress.Name = "tabPage_progress";
-            this.tabPage_progress.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_progress.Size = new System.Drawing.Size(612, 251);
-            this.tabPage_progress.TabIndex = 0;
-            this.tabPage_progress.Text = "Progress";
-            this.tabPage_progress.UseVisualStyleBackColor = true;
+            this.tabPage_docker.Location = new System.Drawing.Point(4, 22);
+            this.tabPage_docker.Name = "tabPage_docker";
+            this.tabPage_docker.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_docker.Size = new System.Drawing.Size(618, 236);
+            this.tabPage_docker.TabIndex = 0;
+            this.tabPage_docker.Text = "Progress";
+            this.tabPage_docker.UseVisualStyleBackColor = true;
             // 
-            // tabPage_iis_log
+            // tabPage_docker_log
             // 
-            this.tabPage_iis_log.Controls.Add(this.rich_iis_log);
-            this.tabPage_iis_log.Location = new System.Drawing.Point(4, 22);
-            this.tabPage_iis_log.Name = "tabPage_iis_log";
-            this.tabPage_iis_log.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_iis_log.Size = new System.Drawing.Size(612, 251);
-            this.tabPage_iis_log.TabIndex = 1;
-            this.tabPage_iis_log.Text = "LOG";
-            this.tabPage_iis_log.UseVisualStyleBackColor = true;
+            this.tabPage_docker_log.Controls.Add(this.rich_docker_log);
+            this.tabPage_docker_log.Location = new System.Drawing.Point(4, 22);
+            this.tabPage_docker_log.Name = "tabPage_docker_log";
+            this.tabPage_docker_log.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_docker_log.Size = new System.Drawing.Size(618, 236);
+            this.tabPage_docker_log.TabIndex = 1;
+            this.tabPage_docker_log.Text = "LOG";
+            this.tabPage_docker_log.UseVisualStyleBackColor = true;
+            // 
+            // rich_docker_log
+            // 
+            this.rich_docker_log.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rich_docker_log.Location = new System.Drawing.Point(3, 3);
+            this.rich_docker_log.Name = "rich_docker_log";
+            this.rich_docker_log.ReadOnly = true;
+            this.rich_docker_log.Size = new System.Drawing.Size(612, 230);
+            this.rich_docker_log.TabIndex = 1;
+            this.rich_docker_log.Text = "";
+            // 
+            // tabControl_window_service
+            // 
+            this.tabControl_window_service.Controls.Add(this.tabPage_windows_service);
+            this.tabControl_window_service.Controls.Add(this.tabPage2);
+            this.tabControl_window_service.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.tabControl_window_service.Location = new System.Drawing.Point(0, 116);
+            this.tabControl_window_service.Name = "tabControl_window_service";
+            this.tabControl_window_service.SelectedIndex = 0;
+            this.tabControl_window_service.Size = new System.Drawing.Size(626, 306);
+            this.tabControl_window_service.TabIndex = 24;
+            // 
+            // tabPage_windows_service
+            // 
+            this.tabPage_windows_service.Location = new System.Drawing.Point(4, 22);
+            this.tabPage_windows_service.Name = "tabPage_windows_service";
+            this.tabPage_windows_service.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_windows_service.Size = new System.Drawing.Size(618, 280);
+            this.tabPage_windows_service.TabIndex = 0;
+            this.tabPage_windows_service.Text = "Progress";
+            this.tabPage_windows_service.UseVisualStyleBackColor = true;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.rich_windowservice_log);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(618, 280);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "LOG";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // rich_windowservice_log
+            // 
+            this.rich_windowservice_log.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rich_windowservice_log.Location = new System.Drawing.Point(3, 3);
+            this.rich_windowservice_log.Name = "rich_windowservice_log";
+            this.rich_windowservice_log.ReadOnly = true;
+            this.rich_windowservice_log.Size = new System.Drawing.Size(612, 274);
+            this.rich_windowservice_log.TabIndex = 1;
+            this.rich_windowservice_log.Text = "";
             // 
             // Deploy
             // 
@@ -977,16 +1027,16 @@
             this.page_.ResumeLayout(false);
             this.page_web_iis.ResumeLayout(false);
             this.page_web_iis.PerformLayout();
+            this.tab_iis.ResumeLayout(false);
+            this.tabPage_iis_log.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.page_docker.ResumeLayout(false);
             this.page_docker.PerformLayout();
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
             this.page_window_service.ResumeLayout(false);
             this.page_window_service.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
             this.page_set.ResumeLayout(false);
             this.page_set.PerformLayout();
             this.groupBoxIgnore.ResumeLayout(false);
@@ -998,8 +1048,10 @@
             this.page_winserver.PerformLayout();
             this.page_linux_server.ResumeLayout(false);
             this.page_linux_server.PerformLayout();
-            this.tab_iis.ResumeLayout(false);
-            this.tabPage_iis_log.ResumeLayout(false);
+            this.tabControl_docker.ResumeLayout(false);
+            this.tabPage_docker_log.ResumeLayout(false);
+            this.tabControl_window_service.ResumeLayout(false);
+            this.tabPage2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1044,8 +1096,6 @@
         private System.Windows.Forms.Button b_windowservice_deploy;
         private System.Windows.Forms.ComboBox combo_windowservice_env;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.RichTextBox rich_windowservice_log;
         private System.Windows.Forms.TextBox txt_windowservice_timeout;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label13;
@@ -1072,8 +1122,6 @@
         private System.Windows.Forms.Button b_linux_server_remove;
         private System.Windows.Forms.TextBox txt_linux_host;
         private System.Windows.Forms.Label label17;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.RichTextBox rich_docker_log;
         private System.Windows.Forms.Button b_docker_deploy;
         private System.Windows.Forms.ComboBox combo_docker_env;
         private System.Windows.Forms.Label label22;
@@ -1087,5 +1135,13 @@
         private System.Windows.Forms.TabControl tab_iis;
         private System.Windows.Forms.TabPage tabPage_progress;
         private System.Windows.Forms.TabPage tabPage_iis_log;
+        private System.Windows.Forms.TabControl tabControl_docker;
+        private System.Windows.Forms.TabPage tabPage_docker;
+        private System.Windows.Forms.TabPage tabPage_docker_log;
+        private System.Windows.Forms.RichTextBox rich_docker_log;
+        private System.Windows.Forms.TabControl tabControl_window_service;
+        private System.Windows.Forms.TabPage tabPage_windows_service;
+        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.RichTextBox rich_windowservice_log;
     }
 }

@@ -686,7 +686,7 @@ namespace AntDeploy.Winform
 
             try
             {
-                using (SSHClient sshClient = new SSHClient(serverHost, userName, pwd, Console.WriteLine))
+                using (SSHClient sshClient = new SSHClient(serverHost, userName, pwd, Console.WriteLine, Console.WriteLine))
                 {
                     var r = sshClient.Connect(true);
                     if (r)
@@ -946,7 +946,7 @@ namespace AntDeploy.Winform
                         }
                     }
 
-                    IIsBuildEnd();//第一台结束编译
+                    BuildEnd(this.tabPage_progress);//第一台结束编译
                     LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish success,  ==> ");
                     publisEvent.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
                     this.nlog_iis.Log(publisEvent);
@@ -975,7 +975,7 @@ namespace AntDeploy.Winform
                         zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, CompressionLevel.Optimal, true, DeployConfig.IgnoreList,
                             (progressValue) =>
                             {
-                                UpdateIIsPackageProgress(null, progressValue);//打印打包记录
+                                UpdatePackageProgress(this.tabPage_progress,null, progressValue);//打印打包记录
                             });
                     }
                     catch (Exception ex)
@@ -1004,8 +1004,8 @@ namespace AntDeploy.Winform
 
                         if (index != 0)//因为编译和打包只会占用第一台服务器的时间
                         {
-                            IIsBuildEnd(server.Host);
-                            UpdateIIsPackageProgress(server.Host,100);
+                            BuildEnd(this.tabPage_progress,server.Host);
+                            UpdatePackageProgress(this.tabPage_progress,server.Host,100);
                         }
 
                         ProgressPercentage = 0;
@@ -1051,24 +1051,24 @@ namespace AntDeploy.Winform
                             var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/publish",
                                 (client) => { client.UploadProgressChanged += ClientOnUploadProgressChanged; });
 
-                            if(ProgressPercentage<100) UpdateIIsUploadProgress(ProgressCurrentHost, 100);//结束上传
+                            if(ProgressPercentage<100) UpdateUploadProgress(this.tabPage_progress,ProgressCurrentHost, 100);//结束上传
 
                             if (uploadResult.Item1)
                             {
                                 this.nlog_iis.Info($"Host:{server.Host},Response:{uploadResult.Item2}");
 
-                                UpdateIIsDeployProgress(server.Host,true);
+                                UpdateDeployProgress(this.tabPage_progress,server.Host,true);
                             }
                             else
                             {
                                 this.nlog_iis.Error($"Host:{server.Host},Response:{uploadResult.Item2},Skip to Next");
-                                UpdateIIsDeployProgress(server.Host, false);
+                                UpdateDeployProgress(this.tabPage_progress,server.Host, false);
                             }
                         }
                         catch (Exception ex)
                         {
                             this.nlog_iis.Error($"Fail Deploy,Host:{server.Host},Response:{ex.Message},Skip to Next");
-                            UpdateIIsDeployProgress(server.Host, false);
+                            UpdateDeployProgress(this.tabPage_progress,server.Host, false);
                         }
                         finally
                         {
@@ -1103,7 +1103,7 @@ namespace AntDeploy.Winform
             {
                 ProgressPercentage = e.ProgressPercentage;
                 var showValue = (e.ProgressPercentage != 100 ? e.ProgressPercentage * 2 : e.ProgressPercentage);
-                if(!string.IsNullOrEmpty(ProgressCurrentHost))UpdateIIsUploadProgress(ProgressCurrentHost, showValue);
+                if(!string.IsNullOrEmpty(ProgressCurrentHost))UpdateUploadProgress(this.tabPage_progress,ProgressCurrentHost, showValue);
                 this.nlog_iis.Info($"Upload {showValue} % complete...");
             }
         }
@@ -1144,11 +1144,11 @@ namespace AntDeploy.Winform
 
         }
 
-        private void IIsBuildEnd(string host = null)
+        private void BuildEnd(TabPage tabPage,string host = null)
         {
             this.BeginInvokeLambda(() =>
             {
-                if (this.tabPage_progress.Tag is Dictionary<string, ProgressBox> progressBoxList)
+                if (tabPage.Tag is Dictionary<string, ProgressBox> progressBoxList)
                 {
                     foreach (var box in progressBoxList)
                     {
@@ -1170,11 +1170,11 @@ namespace AntDeploy.Winform
 
         
 
-        private void UpdateIIsPackageProgress(string host,int value)
+        private void UpdatePackageProgress(TabPage tabPage,string host,int value)
         {
             this.BeginInvokeLambda(() =>
             {
-                if (this.tabPage_progress.Tag is Dictionary<string, ProgressBox> progressBoxList)
+                if (tabPage.Tag is Dictionary<string, ProgressBox> progressBoxList)
                 {
                     foreach (var box in progressBoxList)
                     {
@@ -1194,11 +1194,11 @@ namespace AntDeploy.Winform
             });
         }
 
-        private void UpdateIIsUploadProgress(string host, int value)
+        private void UpdateUploadProgress(TabPage tabPage,string host, int value)
         {
             this.BeginInvokeLambda(() =>
             {
-                if (this.tabPage_progress.Tag is Dictionary<string, ProgressBox> progressBoxList)
+                if (tabPage.Tag is Dictionary<string, ProgressBox> progressBoxList)
                 {
                     foreach (var box in progressBoxList)
                     {
@@ -1217,11 +1217,11 @@ namespace AntDeploy.Winform
             });
         }
 
-        private void UpdateIIsDeployProgress(string host, bool value)
+        private void UpdateDeployProgress(TabPage tabPage,string host, bool value)
         {
             this.BeginInvokeLambda(() =>
             {
-                if (this.tabPage_progress.Tag is Dictionary<string, ProgressBox> progressBoxList)
+                if (tabPage.Tag is Dictionary<string, ProgressBox> progressBoxList)
                 {
                     foreach (var box in progressBoxList)
                     {
@@ -1820,6 +1820,8 @@ namespace AntDeploy.Winform
                 return;
             }
 
+            combo_docker_env_SelectedIndexChanged(null,null);
+
             this.rich_docker_log.Text = "";
             this.nlog_docker.Info($"The Porject ENTRYPOINT name:{ENTRYPOINT}");
 
@@ -1878,6 +1880,8 @@ namespace AntDeploy.Winform
                         return;
                     }
 
+                    BuildEnd(this.tabPage_docker);//第一台结束编译
+
                     LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish success,  ==> ");
                     publisEvent.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
                     this.nlog_docker.Log(publisEvent);
@@ -1885,12 +1889,16 @@ namespace AntDeploy.Winform
 
 
                      //执行 打包
-                     this.nlog_docker.Info("Start package");
+                    this.nlog_docker.Info("Start package");
                     MemoryStream zipBytes;
                     try
                     {
                         zipBytes = ZipHelper.DoCreateFromDirectory2(publishPath, CompressionLevel.Optimal, true,
-                            DeployConfig.IgnoreList);
+                            DeployConfig.IgnoreList,
+                            (progressValue) =>
+                            {
+                                UpdatePackageProgress(this.tabPage_docker,null, progressValue);//打印打包记录
+                            });
                     }
                     catch (Exception ex)
                     {
@@ -1906,7 +1914,8 @@ namespace AntDeploy.Winform
 
                     this.nlog_docker.Info("package success");
                      //执行 上传
-                     this.nlog_docker.Info("Deploy Start");
+                    this.nlog_docker.Info("Deploy Start");
+                    var index = 0;
                     foreach (var server in serverList)
                     {
                          #region 参数Check
@@ -1934,10 +1943,18 @@ namespace AntDeploy.Winform
                         }
                          #endregion
 
+                        if (index != 0)//因为编译和打包只会占用第一台服务器的时间
+                        {
+                            BuildEnd(this.tabPage_docker,server.Host);
+                            UpdatePackageProgress(this.tabPage_docker,server.Host,100);
+                        }
+
                         zipBytes.Seek(0, SeekOrigin.Begin);
                         using (SSHClient sshClient = new SSHClient(server.Host, server.UserName, pwd, (str) =>
                            {
                             this.nlog_docker.Info("【Server】" + str);
+                        },(uploadValue)=>{
+                                UpdateUploadProgress( this.tabPage_docker,server.Host,uploadValue);
                         })
                         {
                             NetCoreENTRYPOINT = ENTRYPOINT,
@@ -1956,14 +1973,18 @@ namespace AntDeploy.Winform
                             try
                             {
                                 sshClient.PublishZip(zipBytes, "publisher", "publish.zip");
-
+                                UpdateUploadProgress(this.tabPage_docker,server.Host, 100);
+                                UpdateDeployProgress(this.tabPage_docker,server.Host,true);
                                 this.nlog_docker.Info($"publish Host: {server.Host} End");
                             }
                             catch (Exception ex)
                             {
                                 this.nlog_docker.Error($"Deploy Host:{server.Host} Fail:" + ex.Message);
+                                UpdateDeployProgress(this.tabPage_docker,server.Host,false);
                             }
                         }
+
+                        index++;
                     }
                     this.nlog_docker.Info("Deploy End");
                 }
@@ -2002,6 +2023,15 @@ namespace AntDeploy.Winform
                 else
                 {
                     page_.Tag = "1";
+                    if (this.tabPage_docker.Tag is Dictionary<string, ProgressBox> progressBoxList)
+                    {
+                        foreach (var box in progressBoxList)
+                        {
+                            box.Value.StartBuild();
+                            break;
+                        }
+
+                    }
                 }
             });
 
@@ -2018,6 +2048,41 @@ namespace AntDeploy.Winform
             if (!string.IsNullOrEmpty(selectName))
             {
                 DeployConfig.DockerConfig.LastEnvName = selectName;
+
+                 //生成进度
+                if (this.tabPage_docker.Tag is Dictionary<string, ProgressBox> progressBoxList)
+                {
+                    foreach (var box in progressBoxList)
+                    {
+                        this.tabPage_docker.Controls.Remove(box.Value);
+                    }
+                }
+
+                var newBoxList = new Dictionary<string,ProgressBox>();
+
+                var serverList = DeployConfig.Env.Where(r => r.Name.Equals(selectName)).Select(r => r.LinuxServerList)
+                .FirstOrDefault();
+
+                if (serverList == null || !serverList.Any())
+                {
+                    return;
+                }
+
+                var serverHostList = serverList.Select(r => r.Host).ToList();
+
+                for (int i = 0; i < serverHostList.Count; i++)
+                {
+                    var serverHost = serverHostList[i];
+                    ProgressBox newBox = new ProgressBox(new System.Drawing.Point(22, 15 + (i * 110)))
+                    {
+                        Text = serverHost,
+                    };
+
+                    newBoxList.Add(serverHost,newBox);
+                    this.tabPage_docker.Controls.Add(newBox);
+                }
+
+                this.tabPage_docker.Tag = newBoxList;
             }
         }
 

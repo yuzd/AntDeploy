@@ -7,6 +7,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace AntDeploy.Util
 {
@@ -35,16 +36,18 @@ namespace AntDeploy.Util
         public string NetCoreENTRYPOINT { get; set; }
 
         private readonly Action<string> _logger;
+        private readonly Action<int> _uploadLogger;
 
         private readonly SftpClient _sftpClient;
         private readonly SshClient _sshClient;
         private long _lastProgressNumber;
         private object lockObject = new object();
-        public SSHClient(string host, string userName, string pwd, Action<string> logger)
+        public SSHClient(string host, string userName, string pwd, Action<string> logger, Action<int> uploadLogger)
         {
             this.UserName = userName;
             this.Pwd = pwd;
             _logger = logger;
+            _uploadLogger = uploadLogger;
             var harr = host.Split(':');
             this.Host = harr[0];
             var hPort = 22;
@@ -153,6 +156,8 @@ namespace AntDeploy.Util
                 _lastProgressNumber = lastProgressNumber;
                 _logger($"uploaded {lastProgressNumber} %");
 
+                _uploadLogger((int)lastProgressNumber);
+
             }
 
         }
@@ -207,9 +212,16 @@ namespace AntDeploy.Util
             }
 
             //执行docker build 生成一个镜像
-            RunSheell($"sudo docker build --rm -t {PorjectName} -f {dockFilePath} {publishFolder} ");
+            RunSheell($"sudo docker build --no-cache --rm -t {PorjectName} -f {dockFilePath} {publishFolder} ");
 
             var continarName = "d_" + PorjectName;
+
+
+             //先发送退出命令
+             //https://stackoverflow.com/questions/40742192/how-to-do-gracefully-shutdown-on-dotnet-with-docker
+             _sshClient.RunCommand($"sudo docker stop -t 10 {continarName}");
+             //_logger($"wait for continar stop 5seconds: {continarName}");
+             Thread.Sleep(5000);
 
             //查看容器有没有在runing 如果有就干掉它
             _sshClient.RunCommand($"sudo docker rm -f {continarName}");

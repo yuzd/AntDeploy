@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="AntDeploy.51be3f7e-0e8b-4ad4-b2c9-126445f2ce6a" Version="1.8" Language="en-US" Publisher="nainaigu" />
+        <Identity Id="AntDeploy.51be3f7e-0e8b-4ad4-b2c9-126445f2ce6a" Version="1.9" Language="en-US" Publisher="nainaigu" />
         <DisplayName>AntDeploy</DisplayName>
-        <Description xml:space="preserve">AntDeploy(优化iis发布进度展示方式)</Description>
+        <Description xml:space="preserve">AntDeploy(优化docker和windowsservice发布进度展示方式)</Description>
         <MoreInfo>https://github.com/yuzd</MoreInfo>
         <Icon>Resources\__TemplateIcon.png</Icon>
         <Tags>deploy</Tags>
