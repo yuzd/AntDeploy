@@ -1840,7 +1840,7 @@ namespace AntDeploy.Winform
                 }
                 if (!string.IsNullOrEmpty(item2))
                 {
-                    if (this.combo_windowservice_env.Items.Cast<string>().Contains(item1))
+                    if (this.combo_windowservice_env.Items.Cast<string>().Contains(item2))
                     {
                         this.combo_windowservice_env.SelectedItem = item2;
                     }
@@ -1852,7 +1852,7 @@ namespace AntDeploy.Winform
                 }
                 if (!string.IsNullOrEmpty(item3))
                 {
-                    if (this.combo_docker_env.Items.Cast<string>().Contains(item1))
+                    if (this.combo_docker_env.Items.Cast<string>().Contains(item3))
                     {
                         this.combo_docker_env.SelectedItem = item3;
                     }

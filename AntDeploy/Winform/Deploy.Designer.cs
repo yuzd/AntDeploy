@@ -1028,33 +1028,30 @@
             // 
             // progress_iis_tip
             // 
-            this.progress_iis_tip.AutoSize = true;
             this.progress_iis_tip.ForeColor = System.Drawing.Color.Blue;
-            this.progress_iis_tip.Location = new System.Drawing.Point(135, 88);
+            this.progress_iis_tip.Location = new System.Drawing.Point(126, 64);
             this.progress_iis_tip.Name = "progress_iis_tip";
-            this.progress_iis_tip.Size = new System.Drawing.Size(305, 12);
+            this.progress_iis_tip.Size = new System.Drawing.Size(345, 29);
             this.progress_iis_tip.TabIndex = 17;
-            this.progress_iis_tip.Text = "Please Add Server into Env In Setting Page First!!";
+            this.progress_iis_tip.Text = "Please 1. Add Windows Server into Env In Setting Page.          2. Select Env.";
             // 
             // progress_docker_tip
             // 
-            this.progress_docker_tip.AutoSize = true;
             this.progress_docker_tip.ForeColor = System.Drawing.Color.Blue;
-            this.progress_docker_tip.Location = new System.Drawing.Point(127, 73);
+            this.progress_docker_tip.Location = new System.Drawing.Point(127, 54);
             this.progress_docker_tip.Name = "progress_docker_tip";
-            this.progress_docker_tip.Size = new System.Drawing.Size(305, 12);
+            this.progress_docker_tip.Size = new System.Drawing.Size(331, 30);
             this.progress_docker_tip.TabIndex = 18;
-            this.progress_docker_tip.Text = "Please Add Server into Env In Setting Page First!!";
+            this.progress_docker_tip.Text = "Please 1. Add Linux Server into Env In Setting Page.          2. Select Env.";
             // 
             // progress_window_service_tip
             // 
-            this.progress_window_service_tip.AutoSize = true;
             this.progress_window_service_tip.ForeColor = System.Drawing.Color.Blue;
-            this.progress_window_service_tip.Location = new System.Drawing.Point(126, 86);
+            this.progress_window_service_tip.Location = new System.Drawing.Point(132, 59);
             this.progress_window_service_tip.Name = "progress_window_service_tip";
-            this.progress_window_service_tip.Size = new System.Drawing.Size(305, 12);
+            this.progress_window_service_tip.Size = new System.Drawing.Size(345, 30);
             this.progress_window_service_tip.TabIndex = 18;
-            this.progress_window_service_tip.Text = "Please Add Server into Env In Setting Page First!!";
+            this.progress_window_service_tip.Text = "Please 1. Add Windows Server into Env In Setting Page.          2. Select Env.";
             // 
             // label25
             // 
@@ -1091,7 +1088,6 @@
             this.page_web_iis.PerformLayout();
             this.tab_iis.ResumeLayout(false);
             this.tabPage_progress.ResumeLayout(false);
-            this.tabPage_progress.PerformLayout();
             this.tabPage_iis_log.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
@@ -1099,7 +1095,6 @@
             this.page_docker.PerformLayout();
             this.tabControl_docker.ResumeLayout(false);
             this.tabPage_docker.ResumeLayout(false);
-            this.tabPage_docker.PerformLayout();
             this.tabPage_docker_log.ResumeLayout(false);
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
@@ -1107,7 +1102,6 @@
             this.page_window_service.PerformLayout();
             this.tabControl_window_service.ResumeLayout(false);
             this.tabPage_windows_service.ResumeLayout(false);
-            this.tabPage_windows_service.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.page_set.ResumeLayout(false);
             this.page_set.PerformLayout();
