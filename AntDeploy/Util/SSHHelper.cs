@@ -70,7 +70,10 @@ namespace AntDeploy.Util
                 _sftpClient.Connect();
                 if (_sshClient.IsConnected && _sftpClient.IsConnected)
                 {
-                    if(!ignoreLog)_logger($"ssh connect success:{Host}");
+                    if (!ignoreLog)
+                    {
+                        _logger($"ssh connect success:{Host}");
+                    }
                     return true;
 
                 }

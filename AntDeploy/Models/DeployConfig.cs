@@ -2,7 +2,7 @@
 
 namespace AntDeploy.Models
 {
-    public delegate void EnvChange(Env env,bool isRemove);
+    public delegate void EnvChange(Env env,bool isServerChange);
     public class DeployConfig
     {
         public event EnvChange EnvChangeEvent;
@@ -18,9 +18,14 @@ namespace AntDeploy.Models
         {
             var env = this.Env[index];
             this.Env.RemoveAt(index);
-            EnvChangeEvent?.Invoke(env, true);
+            EnvChangeEvent?.Invoke(env, false);
         }
        
+       public void EnvServerChange(Env env)
+       {
+           EnvChangeEvent?.Invoke(env, true);
+        }
+
         public List<string> IgnoreList { get; set; } = new List<string>();
 
 
