@@ -98,9 +98,14 @@ namespace AntDeploy.Models
             {
                 var info = File.ReadAllText(projectPath);
                 var TargetFramework = info.Split(new string[] { "TargetFramework>" }, StringSplitOptions.None)[1]
-                    .Split(new string[] { "</TargetFramework" }, StringSplitOptions.None)[0];
-
-                return Regex.Replace(TargetFramework, "[a-zA-Z]+", "");
+                    .Split(new string[] { "<" }, StringSplitOptions.None)[0];
+                var version = Regex.Replace(TargetFramework, "[a-zA-Z]+", "").Trim();
+                var temp = version.Replace(".", "");
+                if (int.TryParse(temp, out _))
+                {
+                    return version;
+                }
+                return string.Empty;
             }
             catch (Exception)
             {

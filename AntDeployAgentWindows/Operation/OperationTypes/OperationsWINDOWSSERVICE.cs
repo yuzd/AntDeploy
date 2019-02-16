@@ -74,11 +74,19 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
                 var re = WindowServiceHelper.StartService(this.args.AppName, 120);
                 if (string.IsNullOrEmpty(re))
                 {
-                    logger("Success to Windows Service Start :" + this.args.AppName);
+                    service = WindowServiceHelper.GetWindowServiceByName(this.args.AppName);
+                    if (service.Status != ServiceControllerStatus.Running)
+                    {
+                        logger("【Error】 Windows Service Start :" + this.args.AppName + ",Err: service can not start");
+                    }
+                    else
+                    {
+                        logger("Success to Windows Service Start :" + this.args.AppName);
+                    }
                 }
                 else
                 {
-                    logger("【Error】 Windows Service Start :" + this.args.AppName + ",Err:"+re ) ;
+                    logger("【Error】 Windows Service Start :" + this.args.AppName + ",Err:" + re);
                 }
             }
             else

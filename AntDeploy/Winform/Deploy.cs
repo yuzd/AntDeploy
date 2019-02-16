@@ -1058,7 +1058,14 @@ namespace AntDeploy.Winform
                                     }
                                     else
                                     {
-                                        this.nlog_iis.Info($"【Server】{receiveMsg}");
+                                        if (receiveMsg.Contains("【Error】"))
+                                        {
+                                            this.nlog_iis.Warn($"【Server】{receiveMsg}");
+                                        }
+                                        else
+                                        {
+                                            this.nlog_iis.Info($"【Server】{receiveMsg}");
+                                        }
                                     }
                                 }
                             }, HttpLogger);
@@ -1694,7 +1701,15 @@ namespace AntDeploy.Winform
                                      }
                                      else
                                      {
-                                         this.nlog_windowservice.Info($"【Server】{receiveMsg}");
+                                         if (receiveMsg.Contains("【Error】"))
+                                         {
+                                             this.nlog_windowservice.Warn($"【Server】{receiveMsg}");
+                                         }
+                                         else
+                                         {
+                                             this.nlog_windowservice.Info($"【Server】{receiveMsg}");
+                                         }
+                                         
                                      }
                                  }
                              }, HttpLogger);

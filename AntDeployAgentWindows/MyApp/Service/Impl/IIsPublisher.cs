@@ -104,7 +104,14 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     //准备好目录
                     if (string.IsNullOrEmpty(_port))
                     {
-                        return $"website : {_webSiteName} not found,start to create,but port is required!";
+                        if (IISHelper.IsDefaultWebSite(level1))
+                        {
+                            _port = "80";
+                        }
+                        else
+                        {
+                            return $"website : {_webSiteName} not found,start to create,but port is required!";
+                        }
                     }
                     
                     Log($"website : {_webSiteName} not found,start to create!");
