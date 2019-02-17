@@ -239,6 +239,7 @@ namespace AntDeploy.Winform
             RichTextBoxTarget.GetTargetByControl(rich_iis_log).LinkClicked += LinkClicked;
             RichTextBoxTarget.GetTargetByControl(rich_windowservice_log).LinkClicked += LinkClicked;
             RichTextBoxTarget.GetTargetByControl(rich_docker_log).LinkClicked += LinkClicked;
+            
         }
 
 
@@ -284,6 +285,36 @@ namespace AntDeploy.Winform
                 File.WriteAllText(ProjectConfigPath, configJson, Encoding.UTF8);
             }
 
+            RichTextBoxTarget.GetTargetByControl(rich_iis_log).Dispose();
+            RichTextBoxTarget.GetTargetByControl(rich_windowservice_log).Dispose();
+            RichTextBoxTarget.GetTargetByControl(rich_docker_log).Dispose();
+
+            if (this.tabPage_docker.Tag is Dictionary<string, ProgressBox> progressBoxList)
+            {
+                foreach (var box in progressBoxList)
+                {
+                    box.Value.Dispose();
+                    this.tabPage_docker.Controls.Remove(box.Value);
+                }
+            }
+
+            if (this.tabPage_progress.Tag is Dictionary<string, ProgressBox> progressBoxList2)
+            {
+                foreach (var box in progressBoxList2)
+                {
+                    box.Value.Dispose();
+                    this.tabPage_progress.Controls.Remove(box.Value);
+                }
+            }
+
+            if (this.tabControl_window_service.Tag is Dictionary<string, ProgressBox> progressBoxList3)
+            {
+                foreach (var box in progressBoxList3)
+                {
+                    box.Value.Dispose();
+                    this.tabControl_window_service.Controls.Remove(box.Value);
+                }
+            }
         }
 
 
@@ -767,6 +798,7 @@ namespace AntDeploy.Winform
                 {
                     foreach (var box in progressBoxList)
                     {
+                        box.Value.Dispose();
                         this.tabPage_progress.Controls.Remove(box.Value);
                     }
 
@@ -806,6 +838,7 @@ namespace AntDeploy.Winform
                 {
                     foreach (var box in progressBoxList)
                     {
+                        box.Value.Dispose();
                         this.tabPage_progress.Controls.Remove(box.Value);
                     }
 
@@ -1376,6 +1409,7 @@ namespace AntDeploy.Winform
                 {
                     foreach (var box in progressBoxList)
                     {
+                        box.Value.Dispose();
                         this.tabPage_windows_service.Controls.Remove(box.Value);
                     }
                 }
@@ -1413,6 +1447,7 @@ namespace AntDeploy.Winform
                 {
                     foreach (var box in progressBoxList)
                     {
+                        box.Value.Dispose();
                         this.tabPage_windows_service.Controls.Remove(box.Value);
                     }
                 }
@@ -2363,6 +2398,7 @@ namespace AntDeploy.Winform
                 {
                     foreach (var box in progressBoxList)
                     {
+                        box.Value.Dispose();
                         this.tabPage_docker.Controls.Remove(box.Value);
                     }
                 }
@@ -2400,6 +2436,7 @@ namespace AntDeploy.Winform
                 {
                     foreach (var box in progressBoxList)
                     {
+                        box.Value.Dispose();
                         this.tabPage_docker.Controls.Remove(box.Value);
                     }
                 }

@@ -211,6 +211,15 @@ namespace AntDeploy.Models
 
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            progress_iis_build.Dispose();
+            progress_iis_package.Dispose();
+            progress_iis_upload.Dispose();
+            progress_iis_deploy.Dispose();
+            base.Dispose(disposing);
+        }
+
         public void StartBuild()
         {
             progress_iis_build.Value = 20;
