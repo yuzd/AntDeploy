@@ -282,6 +282,27 @@ namespace AntDeploy.Models
             progress_iis_build.SuperscriptText = "√";
             b_build_end.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(99)))), ((int)(((byte)(180)))));
         }
+
+        public void BuildError()
+        {
+            progress_iis_build.Value = 100;
+            progress_iis_build.SuperscriptText = "Error";
+            this.progress_iis_build.ProgressColor = System.Drawing.Color.Red;
+        }
+
+        public void PackageError()
+        {
+            progress_iis_package.Value = 100;
+            progress_iis_package.SuperscriptText = "Error";
+            this.progress_iis_package.ProgressColor = System.Drawing.Color.Red;
+        }
+
+        public void UploadError()
+        {
+            progress_iis_upload.Value = 100;
+            progress_iis_upload.SuperscriptText = "Error";
+            this.progress_iis_upload.ProgressColor = System.Drawing.Color.Red;
+        }
         public void PackageEnd()
         {
             b_package_end.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(99)))), ((int)(((byte)(180)))));

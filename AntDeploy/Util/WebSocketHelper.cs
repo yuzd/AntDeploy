@@ -112,7 +112,7 @@ namespace AntDeploy.Util
         {
             try
             {
-                if (webSocket.State == WebSocketState.Open)
+                if (webSocket!=null && webSocket.State == WebSocketState.Open)
                 {
                     ArraySegment<byte> textBytes = new ArraySegment<byte>(Encoding.UTF8.GetBytes(text));
                     await webSocket.SendAsync(textBytes, WebSocketMessageType.Text, true, CancellationToken.None);

@@ -142,6 +142,11 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 {
                     projectLocation = projectLocation.Replace("\"","");
                     projectLocationFolder = new FileInfo(projectLocation).DirectoryName;
+                    if (!Directory.Exists(projectLocationFolder))
+                    {
+                        //如果目录不存在 那么就重新建立
+                        EnsureProjectFolder(projectLocationFolder);
+                    }
                 }
                 catch (Exception)
                 {

@@ -1,9 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="AntDeploy.51be3f7e-0e8b-4ad4-b2c9-126445f2ce6a" Version="2.0" Language="en-US" Publisher="nainaigu" />
+        <Identity Id="AntDeploy.51be3f7e-0e8b-4ad4-b2c9-126445f2ce6a" Version="2.1" Language="en-US" Publisher="nainaigu" />
         <DisplayName>AntDeploy</DisplayName>
-        <Description xml:space="preserve">AntDeploy(正式版)</Description>
+        <Description xml:space="preserve">AntDeploy
+1. iis 发布 和 windows服务发布的日志完善
+2. 如果site已存在 或者 windows服务已存在 进行全量发布时 已存在的文件目录不存在时自从创建目录</Description>
         <MoreInfo>https://github.com/yuzd</MoreInfo>
         <Icon>Resources\__TemplateIcon.png</Icon>
         <Tags>deploy</Tags>

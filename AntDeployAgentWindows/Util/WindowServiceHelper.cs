@@ -175,9 +175,11 @@ namespace AntDeployAgentWindows.Util
             {
                 using (var service = new ServiceController(serviceName))
                 {
+
                     var timeout = TimeSpan.FromSeconds(timeouSeconds);
                     service.Start();
                     service.WaitForStatus(ServiceControllerStatus.Running, timeout);
+                    service.Refresh();
                     return string.Empty;
                 }
             }

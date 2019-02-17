@@ -91,6 +91,7 @@ namespace AntDeploy.Util
         /// <returns></returns>
         public static bool RunDotnetExternalExe(string projectPath,string fileName,string arguments,Action<string> logAction,Action<string> errLogAction)
         {
+            Process process = null;
             try
             {
                 if (string.IsNullOrEmpty(arguments))
@@ -103,7 +104,7 @@ namespace AntDeploy.Util
                 //    arguments = " " + arguments;
                 //}
 
-                var process = new Process();
+                process = new Process();
 
                 process.StartInfo.WorkingDirectory = projectPath;
                 process.StartInfo.FileName = fileName;
@@ -143,12 +144,15 @@ namespace AntDeploy.Util
                     //ignore
                 }
                 return process.ExitCode == 0;
-
             }
             catch (Exception ex)
             {
                 errLogAction(ex.Message);
                 return false;
+            }
+            finally
+            {
+                process?.Dispose();
             }
         }
 

@@ -115,6 +115,10 @@ namespace AntDeploy.Util
                     return new Tuple<bool, string>(false, ex.Message);
                 }
             }
+            finally
+            {
+                webClient.Dispose();
+            }
 
           
         }

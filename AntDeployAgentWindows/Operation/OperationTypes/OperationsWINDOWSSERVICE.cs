@@ -38,21 +38,29 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
             var service = WindowServiceHelper.GetWindowServiceByName(this.args.AppName);
             if (service!=null)
             {
-                if (service.CanStop)
+                if(service.Status == ServiceControllerStatus.Stopped)
                 {
-                    var timeout = (this.args.WaitForWindowsServiceStopTimeOut > 0
-                        ? this.args.WaitForWindowsServiceStopTimeOut
-                        : 10);
-                    logger("Start to Windows Service Stop wait for "+timeout +"senconds :" + this.args.AppName);
-                    service.Stop();
-                    service.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(timeout));
-                    logger("Success to Windows Service Stop :" + this.args.AppName);
-                    Thread.Sleep(2000);
+
                 }
                 else
                 {
-                    logger("【Error】 Windows Service Stop :" + this.args.AppName + ",Err: windows service could not be stopped!");
+                    if (service.CanStop)
+                    {
+                        var timeout = (this.args.WaitForWindowsServiceStopTimeOut > 0
+                            ? this.args.WaitForWindowsServiceStopTimeOut
+                            : 10);
+                        logger("Start to Windows Service Stop wait for " + timeout + "senconds :" + this.args.AppName);
+                        service.Stop();
+                        service.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(timeout));
+                        logger("Success to Windows Service Stop :" + this.args.AppName);
+                        Thread.Sleep(2000);
+                    }
+                    else
+                    {
+                        logger("【Error】 Windows Service Stop :" + this.args.AppName + ",Err: windows service could not be stopped,please check the service status!");
+                    }
                 }
+               
             }
             else
             {
@@ -75,6 +83,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
                 if (string.IsNullOrEmpty(re))
                 {
                     service = WindowServiceHelper.GetWindowServiceByName(this.args.AppName);
+                    service.Refresh();
                     if (service.Status != ServiceControllerStatus.Running)
                     {
                         logger("【Error】 Windows Service Start :" + this.args.AppName + ",Err: service can not start");
@@ -86,7 +95,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
                 }
                 else
                 {
-                    logger("【Error】 Windows Service Start :" + this.args.AppName + ",Err:" + re);
+                    throw new Exception("【Error】 Windows Service Start :" + this.args.AppName + ",Err:" + re);
                 }
             }
             else

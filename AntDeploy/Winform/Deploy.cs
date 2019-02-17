@@ -283,7 +283,7 @@ namespace AntDeploy.Winform
                 var configJson = JsonConvert.SerializeObject(DeployConfig, Formatting.Indented);
                 File.WriteAllText(ProjectConfigPath, configJson, Encoding.UTF8);
             }
-            
+
         }
 
 
@@ -910,6 +910,7 @@ namespace AntDeploy.Winform
                         if (!isSuccess)
                         {
                             this.nlog_iis.Error("publish error");
+                            BuildError(this.tabPage_progress);
                             return;
                         }
 
@@ -919,6 +920,7 @@ namespace AntDeploy.Winform
                         if (string.IsNullOrEmpty(publishPathLine))
                         {
                             this.nlog_iis.Error("can not find publishPath in log");
+                            BuildError(this.tabPage_progress);
                             return;
                         }
 
@@ -926,6 +928,7 @@ namespace AntDeploy.Winform
                         if (publishPathArr.Length != 2)
                         {
                             this.nlog_iis.Error("can not find publishPath in log");
+                            BuildError(this.tabPage_progress);
                             return;
                         }
 
@@ -942,6 +945,7 @@ namespace AntDeploy.Winform
                         if (!isSuccess)
                         {
                             this.nlog_iis.Error("publish error");
+                            BuildError(this.tabPage_progress);
                             return;
                         }
 
@@ -998,12 +1002,14 @@ namespace AntDeploy.Winform
                     catch (Exception ex)
                     {
                         this.nlog_iis.Error("package fail:" + ex.Message);
+                        PackageError(this.tabPage_progress);
                         return;
                     }
 
                     if (zipBytes == null || zipBytes.Length < 1)
                     {
                         this.nlog_iis.Error("package fail");
+                        PackageError(this.tabPage_progress);
                         return;
                     }
                     this.nlog_iis.Info("package success");
@@ -1013,17 +1019,19 @@ namespace AntDeploy.Winform
                     var index = 0;
                     foreach (var server in serverList)
                     {
+                        if (index != 0)//因为编译和打包只会占用第一台服务器的时间
+                        {
+                            BuildEnd(this.tabPage_progress, server.Host);
+                            UpdatePackageProgress(this.tabPage_progress, server.Host, 100);
+                        }
+
                         if (string.IsNullOrEmpty(server.Token))
                         {
                             this.nlog_iis.Warn($"{server.Host} Deploy skip,Token is null or empty!");
+                            UploadError(this.tabPage_progress, server.Host);
                             continue;
                         }
 
-                        if (index != 0)//因为编译和打包只会占用第一台服务器的时间
-                        {
-                            BuildEnd(this.tabPage_progress,server.Host);
-                            UpdatePackageProgress(this.tabPage_progress,server.Host,100);
-                        }
 
                         ProgressPercentage = 0;
                         ProgressCurrentHost = server.Host;
@@ -1039,6 +1047,7 @@ namespace AntDeploy.Winform
                         httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream", zipBytes);
                         System.Net.WebSockets.Managed.ClientWebSocket webSocket = null;
                         HttpLogger HttpLogger = null;
+                        var haveError = false;
                         try
                         {
                             var hostKey = "";
@@ -1060,6 +1069,7 @@ namespace AntDeploy.Winform
                                     {
                                         if (receiveMsg.Contains("【Error】"))
                                         {
+                                            haveError = true;
                                             this.nlog_iis.Warn($"【Server】{receiveMsg}");
                                         }
                                         else
@@ -1077,17 +1087,26 @@ namespace AntDeploy.Winform
 
                             if(ProgressPercentage<100) UpdateUploadProgress(this.tabPage_progress,ProgressCurrentHost, 100);//结束上传
 
-                            if (uploadResult.Item1)
+                            if (haveError)
                             {
-                                this.nlog_iis.Info($"Host:{server.Host},Response:{uploadResult.Item2}");
-
-                                UpdateDeployProgress(this.tabPage_progress,server.Host,true);
+                                this.nlog_iis.Error($"Host:{server.Host},Deploy Fail,Skip to Next");
+                                UpdateDeployProgress(this.tabPage_progress, server.Host, false);
                             }
                             else
                             {
-                                this.nlog_iis.Error($"Host:{server.Host},Response:{uploadResult.Item2},Skip to Next");
-                                UpdateDeployProgress(this.tabPage_progress,server.Host, false);
+                                if (uploadResult.Item1)
+                                {
+                                    this.nlog_iis.Info($"Host:{server.Host},Response:{uploadResult.Item2}");
+
+                                    UpdateDeployProgress(this.tabPage_progress, server.Host, true);
+                                }
+                                else
+                                {
+                                    this.nlog_iis.Error($"Host:{server.Host},Response:{uploadResult.Item2},Skip to Next");
+                                    UpdateDeployProgress(this.tabPage_progress, server.Host, false);
+                                }
                             }
+                            
                         }
                         catch (Exception ex)
                         {
@@ -1096,6 +1115,7 @@ namespace AntDeploy.Winform
                         }
                         finally
                         {
+                            await WebSocketHelper.SendText(webSocket,"close");
                             webSocket?.Dispose();
                             HttpLogger?.Dispose();
 
@@ -1166,6 +1186,77 @@ namespace AntDeploy.Winform
                 }
             });
 
+        }
+
+        private void BuildError(TabPage tabPage, string host = null)
+        {
+            this.BeginInvokeLambda(() =>
+            {
+                if (tabPage.Tag is Dictionary<string, ProgressBox> progressBoxList)
+                {
+                    foreach (var box in progressBoxList)
+                    {
+                        if (host == null)
+                        {
+                            box.Value.BuildError();
+                            break;
+                        }
+
+                        if (box.Key.Equals(host))
+                        {
+                            box.Value.BuildError();
+                            break;
+                        }
+                    }
+                }
+            });
+        }
+        private void PackageError(TabPage tabPage, string host = null)
+        {
+            this.BeginInvokeLambda(() =>
+            {
+                if (tabPage.Tag is Dictionary<string, ProgressBox> progressBoxList)
+                {
+                    foreach (var box in progressBoxList)
+                    {
+                        if (host == null)
+                        {
+                            box.Value.PackageError();
+                            break;
+                        }
+
+                        if (box.Key.Equals(host))
+                        {
+                            box.Value.PackageError();
+                            break;
+                        }
+                    }
+                }
+            });
+        }
+
+        private void UploadError(TabPage tabPage, string host = null)
+        {
+            this.BeginInvokeLambda(() =>
+            {
+                if (tabPage.Tag is Dictionary<string, ProgressBox> progressBoxList)
+                {
+                    foreach (var box in progressBoxList)
+                    {
+                        if (host == null)
+                        {
+                            box.Value.UploadError();
+                            break;
+                        }
+
+                        if (box.Key.Equals(host))
+                        {
+                            box.Value.UploadError();
+                            break;
+                        }
+                    }
+                }
+            });
         }
 
         private void BuildEnd(TabPage tabPage,string host = null)
@@ -1350,7 +1441,7 @@ namespace AntDeploy.Winform
                 this.combo_windowservice_env.Enabled = flag;
                 this.combo_windowservice_sdk_type.Enabled = flag;
                 this.txt_windowservice_name.Enabled = flag;
-
+                txt_windowservice_timeout.Enabled = flag;
                 this.page_set.Enabled = flag;
                 this.page_docker.Enabled = flag;
                 this.page_web_iis.Enabled = flag;
@@ -1522,6 +1613,7 @@ namespace AntDeploy.Winform
                          if (!isSuccess)
                          {
                              this.nlog_windowservice.Error("publish error");
+                             BuildError(this.tabPage_windows_service);
                              return;
                          }
 
@@ -1530,6 +1622,7 @@ namespace AntDeploy.Winform
                          if (string.IsNullOrEmpty(publishPathLine))
                          {
                              this.nlog_windowservice.Error("can not find publishPath in log");
+                             BuildError(this.tabPage_windows_service);
                              return;
                          }
 
@@ -1537,6 +1630,7 @@ namespace AntDeploy.Winform
                          if (publishPathArr.Length != 2)
                          {
                              this.nlog_windowservice.Error("can not find publishPath in log");
+                             BuildError(this.tabPage_windows_service);
                              return;
                          }
 
@@ -1553,6 +1647,7 @@ namespace AntDeploy.Winform
                          if (!isSuccess)
                          {
                              this.nlog_windowservice.Error("publish error");
+                             BuildError(this.tabPage_windows_service);
                              return;
                          }
 
@@ -1563,6 +1658,7 @@ namespace AntDeploy.Winform
                      if (string.IsNullOrEmpty(publishPath) || !Directory.Exists(publishPath))
                      {
                          this.nlog_windowservice.Error("can not find publishPath");
+                         BuildError(this.tabPage_windows_service);
                          return;
                      }
 
@@ -1574,6 +1670,7 @@ namespace AntDeploy.Winform
                          if (!File.Exists(serviceFile))
                          {
                              this.nlog_windowservice.Error($"exe file can not find in publish folder: {serviceFile}");
+                             BuildError(this.tabPage_windows_service);
                              return;
                          }
 
@@ -1612,6 +1709,7 @@ namespace AntDeploy.Winform
                          var serviceFile = Path.Combine(publishPath, execFilePath);
                          if (!File.Exists(serviceFile))
                          {
+                             BuildError(this.tabPage_windows_service);
                              this.nlog_windowservice.Error($"exe file can not find in publish folder: {serviceFile}");
                              return;
                          }
@@ -1640,12 +1738,14 @@ namespace AntDeploy.Winform
                      catch (Exception ex)
                      {
                          this.nlog_windowservice.Error("package fail:" + ex.Message);
+                         PackageError(this.tabPage_windows_service);
                          return;
                      }
 
                      if (zipBytes == null || zipBytes.Length < 1)
                      {
                          this.nlog_windowservice.Error("package fail");
+                         PackageError(this.tabPage_windows_service);
                          return;
                      }
 
@@ -1656,17 +1756,19 @@ namespace AntDeploy.Winform
                      var index = 0;
                      foreach (var server in serverList)
                      {
+                        if (index != 0)//因为编译和打包只会占用第一台服务器的时间
+                        {
+                             BuildEnd(this.tabPage_windows_service,server.Host);
+                             UpdatePackageProgress(this.tabPage_windows_service, server.Host, 100);
+                        }
+
                          if (string.IsNullOrEmpty(server.Token))
                          {
                              this.nlog_windowservice.Warn($"{server.Host} Deploy skip,Token is null or empty!");
+                             UploadError(this.tabPage_windows_service, server.Host);
                              continue;
                          }
 
-                        if (index != 0)//因为编译和打包只会占用第一台服务器的时间
-                        {
-                            BuildEnd(this.tabPage_windows_service,server.Host);
-                            UpdatePackageProgress(this.tabPage_windows_service,server.Host,100);
-                        }
 
                          ProgressPercentageForWindowsService = 0;
                          ProgressCurrentHostForWindowsService = server.Host;
@@ -1683,6 +1785,7 @@ namespace AntDeploy.Winform
                          httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream", zipBytes);
                          System.Net.WebSockets.Managed.ClientWebSocket webSocket = null;
                          HttpLogger HttpLogger = null;
+                         var haveError = false;
                          try
                          {
                              var hostKey = "";
@@ -1703,6 +1806,7 @@ namespace AntDeploy.Winform
                                      {
                                          if (receiveMsg.Contains("【Error】"))
                                          {
+                                             haveError = true;
                                              this.nlog_windowservice.Warn($"【Server】{receiveMsg}");
                                          }
                                          else
@@ -1719,17 +1823,26 @@ namespace AntDeploy.Winform
                              var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/publish",
                                  (client) => { client.UploadProgressChanged += ClientOnUploadProgressChanged2; });
                               if(ProgressPercentageForWindowsService<100) UpdateUploadProgress(this.tabPage_windows_service,ProgressCurrentHostForWindowsService, 100);//结束上传
-                             if (uploadResult.Item1)
+
+                             if (haveError)
                              {
-                                 this.nlog_windowservice.Info($"Host:{server.Host},Response:{uploadResult.Item2}");
-                                 UpdateDeployProgress(this.tabPage_windows_service,server.Host,true);
+                                 this.nlog_windowservice.Error($"Host:{server.Host},Deploy Fail,Skip to Next");
+                                 UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
                              }
                              else
                              {
-                                 this.nlog_windowservice.Error(
-                                     $"Host:{server.Host},Response:{uploadResult.Item2},Skip to Next");
-                                 UpdateDeployProgress(this.tabPage_windows_service,server.Host, false);
+                                 if (uploadResult.Item1)
+                                 {
+                                     this.nlog_windowservice.Info($"Host:{server.Host},Response:{uploadResult.Item2}");
+                                     UpdateDeployProgress(this.tabPage_windows_service, server.Host, true);
+                                 }
+                                 else
+                                 {
+                                     this.nlog_windowservice.Error( $"Host:{server.Host},Response:{uploadResult.Item2},Skip to Next");
+                                     UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
+                                 }
                              }
+                            
                          }
                          catch (Exception ex)
                          {
@@ -1739,6 +1852,7 @@ namespace AntDeploy.Winform
                          }
                          finally
                          {
+                             await WebSocketHelper.SendText(webSocket, "close");
                              webSocket?.Dispose();
                              HttpLogger?.Dispose();
                          }
@@ -2027,6 +2141,7 @@ namespace AntDeploy.Winform
                     if (!isSuccess)
                     {
                         this.nlog_docker.Error("publish error");
+                        BuildError(this.tabPage_docker);
                         return;
                     }
 
@@ -2035,6 +2150,7 @@ namespace AntDeploy.Winform
                     if (string.IsNullOrEmpty(publishPathLine))
                     {
                         this.nlog_docker.Error("can not find publishPath in log");
+                        BuildError(this.tabPage_docker);
                         return;
                     }
 
@@ -2042,6 +2158,7 @@ namespace AntDeploy.Winform
                     if (publishPathArr.Length != 2)
                     {
                         this.nlog_docker.Error("can not find publishPath in log");
+                        BuildError(this.tabPage_docker);
                         return;
                     }
 
@@ -2050,6 +2167,7 @@ namespace AntDeploy.Winform
                     if (string.IsNullOrEmpty(publishPath) || !Directory.Exists(publishPath))
                     {
                         this.nlog_docker.Error("can not find publishPath");
+                        BuildError(this.tabPage_docker);
                         return;
                     }
 
@@ -2058,6 +2176,7 @@ namespace AntDeploy.Winform
                     if (!File.Exists(serviceFile))
                     {
                         this.nlog_docker.Error($"ENTRYPOINT file can not find in publish folder: {serviceFile}");
+                        BuildError(this.tabPage_docker);
                         return;
                     }
 
@@ -2084,12 +2203,14 @@ namespace AntDeploy.Winform
                     catch (Exception ex)
                     {
                         this.nlog_docker.Error("package fail:" + ex.Message);
+                        PackageError(this.tabPage_docker);
                         return;
                     }
 
                     if (zipBytes == null || zipBytes.Length < 1)
                     {
                         this.nlog_docker.Error("package fail");
+                        PackageError(this.tabPage_docker);
                         return;
                     }
 
@@ -2099,36 +2220,41 @@ namespace AntDeploy.Winform
                     var index = 0;
                     foreach (var server in serverList)
                     {
-                         #region 参数Check
+                        if (index != 0)//因为编译和打包只会占用第一台服务器的时间
+                        {
+                            BuildEnd(this.tabPage_docker, server.Host);
+                            UpdatePackageProgress(this.tabPage_docker, server.Host, 100);
+                        }
+                        #region 参数Check
 
-                         if (string.IsNullOrEmpty(server.Host))
+                        if (string.IsNullOrEmpty(server.Host))
                         {
                             this.nlog_docker.Error("Server Host is Empty");
+                            UploadError(this.tabPage_docker);
                             continue;
                         }
                         if (string.IsNullOrEmpty(server.UserName))
                         {
                             this.nlog_docker.Error("Server UserName is Empty");
+                            UploadError(this.tabPage_docker);
                             continue;
                         }
                         if (string.IsNullOrEmpty(server.Pwd))
                         {
                             this.nlog_docker.Error("Server Pwd is Empty");
+                            UploadError(this.tabPage_docker);
                             continue;
                         }
                         var pwd = CodingHelper.AESDecrypt(server.Pwd);
                         if (string.IsNullOrEmpty(pwd))
                         {
                             this.nlog_docker.Error("Server Pwd is Empty");
+                            UploadError(this.tabPage_docker);
                             continue;
                         }
                          #endregion
 
-                        if (index != 0)//因为编译和打包只会占用第一台服务器的时间
-                        {
-                            BuildEnd(this.tabPage_docker,server.Host);
-                            UpdatePackageProgress(this.tabPage_docker,server.Host,100);
-                        }
+                        
 
                         zipBytes.Seek(0, SeekOrigin.Begin);
                         using (SSHClient sshClient = new SSHClient(server.Host, server.UserName, pwd, (str) =>
@@ -2148,6 +2274,7 @@ namespace AntDeploy.Winform
                             if (!connectResult)
                             {
                                 this.nlog_docker.Error($"Deploy Host:{server.Host} Fail: connect fail");
+                                UploadError(this.tabPage_docker);
                                 continue;
                             }
 
@@ -2167,6 +2294,7 @@ namespace AntDeploy.Winform
 
                         index++;
                     }
+                    zipBytes.Dispose();
                     this.nlog_docker.Info("Deploy End");
                 }
                 catch (Exception ex1)

@@ -215,6 +215,12 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     return $"website : {_webSiteName} not found in iis";
                 }
 
+                if (!Directory.Exists(projectLocation.Item1))
+                {
+                    //如果目录不存在 那么就重新建立
+                    EnsureProjectFolder(projectLocation.Item1);
+                }
+
                 Log("Start to deploy IIS:");
                 Log("SiteName ===>" + projectLocation.Item2);
                 Log("SiteFolder ===> " + projectLocation.Item1);
