@@ -30,8 +30,10 @@
         {
             this.page_ = new System.Windows.Forms.TabControl();
             this.page_web_iis = new System.Windows.Forms.TabPage();
+            this.label25 = new System.Windows.Forms.Label();
             this.tab_iis = new System.Windows.Forms.TabControl();
             this.tabPage_progress = new System.Windows.Forms.TabPage();
+            this.progress_iis_tip = new System.Windows.Forms.Label();
             this.tabPage_iis_log = new System.Windows.Forms.TabPage();
             this.rich_iis_log = new System.Windows.Forms.RichTextBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
@@ -50,6 +52,7 @@
             this.page_docker = new System.Windows.Forms.TabPage();
             this.tabControl_docker = new System.Windows.Forms.TabControl();
             this.tabPage_docker = new System.Windows.Forms.TabPage();
+            this.progress_docker_tip = new System.Windows.Forms.Label();
             this.tabPage_docker_log = new System.Windows.Forms.TabPage();
             this.rich_docker_log = new System.Windows.Forms.RichTextBox();
             this.label24 = new System.Windows.Forms.Label();
@@ -62,8 +65,10 @@
             this.combo_docker_env = new System.Windows.Forms.ComboBox();
             this.label22 = new System.Windows.Forms.Label();
             this.page_window_service = new System.Windows.Forms.TabPage();
+            this.label26 = new System.Windows.Forms.Label();
             this.tabControl_window_service = new System.Windows.Forms.TabControl();
             this.tabPage_windows_service = new System.Windows.Forms.TabPage();
+            this.progress_window_service_tip = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.rich_windowservice_log = new System.Windows.Forms.RichTextBox();
             this.txt_windowservice_name = new System.Windows.Forms.TextBox();
@@ -113,11 +118,6 @@
             this.txt_env_name = new System.Windows.Forms.TextBox();
             this.b_env_add_by_name = new System.Windows.Forms.Button();
             this.combo_env_list = new System.Windows.Forms.ComboBox();
-            this.progress_iis_tip = new System.Windows.Forms.Label();
-            this.progress_docker_tip = new System.Windows.Forms.Label();
-            this.progress_window_service_tip = new System.Windows.Forms.Label();
-            this.label25 = new System.Windows.Forms.Label();
-            this.label26 = new System.Windows.Forms.Label();
             this.page_.SuspendLayout();
             this.page_web_iis.SuspendLayout();
             this.tab_iis.SuspendLayout();
@@ -176,6 +176,15 @@
             this.page_web_iis.Text = "IIS_Web";
             this.page_web_iis.UseVisualStyleBackColor = true;
             // 
+            // label25
+            // 
+            this.label25.AutoSize = true;
+            this.label25.Location = new System.Drawing.Point(216, 128);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(137, 12);
+            this.label25.TabIndex = 17;
+            this.label25.Text = "PS:Windows Server Only";
+            // 
             // tab_iis
             // 
             this.tab_iis.Controls.Add(this.tabPage_progress);
@@ -198,6 +207,15 @@
             this.tabPage_progress.TabIndex = 0;
             this.tabPage_progress.Text = "Progress";
             this.tabPage_progress.UseVisualStyleBackColor = true;
+            // 
+            // progress_iis_tip
+            // 
+            this.progress_iis_tip.ForeColor = System.Drawing.Color.Blue;
+            this.progress_iis_tip.Location = new System.Drawing.Point(126, 64);
+            this.progress_iis_tip.Name = "progress_iis_tip";
+            this.progress_iis_tip.Size = new System.Drawing.Size(345, 29);
+            this.progress_iis_tip.TabIndex = 17;
+            this.progress_iis_tip.Text = "Please 1. Add Windows Server into Env In Setting Page.          2. Select Env.";
             // 
             // tabPage_iis_log
             // 
@@ -380,6 +398,15 @@
             this.tabPage_docker.Text = "Progress";
             this.tabPage_docker.UseVisualStyleBackColor = true;
             // 
+            // progress_docker_tip
+            // 
+            this.progress_docker_tip.ForeColor = System.Drawing.Color.Blue;
+            this.progress_docker_tip.Location = new System.Drawing.Point(127, 54);
+            this.progress_docker_tip.Name = "progress_docker_tip";
+            this.progress_docker_tip.Size = new System.Drawing.Size(331, 30);
+            this.progress_docker_tip.TabIndex = 18;
+            this.progress_docker_tip.Text = "Please 1. Add Linux Server into Env In Setting Page.          2. Select Env.";
+            // 
             // tabPage_docker_log
             // 
             this.tabPage_docker_log.Controls.Add(this.rich_docker_log);
@@ -506,6 +533,15 @@
             this.page_window_service.Text = "WindowsService";
             this.page_window_service.UseVisualStyleBackColor = true;
             // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.Location = new System.Drawing.Point(194, 98);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(137, 12);
+            this.label26.TabIndex = 25;
+            this.label26.Text = "PS:Windows Server Only";
+            // 
             // tabControl_window_service
             // 
             this.tabControl_window_service.Controls.Add(this.tabPage_windows_service);
@@ -527,6 +563,15 @@
             this.tabPage_windows_service.TabIndex = 0;
             this.tabPage_windows_service.Text = "Progress";
             this.tabPage_windows_service.UseVisualStyleBackColor = true;
+            // 
+            // progress_window_service_tip
+            // 
+            this.progress_window_service_tip.ForeColor = System.Drawing.Color.Blue;
+            this.progress_window_service_tip.Location = new System.Drawing.Point(132, 59);
+            this.progress_window_service_tip.Name = "progress_window_service_tip";
+            this.progress_window_service_tip.Size = new System.Drawing.Size(345, 30);
+            this.progress_window_service_tip.TabIndex = 18;
+            this.progress_window_service_tip.Text = "Please 1. Add Windows Server into Env In Setting Page.          2. Select Env.";
             // 
             // tabPage2
             // 
@@ -1026,51 +1071,6 @@
             this.combo_env_list.TabIndex = 0;
             this.combo_env_list.SelectedIndexChanged += new System.EventHandler(this.combo_env_list_SelectedIndexChanged);
             // 
-            // progress_iis_tip
-            // 
-            this.progress_iis_tip.ForeColor = System.Drawing.Color.Blue;
-            this.progress_iis_tip.Location = new System.Drawing.Point(126, 64);
-            this.progress_iis_tip.Name = "progress_iis_tip";
-            this.progress_iis_tip.Size = new System.Drawing.Size(345, 29);
-            this.progress_iis_tip.TabIndex = 17;
-            this.progress_iis_tip.Text = "Please 1. Add Windows Server into Env In Setting Page.          2. Select Env.";
-            // 
-            // progress_docker_tip
-            // 
-            this.progress_docker_tip.ForeColor = System.Drawing.Color.Blue;
-            this.progress_docker_tip.Location = new System.Drawing.Point(127, 54);
-            this.progress_docker_tip.Name = "progress_docker_tip";
-            this.progress_docker_tip.Size = new System.Drawing.Size(331, 30);
-            this.progress_docker_tip.TabIndex = 18;
-            this.progress_docker_tip.Text = "Please 1. Add Linux Server into Env In Setting Page.          2. Select Env.";
-            // 
-            // progress_window_service_tip
-            // 
-            this.progress_window_service_tip.ForeColor = System.Drawing.Color.Blue;
-            this.progress_window_service_tip.Location = new System.Drawing.Point(132, 59);
-            this.progress_window_service_tip.Name = "progress_window_service_tip";
-            this.progress_window_service_tip.Size = new System.Drawing.Size(345, 30);
-            this.progress_window_service_tip.TabIndex = 18;
-            this.progress_window_service_tip.Text = "Please 1. Add Windows Server into Env In Setting Page.          2. Select Env.";
-            // 
-            // label25
-            // 
-            this.label25.AutoSize = true;
-            this.label25.Location = new System.Drawing.Point(216, 128);
-            this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(137, 12);
-            this.label25.TabIndex = 17;
-            this.label25.Text = "PS:Windows Server Only";
-            // 
-            // label26
-            // 
-            this.label26.AutoSize = true;
-            this.label26.Location = new System.Drawing.Point(194, 98);
-            this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(137, 12);
-            this.label26.TabIndex = 25;
-            this.label26.Text = "PS:Windows Server Only";
-            // 
             // Deploy
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
@@ -1078,6 +1078,7 @@
             this.Controls.Add(this.page_);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "Deploy";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "AntDeploy";

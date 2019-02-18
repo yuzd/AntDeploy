@@ -61,7 +61,7 @@ namespace AntDeploy.Commands
         {
             //RootNamespace Title Product OutputFileName
             Deploy deploy = new Deploy(_projectFile,_project);
-            deploy.Show();
+            deploy.ShowDialog();
         }
     }
 }
