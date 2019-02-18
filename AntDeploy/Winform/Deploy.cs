@@ -565,7 +565,7 @@ namespace AntDeploy.Winform
             try
             {
                 WebClient client = new WebClient();
-                var result = client.DownloadString($"http://{serverHost}/publish?Token={serverTolen}");
+                var result = client.DownloadString($"http://{serverHost}/publish?Token={WebUtility.UrlEncode(serverTolen)}");
                 if (result.Equals("success"))
                 {
                     MessageBox.Show("Connect Sussess");

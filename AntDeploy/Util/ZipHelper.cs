@@ -18,7 +18,7 @@ namespace AntDeploy.Util
         /// <param name="compressionLevel"></param>
         /// <param name="includeBaseDirectory"></param>
         /// <returns></returns>
-        public static byte[] DoCreateFromDirectory(string sourceDirectoryName, CompressionLevel? compressionLevel, bool includeBaseDirectory, List<string> ignoreList = null,Action<int> progress = null)
+        public static byte[] DoCreateFromDirectory(string sourceDirectoryName, CompressionLevel? compressionLevel, bool includeBaseDirectory, List<string> ignoreList = null, Action<int> progress = null)
         {
             sourceDirectoryName = Path.GetFullPath(sourceDirectoryName);
             using (var outStream = new MemoryStream())
@@ -41,27 +41,26 @@ namespace AntDeploy.Util
                         flag = false;
                         int length = enumerateFileSystemInfo.FullName.Length - fullName.Length;
                         string entryName = EntryFromPath(enumerateFileSystemInfo.FullName, fullName.Length, length);
-
-                        if (enumerateFileSystemInfo is FileInfo)
+                        if (ignoreList != null)
                         {
-                            if (ignoreList != null)
+                            var haveMatch = false;
+                            foreach (var ignorRule in ignoreList)
                             {
-                                var haveMatch = false;
-                                foreach (var ignorRule in ignoreList)
+                                var isMatch = Regex.Match(entryName, ignorRule, RegexOptions.IgnoreCase);//忽略大小写
+                                if (isMatch.Success)
                                 {
-                                    var isMatch = Regex.Match(enumerateFileSystemInfo.Name, ignorRule);
-                                    if (isMatch.Success)
-                                    {
-                                        haveMatch = true;
-                                        break;
-                                    }
-                                }
-
-                                if (haveMatch)
-                                {
-                                    continue;
+                                    haveMatch = true;
+                                    break;
                                 }
                             }
+
+                            if (haveMatch)
+                            {
+                                continue;
+                            }
+                        }
+                        if (enumerateFileSystemInfo is FileInfo)
+                        {
                             DoCreateEntryFromFile(destination, enumerateFileSystemInfo.FullName, entryName, compressionLevel);
                         }
                         else
@@ -82,7 +81,7 @@ namespace AntDeploy.Util
             }
         }
 
-        public static MemoryStream DoCreateFromDirectory2(string sourceDirectoryName, CompressionLevel? compressionLevel, bool includeBaseDirectory, List<string> ignoreList = null,Action<int> progress = null)
+        public static MemoryStream DoCreateFromDirectory2(string sourceDirectoryName, CompressionLevel? compressionLevel, bool includeBaseDirectory, List<string> ignoreList = null, Action<int> progress = null)
         {
             sourceDirectoryName = Path.GetFullPath(sourceDirectoryName);
             var outStream = new MemoryStream();
@@ -104,27 +103,27 @@ namespace AntDeploy.Util
                     flag = false;
                     int length = enumerateFileSystemInfo.FullName.Length - fullName.Length;
                     string entryName = EntryFromPath(enumerateFileSystemInfo.FullName, fullName.Length, length);
-
-                    if (enumerateFileSystemInfo is FileInfo)
+                    if (ignoreList != null)
                     {
-                        if (ignoreList != null)
+                        var haveMatch = false;
+                        foreach (var ignorRule in ignoreList)
                         {
-                            var haveMatch = false;
-                            foreach (var ignorRule in ignoreList)
+                            var isMatch = Regex.Match(entryName, ignorRule, RegexOptions.IgnoreCase);//忽略大小写
+                            if (isMatch.Success)
                             {
-                                var isMatch = Regex.Match(enumerateFileSystemInfo.Name, ignorRule);
-                                if (isMatch.Success)
-                                {
-                                    haveMatch = true;
-                                    break;
-                                }
-                            }
-
-                            if (haveMatch)
-                            {
-                                continue;
+                                haveMatch = true;
+                                break;
                             }
                         }
+
+                        if (haveMatch)
+                        {
+                            continue;
+                        }
+                    }
+                    if (enumerateFileSystemInfo is FileInfo)
+                    {
+
                         DoCreateEntryFromFile(destination, enumerateFileSystemInfo.FullName, entryName, compressionLevel);
                     }
                     else

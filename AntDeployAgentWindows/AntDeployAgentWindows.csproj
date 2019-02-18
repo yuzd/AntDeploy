@@ -56,6 +56,7 @@
     <Reference Include="System.IO.Compression, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -92,6 +93,7 @@
     <Compile Include="Util\ServiceInstaller.cs" />
     <Compile Include="Util\WindowServiceHelper.cs" />
     <Compile Include="Util\IISHelper.cs" />
+    <Compile Include="Vsix.cs" />
     <Compile Include="WebSocketApp\MyWebSocketWork.cs" />
     <Compile Include="WebSocketApp\MyWebSocketWorkerBase.cs" />
     <Compile Include="Program.cs" />

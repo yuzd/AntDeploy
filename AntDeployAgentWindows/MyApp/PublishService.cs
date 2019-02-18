@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using AntDeployAgentWindows.Model;
+﻿using AntDeployAgentWindows.Model;
 using AntDeployAgentWindows.MyApp.Service;
 using AntDeployAgentWindows.WebApiCore;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Linq;
-using AntDeployAgentWindows.WebSocketApp;
+using System.Web;
 
 namespace AntDeployAgentWindows.MyApp
 {
@@ -34,9 +34,14 @@ namespace AntDeployAgentWindows.MyApp
 
                     if (!Token.Equals(token))
                     {
-                        Response.Write("token invaid");
-                        return;
+                        token = HttpUtility.UrlDecode(token);
+                        if (!Token.Equals(token))
+                        {
+                            Response.Write("token invaid");
+                            return;
+                        }
                     }
+
                 }
 
 
@@ -45,10 +50,10 @@ namespace AntDeployAgentWindows.MyApp
             }
 
 
-            
+
             FormHandler formHandler = new FormHandler(Context);
 
-            
+
 
 
             var publishType = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("publishType"));
@@ -75,7 +80,7 @@ namespace AntDeployAgentWindows.MyApp
 
             var loggerKeyValue = string.Empty;
             var loggerKey = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("id"));
-            if (loggerKey != null  && !string.IsNullOrEmpty(loggerKey.TextValue))
+            if (loggerKey != null && !string.IsNullOrEmpty(loggerKey.TextValue))
             {
                 loggerKeyValue = publisher.LoggerKey = loggerKey.TextValue;
                 LoggerService.loggerCollection.TryAdd(publisher.LoggerKey, new List<LoggerModel>());
