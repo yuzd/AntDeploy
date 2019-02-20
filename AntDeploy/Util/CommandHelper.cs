@@ -123,7 +123,17 @@ namespace AntDeploy.Util
 
                 process.OutputDataReceived += (sender, args) =>
                 {
-                    if(!string.IsNullOrWhiteSpace(args.Data))logAction(args.Data);
+                    if (!string.IsNullOrWhiteSpace(args.Data))
+                    {
+                        if (args.Data.Contains(".csproj : error"))
+                        {
+                            errLogAction(args.Data);
+                        }
+                        else
+                        {
+                            logAction(args.Data);
+                        }
+                    }
                 };
                 process.BeginOutputReadLine();
 

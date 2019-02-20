@@ -950,7 +950,7 @@ namespace AntDeploy.Winform
 
                         if (!isSuccess)
                         {
-                            this.nlog_iis.Error("publish error");
+                            this.nlog_iis.Error("publish error,please check build log");
                             BuildError(this.tabPage_progress);
                             return;
                         }
@@ -985,7 +985,7 @@ namespace AntDeploy.Winform
 
                         if (!isSuccess)
                         {
-                            this.nlog_iis.Error("publish error");
+                            this.nlog_iis.Error("publish error,please check build log");
                             BuildError(this.tabPage_progress);
                             return;
                         }
@@ -1655,7 +1655,7 @@ namespace AntDeploy.Winform
 
                          if (!isSuccess)
                          {
-                             this.nlog_windowservice.Error("publish error");
+                             this.nlog_windowservice.Error("publish error,please check build log");
                              BuildError(this.tabPage_windows_service);
                              return;
                          }
@@ -1689,7 +1689,7 @@ namespace AntDeploy.Winform
 
                          if (!isSuccess)
                          {
-                             this.nlog_windowservice.Error("publish error");
+                             this.nlog_windowservice.Error("publish error,please check build log");
                              BuildError(this.tabPage_windows_service);
                              return;
                          }
@@ -2200,7 +2200,7 @@ namespace AntDeploy.Winform
 
                     if (!isSuccess)
                     {
-                        this.nlog_docker.Error("publish error");
+                        this.nlog_docker.Error("publish error,please check build log");
                         BuildError(this.tabPage_docker);
                         return;
                     }
