@@ -36,6 +36,7 @@ namespace AntDeploy.Models
         public WindowsServiveConfig WindowsServiveConfig { get; set; } = new WindowsServiveConfig();
         public DockerConfig DockerConfig { get; set; } = new DockerConfig();
 
+        public int LastTabIndex { get; set; }
     }
 
     public class IIsConfig

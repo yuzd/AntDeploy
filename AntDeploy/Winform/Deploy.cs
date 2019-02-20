@@ -222,6 +222,10 @@ namespace AntDeploy.Winform
                 }
             }
 
+            if (DeployConfig.LastTabIndex >= 0 &&  DeployConfig.LastTabIndex < this.tabcontrol.TabPages.Count)
+            {
+                this.tabcontrol.SelectedIndex =DeployConfig.LastTabIndex;
+            }
 
             this.txt_env_server_host.Text = string.Empty;
             this.txt_env_server_token.Text = string.Empty;
@@ -271,6 +275,8 @@ namespace AntDeploy.Winform
 
         private void Deploy_FormClosing(object sender, FormClosingEventArgs e)
         {
+            DeployConfig.LastTabIndex = this.tabcontrol.SelectedIndex;
+
             DeployConfig.IIsConfig.WebSiteName = this.txt_iis_web_site_name.Text.Trim();
 
             DeployConfig.WindowsServiveConfig.ServiceName = this.txt_windowservice_name.Text.Trim();
@@ -315,6 +321,8 @@ namespace AntDeploy.Winform
                     this.tabControl_window_service.Controls.Remove(box.Value);
                 }
             }
+
+            
         }
 
 
@@ -1206,7 +1214,7 @@ namespace AntDeploy.Winform
                 }
                 else
                 {
-                    page_.Tag = "0";
+                    tabcontrol.Tag = "0";
                     if (this.tabPage_progress.Tag is Dictionary<string, ProgressBox> progressBoxList)
                     {
                         foreach (var box in progressBoxList)
@@ -1488,7 +1496,7 @@ namespace AntDeploy.Winform
                 }
                 else
                 {
-                    page_.Tag = "2";
+                    tabcontrol.Tag = "2";
                     if (this.tabPage_windows_service.Tag is Dictionary<string, ProgressBox> progressBoxList)
                     {
                         foreach (var box in progressBoxList)
@@ -1918,7 +1926,7 @@ namespace AntDeploy.Winform
         #region Common
         private void page__SelectedIndexChanged(object sender, EventArgs e)
         {
-            string pase = page_.Tag as string;
+            string pase = tabcontrol.Tag as string;
             if (string.IsNullOrEmpty(pase))
             {
                 return;
@@ -1929,23 +1937,23 @@ namespace AntDeploy.Winform
             {
                 return;
             }
-            if (page_.SelectedIndex == 0)
+            if (tabcontrol.SelectedIndex == 0)
             {
-                if (excutePageIndex != page_.SelectedIndex)
+                if (excutePageIndex != tabcontrol.SelectedIndex)
                 {
                     this.rich_iis_log.Text = "";
                 }
             }
-            else if (page_.SelectedIndex == 1)
+            else if (tabcontrol.SelectedIndex == 1)
             {
-                if (excutePageIndex != page_.SelectedIndex)
+                if (excutePageIndex != tabcontrol.SelectedIndex)
                 {
                     this.rich_docker_log.Text = "";
                 }
             }
-            else if (page_.SelectedIndex == 2)
+            else if (tabcontrol.SelectedIndex == 2)
             {
-                if (excutePageIndex != page_.SelectedIndex)
+                if (excutePageIndex != tabcontrol.SelectedIndex)
                 {
                     this.rich_windowservice_log.Text = "";
                 }
@@ -2063,6 +2071,23 @@ namespace AntDeploy.Winform
             Process.Start(sInfo);
         }
 
+        private void label_iis_demo_Click(object sender, EventArgs e)
+        {
+            ProcessStartInfo sInfo = new ProcessStartInfo("https://github.com/yuzd/AntDeployAgent/issues/2");
+            Process.Start(sInfo);
+        }
+
+        private void label_docker_demo_Click(object sender, EventArgs e)
+        {
+            ProcessStartInfo sInfo = new ProcessStartInfo("https://github.com/yuzd/AntDeployAgent/issues/6");
+            Process.Start(sInfo);
+        }
+
+        private void label_windows_serivce_demo_Click(object sender, EventArgs e)
+        {
+            ProcessStartInfo sInfo = new ProcessStartInfo("https://github.com/yuzd/AntDeployAgent/issues/4");
+            Process.Start(sInfo);
+        }
         #endregion
 
 
@@ -2366,7 +2391,7 @@ namespace AntDeploy.Winform
                 }
                 else
                 {
-                    page_.Tag = "1";
+                    tabcontrol.Tag = "1";
                     if (this.tabPage_docker.Tag is Dictionary<string, ProgressBox> progressBoxList)
                     {
                         foreach (var box in progressBoxList)
@@ -2443,7 +2468,11 @@ namespace AntDeploy.Winform
             }
         }
 
+
         #endregion
+
+      
+
 
       
     }
