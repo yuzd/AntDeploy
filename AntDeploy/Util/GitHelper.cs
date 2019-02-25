@@ -68,8 +68,9 @@ namespace AntDeploy.Util
                 {
                     _logger?.Info("【git】creare git Repository success :" + path);
                     _repository = new Repository(_projectPath);
-                    CommitChanges("init");
-                     InitSuccess = true;
+
+                    CommitChanges("first init");
+                    InitSuccess = true;
                     return true;
                 }
             }
@@ -86,6 +87,8 @@ namespace AntDeploy.Util
         {
             try
             {
+                StageIgnoreFile();
+
                 LibGit2Sharp.Commands.Stage(_repository, "*");
             }
             catch (Exception ex1)
@@ -94,6 +97,20 @@ namespace AntDeploy.Util
             }
 
             CommitChanges(DateTime.Now.ToString("yyyyMMddHHmms"));
+
+        }
+
+
+        private void StageIgnoreFile()
+        {
+            RepositoryStatus status = _repository.RetrieveStatus();
+            List<string> filePaths_Ignored = status.Ignored.Select(mods => mods.FilePath).ToList();
+
+            foreach (var item in filePaths_Ignored)
+            {
+                _repository.Index.Add(item);
+                _repository.Index.Write();
+            }
 
         }
 
@@ -117,10 +134,14 @@ namespace AntDeploy.Util
 
                 List<string> filePaths_Added = status.Added.Select(mods => mods.FilePath).ToList();//新增的文件一览
 
+                List<string> filePaths_Ignored = status.Ignored.Select(mods => mods.FilePath).ToList();
+
+
 
                 result.AddRange(filePaths_Modified);
                 result.AddRange(filePaths_Untracked);
                 result.AddRange(filePaths_Added);
+                result.AddRange(filePaths_Ignored);
                 result = result.Distinct().ToList();
 
             }
