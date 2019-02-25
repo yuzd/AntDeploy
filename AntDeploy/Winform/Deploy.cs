@@ -27,6 +27,7 @@ namespace AntDeploy.Winform
         private string ProjectConfigPath;
         private string ProjectFolderPath;
         private string ProjectPath;
+        private string PluginConfigPath;
         private Project _project;
         private NLog.Logger nlog_iis;
         private NLog.Logger nlog_windowservice;
@@ -118,9 +119,12 @@ namespace AntDeploy.Winform
             RichLogInit();
             #endregion
 
+            PluginConfigPath = ProjectHelper.GetPluginConfigPath();
+            ReadPluginConfig(PluginConfigPath);
         }
 
         public DeployConfig DeployConfig { get; set; }
+        public PluginConfig PluginConfig { get; set; }
 
         #region Form
 
@@ -222,10 +226,14 @@ namespace AntDeploy.Winform
                 }
             }
 
-            if (DeployConfig.LastTabIndex >= 0 &&  DeployConfig.LastTabIndex < this.tabcontrol.TabPages.Count)
+            if (PluginConfig.LastTabIndex >= 0 && PluginConfig.LastTabIndex < this.tabcontrol.TabPages.Count)
             {
-                this.tabcontrol.SelectedIndex =DeployConfig.LastTabIndex;
+                this.tabcontrol.SelectedIndex = PluginConfig.LastTabIndex;
             }
+
+
+
+
 
             this.txt_env_server_host.Text = string.Empty;
             this.txt_env_server_token.Text = string.Empty;
@@ -243,7 +251,7 @@ namespace AntDeploy.Winform
             RichTextBoxTarget.GetTargetByControl(rich_iis_log).LinkClicked += LinkClicked;
             RichTextBoxTarget.GetTargetByControl(rich_windowservice_log).LinkClicked += LinkClicked;
             RichTextBoxTarget.GetTargetByControl(rich_docker_log).LinkClicked += LinkClicked;
-            
+
         }
 
 
@@ -275,7 +283,7 @@ namespace AntDeploy.Winform
 
         private void Deploy_FormClosing(object sender, FormClosingEventArgs e)
         {
-            DeployConfig.LastTabIndex = this.tabcontrol.SelectedIndex;
+            PluginConfig.LastTabIndex = this.tabcontrol.SelectedIndex;
 
             DeployConfig.IIsConfig.WebSiteName = this.txt_iis_web_site_name.Text.Trim();
 
@@ -289,6 +297,12 @@ namespace AntDeploy.Winform
             {
                 var configJson = JsonConvert.SerializeObject(DeployConfig, Formatting.Indented);
                 File.WriteAllText(ProjectConfigPath, configJson, Encoding.UTF8);
+            }
+
+            if (!string.IsNullOrEmpty(PluginConfigPath))
+            {
+                var configJson = JsonConvert.SerializeObject(PluginConfig, Formatting.Indented);
+                File.WriteAllText(PluginConfigPath, configJson, Encoding.UTF8);
             }
 
             RichTextBoxTarget.GetTargetByControl(rich_iis_log).Dispose();
@@ -322,7 +336,7 @@ namespace AntDeploy.Winform
                 }
             }
 
-            
+
         }
 
 
@@ -447,8 +461,8 @@ namespace AntDeploy.Winform
             }
             if (this.combo_linux_server_list.Items.Count > 0)
             {
-                 this.combo_linux_server_list.Tag = "active";
-                 this.combo_linux_server_list.SelectedIndex = 0;
+                this.combo_linux_server_list.Tag = "active";
+                this.combo_linux_server_list.SelectedIndex = 0;
             }
         }
 
@@ -498,7 +512,7 @@ namespace AntDeploy.Winform
             {
                 return;
             }
-            
+
             this.DeployConfig.Env[this.combo_env_list.SelectedIndex].ServerList.RemoveAt(this.combo_env_server_list.SelectedIndex);
             this.combo_env_server_list.Items.Remove(seletedServer);
             DeployConfig.EnvServerChange(DeployConfig.Env[this.combo_env_list.SelectedIndex]);
@@ -694,7 +708,7 @@ namespace AntDeploy.Winform
             {
                 return;
             }
-          
+
             this.DeployConfig.Env[this.combo_env_list.SelectedIndex].LinuxServerList.RemoveAt(this.combo_linux_server_list.SelectedIndex);
             this.combo_linux_server_list.Items.Remove(seletedServer);
             DeployConfig.EnvServerChange(DeployConfig.Env[this.combo_env_list.SelectedIndex]);
@@ -812,7 +826,7 @@ namespace AntDeploy.Winform
 
                 }
 
-                var newBoxList = new Dictionary<string,ProgressBox>();
+                var newBoxList = new Dictionary<string, ProgressBox>();
 
                 var serverList = DeployConfig.Env.Where(r => r.Name.Equals(selectName)).Select(r => r.ServerList)
                     .FirstOrDefault();
@@ -832,7 +846,7 @@ namespace AntDeploy.Winform
                         Text = serverHost,
                     };
 
-                    newBoxList.Add(serverHost,newBox);
+                    newBoxList.Add(serverHost, newBox);
                     this.tabPage_progress.Controls.Add(newBox);
                 }
 
@@ -923,13 +937,14 @@ namespace AntDeploy.Winform
                 return;
             }
 
-            combo_iis_env_SelectedIndexChanged(null,null);
+            combo_iis_env_SelectedIndexChanged(null, null);
 
             this.rich_iis_log.Text = "";
             DeployConfig.IIsConfig.WebSiteName = websiteName;
             new Task(async () =>
             {
                 this.nlog_iis.Info("Start publish");
+                PrintCommonLog(this.nlog_iis);
                 Enable(false);//第一台开始编译
                 try
                 {
@@ -1037,7 +1052,7 @@ namespace AntDeploy.Winform
                         zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, CompressionLevel.Optimal, true, DeployConfig.IgnoreList,
                             (progressValue) =>
                             {
-                                UpdatePackageProgress(this.tabPage_progress,null, progressValue);//打印打包记录
+                                UpdatePackageProgress(this.tabPage_progress, null, progressValue);//打印打包记录
                             });
                     }
                     catch (Exception ex)
@@ -1126,7 +1141,7 @@ namespace AntDeploy.Winform
                             var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/publish",
                                 (client) => { client.UploadProgressChanged += ClientOnUploadProgressChanged; });
 
-                            if(ProgressPercentage<100) UpdateUploadProgress(this.tabPage_progress,ProgressCurrentHost, 100);//结束上传
+                            if (ProgressPercentage < 100) UpdateUploadProgress(this.tabPage_progress, ProgressCurrentHost, 100);//结束上传
 
                             if (haveError)
                             {
@@ -1147,16 +1162,16 @@ namespace AntDeploy.Winform
                                     UpdateDeployProgress(this.tabPage_progress, server.Host, false);
                                 }
                             }
-                            
+
                         }
                         catch (Exception ex)
                         {
                             this.nlog_iis.Error($"Fail Deploy,Host:{server.Host},Response:{ex.Message},Skip to Next");
-                            UpdateDeployProgress(this.tabPage_progress,server.Host, false);
+                            UpdateDeployProgress(this.tabPage_progress, server.Host, false);
                         }
                         finally
                         {
-                            await WebSocketHelper.SendText(webSocket,"close");
+                            await WebSocketHelper.SendText(webSocket, "close");
                             webSocket?.Dispose();
                             HttpLogger?.Dispose();
 
@@ -1188,7 +1203,7 @@ namespace AntDeploy.Winform
             {
                 ProgressPercentage = e.ProgressPercentage;
                 var showValue = (e.ProgressPercentage != 100 ? e.ProgressPercentage * 2 : e.ProgressPercentage);
-                if(!string.IsNullOrEmpty(ProgressCurrentHost))UpdateUploadProgress(this.tabPage_progress,ProgressCurrentHost, showValue);
+                if (!string.IsNullOrEmpty(ProgressCurrentHost)) UpdateUploadProgress(this.tabPage_progress, ProgressCurrentHost, showValue);
                 this.nlog_iis.Info($"Upload {showValue} % complete...");
             }
         }
@@ -1300,7 +1315,7 @@ namespace AntDeploy.Winform
             });
         }
 
-        private void BuildEnd(TabPage tabPage,string host = null)
+        private void BuildEnd(TabPage tabPage, string host = null)
         {
             this.BeginInvokeLambda(() =>
             {
@@ -1324,9 +1339,9 @@ namespace AntDeploy.Winform
             });
         }
 
-        
 
-        private void UpdatePackageProgress(TabPage tabPage,string host,int value)
+
+        private void UpdatePackageProgress(TabPage tabPage, string host, int value)
         {
             this.BeginInvokeLambda(() =>
             {
@@ -1350,7 +1365,7 @@ namespace AntDeploy.Winform
             });
         }
 
-        private void UpdateUploadProgress(TabPage tabPage,string host, int value)
+        private void UpdateUploadProgress(TabPage tabPage, string host, int value)
         {
             this.BeginInvokeLambda(() =>
             {
@@ -1373,7 +1388,7 @@ namespace AntDeploy.Winform
             });
         }
 
-        private void UpdateDeployProgress(TabPage tabPage,string host, bool value)
+        private void UpdateDeployProgress(TabPage tabPage, string host, bool value)
         {
             this.BeginInvokeLambda(() =>
             {
@@ -1422,7 +1437,7 @@ namespace AntDeploy.Winform
                     }
                 }
 
-                var newBoxList = new Dictionary<string,ProgressBox>();
+                var newBoxList = new Dictionary<string, ProgressBox>();
 
                 var serverList = DeployConfig.Env.Where(r => r.Name.Equals(selectName)).Select(r => r.ServerList)
                 .FirstOrDefault();
@@ -1442,7 +1457,7 @@ namespace AntDeploy.Winform
                         Text = serverHost,
                     };
 
-                    newBoxList.Add(serverHost,newBox);
+                    newBoxList.Add(serverHost, newBox);
                     this.tabPage_windows_service.Controls.Add(newBox);
                 }
 
@@ -1469,7 +1484,7 @@ namespace AntDeploy.Winform
             {
                 ProgressPercentageForWindowsService = e.ProgressPercentage;
                 var showValue = (e.ProgressPercentage != 100 ? e.ProgressPercentage * 2 : e.ProgressPercentage);
-                if(!string.IsNullOrEmpty(ProgressCurrentHostForWindowsService))UpdateUploadProgress(this.tabPage_windows_service,ProgressCurrentHostForWindowsService, showValue);
+                if (!string.IsNullOrEmpty(ProgressCurrentHostForWindowsService)) UpdateUploadProgress(this.tabPage_windows_service, ProgressCurrentHostForWindowsService, showValue);
                 this.nlog_windowservice.Info($"Upload {showValue} % complete...");
             }
         }
@@ -1527,8 +1542,8 @@ namespace AntDeploy.Winform
                 var fileInfo = File.ReadAllText(ProjectPath);
                 if (fileInfo.Contains("<WebProjectProperties>") && fileInfo.Contains("</WebProjectProperties>"))
                 {
-                     MessageBox.Show("current project is not windows service project!");
-                     return;
+                    MessageBox.Show("current project is not windows service project!");
+                    return;
                 }
             }
 
@@ -1625,7 +1640,7 @@ namespace AntDeploy.Winform
                 return;
             }
 
-            combo_windowservice_env_SelectedIndexChanged(null,null);
+            combo_windowservice_env_SelectedIndexChanged(null, null);
 
             this.rich_windowservice_log.Text = "";
             this.nlog_windowservice.Info($"windows Service exe name:{execFilePath.Replace(".dll", ".exe")}");
@@ -1633,6 +1648,7 @@ namespace AntDeploy.Winform
             new Task(async () =>
              {
                  this.nlog_windowservice.Info("Start publish");
+                 PrintCommonLog(this.nlog_windowservice);
                  EnableForWindowsService(false);//第一台开始编译
 
                  try
@@ -1775,7 +1791,7 @@ namespace AntDeploy.Winform
                              DeployConfig.IgnoreList,
                             (progressValue) =>
                             {
-                                UpdatePackageProgress(this.tabPage_windows_service,null, progressValue);//打印打包记录
+                                UpdatePackageProgress(this.tabPage_windows_service, null, progressValue);//打印打包记录
                             });
                      }
                      catch (Exception ex)
@@ -1799,11 +1815,11 @@ namespace AntDeploy.Winform
                      var index = 0;
                      foreach (var server in serverList)
                      {
-                        if (index != 0)//因为编译和打包只会占用第一台服务器的时间
-                        {
-                             BuildEnd(this.tabPage_windows_service,server.Host);
+                         if (index != 0)//因为编译和打包只会占用第一台服务器的时间
+                         {
+                             BuildEnd(this.tabPage_windows_service, server.Host);
                              UpdatePackageProgress(this.tabPage_windows_service, server.Host, 100);
-                        }
+                         }
 
                          if (string.IsNullOrEmpty(server.Token))
                          {
@@ -1856,7 +1872,7 @@ namespace AntDeploy.Winform
                                          {
                                              this.nlog_windowservice.Info($"【Server】{receiveMsg}");
                                          }
-                                         
+
                                      }
                                  }
                              }, HttpLogger);
@@ -1865,7 +1881,7 @@ namespace AntDeploy.Winform
 
                              var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/publish",
                                  (client) => { client.UploadProgressChanged += ClientOnUploadProgressChanged2; });
-                              if(ProgressPercentageForWindowsService<100) UpdateUploadProgress(this.tabPage_windows_service,ProgressCurrentHostForWindowsService, 100);//结束上传
+                             if (ProgressPercentageForWindowsService < 100) UpdateUploadProgress(this.tabPage_windows_service, ProgressCurrentHostForWindowsService, 100);//结束上传
 
                              if (haveError)
                              {
@@ -1881,17 +1897,17 @@ namespace AntDeploy.Winform
                                  }
                                  else
                                  {
-                                     this.nlog_windowservice.Error( $"Host:{server.Host},Response:{uploadResult.Item2},Skip to Next");
+                                     this.nlog_windowservice.Error($"Host:{server.Host},Response:{uploadResult.Item2},Skip to Next");
                                      UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
                                  }
                              }
-                            
+
                          }
                          catch (Exception ex)
                          {
                              this.nlog_windowservice.Error(
                                  $"Fail Deploy,Host:{server.Host},Response:{ex.Message},Skip to Next");
-                             UpdateDeployProgress(this.tabPage_windows_service,server.Host, false);
+                             UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
                          }
                          finally
                          {
@@ -1961,26 +1977,26 @@ namespace AntDeploy.Winform
         }
         private void DeployConfigOnEnvChangeEvent(Env changeEnv, bool isServerChange)
         {
-        
-            var item1 = this.combo_iis_env.SelectedItem as string ;
-            var item2 = this.combo_windowservice_env.SelectedItem as string ;
-            var item3 = this.combo_docker_env.SelectedItem as string ;
+
+            var item1 = this.combo_iis_env.SelectedItem as string;
+            var item2 = this.combo_windowservice_env.SelectedItem as string;
+            var item3 = this.combo_docker_env.SelectedItem as string;
             if (isServerChange)
             {
-               
-                if(!string.IsNullOrEmpty(item1) && item1.Equals(changeEnv.Name))
+
+                if (!string.IsNullOrEmpty(item1) && item1.Equals(changeEnv.Name))
                 {
-                    combo_iis_env_SelectedIndexChanged(null,null);
+                    combo_iis_env_SelectedIndexChanged(null, null);
                 }
-                
-                if(!string.IsNullOrEmpty(item2) && item2.Equals(changeEnv.Name))
+
+                if (!string.IsNullOrEmpty(item2) && item2.Equals(changeEnv.Name))
                 {
-                    combo_windowservice_env_SelectedIndexChanged(null,null);
+                    combo_windowservice_env_SelectedIndexChanged(null, null);
                 }
-                
-                if(!string.IsNullOrEmpty(item3) && item3.Equals(changeEnv.Name))
+
+                if (!string.IsNullOrEmpty(item3) && item3.Equals(changeEnv.Name))
                 {
-                    combo_docker_env_SelectedIndexChanged(null,null);
+                    combo_docker_env_SelectedIndexChanged(null, null);
                 }
 
                 return;
@@ -2001,13 +2017,13 @@ namespace AntDeploy.Winform
                 //重新选中原来的
                 if (!string.IsNullOrEmpty(item1))
                 {
-                    if(this.combo_iis_env.Items.Cast<string>().Contains(item1))
+                    if (this.combo_iis_env.Items.Cast<string>().Contains(item1))
                     {
                         this.combo_iis_env.SelectedItem = item1;
                     }
                     else
                     {
-                        combo_iis_env_SelectedIndexChanged(null,null);
+                        combo_iis_env_SelectedIndexChanged(null, null);
                     }
                 }
                 if (!string.IsNullOrEmpty(item2))
@@ -2018,9 +2034,9 @@ namespace AntDeploy.Winform
                     }
                     else
                     {
-                         combo_windowservice_env_SelectedIndexChanged(null,null);
+                        combo_windowservice_env_SelectedIndexChanged(null, null);
                     }
-                     
+
                 }
                 if (!string.IsNullOrEmpty(item3))
                 {
@@ -2030,12 +2046,12 @@ namespace AntDeploy.Winform
                     }
                     else
                     {
-                        combo_docker_env_SelectedIndexChanged(null,null);
+                        combo_docker_env_SelectedIndexChanged(null, null);
                     }
-                    
+
                 }
-                
-                    
+
+
             }
 
         }
@@ -2057,6 +2073,39 @@ namespace AntDeploy.Winform
                         if (DeployConfig.IgnoreList == null) DeployConfig.IgnoreList = new List<string>();
                     }
                 }
+            }
+        }
+
+        private void ReadPluginConfig(string projectPath)
+        {
+            if (string.IsNullOrEmpty(projectPath))
+            {
+                PluginConfig = new PluginConfig();
+            }
+
+            if (File.Exists(projectPath))
+            {
+                var config = File.ReadAllText(projectPath, Encoding.UTF8);
+                if (!string.IsNullOrEmpty(config))
+                {
+                    try
+                    {
+                        PluginConfig = JsonConvert.DeserializeObject<PluginConfig>(config);
+                    }
+                    catch (Exception)
+                    {
+                        //ignore
+                    }
+                    if (PluginConfig == null) PluginConfig = new PluginConfig();
+                }
+                else
+                {
+                    if (PluginConfig == null) PluginConfig = new PluginConfig();
+                }
+            }
+            else
+            {
+                PluginConfig = new PluginConfig();
             }
         }
 
@@ -2175,7 +2224,7 @@ namespace AntDeploy.Winform
                 return;
             }
 
-            combo_docker_env_SelectedIndexChanged(null,null);
+            combo_docker_env_SelectedIndexChanged(null, null);
 
             this.rich_docker_log.Text = "";
             this.nlog_docker.Info($"The Porject ENTRYPOINT name:{ENTRYPOINT}");
@@ -2183,20 +2232,21 @@ namespace AntDeploy.Winform
             new Task(async () =>
             {
                 this.nlog_docker.Info("Start publish");
+                PrintCommonLog(this.nlog_docker);
                 EnableForDocker(false);
 
                 try
                 {
                     var publishLog = new List<string>();
-                     //执行 publish
-                     var isSuccess = CommandHelper.RunDotnetExternalExe(ProjectFolderPath, "dotnet",
-                        "publish -c Release",
-                        (r) =>
-                        {
-                            this.nlog_docker.Info(r);
-                            publishLog.Add(r);
-                        },
-                        (er) => this.nlog_docker.Error(er));
+                    //执行 publish
+                    var isSuccess = CommandHelper.RunDotnetExternalExe(ProjectFolderPath, "dotnet",
+                       "publish -c Release",
+                       (r) =>
+                       {
+                           this.nlog_docker.Info(r);
+                           publishLog.Add(r);
+                       },
+                       (er) => this.nlog_docker.Error(er));
 
                     if (!isSuccess)
                     {
@@ -2248,7 +2298,7 @@ namespace AntDeploy.Winform
 
 
 
-                     //执行 打包
+                    //执行 打包
                     this.nlog_docker.Info("Start package");
                     MemoryStream zipBytes;
                     try
@@ -2257,7 +2307,7 @@ namespace AntDeploy.Winform
                             DeployConfig.IgnoreList,
                             (progressValue) =>
                             {
-                                UpdatePackageProgress(this.tabPage_docker,null, progressValue);//打印打包记录
+                                UpdatePackageProgress(this.tabPage_docker, null, progressValue);//打印打包记录
                             });
                     }
                     catch (Exception ex)
@@ -2275,7 +2325,7 @@ namespace AntDeploy.Winform
                     }
 
                     this.nlog_docker.Info("package success");
-                     //执行 上传
+                    //执行 上传
                     this.nlog_docker.Info("Deploy Start");
                     var index = 0;
                     foreach (var server in serverList)
@@ -2312,17 +2362,18 @@ namespace AntDeploy.Winform
                             UploadError(this.tabPage_docker);
                             continue;
                         }
-                         #endregion
+                        #endregion
 
-                        
+
 
                         zipBytes.Seek(0, SeekOrigin.Begin);
                         using (SSHClient sshClient = new SSHClient(server.Host, server.UserName, pwd, (str) =>
                            {
-                            this.nlog_docker.Info("【Server】" + str);
-                        },(uploadValue)=>{
-                                UpdateUploadProgress( this.tabPage_docker,server.Host,uploadValue);
-                        })
+                               this.nlog_docker.Info("【Server】" + str);
+                           }, (uploadValue) =>
+                           {
+                               UpdateUploadProgress(this.tabPage_docker, server.Host, uploadValue);
+                           })
                         {
                             NetCoreENTRYPOINT = ENTRYPOINT,
                             NetCoreVersion = SDKVersion,
@@ -2341,14 +2392,14 @@ namespace AntDeploy.Winform
                             try
                             {
                                 sshClient.PublishZip(zipBytes, "publisher", "publish.zip");
-                                UpdateUploadProgress(this.tabPage_docker,server.Host, 100);
-                                UpdateDeployProgress(this.tabPage_docker,server.Host,true);
+                                UpdateUploadProgress(this.tabPage_docker, server.Host, 100);
+                                UpdateDeployProgress(this.tabPage_docker, server.Host, true);
                                 this.nlog_docker.Info($"publish Host: {server.Host} End");
                             }
                             catch (Exception ex)
                             {
                                 this.nlog_docker.Error($"Deploy Host:{server.Host} Fail:" + ex.Message);
-                                UpdateDeployProgress(this.tabPage_docker,server.Host,false);
+                                UpdateDeployProgress(this.tabPage_docker, server.Host, false);
                             }
                         }
 
@@ -2418,7 +2469,7 @@ namespace AntDeploy.Winform
             {
                 DeployConfig.DockerConfig.LastEnvName = selectName;
 
-                 //生成进度
+                //生成进度
                 if (this.tabPage_docker.Tag is Dictionary<string, ProgressBox> progressBoxList)
                 {
                     foreach (var box in progressBoxList)
@@ -2428,7 +2479,7 @@ namespace AntDeploy.Winform
                     }
                 }
 
-                var newBoxList = new Dictionary<string,ProgressBox>();
+                var newBoxList = new Dictionary<string, ProgressBox>();
 
                 var serverList = DeployConfig.Env.Where(r => r.Name.Equals(selectName)).Select(r => r.LinuxServerList)
                 .FirstOrDefault();
@@ -2448,7 +2499,7 @@ namespace AntDeploy.Winform
                         Text = serverHost,
                     };
 
-                    newBoxList.Add(serverHost,newBox);
+                    newBoxList.Add(serverHost, newBox);
                     this.tabPage_docker.Controls.Add(newBox);
                 }
 
@@ -2468,12 +2519,21 @@ namespace AntDeploy.Winform
             }
         }
 
+        private void PrintCommonLog(Logger log)
+        {
+            var vsVersion = ProjectHelper.GetVsVersion();
+            if (!string.IsNullOrEmpty(vsVersion))
+            {
+                log.Info("Visual Studio Version : " + vsVersion);
+            }
 
+
+        }
         #endregion
 
-      
 
 
-      
+
+
     }
 }

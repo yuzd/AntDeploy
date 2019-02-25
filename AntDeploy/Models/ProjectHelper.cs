@@ -11,10 +11,12 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
+using System.Globalization;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
 using System.Text.RegularExpressions;
+using Microsoft.Win32;
 
 namespace AntDeploy.Models
 {
@@ -151,6 +153,66 @@ namespace AntDeploy.Models
             return hierarchy.IsCapabilityMatch("CPS");
         }
 
+
+        public static string GetVsVersion()
+        {
+            try
+            {
+                return EditProjectPackage.DTE.Version;
+            }
+            catch (Exception)
+            {
+                return String.Empty;
+            }
+        }
+
+        public static string GetPluginInstallPath()
+        {
+            try
+            {
+                var consoleAssemblyLocation = new Uri(typeof(ProjectHelper).Assembly.CodeBase);
+                var file = new FileInfo(consoleAssemblyLocation.LocalPath);
+                if (file.Exists)
+                {
+                    return file.Directory.FullName;
+                }
+                return string.Empty;
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+        }
+
+        public static string GetPluginConfigPath()
+        {
+            try
+            {
+                var path =GetPluginInstallPath();
+                if (!string.IsNullOrEmpty(path))
+                {
+                    var i = 0;
+                    var r = new DirectoryInfo(path);
+                    while (r!=null && !r.Name.ToLower().Equals("antdeploy"))
+                    {
+                        r = r.Parent;
+                        i++;
+                        if (i >= 6) return string.Empty;
+                    }
+
+                    if (r != null)
+                    {
+                        return Path.Combine(r.FullName, "config.json");
+                    }
+                }
+                return string.Empty;
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+        }
+        
 
         public const string SolutionItemsFolder = "Solution Items";
 

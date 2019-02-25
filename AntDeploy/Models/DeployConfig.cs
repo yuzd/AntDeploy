@@ -2,6 +2,11 @@
 
 namespace AntDeploy.Models
 {
+    public class PluginConfig
+    {
+        public int LastTabIndex { get; set; }
+    }
+
     public delegate void EnvChange(Env env,bool isServerChange);
     public class DeployConfig
     {
@@ -36,7 +41,6 @@ namespace AntDeploy.Models
         public WindowsServiveConfig WindowsServiveConfig { get; set; } = new WindowsServiveConfig();
         public DockerConfig DockerConfig { get; set; } = new DockerConfig();
 
-        public int LastTabIndex { get; set; }
     }
 
     public class IIsConfig
