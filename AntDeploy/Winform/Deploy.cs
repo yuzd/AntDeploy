@@ -232,7 +232,7 @@ namespace AntDeploy.Winform
             }
 
             this.checkBox_Increment_iis.Checked = PluginConfig.IISEnableIncrement;
-            this.checkBox_Increment_window_service.Checked = PluginConfig.IISEnableIncrement;
+            this.checkBox_Increment_window_service.Checked = PluginConfig.WindowsServiceEnableIncrement;
 
 
             this.txt_env_server_host.Text = string.Empty;
