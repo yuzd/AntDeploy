@@ -16,6 +16,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
 using System.Text.RegularExpressions;
+using AntDeploy.Util;
 using Microsoft.Win32;
 
 namespace AntDeploy.Models
@@ -184,14 +185,20 @@ namespace AntDeploy.Models
             }
         }
 
-        public static string GetPluginConfigPath()
+        public static string GetPluginConfigPath(string projectName = null)
         {
             try
             {
                 var path =Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                if (!string.IsNullOrEmpty(path))
+                var folderName = Path.Combine(path, "AntDeploy");
+                if (!string.IsNullOrEmpty(folderName))
                 {
-                    return Path.Combine(path, "AntDeploy.json");
+                    if (!Directory.Exists(folderName))
+                    {
+                        Directory.CreateDirectory(folderName);
+                    }
+
+                    return Path.Combine(folderName, string.IsNullOrEmpty(projectName)? "AntDeploy.json": CodingHelper.MD5(projectName) + ".json");
                 }
                 return string.Empty;
             }

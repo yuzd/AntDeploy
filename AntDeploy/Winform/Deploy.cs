@@ -119,7 +119,7 @@ namespace AntDeploy.Winform
             RichLogInit();
             #endregion
 
-            PluginConfigPath = ProjectHelper.GetPluginConfigPath();
+            PluginConfigPath = ProjectHelper.GetPluginConfigPath(projectPath);
             ReadPluginConfig(PluginConfigPath);
         }
 
@@ -949,6 +949,8 @@ namespace AntDeploy.Winform
                 PrintCommonLog(this.nlog_iis);
                 Enable(false);//第一台开始编译
                 GitHelper gitModel = null;
+                var gitPath = string.Empty;
+                var webFolderName = string.Empty;
                 try
                 {
                     var isNetcore = false;
@@ -1015,12 +1017,14 @@ namespace AntDeploy.Winform
                             var webPublishPath = Path.Combine(publishPath, "_PublishedWebsites");
                             if (Directory.Exists(webPublishPath))
                             {
+                                gitPath = webPublishPath;
                                 var webPublishFolder = new DirectoryInfo(webPublishPath);
-                                var targetFolder = webPublishFolder.GetDirectories().FirstOrDefault();
+                                var targetFolder = webPublishFolder.GetDirectories().FirstOrDefault(r => !r.Name.Equals(".git"));
                                 if (targetFolder != null)
                                 {
                                     //targetFolder.MoveTo(Path.Combine(targetFolder.Parent.FullName, "publish"));
                                     publishPath = targetFolder.FullName;
+                                    webFolderName = targetFolder.Name;
                                 }
                             }
                         }
@@ -1054,7 +1058,15 @@ namespace AntDeploy.Winform
                     if (this.PluginConfig.IISEnableIncrement)
                     {
                         this.nlog_iis.Info("Enable Increment Deploy:true");
-                        gitModel = new GitHelper(publishPath, this.nlog_iis);
+                        if (string.IsNullOrEmpty(gitPath))
+                        {
+                            gitModel = new GitHelper(publishPath, this.nlog_iis);
+                        }
+                        else
+                        {
+                            gitModel = new GitHelper(gitPath, this.nlog_iis);
+                        }
+                       
                         if (!gitModel.InitSuccess)
                         {
                             this.nlog_iis.Error("package fail,can not init git,please cancel Increment Deploy");
@@ -1068,6 +1080,11 @@ namespace AntDeploy.Winform
                     if (gitModel != null)
                     {
                         var fileList = gitModel.GetChanges();
+                        if (!string.IsNullOrEmpty(gitPath) && !string.IsNullOrEmpty(webFolderName))
+                        {
+                            var removeLength = (webFolderName + "/").Length;
+                            fileList = fileList.Where(r => r.StartsWith(webFolderName + "/")).Select(r=>r.Substring(removeLength)).ToList();
+                        }
                         if (fileList == null || fileList.Count < 1)
                         {
                             PackageError(this.tabPage_progress);

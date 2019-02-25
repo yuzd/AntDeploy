@@ -12,9 +12,11 @@ namespace AntDeploy.Util
         private readonly Logger _logger;
         private Repository _repository;
         private readonly string _projectPath;
-        public GitHelper(string projectPath, Logger logger) : this(projectPath)
+        public GitHelper(string projectPath, Logger logger) 
         {
             _logger = logger;
+            _projectPath = projectPath;
+            CreateGit(_projectPath);
         }
 
         public GitHelper(string projectPath)
@@ -57,7 +59,7 @@ namespace AntDeploy.Util
                 var path2 = Path.Combine(path, ".git");
                 if (Directory.Exists(path2))
                 {
-                    _logger?.Info("【git】creare git Repository is already created!");
+                    _logger?.Info("【git】create git Repository is already created!");
                     _repository = new Repository(_projectPath);
                     InitSuccess = true;
                     return true;
@@ -66,7 +68,7 @@ namespace AntDeploy.Util
                 string rootedPath = Repository.Init(path);
                 if (!string.IsNullOrEmpty(rootedPath))
                 {
-                    _logger?.Info("【git】creare git Repository success :" + path);
+                    _logger?.Info("【git】create git Repository success :" + path);
                     _repository = new Repository(_projectPath);
 
                     CommitChanges("first init");
@@ -85,11 +87,12 @@ namespace AntDeploy.Util
 
         public void SubmitChanges()
         {
+            _logger?.Info("【git】commit start");
             try
             {
                 StageIgnoreFile();
 
-                LibGit2Sharp.Commands.Stage(_repository, "*");
+               LibGit2Sharp.Commands.Stage(_repository, "*");
             }
             catch (Exception ex1)
             {
@@ -97,7 +100,7 @@ namespace AntDeploy.Util
             }
 
             CommitChanges(DateTime.Now.ToString("yyyyMMddHHmms"));
-
+            _logger?.Info("【git】commit success");
         }
 
 
