@@ -1073,7 +1073,7 @@ namespace AntDeploy.Winform
                             PackageError(this.tabPage_progress);
                             return;
                         }
-
+                        this.nlog_iis.Info("【git】Increment package file count:" + fileList.Count);
                         try
                         {
                             zipBytes = ZipHelper.DoCreateFromDirectory(publishPath,fileList, CompressionLevel.Optimal, true, DeployConfig.IgnoreList,
@@ -1868,7 +1868,7 @@ namespace AntDeploy.Winform
                              PackageError(this.tabPage_windows_service);
                              return;
                          }
-
+                         this.nlog_windowservice.Info("【git】Increment package file count:" + fileList.Count);
                          try
                          {
                              zipBytes = ZipHelper.DoCreateFromDirectory(publishPath,fileList, CompressionLevel.Optimal, true,

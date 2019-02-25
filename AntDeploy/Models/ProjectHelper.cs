@@ -188,22 +188,10 @@ namespace AntDeploy.Models
         {
             try
             {
-                var path =GetPluginInstallPath();
+                var path =Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
                 if (!string.IsNullOrEmpty(path))
                 {
-                    var i = 0;
-                    var r = new DirectoryInfo(path);
-                    while (r!=null && !r.Name.ToLower().Equals("antdeploy"))
-                    {
-                        r = r.Parent;
-                        i++;
-                        if (i >= 6) return string.Empty;
-                    }
-
-                    if (r != null)
-                    {
-                        return Path.Combine(r.FullName, "config.json");
-                    }
+                    return Path.Combine(path, "AntDeploy.json");
                 }
                 return string.Empty;
             }
