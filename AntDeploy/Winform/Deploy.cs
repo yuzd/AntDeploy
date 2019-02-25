@@ -231,8 +231,8 @@ namespace AntDeploy.Winform
                 this.tabcontrol.SelectedIndex = PluginConfig.LastTabIndex;
             }
 
-
-
+            this.checkBox_Increment_iis.Checked = PluginConfig.IISEnableIncrement;
+            this.checkBox_Increment_window_service.Checked = PluginConfig.IISEnableIncrement;
 
 
             this.txt_env_server_host.Text = string.Empty;
@@ -284,6 +284,8 @@ namespace AntDeploy.Winform
         private void Deploy_FormClosing(object sender, FormClosingEventArgs e)
         {
             PluginConfig.LastTabIndex = this.tabcontrol.SelectedIndex;
+            PluginConfig.IISEnableIncrement = this.checkBox_Increment_iis.Checked;
+            PluginConfig.WindowsServiceEnableIncrement = this.checkBox_Increment_window_service.Checked;
 
             DeployConfig.IIsConfig.WebSiteName = this.txt_iis_web_site_name.Text.Trim();
 
@@ -946,6 +948,7 @@ namespace AntDeploy.Winform
                 this.nlog_iis.Info("Start publish");
                 PrintCommonLog(this.nlog_iis);
                 Enable(false);//第一台开始编译
+                GitHelper gitModel = null;
                 try
                 {
                     var isNetcore = false;
@@ -1046,21 +1049,65 @@ namespace AntDeploy.Winform
 
                     //执行 打包
                     this.nlog_iis.Info("Start package");
-                    byte[] zipBytes;
-                    try
+                    
+                    //查看是否开启了增量
+                    if (this.PluginConfig.IISEnableIncrement)
                     {
-                        zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, CompressionLevel.Optimal, true, DeployConfig.IgnoreList,
-                            (progressValue) =>
-                            {
-                                UpdatePackageProgress(this.tabPage_progress, null, progressValue);//打印打包记录
+                        this.nlog_iis.Info("Enable Increment Deploy:true");
+                        gitModel = new GitHelper(publishPath, this.nlog_iis);
+                        if (!gitModel.InitSuccess)
+                        {
+                            this.nlog_iis.Error("package fail,can not init git,please cancel Increment Deploy");
+                            PackageError(this.tabPage_progress);
+                            return;
+                        }
+                    }
+
+                    byte[] zipBytes = null;
+
+                    if (gitModel != null)
+                    {
+                        var fileList = gitModel.GetChanges();
+                        if (fileList == null || fileList.Count < 1)
+                        {
+                            PackageError(this.tabPage_progress);
+                            return;
+                        }
+
+                        try
+                        {
+                            zipBytes = ZipHelper.DoCreateFromDirectory(publishPath,fileList, CompressionLevel.Optimal, true, DeployConfig.IgnoreList,
+                                (progressValue) =>
+                                {
+                                    UpdatePackageProgress(this.tabPage_progress, null, progressValue);//打印打包记录
+                                });
+                        }
+                        catch (Exception ex)
+                        {
+                            this.nlog_iis.Error("package fail:" + ex.Message);
+                            PackageError(this.tabPage_progress);
+                            return;
+                        }
+                    }
+                    else
+                    {
+
+                        try
+                        {
+                            zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, CompressionLevel.Optimal, true, DeployConfig.IgnoreList,
+                                (progressValue) =>
+                                {
+                                    UpdatePackageProgress(this.tabPage_progress, null, progressValue);//打印打包记录
                             });
+                        }
+                        catch (Exception ex)
+                        {
+                            this.nlog_iis.Error("package fail:" + ex.Message);
+                            PackageError(this.tabPage_progress);
+                            return;
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        this.nlog_iis.Error("package fail:" + ex.Message);
-                        PackageError(this.tabPage_progress);
-                        return;
-                    }
+
 
                     if (zipBytes == null || zipBytes.Length < 1)
                     {
@@ -1073,6 +1120,7 @@ namespace AntDeploy.Winform
                     //执行 上传
                     this.nlog_iis.Info("Deploy Start");
                     var index = 0;
+                    var allSuccess = true;
                     foreach (var server in serverList)
                     {
                         if (index != 0)//因为编译和打包只会占用第一台服务器的时间
@@ -1085,6 +1133,7 @@ namespace AntDeploy.Winform
                         {
                             this.nlog_iis.Warn($"{server.Host} Deploy skip,Token is null or empty!");
                             UploadError(this.tabPage_progress, server.Host);
+                            allSuccess = false;
                             continue;
                         }
 
@@ -1145,6 +1194,7 @@ namespace AntDeploy.Winform
 
                             if (haveError)
                             {
+                                allSuccess = false;
                                 this.nlog_iis.Error($"Host:{server.Host},Deploy Fail,Skip to Next");
                                 UpdateDeployProgress(this.tabPage_progress, server.Host, false);
                             }
@@ -1158,6 +1208,7 @@ namespace AntDeploy.Winform
                                 }
                                 else
                                 {
+                                    allSuccess = false;
                                     this.nlog_iis.Error($"Host:{server.Host},Response:{uploadResult.Item2},Skip to Next");
                                     UpdateDeployProgress(this.tabPage_progress, server.Host, false);
                                 }
@@ -1180,6 +1231,10 @@ namespace AntDeploy.Winform
                         index++;
                     }
                     //交互
+                    if (allSuccess && gitModel!=null)
+                    {
+                        gitModel.SubmitChanges();
+                    }
                 }
                 catch (Exception ex1)
                 {
@@ -1190,6 +1245,7 @@ namespace AntDeploy.Winform
                     ProgressPercentage = 0;
                     ProgressCurrentHost = null;
                     Enable(true);
+                    gitModel?.Dispose();
                 }
 
 
@@ -1407,6 +1463,10 @@ namespace AntDeploy.Winform
             });
         }
 
+        private void checkBox_Increment_iis_CheckedChanged(object sender, EventArgs e)
+        {
+            PluginConfig.IISEnableIncrement = checkBox_Increment_iis.Checked;
+        }
         #endregion
 
         #region windowsService page
@@ -1650,7 +1710,7 @@ namespace AntDeploy.Winform
                  this.nlog_windowservice.Info("Start publish");
                  PrintCommonLog(this.nlog_windowservice);
                  EnableForWindowsService(false);//第一台开始编译
-
+                 GitHelper gitModel = null;
                  try
                  {
                      var isNetcore = false;
@@ -1784,22 +1844,66 @@ namespace AntDeploy.Winform
 
                      //执行 打包
                      this.nlog_windowservice.Info("Start package");
-                     byte[] zipBytes;
-                     try
+
+                    
+                     //查看是否开启了增量
+                     if (this.PluginConfig.WindowsServiceEnableIncrement)
                      {
-                         zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, CompressionLevel.Optimal, true,
-                             DeployConfig.IgnoreList,
-                            (progressValue) =>
-                            {
-                                UpdatePackageProgress(this.tabPage_windows_service, null, progressValue);//打印打包记录
-                            });
+                         this.nlog_windowservice.Info("Enable Increment Deploy:true");
+                         gitModel = new GitHelper(publishPath, this.nlog_windowservice);
+                         if (!gitModel.InitSuccess)
+                         {
+                             this.nlog_windowservice.Error("package fail,can not init git,please cancel Increment Deploy");
+                             PackageError(this.tabPage_windows_service);
+                             return;
+                         }
                      }
-                     catch (Exception ex)
+
+                     byte[] zipBytes = null;
+                     if (gitModel != null)
                      {
-                         this.nlog_windowservice.Error("package fail:" + ex.Message);
-                         PackageError(this.tabPage_windows_service);
-                         return;
+                         var fileList = gitModel.GetChanges();
+                         if (fileList == null || fileList.Count < 1)
+                         {
+                             PackageError(this.tabPage_windows_service);
+                             return;
+                         }
+
+                         try
+                         {
+                             zipBytes = ZipHelper.DoCreateFromDirectory(publishPath,fileList, CompressionLevel.Optimal, true,
+                                 DeployConfig.IgnoreList,
+                                 (progressValue) =>
+                                 {
+                                     UpdatePackageProgress(this.tabPage_windows_service, null, progressValue);//打印打包记录
+                                 });
+                         }
+                         catch (Exception ex)
+                         {
+                             this.nlog_windowservice.Error("package fail:" + ex.Message);
+                             PackageError(this.tabPage_windows_service);
+                             return;
+                         }
                      }
+                     else
+                     {
+                         try
+                         {
+                             zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, CompressionLevel.Optimal, true,
+                                 DeployConfig.IgnoreList,
+                                 (progressValue) =>
+                                 {
+                                     UpdatePackageProgress(this.tabPage_windows_service, null, progressValue);//打印打包记录
+                                 });
+                         }
+                         catch (Exception ex)
+                         {
+                             this.nlog_windowservice.Error("package fail:" + ex.Message);
+                             PackageError(this.tabPage_windows_service);
+                             return;
+                         }
+                     }
+                    
 
                      if (zipBytes == null || zipBytes.Length < 1)
                      {
@@ -1813,6 +1917,7 @@ namespace AntDeploy.Winform
                      //执行 上传
                      this.nlog_windowservice.Info("Deploy Start");
                      var index = 0;
+                     var allSuccess = true;
                      foreach (var server in serverList)
                      {
                          if (index != 0)//因为编译和打包只会占用第一台服务器的时间
@@ -1825,6 +1930,7 @@ namespace AntDeploy.Winform
                          {
                              this.nlog_windowservice.Warn($"{server.Host} Deploy skip,Token is null or empty!");
                              UploadError(this.tabPage_windows_service, server.Host);
+                             allSuccess = false;
                              continue;
                          }
 
@@ -1885,6 +1991,7 @@ namespace AntDeploy.Winform
 
                              if (haveError)
                              {
+                                 allSuccess = false;
                                  this.nlog_windowservice.Error($"Host:{server.Host},Deploy Fail,Skip to Next");
                                  UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
                              }
@@ -1897,6 +2004,7 @@ namespace AntDeploy.Winform
                                  }
                                  else
                                  {
+                                     allSuccess = false;
                                      this.nlog_windowservice.Error($"Host:{server.Host},Response:{uploadResult.Item2},Skip to Next");
                                      UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
                                  }
@@ -1919,6 +2027,10 @@ namespace AntDeploy.Winform
                      }
 
                      //交互
+                     if (allSuccess && gitModel!=null)
+                     {
+                         gitModel.SubmitChanges();
+                     }
                  }
                  catch (Exception ex1)
                  {
@@ -1929,6 +2041,7 @@ namespace AntDeploy.Winform
                      ProgressPercentageForWindowsService = 0;
                      ProgressCurrentHostForWindowsService = null;
                      EnableForWindowsService(true);
+                     gitModel?.Dispose();
                  }
 
 
@@ -2136,6 +2249,11 @@ namespace AntDeploy.Winform
         {
             ProcessStartInfo sInfo = new ProcessStartInfo("https://github.com/yuzd/AntDeployAgent/issues/4");
             Process.Start(sInfo);
+        }
+
+        private void checkBox_Increment_window_service_CheckedChanged(object sender, EventArgs e)
+        {
+            PluginConfig.WindowsServiceEnableIncrement = checkBox_Increment_window_service.Checked;
         }
         #endregion
 
@@ -2529,10 +2647,11 @@ namespace AntDeploy.Winform
 
 
         }
+
+
+
+
         #endregion
-
-
-
 
 
     }

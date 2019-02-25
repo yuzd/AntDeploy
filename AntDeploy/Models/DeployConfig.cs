@@ -5,6 +5,8 @@ namespace AntDeploy.Models
     public class PluginConfig
     {
         public int LastTabIndex { get; set; }
+        public bool IISEnableIncrement { get; set; }
+        public bool WindowsServiceEnableIncrement { get; set; }
     }
 
     public delegate void EnvChange(Env env,bool isServerChange);

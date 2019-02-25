@@ -121,6 +121,8 @@
             this.txt_env_name = new System.Windows.Forms.TextBox();
             this.b_env_add_by_name = new System.Windows.Forms.Button();
             this.combo_env_list = new System.Windows.Forms.ComboBox();
+            this.checkBox_Increment_iis = new System.Windows.Forms.CheckBox();
+            this.checkBox_Increment_window_service = new System.Windows.Forms.CheckBox();
             this.tabcontrol.SuspendLayout();
             this.page_web_iis.SuspendLayout();
             this.tab_iis.SuspendLayout();
@@ -160,6 +162,7 @@
             // 
             // page_web_iis
             // 
+            this.page_web_iis.Controls.Add(this.checkBox_Increment_iis);
             this.page_web_iis.Controls.Add(this.label_iis_demo);
             this.page_web_iis.Controls.Add(this.label25);
             this.page_web_iis.Controls.Add(this.tab_iis);
@@ -310,7 +313,7 @@
             // 
             // b_iis_deploy
             // 
-            this.b_iis_deploy.Location = new System.Drawing.Point(419, 93);
+            this.b_iis_deploy.Location = new System.Drawing.Point(498, 97);
             this.b_iis_deploy.Name = "b_iis_deploy";
             this.b_iis_deploy.Size = new System.Drawing.Size(107, 43);
             this.b_iis_deploy.TabIndex = 9;
@@ -543,6 +546,7 @@
             // 
             // page_window_service
             // 
+            this.page_window_service.Controls.Add(this.checkBox_Increment_window_service);
             this.page_window_service.Controls.Add(this.label_windows_serivce_demo);
             this.page_window_service.Controls.Add(this.label26);
             this.page_window_service.Controls.Add(this.tabControl_window_service);
@@ -702,7 +706,7 @@
             // 
             // b_windowservice_deploy
             // 
-            this.b_windowservice_deploy.Location = new System.Drawing.Point(351, 67);
+            this.b_windowservice_deploy.Location = new System.Drawing.Point(511, 67);
             this.b_windowservice_deploy.Name = "b_windowservice_deploy";
             this.b_windowservice_deploy.Size = new System.Drawing.Size(107, 43);
             this.b_windowservice_deploy.TabIndex = 14;
@@ -1113,6 +1117,28 @@
             this.combo_env_list.TabIndex = 0;
             this.combo_env_list.SelectedIndexChanged += new System.EventHandler(this.combo_env_list_SelectedIndexChanged);
             // 
+            // checkBox_Increment_iis
+            // 
+            this.checkBox_Increment_iis.AutoSize = true;
+            this.checkBox_Increment_iis.Location = new System.Drawing.Point(369, 94);
+            this.checkBox_Increment_iis.Name = "checkBox_Increment_iis";
+            this.checkBox_Increment_iis.Size = new System.Drawing.Size(120, 16);
+            this.checkBox_Increment_iis.TabIndex = 29;
+            this.checkBox_Increment_iis.Text = "Increment Deploy";
+            this.checkBox_Increment_iis.UseVisualStyleBackColor = true;
+            this.checkBox_Increment_iis.CheckedChanged += new System.EventHandler(this.checkBox_Increment_iis_CheckedChanged);
+            // 
+            // checkBox_Increment_window_service
+            // 
+            this.checkBox_Increment_window_service.AutoSize = true;
+            this.checkBox_Increment_window_service.Location = new System.Drawing.Point(361, 78);
+            this.checkBox_Increment_window_service.Name = "checkBox_Increment_window_service";
+            this.checkBox_Increment_window_service.Size = new System.Drawing.Size(120, 16);
+            this.checkBox_Increment_window_service.TabIndex = 30;
+            this.checkBox_Increment_window_service.Text = "Increment Deploy";
+            this.checkBox_Increment_window_service.UseVisualStyleBackColor = true;
+            this.checkBox_Increment_window_service.CheckedChanged += new System.EventHandler(this.checkBox_Increment_window_service_CheckedChanged);
+            // 
             // Deploy
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
@@ -1256,5 +1282,7 @@
         private System.Windows.Forms.Label label_windows_serivce_demo;
         private System.Windows.Forms.Label label_docker_demo;
         private System.Windows.Forms.Label label_iis_demo;
+        private System.Windows.Forms.CheckBox checkBox_Increment_iis;
+        private System.Windows.Forms.CheckBox checkBox_Increment_window_service;
     }
 }
