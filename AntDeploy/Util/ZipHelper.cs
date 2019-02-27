@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ICSharpCode.SharpZipLib.Tar;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -49,7 +50,7 @@ namespace AntDeploy.Util
                         }
                         else
                         {
-                            string foldPath = Path.Combine(folderPath, string.Join(Path.DirectorySeparatorChar.ToString(), fileArr.Take(i+1).ToList()));
+                            string foldPath = Path.Combine(folderPath, string.Join(Path.DirectorySeparatorChar.ToString(), fileArr.Take(i + 1).ToList()));
                             if (Directory.Exists(foldPath))
                             {
                                 if (dic.ContainsKey(foldPath))
@@ -370,6 +371,107 @@ namespace AntDeploy.Util
             return outStream;
         }
 
+
+        public static MemoryStream DoCreateTarFromDirectory(string sourceDirectory, List<string> ignoreList = null, Action<int> progress = null)
+        {
+            MemoryStream outputMemStream = new MemoryStream();
+            TarArchive tarArchive = TarArchive.CreateOutputTarArchive(outputMemStream);
+            tarArchive.RootPath = sourceDirectory.Replace('\\', '/');
+            if (tarArchive.RootPath.EndsWith("/"))
+                tarArchive.RootPath = tarArchive.RootPath.Remove(tarArchive.RootPath.Length - 1);
+
+            DirectoryInfo directoryInfo = new DirectoryInfo(sourceDirectory);
+            string fullName = directoryInfo.FullName;
+            var allFile = FindFileDir(sourceDirectory);
+            var allFileLength = allFile.Count();
+            var index = 0;
+
+            foreach (FileSystemInfo enumerateFileSystemInfo in allFile)
+            {
+                index++;
+                var lastProgressNumber = (((long)index * 100 / allFileLength));
+                progress?.Invoke((int)lastProgressNumber);
+
+                int length = enumerateFileSystemInfo.FullName.Length - fullName.Length;
+                string entryName = EntryFromPath(enumerateFileSystemInfo.FullName, fullName.Length, length);
+                if (ignoreList != null)
+                {
+                    var haveMatch = false;
+                    foreach (var ignorRule in ignoreList)
+                    {
+                        try
+                        {
+                            if (ignorRule.StartsWith("*"))
+                            {
+                                var ignorRule2 = ignorRule.Substring(1);
+                                if (entryName.EndsWith(ignorRule2))
+                                {
+                                    haveMatch = true;
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                var isMatch = Regex.Match(entryName, ignorRule, RegexOptions.IgnoreCase);//忽略大小写
+                                if (isMatch.Success)
+                                {
+                                    haveMatch = true;
+                                    break;
+                                }
+                            }
+
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new Exception($"Ignore Rule 【{ignorRule}】 regular error:" + ex.Message);
+                        }
+                    }
+
+                    if (haveMatch)
+                    {
+                        continue;
+                    }
+                }
+
+                if (enumerateFileSystemInfo is FileInfo)
+                {
+                    TarEntry tarEntry = TarEntry.CreateEntryFromFile(enumerateFileSystemInfo.FullName);
+                    tarArchive.WriteEntry(tarEntry, true);
+                }
+                else
+                {
+                    TarEntry tarEntry = TarEntry.CreateEntryFromFile(enumerateFileSystemInfo.FullName);
+                    tarArchive.WriteEntry(tarEntry, false);
+                }
+            }
+            tarArchive.IsStreamOwner = false;
+            tarArchive.Close();
+            outputMemStream.Position = 0;
+            return outputMemStream;
+        }
+
+        private static void AddDirectoryFilesToTar(TarArchive tarArchive, string sourceDirectory, bool recurse)
+        {
+            // Optionally, write an entry for the directory itself.
+            // Specify false for recursion here if we will add the directory's files individually.
+            TarEntry tarEntry = TarEntry.CreateEntryFromFile(sourceDirectory);
+            tarArchive.WriteEntry(tarEntry, false);
+
+            // Write each file to the tar.
+            string[] filenames = Directory.GetFiles(sourceDirectory);
+            foreach (string filename in filenames)
+            {
+                tarEntry = TarEntry.CreateEntryFromFile(filename);
+                tarArchive.WriteEntry(tarEntry, true);
+            }
+
+            if (recurse)
+            {
+                string[] directories = Directory.GetDirectories(sourceDirectory);
+                foreach (string directory in directories)
+                    AddDirectoryFilesToTar(tarArchive, directory, recurse);
+            }
+        }
         internal static ZipArchiveEntry DoCreateEntryFromFile(
             ZipArchive destination,
             string sourceFileName,

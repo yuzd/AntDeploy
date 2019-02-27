@@ -116,12 +116,14 @@ namespace AntDeploy.Util
                 _sftpClient.Delete(destinationFolder + fileName);
             }
 
+            var publishUnzipFolder = destinationFolder + "publish";
             //删除发布文件夹
-            if (_sftpClient.Exists(destinationFolder + "publish"))
+            if (_sftpClient.Exists(publishUnzipFolder))
             {
-                DeleteDirectory(destinationFolder + "publish");
+                DeleteDirectory(publishUnzipFolder);
             }
 
+             CreateServerDirectoryIfItDoesntExist(publishUnzipFolder+"/");
 
 
             var changeTo = destinationFolder;
@@ -173,7 +175,7 @@ namespace AntDeploy.Util
         {
             if (!destinationFolder.EndsWith("/")) destinationFolder = destinationFolder + "/";
 
-            destinationFolder = destinationFolder + PorjectName + "/";
+            destinationFolder = destinationFolder + PorjectName + "/" + DateTime.Now.ToString("yyyyMMddHHmmss") + "/";
 
             Upload(stream, destinationFolder, destinationfileName);
 
@@ -183,22 +185,22 @@ namespace AntDeploy.Util
                 return;
             }
 
-            _logger($"unzip -q {destinationFolder + destinationfileName}", NLog.LogLevel.Info);
-            var unzipresult = _sshClient.RunCommand($"cd {destinationFolder} && unzip -q {destinationfileName}");
+            _logger($"tar -xf {destinationFolder + destinationfileName} -C publish", NLog.LogLevel.Info);
+            var unzipresult = _sshClient.RunCommand($"cd {destinationFolder} && tar -xf {destinationfileName} -C publish");
             if (unzipresult.ExitStatus != 0)
             {
-                _logger($"excute unzip error,return status is not 0", NLog.LogLevel.Error);
-                _logger($"please check 【unzip】 is installed in your server!", NLog.LogLevel.Error);
+                _logger($"excute tar command error,return status is not 0", NLog.LogLevel.Error);
+                _logger($"please check 【tar】 is installed in your server!", NLog.LogLevel.Error);
                 return;
             }
             var publishFolder = $"{destinationFolder}publish/";
             var publishFolder2 = $"publish";
             if (!_sftpClient.Exists(publishFolder2))
             {
-                _logger($"unzip fail: {publishFolder}", NLog.LogLevel.Error);
+                _logger($"tar fail: {publishFolder}", NLog.LogLevel.Error);
                 return;
             }
-            _logger($"unzip success: {publishFolder}", NLog.LogLevel.Info);
+            _logger($"tar success: {publishFolder}", NLog.LogLevel.Info);
             //_sftpClient.ChangeDirectory(publishFolder);
             //_logger($"Changed directory to {publishFolder}");
 

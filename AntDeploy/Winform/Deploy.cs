@@ -2447,7 +2447,7 @@ namespace AntDeploy.Winform
                     MemoryStream zipBytes;
                     try
                     {
-                        zipBytes = ZipHelper.DoCreateFromDirectory2(publishPath, CompressionLevel.Optimal, true,
+                        zipBytes = ZipHelper.DoCreateTarFromDirectory(publishPath,
                             DeployConfig.IgnoreList,
                             (progressValue) =>
                             {
@@ -2543,7 +2543,7 @@ namespace AntDeploy.Winform
 
                             try
                             {
-                                sshClient.PublishZip(zipBytes, "publisher", "publish.zip");
+                                sshClient.PublishZip(zipBytes, "publisher", "publish.tar");
                                 UpdateUploadProgress(this.tabPage_docker, server.Host, 100);
                                 UpdateDeployProgress(this.tabPage_docker, server.Host, !hasError);
                                 this.nlog_docker.Info($"publish Host: {server.Host} End");
