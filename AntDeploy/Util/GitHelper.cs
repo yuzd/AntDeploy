@@ -59,7 +59,7 @@ namespace AntDeploy.Util
                 var path2 = Path.Combine(path, ".git");
                 if (Directory.Exists(path2))
                 {
-                    _logger?.Info("【git】create git Repository is already created!");
+                    _logger?.Info("【git】 git Repository is already created!");
                     _repository = new Repository(_projectPath);
                     InitSuccess = true;
                     return true;

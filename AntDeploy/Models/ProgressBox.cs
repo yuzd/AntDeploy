@@ -15,12 +15,11 @@ namespace AntDeploy.Models
         public ProgressBox(System.Drawing.Point location)
         {
 
-
+            
             this.Location = location;
 
             this.Size = new System.Drawing.Size(546, 100);
             this.TabStop = false;
-
             this.SuspendLayout();
 
 

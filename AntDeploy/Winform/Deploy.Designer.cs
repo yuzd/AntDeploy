@@ -30,6 +30,7 @@
         {
             this.tabcontrol = new System.Windows.Forms.TabControl();
             this.page_web_iis = new System.Windows.Forms.TabPage();
+            this.checkBox_Increment_iis = new System.Windows.Forms.CheckBox();
             this.label_iis_demo = new System.Windows.Forms.Label();
             this.label25 = new System.Windows.Forms.Label();
             this.tab_iis = new System.Windows.Forms.TabControl();
@@ -67,6 +68,7 @@
             this.combo_docker_env = new System.Windows.Forms.ComboBox();
             this.label22 = new System.Windows.Forms.Label();
             this.page_window_service = new System.Windows.Forms.TabPage();
+            this.checkBox_Increment_window_service = new System.Windows.Forms.CheckBox();
             this.label_windows_serivce_demo = new System.Windows.Forms.Label();
             this.label26 = new System.Windows.Forms.Label();
             this.tabControl_window_service = new System.Windows.Forms.TabControl();
@@ -121,8 +123,6 @@
             this.txt_env_name = new System.Windows.Forms.TextBox();
             this.b_env_add_by_name = new System.Windows.Forms.Button();
             this.combo_env_list = new System.Windows.Forms.ComboBox();
-            this.checkBox_Increment_iis = new System.Windows.Forms.CheckBox();
-            this.checkBox_Increment_window_service = new System.Windows.Forms.CheckBox();
             this.tabcontrol.SuspendLayout();
             this.page_web_iis.SuspendLayout();
             this.tab_iis.SuspendLayout();
@@ -182,6 +182,17 @@
             this.page_web_iis.TabIndex = 0;
             this.page_web_iis.Text = "IIS_Web";
             this.page_web_iis.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_Increment_iis
+            // 
+            this.checkBox_Increment_iis.AutoSize = true;
+            this.checkBox_Increment_iis.Location = new System.Drawing.Point(369, 94);
+            this.checkBox_Increment_iis.Name = "checkBox_Increment_iis";
+            this.checkBox_Increment_iis.Size = new System.Drawing.Size(120, 16);
+            this.checkBox_Increment_iis.TabIndex = 29;
+            this.checkBox_Increment_iis.Text = "Increment Deploy";
+            this.checkBox_Increment_iis.UseVisualStyleBackColor = true;
+            this.checkBox_Increment_iis.CheckedChanged += new System.EventHandler(this.checkBox_Increment_iis_CheckedChanged);
             // 
             // label_iis_demo
             // 
@@ -493,7 +504,7 @@
             // 
             // txt_docker_envname
             // 
-            this.txt_docker_envname.Location = new System.Drawing.Point(307, 20);
+            this.txt_docker_envname.Location = new System.Drawing.Point(319, 20);
             this.txt_docker_envname.Name = "txt_docker_envname";
             this.txt_docker_envname.Size = new System.Drawing.Size(170, 21);
             this.txt_docker_envname.TabIndex = 12;
@@ -567,12 +578,23 @@
             this.page_window_service.Text = "WindowsService";
             this.page_window_service.UseVisualStyleBackColor = true;
             // 
+            // checkBox_Increment_window_service
+            // 
+            this.checkBox_Increment_window_service.AutoSize = true;
+            this.checkBox_Increment_window_service.Location = new System.Drawing.Point(361, 78);
+            this.checkBox_Increment_window_service.Name = "checkBox_Increment_window_service";
+            this.checkBox_Increment_window_service.Size = new System.Drawing.Size(120, 16);
+            this.checkBox_Increment_window_service.TabIndex = 30;
+            this.checkBox_Increment_window_service.Text = "Increment Deploy";
+            this.checkBox_Increment_window_service.UseVisualStyleBackColor = true;
+            this.checkBox_Increment_window_service.CheckedChanged += new System.EventHandler(this.checkBox_Increment_window_service_CheckedChanged);
+            // 
             // label_windows_serivce_demo
             // 
             this.label_windows_serivce_demo.AutoSize = true;
             this.label_windows_serivce_demo.Cursor = System.Windows.Forms.Cursors.Hand;
             this.label_windows_serivce_demo.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.label_windows_serivce_demo.Location = new System.Drawing.Point(597, 0);
+            this.label_windows_serivce_demo.Location = new System.Drawing.Point(589, 0);
             this.label_windows_serivce_demo.Name = "label_windows_serivce_demo";
             this.label_windows_serivce_demo.Size = new System.Drawing.Size(29, 12);
             this.label_windows_serivce_demo.TabIndex = 26;
@@ -1117,31 +1139,10 @@
             this.combo_env_list.TabIndex = 0;
             this.combo_env_list.SelectedIndexChanged += new System.EventHandler(this.combo_env_list_SelectedIndexChanged);
             // 
-            // checkBox_Increment_iis
-            // 
-            this.checkBox_Increment_iis.AutoSize = true;
-            this.checkBox_Increment_iis.Location = new System.Drawing.Point(369, 94);
-            this.checkBox_Increment_iis.Name = "checkBox_Increment_iis";
-            this.checkBox_Increment_iis.Size = new System.Drawing.Size(120, 16);
-            this.checkBox_Increment_iis.TabIndex = 29;
-            this.checkBox_Increment_iis.Text = "Increment Deploy";
-            this.checkBox_Increment_iis.UseVisualStyleBackColor = true;
-            this.checkBox_Increment_iis.CheckedChanged += new System.EventHandler(this.checkBox_Increment_iis_CheckedChanged);
-            // 
-            // checkBox_Increment_window_service
-            // 
-            this.checkBox_Increment_window_service.AutoSize = true;
-            this.checkBox_Increment_window_service.Location = new System.Drawing.Point(361, 78);
-            this.checkBox_Increment_window_service.Name = "checkBox_Increment_window_service";
-            this.checkBox_Increment_window_service.Size = new System.Drawing.Size(120, 16);
-            this.checkBox_Increment_window_service.TabIndex = 30;
-            this.checkBox_Increment_window_service.Text = "Increment Deploy";
-            this.checkBox_Increment_window_service.UseVisualStyleBackColor = true;
-            this.checkBox_Increment_window_service.CheckedChanged += new System.EventHandler(this.checkBox_Increment_window_service_CheckedChanged);
-            // 
             // Deploy
             // 
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(634, 448);
             this.Controls.Add(this.tabcontrol);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;

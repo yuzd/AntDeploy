@@ -37,12 +37,16 @@ namespace AntDeploy.Winform
         private string ProgressCurrentHost = null;
         private string ProgressCurrentHostForWindowsService = null;
         private int ProgressPercentageForWindowsService = 0;
-
+        private int ProgressBoxLocationLeft = 20;
         public Deploy(string projectPath, Project project)
         {
 
             InitializeComponent();
 
+            //设定按字体来缩放控件
+            //this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            //设定字体大小为12px     
+            //this.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(134)));
 
             this.Text += $"(Version:{Vsix.VERSION})";
 
@@ -132,7 +136,12 @@ namespace AntDeploy.Winform
         private void Deploy_Load(object sender, EventArgs e)
         {
 
-
+            //计算pannel的起始位置
+            var size = this.ClientSize.Width - 650;
+            if(size > 0)
+            {
+                ProgressBoxLocationLeft += size;
+            }
 
             if (DeployConfig == null) DeployConfig = new DeployConfig();
             DeployConfig.EnvChangeEvent += DeployConfigOnEnvChangeEvent;
@@ -241,7 +250,7 @@ namespace AntDeploy.Winform
             this.txt_linux_username.Text = string.Empty;
             this.txt_linux_pwd.Text = string.Empty;
 
-
+            
         }
 
 
@@ -843,7 +852,7 @@ namespace AntDeploy.Winform
                 for (int i = 0; i < serverHostList.Count; i++)
                 {
                     var serverHost = serverHostList[i];
-                    ProgressBox newBox = new ProgressBox(new System.Drawing.Point(22, 15 + (i * 110)))
+                    ProgressBox newBox = new ProgressBox(new System.Drawing.Point(ProgressBoxLocationLeft, 15 + (i * 110)))
                     {
                         Text = serverHost,
                     };
@@ -1529,7 +1538,7 @@ namespace AntDeploy.Winform
                 for (int i = 0; i < serverHostList.Count; i++)
                 {
                     var serverHost = serverHostList[i];
-                    ProgressBox newBox = new ProgressBox(new System.Drawing.Point(22, 15 + (i * 110)))
+                    ProgressBox newBox = new ProgressBox(new System.Drawing.Point(ProgressBoxLocationLeft, 15 + (i * 110)))
                     {
                         Text = serverHost,
                     };
@@ -2499,12 +2508,20 @@ namespace AntDeploy.Winform
                         }
                         #endregion
 
-
+                        var hasError = false;
 
                         zipBytes.Seek(0, SeekOrigin.Begin);
-                        using (SSHClient sshClient = new SSHClient(server.Host, server.UserName, pwd, (str) =>
+                        using (SSHClient sshClient = new SSHClient(server.Host, server.UserName, pwd, (str,logLevel) =>
                            {
-                               this.nlog_docker.Info("【Server】" + str);
+                               if(logLevel == NLog.LogLevel.Error)
+                               {
+                                    hasError = true;
+                                    this.nlog_docker.Error("【Server】" + str);
+                               }
+                               else
+                               {
+                                    this.nlog_docker.Info("【Server】" + str);
+                               }
                            }, (uploadValue) =>
                            {
                                UpdateUploadProgress(this.tabPage_docker, server.Host, uploadValue);
@@ -2526,9 +2543,9 @@ namespace AntDeploy.Winform
 
                             try
                             {
-                                sshClient.PublishZip(zipBytes, "publisher", "publish.zip");
+                                await sshClient.PublishZip(zipBytes, "publisher", "publish.zip");
                                 UpdateUploadProgress(this.tabPage_docker, server.Host, 100);
-                                UpdateDeployProgress(this.tabPage_docker, server.Host, true);
+                                UpdateDeployProgress(this.tabPage_docker, server.Host, !hasError);
                                 this.nlog_docker.Info($"publish Host: {server.Host} End");
                             }
                             catch (Exception ex)
@@ -2629,7 +2646,7 @@ namespace AntDeploy.Winform
                 for (int i = 0; i < serverHostList.Count; i++)
                 {
                     var serverHost = serverHostList[i];
-                    ProgressBox newBox = new ProgressBox(new System.Drawing.Point(22, 15 + (i * 110)))
+                    ProgressBox newBox = new ProgressBox(new System.Drawing.Point(ProgressBoxLocationLeft, 15 + (i * 110)))
                     {
                         Text = serverHost,
                     };
