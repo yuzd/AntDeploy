@@ -168,7 +168,7 @@ namespace AntDeploy.Util
         }
 
 
-        public async Task PublishZip(Stream stream, string destinationFolder,
+        public void PublishZip(Stream stream, string destinationFolder,
             string destinationfileName)
         {
             if (!destinationFolder.EndsWith("/")) destinationFolder = destinationFolder + "/";
@@ -218,8 +218,9 @@ namespace AntDeploy.Util
             }
 
             //执行docker build 生成一个镜像
-            await RunSheell($"sudo docker build --no-cache --rm -t {PorjectName} -f {dockFilePath} {publishFolder} ");
-
+            var dockerBuildResult = RunSheell($"sudo docker build --no-cache --rm -t {PorjectName} -f {dockFilePath} {publishFolder} ");
+            if (!dockerBuildResult) return;
+            
             var continarName = "d_" + PorjectName;
 
 
@@ -239,7 +240,7 @@ namespace AntDeploy.Util
             }
 
             // 根据image启动一个容器
-            await RunSheell($"sudo docker run --name {continarName} -d --restart=always -p {port}:{port} {PorjectName}:latest");
+            RunSheell($"sudo docker run --name {continarName} -d --restart=always -p {port}:{port} {PorjectName}:latest");
 
             //查看是否有<none>的image 把它删掉 因为我们创建image的时候每次都会覆盖所以会产生一些没有的image
 
@@ -248,12 +249,12 @@ namespace AntDeploy.Util
 
         }
 
-        public async Task PublishZip(string zipFolder, List<string> ignorList, string destinationFolder, string destinationfileName)
+        public void PublishZip(string zipFolder, List<string> ignorList, string destinationFolder, string destinationfileName)
         {
             using (var stream = ZipHelper.DoCreateFromDirectory2(zipFolder, CompressionLevel.Optimal, true, ignorList))
             {
 
-                await PublishZip(stream, destinationFolder, destinationfileName);
+                PublishZip(stream, destinationFolder, destinationfileName);
             }
         }
 
@@ -329,11 +330,32 @@ namespace AntDeploy.Util
         }
 
 
-        public async Task RunSheell(string command)
+        public bool RunSheell(string command)
         {
             SshCommand cmd = _sshClient.CreateCommand(command);
-            _logger(command, NLog.LogLevel.Info);
-            await cmd.ExecuteAsync(new SShReport(this._logger), CancellationToken.None);
+            var result = cmd.BeginExecute();
+            _logger(command,LogLevel.Info);
+            using (var reader = new StreamReader(cmd.OutputStream, Encoding.UTF8, true, 1024, true))
+            {
+                while (!result.IsCompleted || !reader.EndOfStream)
+                {
+                    string line = reader.ReadLine();
+                    if (!string.IsNullOrEmpty(line))
+                    {
+                        _logger(line,LogLevel.Info);
+                    }
+                }
+            }
+
+            cmd.EndExecute(result);
+
+            if (!string.IsNullOrEmpty(cmd.Error))
+            {
+                _logger(cmd.Error,LogLevel.Error);
+                return false;
+            }
+
+            return true;
         }
 
         public void DeleteFile(string path)
@@ -440,115 +462,8 @@ namespace AntDeploy.Util
         }
     }
 
-    public class SShReport:IProgress<ScriptOutputLine>
-    {
-        private Action<string, NLog.LogLevel> _logger;
-        public SShReport(Action<string, NLog.LogLevel> logger)
-        {
-            _logger = logger;
-        }
-        public void Report(ScriptOutputLine value)
-        {
-            if (value.IsErrorLine)
-            {
-                _logger(value.Line,LogLevel.Error);
-            }
-            else
-            {
-                _logger(value.Line,LogLevel.Info);
-            }
-        }
-    }
    
 
 
-    public static class SshCommandExtensions
-    {
-        public static async Task ExecuteAsync(
-            this SshCommand sshCommand,
-            IProgress<ScriptOutputLine> progress,
-            CancellationToken cancellationToken)
-        {
-            var asyncResult = sshCommand.BeginExecute();
-            var stdoutStreamReader = new StreamReader(sshCommand.OutputStream);
-            var stderrStreamReader = new StreamReader(sshCommand.ExtendedOutputStream);
 
-            while (!asyncResult.IsCompleted)
-            {
-                await CheckOutputAndReportProgress(
-                    sshCommand,
-                    stdoutStreamReader,
-                    stderrStreamReader,
-                    progress,
-                    cancellationToken);
-            }
-
-            sshCommand.EndExecute(asyncResult);
-
-            await CheckOutputAndReportProgress(
-                sshCommand,
-                stdoutStreamReader,
-                stderrStreamReader,
-                progress,
-                cancellationToken);
-        }
-
-        private static async Task CheckOutputAndReportProgress(
-            SshCommand sshCommand,
-            TextReader stdoutStreamReader,
-            TextReader stderrStreamReader,
-            IProgress<ScriptOutputLine> progress,
-            CancellationToken cancellationToken)
-        {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                sshCommand.CancelAsync();
-            }
-            cancellationToken.ThrowIfCancellationRequested();
-
-            await CheckStdoutAndReportProgressAsync(stdoutStreamReader, progress);
-            await CheckStderrAndReportProgressAsync(stderrStreamReader, progress);
-        }
-
-        private static async Task CheckStdoutAndReportProgressAsync(
-            TextReader stdoutStreamReader,
-            IProgress<ScriptOutputLine> stdoutProgress)
-        {
-            var stdoutLine = await stdoutStreamReader.ReadToEndAsync();
-
-            if (!string.IsNullOrEmpty(stdoutLine))
-            {
-                stdoutProgress.Report(new ScriptOutputLine(
-                    line: stdoutLine,
-                    isErrorLine: false));
-            }
-        }
-
-        private static async Task CheckStderrAndReportProgressAsync(
-            TextReader stderrStreamReader,
-            IProgress<ScriptOutputLine> stderrProgress)
-        {
-            var stderrLine = await stderrStreamReader.ReadToEndAsync();
-
-            if (!string.IsNullOrEmpty(stderrLine))
-            {
-                stderrProgress.Report(new ScriptOutputLine(
-                    line: stderrLine,
-                    isErrorLine: true));
-            }
-        }
-    }
-
-    public class ScriptOutputLine
-    {
-        public ScriptOutputLine(string line, bool isErrorLine)
-        {
-            Line = line;
-            IsErrorLine = isErrorLine;
-        }
-
-        public string Line { get; private set; }
-
-        public bool IsErrorLine { get; private set; }
-    }
 }
