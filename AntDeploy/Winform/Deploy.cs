@@ -43,11 +43,6 @@ namespace AntDeploy.Winform
 
             InitializeComponent();
 
-            //设定按字体来缩放控件
-            //this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            //设定字体大小为12px     
-            //this.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(134)));
-
             this.Text += $"(Version:{Vsix.VERSION})";
 
             Assembly assembly = typeof(Deploy).Assembly;
@@ -138,7 +133,7 @@ namespace AntDeploy.Winform
 
             //计算pannel的起始位置
             var size = this.ClientSize.Width - 650;
-            if(size > 0)
+            if (size > 0)
             {
                 ProgressBoxLocationLeft += size;
             }
@@ -250,7 +245,7 @@ namespace AntDeploy.Winform
             this.txt_linux_username.Text = string.Empty;
             this.txt_linux_pwd.Text = string.Empty;
 
-            
+
         }
 
 
@@ -957,7 +952,7 @@ namespace AntDeploy.Winform
                 this.nlog_iis.Info("Start publish");
                 PrintCommonLog(this.nlog_iis);
                 Enable(false);//第一台开始编译
-                GitHelper gitModel = null;
+                GitClient gitModel = null;
                 var gitPath = string.Empty;
                 var webFolderName = string.Empty;
                 try
@@ -1062,20 +1057,20 @@ namespace AntDeploy.Winform
 
                     //执行 打包
                     this.nlog_iis.Info("Start package");
-                    
+
                     //查看是否开启了增量
                     if (this.PluginConfig.IISEnableIncrement)
                     {
                         this.nlog_iis.Info("Enable Increment Deploy:true");
                         if (string.IsNullOrEmpty(gitPath))
                         {
-                            gitModel = new GitHelper(publishPath, this.nlog_iis);
+                            gitModel = new GitClient(publishPath, this.nlog_iis);
                         }
                         else
                         {
-                            gitModel = new GitHelper(gitPath, this.nlog_iis);
+                            gitModel = new GitClient(gitPath, this.nlog_iis);
                         }
-                       
+
                         if (!gitModel.InitSuccess)
                         {
                             this.nlog_iis.Error("package fail,can not init git,please cancel Increment Deploy");
@@ -1092,7 +1087,7 @@ namespace AntDeploy.Winform
                         if (!string.IsNullOrEmpty(gitPath) && !string.IsNullOrEmpty(webFolderName))
                         {
                             var removeLength = (webFolderName + "/").Length;
-                            fileList = fileList.Where(r => r.StartsWith(webFolderName + "/")).Select(r=>r.Substring(removeLength)).ToList();
+                            fileList = fileList.Where(r => r.StartsWith(webFolderName + "/")).Select(r => r.Substring(removeLength)).ToList();
                         }
                         if (fileList == null || fileList.Count < 1)
                         {
@@ -1102,7 +1097,7 @@ namespace AntDeploy.Winform
                         this.nlog_iis.Info("【git】Increment package file count:" + fileList.Count);
                         try
                         {
-                            zipBytes = ZipHelper.DoCreateFromDirectory(publishPath,fileList, CompressionLevel.Optimal, true, DeployConfig.IgnoreList,
+                            zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, fileList, CompressionLevel.Optimal, true, DeployConfig.IgnoreList,
                                 (progressValue) =>
                                 {
                                     UpdatePackageProgress(this.tabPage_progress, null, progressValue);//打印打包记录
@@ -1124,7 +1119,7 @@ namespace AntDeploy.Winform
                                 (progressValue) =>
                                 {
                                     UpdatePackageProgress(this.tabPage_progress, null, progressValue);//打印打包记录
-                            });
+                                });
                         }
                         catch (Exception ex)
                         {
@@ -1257,7 +1252,7 @@ namespace AntDeploy.Winform
                         index++;
                     }
                     //交互
-                    if (allSuccess && gitModel!=null)
+                    if (allSuccess && gitModel != null)
                     {
                         gitModel.SubmitChanges();
                     }
@@ -1736,7 +1731,7 @@ namespace AntDeploy.Winform
                  this.nlog_windowservice.Info("Start publish");
                  PrintCommonLog(this.nlog_windowservice);
                  EnableForWindowsService(false);//第一台开始编译
-                 GitHelper gitModel = null;
+                 GitClient gitModel = null;
                  try
                  {
                      var isNetcore = false;
@@ -1871,12 +1866,12 @@ namespace AntDeploy.Winform
                      //执行 打包
                      this.nlog_windowservice.Info("Start package");
 
-                    
+
                      //查看是否开启了增量
                      if (this.PluginConfig.WindowsServiceEnableIncrement)
                      {
                          this.nlog_windowservice.Info("Enable Increment Deploy:true");
-                         gitModel = new GitHelper(publishPath, this.nlog_windowservice);
+                         gitModel = new GitClient(publishPath, this.nlog_windowservice);
                          if (!gitModel.InitSuccess)
                          {
                              this.nlog_windowservice.Error("package fail,can not init git,please cancel Increment Deploy");
@@ -1897,7 +1892,7 @@ namespace AntDeploy.Winform
                          this.nlog_windowservice.Info("【git】Increment package file count:" + fileList.Count);
                          try
                          {
-                             zipBytes = ZipHelper.DoCreateFromDirectory(publishPath,fileList, CompressionLevel.Optimal, true,
+                             zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, fileList, CompressionLevel.Optimal, true,
                                  DeployConfig.IgnoreList,
                                  (progressValue) =>
                                  {
@@ -1929,7 +1924,7 @@ namespace AntDeploy.Winform
                              return;
                          }
                      }
-                    
+
 
                      if (zipBytes == null || zipBytes.Length < 1)
                      {
@@ -2053,7 +2048,7 @@ namespace AntDeploy.Winform
                      }
 
                      //交互
-                     if (allSuccess && gitModel!=null)
+                     if (allSuccess && gitModel != null)
                      {
                          gitModel.SubmitChanges();
                      }
@@ -2372,7 +2367,7 @@ namespace AntDeploy.Winform
 
             this.rich_docker_log.Text = "";
             this.nlog_docker.Info($"The Porject ENTRYPOINT name:{ENTRYPOINT}");
-
+            var clientDateTimeFolderName = DateTime.Now.ToString("yyyyMMddHHmmss");
             new Task(async () =>
             {
                 this.nlog_docker.Info("Start publish");
@@ -2511,16 +2506,16 @@ namespace AntDeploy.Winform
                         var hasError = false;
 
                         zipBytes.Seek(0, SeekOrigin.Begin);
-                        using (SSHClient sshClient = new SSHClient(server.Host, server.UserName, pwd, (str,logLevel) =>
+                        using (SSHClient sshClient = new SSHClient(server.Host, server.UserName, pwd, (str, logLevel) =>
                            {
-                               if(logLevel == NLog.LogLevel.Error)
+                               if (logLevel == NLog.LogLevel.Error)
                                {
-                                    hasError = true;
-                                    this.nlog_docker.Error("【Server】" + str);
+                                   hasError = true;
+                                   this.nlog_docker.Error("【Server】" + str);
                                }
                                else
                                {
-                                    this.nlog_docker.Info("【Server】" + str);
+                                   this.nlog_docker.Info("【Server】" + str);
                                }
                            }, (uploadValue) =>
                            {
@@ -2530,7 +2525,8 @@ namespace AntDeploy.Winform
                             NetCoreENTRYPOINT = ENTRYPOINT,
                             NetCoreVersion = SDKVersion,
                             NetCorePort = DeployConfig.DockerConfig.Prot,
-                            NetCoreEnvironment = DeployConfig.DockerConfig.AspNetCoreEnv
+                            NetCoreEnvironment = DeployConfig.DockerConfig.AspNetCoreEnv,
+                            ClientDateTimeFolderName = clientDateTimeFolderName
                         })
                         {
                             var connectResult = sshClient.Connect();
@@ -2543,9 +2539,13 @@ namespace AntDeploy.Winform
 
                             try
                             {
-                                sshClient.PublishZip(zipBytes, "publisher", "publish.tar");
+                                sshClient.PublishZip(zipBytes, "antdeploy", "publish.tar");
                                 UpdateUploadProgress(this.tabPage_docker, server.Host, 100);
                                 UpdateDeployProgress(this.tabPage_docker, server.Host, !hasError);
+                                if (hasError)
+                                {
+                                    sshClient.DeletePublishFolder("antdeploy");
+                                }
                                 this.nlog_docker.Info($"publish Host: {server.Host} End");
                             }
                             catch (Exception ex)
@@ -2574,10 +2574,297 @@ namespace AntDeploy.Winform
             }).Start();
         }
 
-        private void EnableForDocker(bool flag)
+        private void btn_docker_rollback_Click(object sender, EventArgs e)
+        {
+            var envName = this.combo_docker_env.SelectedItem as string;
+            if (string.IsNullOrEmpty(envName))
+            {
+                MessageBox.Show("please select env");
+                return;
+            }
+
+#if DEBUG
+            var ENTRYPOINT = "Lito.APP.dll";
+            var SDKVersion = "2.1";
+#else
+            //必须是netcore应用
+            var isNetcoreProject = ProjectHelper.IsDotNetCoreProject(_project);
+            if (!isNetcoreProject)
+            {
+                MessageBox.Show("current project is not netcore");
+                return;
+            }
+
+            var ENTRYPOINT = _project.GetProjectProperty("OutputFileName");
+            if (string.IsNullOrEmpty(ENTRYPOINT))
+            {
+                MessageBox.Show("get current project property:outputfilename error");
+                return;
+            }
+
+            var SDKVersion = ProjectHelper.GetProjectSkdInNetCoreProject(ProjectPath);
+            if (string.IsNullOrEmpty(SDKVersion))
+            {
+                MessageBox.Show("get current project skd version error");
+                return;
+            }
+           
+#endif
+
+            combo_docker_env_SelectedIndexChanged(null, null);
+
+
+            var serverList = DeployConfig.Env.Where(r => r.Name.Equals(envName)).Select(r => r.LinuxServerList)
+                .FirstOrDefault();
+
+            if (serverList == null || !serverList.Any())
+            {
+                MessageBox.Show("selected env have no linux server set yet!");
+                return;
+            }
+
+            var serverHostList = string.Join(Environment.NewLine, serverList.Select(r => r.Host).ToList());
+
+            var confirmResult = MessageBox.Show("Are you sure to rollBack to Linux Server: " + Environment.NewLine + serverHostList,
+                "Confirm Deploy!!",
+                MessageBoxButtons.YesNo);
+            if (confirmResult != DialogResult.Yes)
+            {
+                return;
+            }
+
+            this.rich_docker_log.Text = "";
+            this.nlog_docker.Info($"The Porject ENTRYPOINT name:{ENTRYPOINT}");
+            this.tabControl_docker.SelectedIndex = 1;
+            new Task(async () =>
+            {
+
+
+                var versionListDic = new Dictionary<string, string>();
+
+                try
+                {
+
+                    EnableForDocker(false,true);
+
+                    var firstServer = serverList.First();
+
+                    #region 参数Check
+
+                    if (string.IsNullOrEmpty(firstServer.Host))
+                    {
+                        this.nlog_docker.Error("Server Host is Empty");
+                        return;
+                    }
+
+                    if (string.IsNullOrEmpty(firstServer.UserName))
+                    {
+                        this.nlog_docker.Error("Server UserName is Empty");
+                        return;
+                    }
+
+                    if (string.IsNullOrEmpty(firstServer.Pwd))
+                    {
+                        this.nlog_docker.Error("Server Pwd is Empty");
+                        return;
+                    }
+
+                    var pwd1 = CodingHelper.AESDecrypt(firstServer.Pwd);
+                    if (string.IsNullOrEmpty(pwd1))
+                    {
+                        this.nlog_docker.Error("Server Pwd is Empty");
+                        return;
+                    }
+
+                    #endregion
+
+                    this.nlog_docker.Info("Start get rollBack version list from first Server:" + firstServer.Host);
+
+                    using (SSHClient sshClient = new SSHClient(firstServer.Host, firstServer.UserName, pwd1,
+                        (str, logLevel) =>
+                        {
+                            if (logLevel == NLog.LogLevel.Error)
+                            {
+                                this.nlog_docker.Error("【Server】" + str);
+                            }
+                            else
+                            {
+                                this.nlog_docker.Info("【Server】" + str);
+                            }
+                        }, (uploadValue) => { })
+                    {
+                        NetCoreENTRYPOINT = ENTRYPOINT,
+                        NetCoreVersion = SDKVersion,
+                        NetCorePort = DeployConfig.DockerConfig.Prot,
+                        NetCoreEnvironment = DeployConfig.DockerConfig.AspNetCoreEnv,
+                    })
+                    {
+                        var connectResult = sshClient.Connect();
+                        if (!connectResult)
+                        {
+                            this.nlog_docker.Error($"connect rollBack Host:{firstServer.Host} Fail");
+                            return;
+                        }
+
+                        versionListDic = sshClient.GetDeployHistory("antdeploy");
+                    }
+                }
+                catch (Exception ex1)
+                {
+                    this.nlog_docker.Error(ex1);
+                    return;
+                }
+                finally
+                {
+                    EnableForDocker(true);
+                }
+
+                if (versionListDic.Count <= 1)
+                {
+                    this.nlog_docker.Error($"get rollBack version list count = 0");
+                    return;
+                }
+
+                var versionList = versionListDic.Keys.Skip(1).ToList();
+                this.BeginInvokeLambda(() =>
+                {
+                    RollBack rolleback = new RollBack(versionList);
+                    var r = rolleback.ShowDialog();
+                    if (r == DialogResult.Cancel)
+                    {
+                        this.nlog_docker.Info($"rollback canceled!");
+                        return;
+                    }
+                    else
+                    {
+                        PrintCommonLog(this.nlog_docker);
+                        this.nlog_docker.Info("Start rollBack from version:" + rolleback.SelectRollBackVersion);
+                        DoRollBack(serverList, ENTRYPOINT, SDKVersion, rolleback.SelectRollBackVersion);
+                    }
+                });
+
+
+            }).Start();
+
+
+
+
+        }
+
+
+        private void DoRollBack(List<LinuxServr> serverList, string ENTRYPOINT, string SDKVersion, string rollbackVersion)
+        {
+
+
+            new Task(async () =>
+            {
+
+
+                try
+                {
+                    EnableForDocker(false,true);
+
+                    foreach (var server in serverList)
+                    {
+                        this.nlog_docker.Info("ignore build...");
+                        BuildEnd(this.tabPage_docker, server.Host);
+                        this.nlog_docker.Info("ignore package...");
+                        UpdatePackageProgress(this.tabPage_docker, server.Host, 100);
+                        #region 参数Check
+
+                        if (string.IsNullOrEmpty(server.Host))
+                        {
+                            this.nlog_docker.Error("Server Host is Empty");
+                            UploadError(this.tabPage_docker);
+                            continue;
+                        }
+                        if (string.IsNullOrEmpty(server.UserName))
+                        {
+                            this.nlog_docker.Error("Server UserName is Empty");
+                            UploadError(this.tabPage_docker);
+                            continue;
+                        }
+                        if (string.IsNullOrEmpty(server.Pwd))
+                        {
+                            this.nlog_docker.Error("Server Pwd is Empty");
+                            UploadError(this.tabPage_docker);
+                            continue;
+                        }
+                        var pwd = CodingHelper.AESDecrypt(server.Pwd);
+                        if (string.IsNullOrEmpty(pwd))
+                        {
+                            this.nlog_docker.Error("Server Pwd is Empty");
+                            UploadError(this.tabPage_docker);
+                            continue;
+                        }
+
+                        this.nlog_docker.Info("ignore upload...");
+                        UpdateUploadProgress(this.tabPage_docker, server.Host, 100);
+                        #endregion
+
+                        var hasError = false;
+                        using (SSHClient sshClient = new SSHClient(server.Host, server.UserName, pwd, (str, logLevel) =>
+                           {
+                               if (logLevel == NLog.LogLevel.Error)
+                               {
+                                   hasError = true;
+                                   this.nlog_docker.Error("【Server】" + str);
+                               }
+                               else
+                               {
+                                   this.nlog_docker.Info("【Server】" + str);
+                               }
+                           }, (uploadValue) =>
+                           {
+                               UpdateUploadProgress(this.tabPage_docker, server.Host, uploadValue);
+                           })
+                        {
+                            NetCoreENTRYPOINT = ENTRYPOINT,
+                            NetCoreVersion = SDKVersion,
+                            NetCorePort = DeployConfig.DockerConfig.Prot,
+                            NetCoreEnvironment = DeployConfig.DockerConfig.AspNetCoreEnv,
+                        })
+                        {
+                            var connectResult = sshClient.Connect();
+                            if (!connectResult)
+                            {
+                                this.nlog_docker.Error($"RollBack Host:{server.Host} Fail: connect fail");
+                                UploadError(this.tabPage_docker);
+                                continue;
+                            }
+
+                            try
+                            {
+                                sshClient.RollBack(rollbackVersion);
+                                UpdateDeployProgress(this.tabPage_docker, server.Host, !hasError);
+                                this.nlog_docker.Info($"RollBack Host: {server.Host} End");
+                            }
+                            catch (Exception ex)
+                            {
+                                this.nlog_docker.Error($"RollBack Host:{server.Host} Fail:" + ex.Message);
+                                UpdateDeployProgress(this.tabPage_docker, server.Host, false);
+                            }
+                        }
+
+                    }
+                    this.nlog_docker.Info("RollBack End");
+                }
+                catch (Exception ex1)
+                {
+                    this.nlog_docker.Error(ex1);
+                }
+                finally
+                {
+                    EnableForDocker(true);
+                }
+
+            }).Start();
+        }
+        private void EnableForDocker(bool flag,bool ignore = false)
         {
             this.BeginInvokeLambda(() =>
             {
+                this.b_docker_rollback.Enabled = flag;
                 this.b_docker_deploy.Enabled = flag;
                 this.combo_docker_env.Enabled = flag;
                 this.txt_docker_port.Enabled = flag;
@@ -2594,7 +2881,9 @@ namespace AntDeploy.Winform
                 }
                 else
                 {
+
                     tabcontrol.Tag = "1";
+                    if(ignore) return;
                     if (this.tabPage_docker.Tag is Dictionary<string, ProgressBox> progressBoxList)
                     {
                         foreach (var box in progressBoxList)
@@ -2681,6 +2970,7 @@ namespace AntDeploy.Winform
 
 
         }
+
 
 
 

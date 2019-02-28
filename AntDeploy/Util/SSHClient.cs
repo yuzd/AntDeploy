@@ -1,15 +1,15 @@
-﻿using Renci.SshNet;
+﻿using NLog;
+using Renci.SshNet;
 using Renci.SshNet.Sftp;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
-using NLog;
 
 namespace AntDeploy.Util
 {
@@ -36,6 +36,7 @@ namespace AntDeploy.Util
         public string NetCorePort { get; set; }
         public string NetCoreEnvironment { get; set; }
         public string NetCoreENTRYPOINT { get; set; }
+        public string ClientDateTimeFolderName { get; set; }
 
         private readonly Action<string, NLog.LogLevel> _logger;
         private readonly Action<int> _uploadLogger;
@@ -123,21 +124,25 @@ namespace AntDeploy.Util
                 DeleteDirectory(publishUnzipFolder);
             }
 
-             CreateServerDirectoryIfItDoesntExist(publishUnzipFolder+"/");
+            CreateServerDirectoryIfItDoesntExist(publishUnzipFolder + "/");
 
+            ChangeToFolder(destinationFolder);
 
-            var changeTo = destinationFolder;
-            if (changeTo.StartsWith("/"))
-            {
-                changeTo = changeTo.Substring(1);
-            }
-            _sftpClient.ChangeDirectory(changeTo);
-            _logger($"Changed directory to {destinationFolder}", NLog.LogLevel.Info);
             var fileSize = stream.Length;
             _sftpClient.UploadFile(stream, fileName, (uploaded) => { uploadProgress(fileSize, uploaded); });
 
 
 
+        }
+
+        public void ChangeToFolder(string changeTo)
+        {
+            if (changeTo.StartsWith("/"))
+            {
+                changeTo = changeTo.Substring(1);
+            }
+            _sftpClient.ChangeDirectory(changeTo);
+            _logger($"Changed directory to {changeTo}", NLog.LogLevel.Info);
         }
 
         private void uploadProgress(long size, ulong uploadedSize)
@@ -169,13 +174,54 @@ namespace AntDeploy.Util
 
         }
 
+        /// <summary>
+        /// 获取发布的历史
+        /// </summary>
+        /// <param name="destinationFolder"></param>
+        /// <returns></returns>
+        public Dictionary<string, string> GetDeployHistory(string destinationFolder)
+        {
+            var result = new Dictionary<string, string>();
+            try
+            {
 
-        public void PublishZip(Stream stream, string destinationFolder,
-            string destinationfileName)
+                if (!destinationFolder.EndsWith("/")) destinationFolder = destinationFolder + "/";
+
+                destinationFolder = destinationFolder + PorjectName + "/";
+
+
+                if (!_sftpClient.Exists(destinationFolder))
+                {
+                    return result;
+                }
+
+                //获取该目录下的所有日期文件夹
+
+                var folderList = _sftpClient.ListDirectory(destinationFolder).Where(r => r.IsDirectory).
+                    OrderByDescending(r => r.LastWriteTime).Take(10).ToList();
+                foreach (var folder in folderList)
+                {
+                    if ((folder.Name == ".") || (folder.Name == "..")) continue;
+                    if (DateTime.TryParseExact(folder.Name, "yyyyMMddHHmmss", null, DateTimeStyles.None, out DateTime d))
+                    {
+                        result.Add(folder.Name, folder.FullName);
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger(ex.Message, LogLevel.Error);
+            }
+
+            return result;
+        }
+
+        public void PublishZip(Stream stream, string destinationFolder, string destinationfileName)
         {
             if (!destinationFolder.EndsWith("/")) destinationFolder = destinationFolder + "/";
 
-            destinationFolder = destinationFolder + PorjectName + "/" + DateTime.Now.ToString("yyyyMMddHHmmss") + "/";
+            destinationFolder = destinationFolder + PorjectName + "/" + ClientDateTimeFolderName + "/";
 
             Upload(stream, destinationFolder, destinationfileName);
 
@@ -194,35 +240,111 @@ namespace AntDeploy.Util
                 return;
             }
             var publishFolder = $"{destinationFolder}publish/";
-            var publishFolder2 = $"publish";
-            if (!_sftpClient.Exists(publishFolder2))
+            if (!_sftpClient.Exists("publish"))
             {
                 _logger($"tar fail: {publishFolder}", NLog.LogLevel.Error);
                 return;
             }
             _logger($"tar success: {publishFolder}", NLog.LogLevel.Info);
-            //_sftpClient.ChangeDirectory(publishFolder);
-            //_logger($"Changed directory to {publishFolder}");
 
 
             //执行Docker命令
 
+            DoDockerCommand(publishFolder);
+
+
+        }
+
+        /// <summary>
+        /// 回退
+        /// </summary>
+        /// <param name="path">具体的日期文件夹路径</param>
+        public void RollBack(string version)
+        {
+            var path = "antdeploy/" + PorjectName + "/" + version + "/";
+
+            ChangeToFolder(path);
+
+            var publishFolder = $"{path}publish/";
+            if (!_sftpClient.Exists("publish"))
+            {
+                _logger($"rollback fail: {publishFolder} not exist", NLog.LogLevel.Error);
+                return;
+            }
+
+            DoDockerCommand(publishFolder, true);
+        }
+
+        public void DoDockerCommand(string publishFolder, bool isrollBack = false)
+        {
+            if (!publishFolder.EndsWith("/")) publishFolder = publishFolder + "/";
             //先查看本地是否有dockerFile
             var dockFilePath = publishFolder + "Dockerfile";
-            var dockFilePath2 = publishFolder2 + "/" + "Dockerfile";
+            var dockFilePath2 = "publish/Dockerfile";
             var isExistDockFile = _sftpClient.Exists(dockFilePath2);
             //如果本地存在dockerfile 那么就根据此创建image
             //如果不存在的话 就根据当前的netcore sdk的版本 进行创建相对应的 dockfile
             if (!isExistDockFile)
             {
+                if (isrollBack)
+                {
+                    _logger($"dockerFile is not exist: {dockFilePath}", NLog.LogLevel.Error);
+                    return;
+                }
                 var createDockerFileResult = CreateDockerFile(dockFilePath);
                 if (!createDockerFileResult) return;
+            }
+            else
+            {
+                if (isrollBack)
+                {
+                    try
+                    {
+                        var dockerFileText = _sftpClient.ReadAllText(dockFilePath);
+                        if (string.IsNullOrEmpty(dockerFileText))
+                        {
+                            _logger($"dockerFile is empty: {dockFilePath}", NLog.LogLevel.Error);
+                            return;
+                        }
+
+                        var newPortA = dockerFileText.Split(new string[] { "EXPOSE " }, StringSplitOptions.None);
+                        if (newPortA.Length != 2)
+                        {
+                            _logger($"EXPOSE in dockerFile is empty: {dockFilePath}", NLog.LogLevel.Error);
+                            return;
+                        }
+                        var newPort = string.Empty;
+                        foreach (var item in newPortA[1].Trim())
+                        {
+                            if (Char.IsDigit(item))
+                            {
+                                newPort += item;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                        if (string.IsNullOrEmpty(newPort))
+                        {
+                            _logger($"EXPOSE in dockerFile is invalid: {dockFilePath}", NLog.LogLevel.Error);
+                            return;
+                        }
+
+                        NetCorePort = newPort;
+                    }
+                    catch (Exception)
+                    {
+                        _logger($"Get EXPOSE param in dockerFile fail: {dockFilePath}", NLog.LogLevel.Error);
+                        return;
+                    }
+                }
             }
 
             //执行docker build 生成一个镜像
             var dockerBuildResult = RunSheell($"sudo docker build --no-cache --rm -t {PorjectName} -f {dockFilePath} {publishFolder} ");
             if (!dockerBuildResult) return;
-            
+
             var continarName = "d_" + PorjectName;
 
 
@@ -247,9 +369,8 @@ namespace AntDeploy.Util
             //查看是否有<none>的image 把它删掉 因为我们创建image的时候每次都会覆盖所以会产生一些没有的image
 
             _sshClient.RunCommand($"if sudo docker images -f \"dangling=true\" | grep ago --quiet; then sudo docker rmi -f $(sudo docker images -f \"dangling=true\" -q); fi");
-
-
         }
+
 
         public void PublishZip(string zipFolder, List<string> ignorList, string destinationFolder, string destinationfileName)
         {
@@ -259,6 +380,21 @@ namespace AntDeploy.Util
                 PublishZip(stream, destinationFolder, destinationfileName);
             }
         }
+
+
+
+
+        public void DeletePublishFolder(string destinationFolder)
+        {
+            if (!destinationFolder.EndsWith("/")) destinationFolder = destinationFolder + "/";
+
+            if (string.IsNullOrEmpty(PorjectName) || string.IsNullOrEmpty(ClientDateTimeFolderName)) return;
+
+            destinationFolder = destinationFolder + PorjectName + "/" + ClientDateTimeFolderName + "/";
+
+            this.DeleteDirectory(destinationFolder);
+        }
+
 
 
 
@@ -336,7 +472,7 @@ namespace AntDeploy.Util
         {
             SshCommand cmd = _sshClient.CreateCommand(command);
             var result = cmd.BeginExecute();
-            _logger(command,LogLevel.Info);
+            _logger(command, LogLevel.Info);
             using (var reader = new StreamReader(cmd.OutputStream, Encoding.UTF8, true, 1024, true))
             {
                 while (!result.IsCompleted || !reader.EndOfStream)
@@ -344,7 +480,7 @@ namespace AntDeploy.Util
                     string line = reader.ReadLine();
                     if (!string.IsNullOrEmpty(line))
                     {
-                        _logger(line,LogLevel.Info);
+                        _logger(line, LogLevel.Info);
                     }
                 }
             }
@@ -353,7 +489,7 @@ namespace AntDeploy.Util
 
             if (!string.IsNullOrEmpty(cmd.Error))
             {
-                _logger(cmd.Error,LogLevel.Error);
+                _logger(cmd.Error, LogLevel.Error);
                 return false;
             }
 
@@ -464,7 +600,7 @@ namespace AntDeploy.Util
         }
     }
 
-   
+
 
 
 

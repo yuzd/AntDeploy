@@ -7,19 +7,19 @@ using System.Linq;
 
 namespace AntDeploy.Util
 {
-    public class GitHelper : IDisposable
+    public class GitClient : IDisposable
     {
         private readonly Logger _logger;
         private Repository _repository;
         private readonly string _projectPath;
-        public GitHelper(string projectPath, Logger logger) 
+        public GitClient(string projectPath, Logger logger) 
         {
             _logger = logger;
             _projectPath = projectPath;
             CreateGit(_projectPath);
         }
 
-        public GitHelper(string projectPath)
+        public GitClient(string projectPath)
         {
             _projectPath = projectPath;
             CreateGit(_projectPath);

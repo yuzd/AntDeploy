@@ -52,7 +52,6 @@
             this.combo_iis_sdk_type = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.page_docker = new System.Windows.Forms.TabPage();
-            this.b_docker_rollback = new System.Windows.Forms.Button();
             this.label_docker_demo = new System.Windows.Forms.Label();
             this.tabControl_docker = new System.Windows.Forms.TabControl();
             this.tabPage_docker = new System.Windows.Forms.TabPage();
@@ -159,7 +158,6 @@
             this.tabcontrol.SelectedIndex = 0;
             this.tabcontrol.Size = new System.Drawing.Size(634, 448);
             this.tabcontrol.TabIndex = 0;
-            this.tabcontrol.SelectedIndexChanged += new System.EventHandler(this.page__SelectedIndexChanged);
             // 
             // page_web_iis
             // 
@@ -193,7 +191,6 @@
             this.checkBox_Increment_iis.TabIndex = 29;
             this.checkBox_Increment_iis.Text = "Increment Deploy";
             this.checkBox_Increment_iis.UseVisualStyleBackColor = true;
-            this.checkBox_Increment_iis.CheckedChanged += new System.EventHandler(this.checkBox_Increment_iis_CheckedChanged);
             // 
             // label_iis_demo
             // 
@@ -205,7 +202,6 @@
             this.label_iis_demo.Size = new System.Drawing.Size(29, 12);
             this.label_iis_demo.TabIndex = 28;
             this.label_iis_demo.Text = "Demo";
-            this.label_iis_demo.Click += new System.EventHandler(this.label_iis_demo_Click);
             // 
             // label25
             // 
@@ -342,7 +338,6 @@
             this.combo_iis_env.Name = "combo_iis_env";
             this.combo_iis_env.Size = new System.Drawing.Size(193, 20);
             this.combo_iis_env.TabIndex = 8;
-            this.combo_iis_env.SelectedIndexChanged += new System.EventHandler(this.combo_iis_env_SelectedIndexChanged);
             // 
             // label8
             // 
@@ -381,7 +376,6 @@
             this.combo_iis_sdk_type.Name = "combo_iis_sdk_type";
             this.combo_iis_sdk_type.Size = new System.Drawing.Size(121, 20);
             this.combo_iis_sdk_type.TabIndex = 1;
-            this.combo_iis_sdk_type.SelectedIndexChanged += new System.EventHandler(this.combo_iis_sdk_type_SelectedIndexChanged);
             // 
             // label6
             // 
@@ -394,7 +388,6 @@
             // 
             // page_docker
             // 
-            this.page_docker.Controls.Add(this.b_docker_rollback);
             this.page_docker.Controls.Add(this.label_docker_demo);
             this.page_docker.Controls.Add(this.tabControl_docker);
             this.page_docker.Controls.Add(this.label24);
@@ -409,17 +402,6 @@
             this.page_docker.Text = "Docker";
             this.page_docker.UseVisualStyleBackColor = true;
             // 
-            // b_docker_rollback
-            // 
-            this.b_docker_rollback.ForeColor = System.Drawing.Color.Red;
-            this.b_docker_rollback.Location = new System.Drawing.Point(537, 26);
-            this.b_docker_rollback.Name = "b_docker_rollback";
-            this.b_docker_rollback.Size = new System.Drawing.Size(81, 43);
-            this.b_docker_rollback.TabIndex = 28;
-            this.b_docker_rollback.Text = "RollBack";
-            this.b_docker_rollback.UseVisualStyleBackColor = true;
-            this.b_docker_rollback.Click += new System.EventHandler(this.btn_docker_rollback_Click);
-            // 
             // label_docker_demo
             // 
             this.label_docker_demo.AutoSize = true;
@@ -430,7 +412,6 @@
             this.label_docker_demo.Size = new System.Drawing.Size(29, 12);
             this.label_docker_demo.TabIndex = 27;
             this.label_docker_demo.Text = "Demo";
-            this.label_docker_demo.Click += new System.EventHandler(this.label_docker_demo_Click);
             // 
             // tabControl_docker
             // 
@@ -487,7 +468,7 @@
             // label24
             // 
             this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(61, 130);
+            this.label24.Location = new System.Drawing.Point(96, 130);
             this.label24.Name = "label24";
             this.label24.Size = new System.Drawing.Size(305, 12);
             this.label24.TabIndex = 15;
@@ -499,7 +480,7 @@
             this.groupBox5.Controls.Add(this.txt_docker_envname);
             this.groupBox5.Controls.Add(this.label23);
             this.groupBox5.Controls.Add(this.txt_docker_port);
-            this.groupBox5.Location = new System.Drawing.Point(14, 9);
+            this.groupBox5.Location = new System.Drawing.Point(65, 11);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(517, 60);
             this.groupBox5.TabIndex = 16;
@@ -540,29 +521,27 @@
             // 
             // b_docker_deploy
             // 
-            this.b_docker_deploy.Location = new System.Drawing.Point(397, 103);
+            this.b_docker_deploy.Location = new System.Drawing.Point(405, 91);
             this.b_docker_deploy.Name = "b_docker_deploy";
-            this.b_docker_deploy.Size = new System.Drawing.Size(106, 40);
+            this.b_docker_deploy.Size = new System.Drawing.Size(107, 43);
             this.b_docker_deploy.TabIndex = 12;
             this.b_docker_deploy.Text = "Deploy";
             this.b_docker_deploy.UseVisualStyleBackColor = true;
-            this.b_docker_deploy.Click += new System.EventHandler(this.b_docker_deploy_Click);
             // 
             // combo_docker_env
             // 
             this.combo_docker_env.BackColor = System.Drawing.SystemColors.Window;
             this.combo_docker_env.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_docker_env.FormattingEnabled = true;
-            this.combo_docker_env.Location = new System.Drawing.Point(138, 103);
+            this.combo_docker_env.Location = new System.Drawing.Point(173, 103);
             this.combo_docker_env.Name = "combo_docker_env";
             this.combo_docker_env.Size = new System.Drawing.Size(193, 20);
             this.combo_docker_env.TabIndex = 11;
-            this.combo_docker_env.SelectedIndexChanged += new System.EventHandler(this.combo_docker_env_SelectedIndexChanged);
             // 
             // label22
             // 
             this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(61, 106);
+            this.label22.Location = new System.Drawing.Point(96, 106);
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(59, 12);
             this.label22.TabIndex = 10;
@@ -600,7 +579,6 @@
             this.checkBox_Increment_window_service.TabIndex = 30;
             this.checkBox_Increment_window_service.Text = "Increment Deploy";
             this.checkBox_Increment_window_service.UseVisualStyleBackColor = true;
-            this.checkBox_Increment_window_service.CheckedChanged += new System.EventHandler(this.checkBox_Increment_window_service_CheckedChanged);
             // 
             // label_windows_serivce_demo
             // 
@@ -612,7 +590,6 @@
             this.label_windows_serivce_demo.Size = new System.Drawing.Size(29, 12);
             this.label_windows_serivce_demo.TabIndex = 26;
             this.label_windows_serivce_demo.Text = "Demo";
-            this.label_windows_serivce_demo.Click += new System.EventHandler(this.label_windows_serivce_demo_Click);
             // 
             // label26
             // 
@@ -703,7 +680,6 @@
             this.combo_windowservice_sdk_type.Name = "combo_windowservice_sdk_type";
             this.combo_windowservice_sdk_type.Size = new System.Drawing.Size(121, 20);
             this.combo_windowservice_sdk_type.TabIndex = 20;
-            this.combo_windowservice_sdk_type.SelectedIndexChanged += new System.EventHandler(this.combo_windowservice_sdk_type_SelectedIndexChanged);
             // 
             // label11
             // 
@@ -747,7 +723,6 @@
             this.b_windowservice_deploy.TabIndex = 14;
             this.b_windowservice_deploy.Text = "Deploy";
             this.b_windowservice_deploy.UseVisualStyleBackColor = true;
-            this.b_windowservice_deploy.Click += new System.EventHandler(this.b_windowservice_deploy_Click);
             // 
             // combo_windowservice_env
             // 
@@ -758,7 +733,6 @@
             this.combo_windowservice_env.Name = "combo_windowservice_env";
             this.combo_windowservice_env.Size = new System.Drawing.Size(193, 20);
             this.combo_windowservice_env.TabIndex = 13;
-            this.combo_windowservice_env.SelectedIndexChanged += new System.EventHandler(this.combo_windowservice_env_SelectedIndexChanged);
             // 
             // label10
             // 
@@ -791,7 +765,6 @@
             this.label_check_update.Size = new System.Drawing.Size(77, 12);
             this.label_check_update.TabIndex = 3;
             this.label_check_update.Text = "Check Update";
-            this.label_check_update.Click += new System.EventHandler(this.label_check_update_Click);
             // 
             // groupBoxIgnore
             // 
@@ -815,7 +788,6 @@
             this.b_env_ignore_remove.TabIndex = 12;
             this.b_env_ignore_remove.Text = "Remove Selected";
             this.b_env_ignore_remove.UseVisualStyleBackColor = true;
-            this.b_env_ignore_remove.Click += new System.EventHandler(this.b_env_ignore_remove_Click);
             // 
             // b_env_ignore_add
             // 
@@ -825,7 +797,6 @@
             this.b_env_ignore_add.TabIndex = 17;
             this.b_env_ignore_add.Text = "Add";
             this.b_env_ignore_add.UseVisualStyleBackColor = true;
-            this.b_env_ignore_add.Click += new System.EventHandler(this.b_env_ignore_add_Click);
             // 
             // txt_env_ignore
             // 
@@ -906,7 +877,6 @@
             this.b_env_server_test.TabIndex = 11;
             this.b_env_server_test.Text = "Connect Test";
             this.b_env_server_test.UseVisualStyleBackColor = true;
-            this.b_env_server_test.Click += new System.EventHandler(this.b_env_server_test_Click);
             // 
             // combo_env_server_list
             // 
@@ -916,7 +886,6 @@
             this.combo_env_server_list.Name = "combo_env_server_list";
             this.combo_env_server_list.Size = new System.Drawing.Size(464, 20);
             this.combo_env_server_list.TabIndex = 7;
-            this.combo_env_server_list.SelectedIndexChanged += new System.EventHandler(this.combo_env_server_list_SelectedIndexChanged);
             // 
             // label4
             // 
@@ -936,7 +905,6 @@
             this.b_env_server_add.TabIndex = 7;
             this.b_env_server_add.Text = "Add Server";
             this.b_env_server_add.UseVisualStyleBackColor = true;
-            this.b_env_server_add.Click += new System.EventHandler(this.b_env_server_add_Click);
             // 
             // txt_env_server_host
             // 
@@ -955,7 +923,6 @@
             this.b_env_server_remove.TabIndex = 8;
             this.b_env_server_remove.Text = "Remove Selected";
             this.b_env_server_remove.UseVisualStyleBackColor = true;
-            this.b_env_server_remove.Click += new System.EventHandler(this.b_env_server_remove_Click);
             // 
             // label3
             // 
@@ -1011,7 +978,6 @@
             this.combo_linux_server_list.Name = "combo_linux_server_list";
             this.combo_linux_server_list.Size = new System.Drawing.Size(464, 20);
             this.combo_linux_server_list.TabIndex = 19;
-            this.combo_linux_server_list.SelectedIndexChanged += new System.EventHandler(this.combo_linux_server_list_SelectedIndexChanged);
             // 
             // txt_linux_pwd
             // 
@@ -1055,7 +1021,6 @@
             this.b_linux_server_test.TabIndex = 14;
             this.b_linux_server_test.Text = "Connect Test";
             this.b_linux_server_test.UseVisualStyleBackColor = true;
-            this.b_linux_server_test.Click += new System.EventHandler(this.b_linux_server_test_Click);
             // 
             // b_add_linux_server
             // 
@@ -1066,7 +1031,6 @@
             this.b_add_linux_server.TabIndex = 12;
             this.b_add_linux_server.Text = "Add Server";
             this.b_add_linux_server.UseVisualStyleBackColor = true;
-            this.b_add_linux_server.Click += new System.EventHandler(this.b_add_linux_server_Click);
             // 
             // b_linux_server_remove
             // 
@@ -1078,7 +1042,6 @@
             this.b_linux_server_remove.TabIndex = 13;
             this.b_linux_server_remove.Text = "Remove Selected";
             this.b_linux_server_remove.UseVisualStyleBackColor = true;
-            this.b_linux_server_remove.Click += new System.EventHandler(this.b_linux_server_remove_Click);
             // 
             // txt_linux_host
             // 
@@ -1123,7 +1086,6 @@
             this.b_env_remove.TabIndex = 4;
             this.b_env_remove.Text = "Remove Selected";
             this.b_env_remove.UseVisualStyleBackColor = true;
-            this.b_env_remove.Click += new System.EventHandler(this.b_env_remove_Click);
             // 
             // txt_env_name
             // 
@@ -1140,7 +1102,6 @@
             this.b_env_add_by_name.TabIndex = 1;
             this.b_env_add_by_name.Text = "Add By Name";
             this.b_env_add_by_name.UseVisualStyleBackColor = true;
-            this.b_env_add_by_name.Click += new System.EventHandler(this.b_env_add_by_name_Click);
             // 
             // combo_env_list
             // 
@@ -1150,7 +1111,6 @@
             this.combo_env_list.Name = "combo_env_list";
             this.combo_env_list.Size = new System.Drawing.Size(248, 20);
             this.combo_env_list.TabIndex = 0;
-            this.combo_env_list.SelectedIndexChanged += new System.EventHandler(this.combo_env_list_SelectedIndexChanged);
             // 
             // Deploy
             // 
@@ -1164,7 +1124,6 @@
             this.Name = "Deploy";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "AntDeploy";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Deploy_FormClosing);
             this.Load += new System.EventHandler(this.Deploy_Load);
             this.tabcontrol.ResumeLayout(false);
             this.page_web_iis.ResumeLayout(false);
@@ -1298,6 +1257,5 @@
         private System.Windows.Forms.Label label_iis_demo;
         private System.Windows.Forms.CheckBox checkBox_Increment_iis;
         private System.Windows.Forms.CheckBox checkBox_Increment_window_service;
-        private System.Windows.Forms.Button b_docker_rollback;
     }
 }
