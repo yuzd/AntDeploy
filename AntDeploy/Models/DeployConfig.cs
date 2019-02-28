@@ -65,7 +65,6 @@ namespace AntDeploy.Models
     /// </summary>
     public class WindowsServiveConfig
     {
-        public string StopTimeOutSeconds { get; set; }
         public string ServiceName { get; set; }
 
         public string SdkType { get; set; }

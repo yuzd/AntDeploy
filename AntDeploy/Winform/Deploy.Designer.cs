@@ -81,9 +81,6 @@
             this.label14 = new System.Windows.Forms.Label();
             this.combo_windowservice_sdk_type = new System.Windows.Forms.ComboBox();
             this.label11 = new System.Windows.Forms.Label();
-            this.label13 = new System.Windows.Forms.Label();
-            this.txt_windowservice_timeout = new System.Windows.Forms.TextBox();
-            this.label12 = new System.Windows.Forms.Label();
             this.b_windowservice_deploy = new System.Windows.Forms.Button();
             this.combo_windowservice_env = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
@@ -124,6 +121,8 @@
             this.txt_env_name = new System.Windows.Forms.TextBox();
             this.b_env_add_by_name = new System.Windows.Forms.Button();
             this.combo_env_list = new System.Windows.Forms.ComboBox();
+            this.b_windows_service_rollback = new System.Windows.Forms.Button();
+            this.b_iis_rollback = new System.Windows.Forms.Button();
             this.tabcontrol.SuspendLayout();
             this.page_web_iis.SuspendLayout();
             this.tab_iis.SuspendLayout();
@@ -163,6 +162,7 @@
             // 
             // page_web_iis
             // 
+            this.page_web_iis.Controls.Add(this.b_iis_rollback);
             this.page_web_iis.Controls.Add(this.checkBox_Increment_iis);
             this.page_web_iis.Controls.Add(this.label_iis_demo);
             this.page_web_iis.Controls.Add(this.label25);
@@ -187,7 +187,7 @@
             // checkBox_Increment_iis
             // 
             this.checkBox_Increment_iis.AutoSize = true;
-            this.checkBox_Increment_iis.Location = new System.Drawing.Point(369, 94);
+            this.checkBox_Increment_iis.Location = new System.Drawing.Point(286, 98);
             this.checkBox_Increment_iis.Name = "checkBox_Increment_iis";
             this.checkBox_Increment_iis.Size = new System.Drawing.Size(120, 16);
             this.checkBox_Increment_iis.TabIndex = 29;
@@ -210,7 +210,7 @@
             // label25
             // 
             this.label25.AutoSize = true;
-            this.label25.Location = new System.Drawing.Point(216, 128);
+            this.label25.Location = new System.Drawing.Point(95, 117);
             this.label25.Name = "label25";
             this.label25.Size = new System.Drawing.Size(137, 12);
             this.label25.TabIndex = 17;
@@ -275,7 +275,7 @@
             this.groupBox4.Controls.Add(this.txt_pool_name);
             this.groupBox4.Controls.Add(this.label16);
             this.groupBox4.Controls.Add(this.txt_iis_port);
-            this.groupBox4.Location = new System.Drawing.Point(361, 6);
+            this.groupBox4.Location = new System.Drawing.Point(286, 6);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(244, 81);
             this.groupBox4.TabIndex = 15;
@@ -317,15 +317,15 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(146, 81);
+            this.label9.Location = new System.Drawing.Point(95, 70);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(209, 12);
+            this.label9.Size = new System.Drawing.Size(185, 12);
             this.label9.TabIndex = 10;
-            this.label9.Text = "For example: Default Web Site/test";
+            this.label9.Text = "Example: Default Web Site/test";
             // 
             // b_iis_deploy
             // 
-            this.b_iis_deploy.Location = new System.Drawing.Point(498, 97);
+            this.b_iis_deploy.Location = new System.Drawing.Point(412, 94);
             this.b_iis_deploy.Name = "b_iis_deploy";
             this.b_iis_deploy.Size = new System.Drawing.Size(107, 43);
             this.b_iis_deploy.TabIndex = 9;
@@ -338,16 +338,16 @@
             this.combo_iis_env.BackColor = System.Drawing.SystemColors.Window;
             this.combo_iis_env.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_iis_env.FormattingEnabled = true;
-            this.combo_iis_env.Location = new System.Drawing.Point(148, 105);
+            this.combo_iis_env.Location = new System.Drawing.Point(97, 94);
             this.combo_iis_env.Name = "combo_iis_env";
-            this.combo_iis_env.Size = new System.Drawing.Size(193, 20);
+            this.combo_iis_env.Size = new System.Drawing.Size(161, 20);
             this.combo_iis_env.TabIndex = 8;
             this.combo_iis_env.SelectedIndexChanged += new System.EventHandler(this.combo_iis_env_SelectedIndexChanged);
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(83, 108);
+            this.label8.Location = new System.Drawing.Point(32, 97);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(59, 12);
             this.label8.TabIndex = 7;
@@ -355,15 +355,15 @@
             // 
             // txt_iis_web_site_name
             // 
-            this.txt_iis_web_site_name.Location = new System.Drawing.Point(148, 57);
+            this.txt_iis_web_site_name.Location = new System.Drawing.Point(97, 46);
             this.txt_iis_web_site_name.Name = "txt_iis_web_site_name";
-            this.txt_iis_web_site_name.Size = new System.Drawing.Size(193, 21);
+            this.txt_iis_web_site_name.Size = new System.Drawing.Size(161, 21);
             this.txt_iis_web_site_name.TabIndex = 3;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(59, 60);
+            this.label7.Location = new System.Drawing.Point(8, 49);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(83, 12);
             this.label7.TabIndex = 2;
@@ -377,7 +377,7 @@
             this.combo_iis_sdk_type.Items.AddRange(new object[] {
             "netframework",
             "netcore"});
-            this.combo_iis_sdk_type.Location = new System.Drawing.Point(148, 20);
+            this.combo_iis_sdk_type.Location = new System.Drawing.Point(97, 9);
             this.combo_iis_sdk_type.Name = "combo_iis_sdk_type";
             this.combo_iis_sdk_type.Size = new System.Drawing.Size(121, 20);
             this.combo_iis_sdk_type.TabIndex = 1;
@@ -386,7 +386,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(83, 28);
+            this.label6.Location = new System.Drawing.Point(32, 17);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(59, 12);
             this.label6.TabIndex = 0;
@@ -437,10 +437,10 @@
             this.tabControl_docker.Controls.Add(this.tabPage_docker);
             this.tabControl_docker.Controls.Add(this.tabPage_docker_log);
             this.tabControl_docker.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.tabControl_docker.Location = new System.Drawing.Point(0, 160);
+            this.tabControl_docker.Location = new System.Drawing.Point(0, 148);
             this.tabControl_docker.Name = "tabControl_docker";
             this.tabControl_docker.SelectedIndex = 0;
-            this.tabControl_docker.Size = new System.Drawing.Size(626, 262);
+            this.tabControl_docker.Size = new System.Drawing.Size(626, 274);
             this.tabControl_docker.TabIndex = 18;
             // 
             // tabPage_docker
@@ -449,7 +449,7 @@
             this.tabPage_docker.Location = new System.Drawing.Point(4, 22);
             this.tabPage_docker.Name = "tabPage_docker";
             this.tabPage_docker.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_docker.Size = new System.Drawing.Size(618, 236);
+            this.tabPage_docker.Size = new System.Drawing.Size(618, 248);
             this.tabPage_docker.TabIndex = 0;
             this.tabPage_docker.Text = "Progress";
             this.tabPage_docker.UseVisualStyleBackColor = true;
@@ -487,7 +487,7 @@
             // label24
             // 
             this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(61, 130);
+            this.label24.Location = new System.Drawing.Point(48, 115);
             this.label24.Name = "label24";
             this.label24.Size = new System.Drawing.Size(305, 12);
             this.label24.TabIndex = 15;
@@ -540,7 +540,7 @@
             // 
             // b_docker_deploy
             // 
-            this.b_docker_deploy.Location = new System.Drawing.Point(397, 103);
+            this.b_docker_deploy.Location = new System.Drawing.Point(384, 88);
             this.b_docker_deploy.Name = "b_docker_deploy";
             this.b_docker_deploy.Size = new System.Drawing.Size(106, 40);
             this.b_docker_deploy.TabIndex = 12;
@@ -553,7 +553,7 @@
             this.combo_docker_env.BackColor = System.Drawing.SystemColors.Window;
             this.combo_docker_env.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_docker_env.FormattingEnabled = true;
-            this.combo_docker_env.Location = new System.Drawing.Point(138, 103);
+            this.combo_docker_env.Location = new System.Drawing.Point(125, 88);
             this.combo_docker_env.Name = "combo_docker_env";
             this.combo_docker_env.Size = new System.Drawing.Size(193, 20);
             this.combo_docker_env.TabIndex = 11;
@@ -562,7 +562,7 @@
             // label22
             // 
             this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(61, 106);
+            this.label22.Location = new System.Drawing.Point(48, 91);
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(59, 12);
             this.label22.TabIndex = 10;
@@ -570,6 +570,7 @@
             // 
             // page_window_service
             // 
+            this.page_window_service.Controls.Add(this.b_windows_service_rollback);
             this.page_window_service.Controls.Add(this.checkBox_Increment_window_service);
             this.page_window_service.Controls.Add(this.label_windows_serivce_demo);
             this.page_window_service.Controls.Add(this.label26);
@@ -578,9 +579,6 @@
             this.page_window_service.Controls.Add(this.label14);
             this.page_window_service.Controls.Add(this.combo_windowservice_sdk_type);
             this.page_window_service.Controls.Add(this.label11);
-            this.page_window_service.Controls.Add(this.label13);
-            this.page_window_service.Controls.Add(this.txt_windowservice_timeout);
-            this.page_window_service.Controls.Add(this.label12);
             this.page_window_service.Controls.Add(this.b_windowservice_deploy);
             this.page_window_service.Controls.Add(this.combo_windowservice_env);
             this.page_window_service.Controls.Add(this.label10);
@@ -594,7 +592,7 @@
             // checkBox_Increment_window_service
             // 
             this.checkBox_Increment_window_service.AutoSize = true;
-            this.checkBox_Increment_window_service.Location = new System.Drawing.Point(361, 78);
+            this.checkBox_Increment_window_service.Location = new System.Drawing.Point(329, 20);
             this.checkBox_Increment_window_service.Name = "checkBox_Increment_window_service";
             this.checkBox_Increment_window_service.Size = new System.Drawing.Size(120, 16);
             this.checkBox_Increment_window_service.TabIndex = 30;
@@ -617,7 +615,7 @@
             // label26
             // 
             this.label26.AutoSize = true;
-            this.label26.Location = new System.Drawing.Point(194, 98);
+            this.label26.Location = new System.Drawing.Point(136, 98);
             this.label26.Name = "label26";
             this.label26.Size = new System.Drawing.Size(137, 12);
             this.label26.TabIndex = 25;
@@ -677,7 +675,7 @@
             // 
             // txt_windowservice_name
             // 
-            this.txt_windowservice_name.Location = new System.Drawing.Point(143, 37);
+            this.txt_windowservice_name.Location = new System.Drawing.Point(138, 48);
             this.txt_windowservice_name.Name = "txt_windowservice_name";
             this.txt_windowservice_name.Size = new System.Drawing.Size(167, 21);
             this.txt_windowservice_name.TabIndex = 22;
@@ -685,7 +683,7 @@
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(54, 40);
+            this.label14.Location = new System.Drawing.Point(54, 51);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(83, 12);
             this.label14.TabIndex = 21;
@@ -699,7 +697,7 @@
             this.combo_windowservice_sdk_type.Items.AddRange(new object[] {
             "netframework",
             "netcore"});
-            this.combo_windowservice_sdk_type.Location = new System.Drawing.Point(143, 7);
+            this.combo_windowservice_sdk_type.Location = new System.Drawing.Point(138, 20);
             this.combo_windowservice_sdk_type.Name = "combo_windowservice_sdk_type";
             this.combo_windowservice_sdk_type.Size = new System.Drawing.Size(121, 20);
             this.combo_windowservice_sdk_type.TabIndex = 20;
@@ -708,40 +706,15 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(78, 15);
+            this.label11.Location = new System.Drawing.Point(78, 23);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(59, 12);
             this.label11.TabIndex = 19;
             this.label11.Text = "SDK Type:";
             // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(525, 40);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(53, 12);
-            this.label13.TabIndex = 18;
-            this.label13.Text = "Senconds";
-            // 
-            // txt_windowservice_timeout
-            // 
-            this.txt_windowservice_timeout.Location = new System.Drawing.Point(455, 35);
-            this.txt_windowservice_timeout.Name = "txt_windowservice_timeout";
-            this.txt_windowservice_timeout.Size = new System.Drawing.Size(64, 21);
-            this.txt_windowservice_timeout.TabIndex = 23;
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(327, 40);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(131, 12);
-            this.label12.TabIndex = 16;
-            this.label12.Text = "Service Stop Timeout:";
-            // 
             // b_windowservice_deploy
             // 
-            this.b_windowservice_deploy.Location = new System.Drawing.Point(511, 67);
+            this.b_windowservice_deploy.Location = new System.Drawing.Point(374, 67);
             this.b_windowservice_deploy.Name = "b_windowservice_deploy";
             this.b_windowservice_deploy.Size = new System.Drawing.Size(107, 43);
             this.b_windowservice_deploy.TabIndex = 14;
@@ -1152,6 +1125,26 @@
             this.combo_env_list.TabIndex = 0;
             this.combo_env_list.SelectedIndexChanged += new System.EventHandler(this.combo_env_list_SelectedIndexChanged);
             // 
+            // b_windows_service_rollback
+            // 
+            this.b_windows_service_rollback.ForeColor = System.Drawing.Color.Red;
+            this.b_windows_service_rollback.Location = new System.Drawing.Point(541, 15);
+            this.b_windows_service_rollback.Name = "b_windows_service_rollback";
+            this.b_windows_service_rollback.Size = new System.Drawing.Size(81, 43);
+            this.b_windows_service_rollback.TabIndex = 31;
+            this.b_windows_service_rollback.Text = "RollBack";
+            this.b_windows_service_rollback.UseVisualStyleBackColor = true;
+            // 
+            // b_iis_rollback
+            // 
+            this.b_iis_rollback.ForeColor = System.Drawing.Color.Red;
+            this.b_iis_rollback.Location = new System.Drawing.Point(542, 44);
+            this.b_iis_rollback.Name = "b_iis_rollback";
+            this.b_iis_rollback.Size = new System.Drawing.Size(81, 43);
+            this.b_iis_rollback.TabIndex = 32;
+            this.b_iis_rollback.Text = "RollBack";
+            this.b_iis_rollback.UseVisualStyleBackColor = true;
+            // 
             // Deploy
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -1241,9 +1234,6 @@
         private System.Windows.Forms.Button b_windowservice_deploy;
         private System.Windows.Forms.ComboBox combo_windowservice_env;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.TextBox txt_windowservice_timeout;
-        private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.Label label13;
         private System.Windows.Forms.ComboBox combo_windowservice_sdk_type;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TextBox txt_windowservice_name;
@@ -1299,5 +1289,7 @@
         private System.Windows.Forms.CheckBox checkBox_Increment_iis;
         private System.Windows.Forms.CheckBox checkBox_Increment_window_service;
         private System.Windows.Forms.Button b_docker_rollback;
+        private System.Windows.Forms.Button b_windows_service_rollback;
+        private System.Windows.Forms.Button b_iis_rollback;
     }
 }

@@ -16,7 +16,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
         private bool _isProjectInstallService;
         private string _serviceName;
         private string _serviceExecName;
-        private int _waitForServiceStopTimeOut = 5;
+        private int _waitForServiceStopTimeOut = 15;
      
         private string _projectPublishFolder;
         private string _dateTimeFolderName;
@@ -240,11 +240,6 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
             _serviceExecName = serviceExecItem.TextValue.Trim();
 
 
-            var stopTimeOut = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("stopTimeOut"));
-            if (stopTimeOut != null && !string.IsNullOrEmpty(stopTimeOut.TextValue))
-            {
-                _waitForServiceStopTimeOut = int.Parse(stopTimeOut.TextValue);
-            }
 
             var isProjectInstallServiceItem = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("isProjectInstallService"));
             if (isProjectInstallServiceItem != null && !string.IsNullOrEmpty(isProjectInstallServiceItem.TextValue))
