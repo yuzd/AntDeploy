@@ -8,8 +8,9 @@ using System.Web;
 
 namespace AntDeployAgentWindows.MyApp
 {
-    public class PublishService : BaseWebApi
+    public class RollbackService : BaseWebApi
     {
+       
         protected override void ProcessRequest()
         {
 
@@ -17,7 +18,6 @@ namespace AntDeployAgentWindows.MyApp
             {
                 return;
             }
-
 
 
             FormHandler formHandler = new FormHandler(Context);
@@ -32,12 +32,6 @@ namespace AntDeployAgentWindows.MyApp
                 return;
             }
 
-            var file = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("publish"));
-            if (file == null || file.FileBody == null || file.FileBody.Length < 1)
-            {
-                WriteError("file required");
-                return;
-            }
 
 
             var publisher = PublishProviderFactory.GetProcessor(publishType.TextValue);
@@ -65,7 +59,7 @@ namespace AntDeployAgentWindows.MyApp
                 }
 
 
-                var publisResult = publisher.Deploy(file);
+                var publisResult = publisher.RollBack();
                 if (!string.IsNullOrEmpty(publisResult))
                 {
                     WriteError(publisResult);

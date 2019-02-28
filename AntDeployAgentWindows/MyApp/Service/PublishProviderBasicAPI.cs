@@ -57,6 +57,11 @@ namespace AntDeployAgentWindows.MyApp.Service
             }
         }
 
+        public virtual string RollBack()
+        {
+            throw new NotImplementedException();
+        }
+
 
         public string Check(FormHandler formHandler)
         {

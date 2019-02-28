@@ -73,9 +73,12 @@
     <Compile Include="Model\DeployResult.cs" />
     <Compile Include="Model\Setting.cs" />
     <Compile Include="MyApp\LoggerService.cs" />
+    <Compile Include="MyApp\RollbackService.cs" />
     <Compile Include="MyApp\PublishService.cs" />
     <Compile Include="MyApp\Service\CommonProcessor.cs" />
     <Compile Include="MyApp\Service\ICommon.cs" />
+    <Compile Include="MyApp\Service\Impl\IIsRollback.cs" />
+    <Compile Include="MyApp\Service\Impl\WindowServiceRollback.cs" />
     <Compile Include="MyApp\Service\Impl\WindowServicePublisher.cs" />
     <Compile Include="MyApp\Service\Impl\IIsPublisher.cs" />
     <Compile Include="MyApp\Service\IPublishProviderAPI.cs" />

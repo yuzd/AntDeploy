@@ -26,13 +26,13 @@ namespace AntDeployAgentWindows.Model
 
             WebRootPath = rootPath;
 
-            PublishPathFolder = Path.Combine(WebRootPath, "publisher");
+            PublishPathFolder = Path.Combine(WebRootPath, "antdeploy");
 
             if (!Directory.Exists(PublishPathFolder))
             {
                 Directory.CreateDirectory(PublishPathFolder);
             }
-
+          
 
             PublishIIsPathFolder = Path.Combine(PublishPathFolder, "iis");
 
