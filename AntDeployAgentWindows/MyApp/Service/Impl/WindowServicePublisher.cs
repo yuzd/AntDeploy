@@ -19,6 +19,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
         private int _waitForServiceStopTimeOut = 5;
      
         private string _projectPublishFolder;
+        private string _dateTimeFolderName;
 
         public override string ProviderName => "windowService";
         public override string ProjectName => _serviceName;
@@ -26,7 +27,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
         public override string DeployExcutor(FormHandler.FormItem fileItem)
         {
             var projectPath = Path.Combine(Setting.PublishWindowServicePathFolder, _serviceName);
-            _projectPublishFolder = Path.Combine(projectPath, DateTime.Now.ToString("yyyyMMddHHmmss"));
+            _projectPublishFolder = Path.Combine(projectPath, !string.IsNullOrEmpty(_dateTimeFolderName) ? _dateTimeFolderName : DateTime.Now.ToString("yyyyMMddHHmmss"));
             EnsureProjectFolder(projectPath);
             EnsureProjectFolder(_projectPublishFolder);
 
@@ -249,6 +250,12 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
             if (isProjectInstallServiceItem != null && !string.IsNullOrEmpty(isProjectInstallServiceItem.TextValue))
             {
                 _isProjectInstallService = isProjectInstallServiceItem.TextValue.Equals("yes");
+            }
+
+            var dateTimeFolderName = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("deployFolderName"));
+            if (dateTimeFolderName != null && !string.IsNullOrEmpty(dateTimeFolderName.TextValue))
+            {
+                _dateTimeFolderName = dateTimeFolderName.TextValue;
             }
 
             return string.Empty;

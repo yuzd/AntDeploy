@@ -1138,6 +1138,7 @@ namespace AntDeploy.Winform
                     }
                     this.nlog_iis.Info("package success");
                     var loggerId = Guid.NewGuid().ToString("N");
+                    var dateTimeFolderName = DateTime.Now.ToString("yyyyMMddHHmmss");
                     //执行 上传
                     this.nlog_iis.Info("Deploy Start");
                     var index = 0;
@@ -1169,6 +1170,7 @@ namespace AntDeploy.Winform
                         httpRequestClient.SetFieldValue("id", loggerId);
                         httpRequestClient.SetFieldValue("poolName", PoolName);
                         httpRequestClient.SetFieldValue("webSiteName", DeployConfig.IIsConfig.WebSiteName);
+                        httpRequestClient.SetFieldValue("deployFolderName", dateTimeFolderName);
                         httpRequestClient.SetFieldValue("Token", server.Token);
                         httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream", zipBytes);
                         System.Net.WebSockets.Managed.ClientWebSocket webSocket = null;
@@ -1939,6 +1941,7 @@ namespace AntDeploy.Winform
                      this.nlog_windowservice.Info("Deploy Start");
                      var index = 0;
                      var allSuccess = true;
+                     var dateTimeFolderName = DateTime.Now.ToString("yyyyMMddHHmmss");
                      foreach (var server in serverList)
                      {
                          if (index != 0)//因为编译和打包只会占用第一台服务器的时间
@@ -1966,6 +1969,7 @@ namespace AntDeploy.Winform
                          httpRequestClient.SetFieldValue("sdkType", DeployConfig.WindowsServiveConfig.SdkType);
                          httpRequestClient.SetFieldValue("isProjectInstallService", isProjectInstallService ? "yes" : "no");
                          httpRequestClient.SetFieldValue("execFilePath", execFilePath);
+                         httpRequestClient.SetFieldValue("deployFolderName", dateTimeFolderName);
                          httpRequestClient.SetFieldValue("stopTimeOut", DeployConfig.WindowsServiveConfig.StopTimeOutSeconds);
                          httpRequestClient.SetFieldValue("Token", server.Token);
                          httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream", zipBytes);
@@ -2739,6 +2743,7 @@ namespace AntDeploy.Winform
                     {
                         PrintCommonLog(this.nlog_docker);
                         this.nlog_docker.Info("Start rollBack from version:" + rolleback.SelectRollBackVersion);
+                        this.tabControl_docker.SelectedIndex = 0;
                         DoRollBack(serverList, ENTRYPOINT, SDKVersion, rolleback.SelectRollBackVersion);
                     }
                 });
