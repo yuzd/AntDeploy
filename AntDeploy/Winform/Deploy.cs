@@ -1641,6 +1641,7 @@ namespace AntDeploy.Winform
 
                 this.b_iis_rollback.Enabled = flag;
                 this.b_iis_deploy.Enabled = flag;
+                this.checkBox_Increment_iis.Enabled = flag;
                 this.txt_iis_web_site_name.Enabled = flag;
                 this.txt_iis_port.Enabled = flag;
                 this.txt_pool_name.Enabled = flag;
@@ -1928,6 +1929,7 @@ namespace AntDeploy.Winform
             this.BeginInvokeLambda(() =>
             {
                 this.b_windows_service_rollback.Enabled = flag;
+                this.checkBox_Increment_window_service.Enabled = flag;
                 this.b_windowservice_deploy.Enabled = flag;
                 this.combo_windowservice_env.Enabled = flag;
                 this.combo_windowservice_sdk_type.Enabled = flag;
