@@ -26,6 +26,8 @@ namespace AntDeployAgentWindows.WebApiCore
 
             //将不同的请求路径交给不同的处理模块处理
             if (path == "/publish" || path.StartsWith("/publish/")) return new PublishService();
+            if (path == "/rollback" || path.StartsWith("/rollback/")) return new RollbackService();
+            if (path == "/version" || path.StartsWith("/version/")) return new VersionService();
             if (path == "/logger" || path.StartsWith("/logger/")) return new LoggerService();
 
 

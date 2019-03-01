@@ -1,8 +1,10 @@
 ﻿using Microsoft.Web.Administration;
 using Microsoft.Win32;
 using System;
+using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
+using System.Text.RegularExpressions;
 
 namespace AntDeployAgentWindows.Util
 {
@@ -299,6 +301,19 @@ namespace AntDeployAgentWindows.Util
                 log("get iis info err:" + ex.Message);
                 return null;
             }
+        }
+
+
+        public static string GetCorrectFolderName(string name)
+        {
+            foreach (char c in Path.GetInvalidFileNameChars())
+            {
+                name = name.Replace(System.Char.ToString(c), "");
+            }
+            var aa = Regex.Replace(name, "[ \\[ \\] \\^ \\-_*×――(^)（^）$%~!@#$…&%￥—+=<>《》!！??？:：•`·、。，；,.;\"‘’“”-]", "");
+            aa = aa.Replace(" ", "").Replace("　", "");
+            aa = Regex.Replace(aa, @"[~!@#\$%\^&\*\(\)\+=\|\\\}\]\{\[:;<,>\?\/""]+", "");
+            return aa;
         }
     }
 }

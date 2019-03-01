@@ -13,7 +13,7 @@ namespace AntDeployAgentWindows.MyApp
         protected override void ProcessRequest()
         {
 
-            if (CheckToken())
+            if (!CheckToken())
             {
                 return;
             }
@@ -23,7 +23,12 @@ namespace AntDeployAgentWindows.MyApp
             FormHandler formHandler = new FormHandler(Context);
 
 
-
+            var token = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("Token"));
+            if (token == null || string.IsNullOrEmpty(token.TextValue) || (!string.IsNullOrEmpty(Token)&&!token.TextValue.Equals(Token)))
+            {
+                WriteError("token required");
+                return;
+            }
 
             var publishType = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("publishType"));
             if (publishType == null || string.IsNullOrEmpty(publishType.TextValue))

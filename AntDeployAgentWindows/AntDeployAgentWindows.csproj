@@ -69,10 +69,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\GetVersionVm.cs" />
     <Compile Include="Model\LoggerModel.cs" />
     <Compile Include="Model\DeployResult.cs" />
     <Compile Include="Model\Setting.cs" />
     <Compile Include="MyApp\LoggerService.cs" />
+    <Compile Include="MyApp\VersionService.cs" />
     <Compile Include="MyApp\RollbackService.cs" />
     <Compile Include="MyApp\PublishService.cs" />
     <Compile Include="MyApp\Service\CommonProcessor.cs" />

@@ -198,7 +198,7 @@ namespace AntDeploy.Util
                 //获取该目录下的所有日期文件夹
 
                 var folderList = _sftpClient.ListDirectory(destinationFolder).Where(r => r.IsDirectory).
-                    OrderByDescending(r => r.LastWriteTime).Take(10).ToList();
+                    OrderByDescending(r => r.LastWriteTime).Take(11).ToList();
                 foreach (var folder in folderList)
                 {
                     if ((folder.Name == ".") || (folder.Name == "..")) continue;

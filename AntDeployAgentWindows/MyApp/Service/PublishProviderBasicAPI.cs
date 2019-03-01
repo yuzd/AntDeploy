@@ -149,17 +149,6 @@ namespace AntDeployAgentWindows.MyApp.Service
             }
         }
 
-        protected string getCorrectFolderName(string name)
-        {
-            foreach (char c in Path.GetInvalidFileNameChars())
-            {
-                name = name.Replace(System.Char.ToString(c), "");
-            }
-            var aa = Regex.Replace(name, "[ \\[ \\] \\^ \\-_*×――(^)（^）$%~!@#$…&%￥—+=<>《》!！??？:：•`·、。，；,.;\"‘’“”-]", "");
-            aa = aa.Replace(" ", "").Replace("　", "");
-            aa = Regex.Replace(aa, @"[~!@#\$%\^&\*\(\)\+=\|\\\}\]\{\[:;<,>\?\/""]+", "");
-            return aa;
-        }
     }
 
 

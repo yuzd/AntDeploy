@@ -179,7 +179,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 return "rollback version is required";
             }
 
-            _projectName = getCorrectFolderName(_webSiteName);
+            _projectName = IISHelper.GetCorrectFolderName(_webSiteName);
             return string.Empty;
         }
 

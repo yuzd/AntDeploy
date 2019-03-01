@@ -204,7 +204,7 @@ namespace AntDeploy.Winform
                     this.txt_windowservice_name.Text = DeployConfig.WindowsServiveConfig.ServiceName;
                 }
 
-               
+
             }
 
             if (DeployConfig.DockerConfig != null)
@@ -1161,7 +1161,7 @@ namespace AntDeploy.Winform
                         this.nlog_iis.Info($"Start Uppload,Host:{server.Host}");
                         HttpRequestClient httpRequestClient = new HttpRequestClient();
                         httpRequestClient.SetFieldValue("publishType", "iis");
-                        httpRequestClient.SetFieldValue("isIncrement", this.PluginConfig.IISEnableIncrement?"true":"");
+                        httpRequestClient.SetFieldValue("isIncrement", this.PluginConfig.IISEnableIncrement ? "true" : "");
                         httpRequestClient.SetFieldValue("sdkType", DeployConfig.IIsConfig.SdkType);
                         httpRequestClient.SetFieldValue("port", Port);
                         httpRequestClient.SetFieldValue("id", loggerId);
@@ -1273,6 +1273,273 @@ namespace AntDeploy.Winform
 
         }
 
+        private void b_iis_rollback_Click(object sender, EventArgs e)
+        {
+            //判断当前项目是否是web项目
+            bool isWeb = ProjectHelper.IsDotNetCoreProject(_project) || ProjectHelper.IsWebProject(_project);
+
+            if (!isWeb)
+            {
+                //检查工程文件里面是否含有 WebProjectProperties字样
+                if (!string.IsNullOrEmpty(ProjectPath) && File.Exists(ProjectPath))
+                {
+                    var fileInfo = File.ReadAllText(ProjectPath);
+                    if (fileInfo.Contains("<WebProjectProperties>") && fileInfo.Contains("</WebProjectProperties>"))
+                    {
+                        isWeb = true;
+                    }
+                }
+            }
+            if (!isWeb)
+            {
+                MessageBox.Show("current project is not web project!");
+                return;
+            }
+            
+            var websiteName = this.txt_iis_web_site_name.Text.Trim();
+            if (websiteName.Length < 1)
+            {
+                MessageBox.Show("please input web site name");
+                return;
+            }
+
+
+            var envName = this.combo_iis_env.SelectedItem as string;
+            if (string.IsNullOrEmpty(envName))
+            {
+                MessageBox.Show("please select env");
+                return;
+            }
+
+            var serverList = DeployConfig.Env.Where(r => r.Name.Equals(envName)).Select(r => r.ServerList)
+                .FirstOrDefault();
+
+            if (serverList == null || !serverList.Any())
+            {
+                MessageBox.Show("selected env have no server set yet!");
+                return;
+            }
+
+
+            var serverHostList = string.Join(Environment.NewLine, serverList.Select(r => r.Host).ToList());
+
+            var confirmResult = MessageBox.Show("Are you sure to rollback to Server: " + Environment.NewLine + serverHostList,
+                "Confirm Deploy!!",
+                MessageBoxButtons.YesNo);
+            if (confirmResult != DialogResult.Yes)
+            {
+                return;
+            }
+
+            combo_iis_env_SelectedIndexChanged(null, null);
+
+            this.rich_iis_log.Text = "";
+            DeployConfig.IIsConfig.WebSiteName = websiteName;
+            this.tab_iis.SelectedIndex = 1;
+            new Task(async () =>
+            {
+                var versionList = new List<string>();
+                try
+                {
+                    Enable(false, true);
+                    var firstServer = serverList.First();
+
+                    if (string.IsNullOrEmpty(firstServer.Host))
+                    {
+                        this.nlog_iis.Warn($"Server Host is Empty!");
+                        return;
+                    }
+
+                    if (string.IsNullOrEmpty(firstServer.Token))
+                    {
+                        this.nlog_iis.Warn($"Server Token is Empty!");
+                        return;
+                    }
+
+                    this.nlog_docker.Info("Start get rollBack version list from first Server:" + firstServer.Host);
+
+                    var getVersionResult = await WebUtil.HttpPostAsync<GetVersionResult>($"http://{firstServer.Host}/version", new {
+                        Token = firstServer.Token,
+                        Type = "iis",
+                        Name = DeployConfig.IIsConfig.WebSiteName
+                    },nlog_iis);
+
+                    if (getVersionResult == null)
+                    {
+                        this.nlog_iis.Warn($"get rollBack version list fail");
+                        return;
+                    }
+
+                    if (!string.IsNullOrEmpty(getVersionResult.Msg))
+                    {
+                        this.nlog_iis.Warn($"get rollBack version list failL" + getVersionResult.Msg);
+                        return;
+                    }
+
+                    versionList = getVersionResult.Data;
+                }
+                catch (Exception ex1)
+                {
+                    this.nlog_iis.Error(ex1);
+                    return;
+                }
+                finally
+                {
+                    Enable(true);
+                }
+
+                if (versionList == null || versionList.Count < 1)
+                {
+                    this.nlog_iis.Error($"get rollBack version list count = 0");
+                    return;
+                }
+
+                this.BeginInvokeLambda(() =>
+                {
+                    RollBack rolleback = new RollBack(versionList);
+                    var r = rolleback.ShowDialog();
+                    if (r == DialogResult.Cancel)
+                    {
+                        this.nlog_iis.Info($"rollback canceled!");
+                        return;
+                    }
+                    else
+                    {
+                        PrintCommonLog(this.nlog_iis);
+                        this.nlog_docker.Info("Start rollBack from version:" + rolleback.SelectRollBackVersion);
+                        this.tab_iis.SelectedIndex = 0;
+                        DoIIsRollback(serverList, rolleback.SelectRollBackVersion);
+                    }
+                });
+
+            }).Start();
+                
+        }
+
+
+        private void DoIIsRollback(List<Server> serverList,string dateTimeFolderName)
+        {
+            new Task(async () =>
+            {
+                this.nlog_iis.Info("Start Rollback");
+                Enable(false,true);
+                try
+                {
+                    
+                    var loggerId = Guid.NewGuid().ToString("N");
+                    
+                    this.nlog_iis.Info("Rollback Start");
+
+                    foreach (var server in serverList)
+                    {
+                        BuildEnd(this.tabPage_progress, server.Host);
+                        UpdatePackageProgress(this.tabPage_progress, server.Host, 100);
+                        UpdateUploadProgress(this.tabPage_progress, ProgressCurrentHost, 100);
+
+                      
+                        if (string.IsNullOrEmpty(server.Token))
+                        {
+                            this.nlog_iis.Warn($"{server.Host} Rollback skip,Token is null or empty!");
+                            UpdateDeployProgress(this.tabPage_progress, server.Host, false);
+                            continue;
+                        }
+
+                        HttpRequestClient httpRequestClient = new HttpRequestClient();
+                        httpRequestClient.SetFieldValue("publishType", "iis_rollback");
+                        httpRequestClient.SetFieldValue("id", loggerId);
+                        httpRequestClient.SetFieldValue("webSiteName", DeployConfig.IIsConfig.WebSiteName);
+                        httpRequestClient.SetFieldValue("deployFolderName", dateTimeFolderName);
+                        httpRequestClient.SetFieldValue("Token", server.Token);
+                        System.Net.WebSockets.Managed.ClientWebSocket webSocket = null;
+                        HttpLogger HttpLogger = null;
+                        var haveError = false;
+                        try
+                        {
+                            var hostKey = "";
+
+                            HttpLogger = new HttpLogger
+                            {
+                                Key = loggerId,
+                                Url = $"http://{server.Host}/logger?key=" + loggerId
+                            };
+                            webSocket = await WebSocketHelper.Connect($"ws://{server.Host}/socket", (receiveMsg) =>
+                            {
+                                if (!string.IsNullOrEmpty(receiveMsg))
+                                {
+                                    if (receiveMsg.StartsWith("hostKey@"))
+                                    {
+                                        hostKey = receiveMsg.Replace("hostKey@", "");
+                                    }
+                                    else
+                                    {
+                                        if (receiveMsg.Contains("【Error】"))
+                                        {
+                                            haveError = true;
+                                            this.nlog_iis.Warn($"【Server】{receiveMsg}");
+                                        }
+                                        else
+                                        {
+                                            this.nlog_iis.Info($"【Server】{receiveMsg}");
+                                        }
+                                    }
+                                }
+                            }, HttpLogger);
+
+                            httpRequestClient.SetFieldValue("wsKey", hostKey);
+
+                            var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/rollback",
+                                (client) => {  });
+
+                            if (haveError)
+                            {
+                                this.nlog_iis.Error($"Host:{server.Host},Rollback Fail,Skip to Next");
+                                UpdateDeployProgress(this.tabPage_progress, server.Host, false);
+                            }
+                            else
+                            {
+                                if (uploadResult.Item1)
+                                {
+                                    this.nlog_iis.Info($"Host:{server.Host},Response:{uploadResult.Item2}");
+                                    UpdateDeployProgress(this.tabPage_progress, server.Host, true);
+                                }
+                                else
+                                {
+                                    this.nlog_iis.Error($"Host:{server.Host},Response:{uploadResult.Item2},Skip to Next");
+                                    UpdateDeployProgress(this.tabPage_progress, server.Host, false);
+                                }
+                            }
+
+                        }
+                        catch (Exception ex)
+                        {
+                            this.nlog_iis.Error($"Fail Rollback,Host:{server.Host},Response:{ex.Message},Skip to Next");
+                            UpdateDeployProgress(this.tabPage_progress, server.Host, false);
+                        }
+                        finally
+                        {
+                            await WebSocketHelper.SendText(webSocket, "close");
+                            webSocket?.Dispose();
+                            HttpLogger?.Dispose();
+
+                        }
+
+                    }
+                   
+                }
+                catch (Exception ex1)
+                {
+                    this.nlog_iis.Error(ex1);
+                }
+                finally
+                {
+                    Enable(true);
+                }
+
+
+            }).Start();
+        }
+
+
         private void ClientOnUploadProgressChanged(object sender, UploadProgressChangedEventArgs e)
         {
             if (e.ProgressPercentage > ProgressPercentage && e.ProgressPercentage != 100)
@@ -1284,7 +1551,7 @@ namespace AntDeploy.Winform
             }
         }
 
-        private void Enable(bool flag)
+        private void Enable(bool flag,bool ignore = false)
         {
             this.BeginInvokeLambda(() =>
             {
@@ -1306,6 +1573,7 @@ namespace AntDeploy.Winform
                 else
                 {
                     tabcontrol.Tag = "0";
+                    if (ignore) return;
                     if (this.tabPage_progress.Tag is Dictionary<string, ProgressBox> progressBoxList)
                     {
                         foreach (var box in progressBoxList)
@@ -1942,7 +2210,7 @@ namespace AntDeploy.Winform
                          this.nlog_windowservice.Info($"Start Uppload,Host:{server.Host}");
                          HttpRequestClient httpRequestClient = new HttpRequestClient();
                          httpRequestClient.SetFieldValue("publishType", "windowservice");
-                         httpRequestClient.SetFieldValue("isIncrement", this.PluginConfig.WindowsServiceEnableIncrement?"true":"");
+                         httpRequestClient.SetFieldValue("isIncrement", this.PluginConfig.WindowsServiceEnableIncrement ? "true" : "");
                          httpRequestClient.SetFieldValue("serviceName", serviceName);
                          httpRequestClient.SetFieldValue("id", loggerId);
                          httpRequestClient.SetFieldValue("sdkType", DeployConfig.WindowsServiveConfig.SdkType);
@@ -2052,7 +2320,10 @@ namespace AntDeploy.Winform
              }).Start();
         }
 
+        private void b_windows_service_rollback_Click(object sender, EventArgs e)
+        {
 
+        }
         #endregion
 
         #region Common
@@ -2627,7 +2898,7 @@ namespace AntDeploy.Winform
                 try
                 {
 
-                    EnableForDocker(false,true);
+                    EnableForDocker(false, true);
 
                     var firstServer = serverList.First();
 
@@ -2745,7 +3016,7 @@ namespace AntDeploy.Winform
 
                 try
                 {
-                    EnableForDocker(false,true);
+                    EnableForDocker(false, true);
 
                     foreach (var server in serverList)
                     {
@@ -2843,7 +3114,7 @@ namespace AntDeploy.Winform
 
             }).Start();
         }
-        private void EnableForDocker(bool flag,bool ignore = false)
+        private void EnableForDocker(bool flag, bool ignore = false)
         {
             this.BeginInvokeLambda(() =>
             {
@@ -2866,7 +3137,7 @@ namespace AntDeploy.Winform
                 {
 
                     tabcontrol.Tag = "1";
-                    if(ignore) return;
+                    if (ignore) return;
                     if (this.tabPage_docker.Tag is Dictionary<string, ProgressBox> progressBoxList)
                     {
                         foreach (var box in progressBoxList)
@@ -2953,6 +3224,8 @@ namespace AntDeploy.Winform
 
 
         }
+
+
 
 
 

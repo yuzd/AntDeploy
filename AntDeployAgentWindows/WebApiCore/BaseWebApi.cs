@@ -46,11 +46,6 @@ namespace AntDeployAgentWindows.WebApiCore
 
         public bool CheckToken()
         {
-            if (string.IsNullOrEmpty(Token))
-            {
-                return false;
-            }
-
             if (Request.Method.ToUpper() != "POST")
             {
                 Response.ContentType = "text/plain";

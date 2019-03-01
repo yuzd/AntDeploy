@@ -352,7 +352,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 _isIncrement = true;
             }
 
-            _projectName = getCorrectFolderName(_webSiteName);
+            _projectName = IISHelper.GetCorrectFolderName(_webSiteName);
             return string.Empty;
         }
 

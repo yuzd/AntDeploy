@@ -58,6 +58,7 @@
     <Compile Include="EditProjectPackage.cs" />
     <Compile Include="Ids.cs" />
     <Compile Include="Models\DeployConfig.cs" />
+    <Compile Include="Models\GetVersionResult.cs" />
     <Compile Include="Models\ProgressBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -71,6 +72,7 @@
     <Compile Include="Util\HttpRequestClient.cs" />
     <Compile Include="Util\SSHClient.cs" />
     <Compile Include="Util\WebSocketHelper.cs" />
+    <Compile Include="Util\WebUtil.cs" />
     <Compile Include="Util\ZipHelper.cs" />
     <Compile Include="Vsix.cs" />
     <Compile Include="VSPackage.Designer.cs">
