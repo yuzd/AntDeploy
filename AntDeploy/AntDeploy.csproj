@@ -57,8 +57,14 @@
     <Compile Include="Commands\EditProjectsCommand.cs" />
     <Compile Include="EditProjectPackage.cs" />
     <Compile Include="Ids.cs" />
+    <Compile Include="Models\AltoButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Models\DeployConfig.cs" />
     <Compile Include="Models\GetVersionResult.cs" />
+    <Compile Include="Models\Helpers\ExtensionMethods.cs" />
+    <Compile Include="Models\Helpers\RoundedRectangleF.cs" />
+    <Compile Include="Models\Helpers\Transparenter.cs" />
     <Compile Include="Models\ProgressBox.cs">
       <SubType>Component</SubType>
     </Compile>

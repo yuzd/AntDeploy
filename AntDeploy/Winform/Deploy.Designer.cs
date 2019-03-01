@@ -30,9 +30,7 @@
         {
             this.tabcontrol = new System.Windows.Forms.TabControl();
             this.page_web_iis = new System.Windows.Forms.TabPage();
-            this.b_iis_rollback = new System.Windows.Forms.Button();
             this.checkBox_Increment_iis = new System.Windows.Forms.CheckBox();
-            this.label_iis_demo = new System.Windows.Forms.Label();
             this.label25 = new System.Windows.Forms.Label();
             this.tab_iis = new System.Windows.Forms.TabControl();
             this.tabPage_progress = new System.Windows.Forms.TabPage();
@@ -52,9 +50,8 @@
             this.label7 = new System.Windows.Forms.Label();
             this.combo_iis_sdk_type = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
+            this.label_iis_demo = new System.Windows.Forms.Label();
             this.page_docker = new System.Windows.Forms.TabPage();
-            this.b_docker_rollback = new System.Windows.Forms.Button();
-            this.label_docker_demo = new System.Windows.Forms.Label();
             this.tabControl_docker = new System.Windows.Forms.TabControl();
             this.tabPage_docker = new System.Windows.Forms.TabPage();
             this.progress_docker_tip = new System.Windows.Forms.Label();
@@ -69,8 +66,8 @@
             this.b_docker_deploy = new System.Windows.Forms.Button();
             this.combo_docker_env = new System.Windows.Forms.ComboBox();
             this.label22 = new System.Windows.Forms.Label();
+            this.label_docker_demo = new System.Windows.Forms.Label();
             this.page_window_service = new System.Windows.Forms.TabPage();
-            this.b_windows_service_rollback = new System.Windows.Forms.Button();
             this.checkBox_Increment_window_service = new System.Windows.Forms.CheckBox();
             this.label_windows_serivce_demo = new System.Windows.Forms.Label();
             this.label26 = new System.Windows.Forms.Label();
@@ -123,6 +120,9 @@
             this.txt_env_name = new System.Windows.Forms.TextBox();
             this.b_env_add_by_name = new System.Windows.Forms.Button();
             this.combo_env_list = new System.Windows.Forms.ComboBox();
+            this.b_iis_rollback = new AltoControls.AltoButton();
+            this.b_docker_rollback = new AltoControls.AltoButton();
+            this.b_windows_service_rollback = new AltoControls.AltoButton();
             this.tabcontrol.SuspendLayout();
             this.page_web_iis.SuspendLayout();
             this.tab_iis.SuspendLayout();
@@ -184,17 +184,6 @@
             this.page_web_iis.Text = "IIS_Web";
             this.page_web_iis.UseVisualStyleBackColor = true;
             // 
-            // b_iis_rollback
-            // 
-            this.b_iis_rollback.ForeColor = System.Drawing.Color.Red;
-            this.b_iis_rollback.Location = new System.Drawing.Point(542, 3);
-            this.b_iis_rollback.Name = "b_iis_rollback";
-            this.b_iis_rollback.Size = new System.Drawing.Size(81, 43);
-            this.b_iis_rollback.TabIndex = 32;
-            this.b_iis_rollback.Text = "RollBack";
-            this.b_iis_rollback.UseVisualStyleBackColor = true;
-            this.b_iis_rollback.Click += new System.EventHandler(this.b_iis_rollback_Click);
-            // 
             // checkBox_Increment_iis
             // 
             this.checkBox_Increment_iis.AutoSize = true;
@@ -205,18 +194,6 @@
             this.checkBox_Increment_iis.Text = "Increment Deploy";
             this.checkBox_Increment_iis.UseVisualStyleBackColor = true;
             this.checkBox_Increment_iis.CheckedChanged += new System.EventHandler(this.checkBox_Increment_iis_CheckedChanged);
-            // 
-            // label_iis_demo
-            // 
-            this.label_iis_demo.AutoSize = true;
-            this.label_iis_demo.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.label_iis_demo.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.label_iis_demo.Location = new System.Drawing.Point(8, 5);
-            this.label_iis_demo.Name = "label_iis_demo";
-            this.label_iis_demo.Size = new System.Drawing.Size(29, 12);
-            this.label_iis_demo.TabIndex = 28;
-            this.label_iis_demo.Text = "Demo";
-            this.label_iis_demo.Click += new System.EventHandler(this.label_iis_demo_Click);
             // 
             // label25
             // 
@@ -403,6 +380,18 @@
             this.label6.TabIndex = 0;
             this.label6.Text = "SDK Type:";
             // 
+            // label_iis_demo
+            // 
+            this.label_iis_demo.AutoSize = true;
+            this.label_iis_demo.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.label_iis_demo.ForeColor = System.Drawing.Color.RoyalBlue;
+            this.label_iis_demo.Location = new System.Drawing.Point(5, 3);
+            this.label_iis_demo.Name = "label_iis_demo";
+            this.label_iis_demo.Size = new System.Drawing.Size(29, 12);
+            this.label_iis_demo.TabIndex = 28;
+            this.label_iis_demo.Text = "Demo";
+            this.label_iis_demo.Click += new System.EventHandler(this.label_iis_demo_Click);
+            // 
             // page_docker
             // 
             this.page_docker.Controls.Add(this.b_docker_rollback);
@@ -419,29 +408,6 @@
             this.page_docker.TabIndex = 2;
             this.page_docker.Text = "Docker";
             this.page_docker.UseVisualStyleBackColor = true;
-            // 
-            // b_docker_rollback
-            // 
-            this.b_docker_rollback.ForeColor = System.Drawing.Color.Red;
-            this.b_docker_rollback.Location = new System.Drawing.Point(542, 3);
-            this.b_docker_rollback.Name = "b_docker_rollback";
-            this.b_docker_rollback.Size = new System.Drawing.Size(81, 43);
-            this.b_docker_rollback.TabIndex = 28;
-            this.b_docker_rollback.Text = "RollBack";
-            this.b_docker_rollback.UseVisualStyleBackColor = true;
-            this.b_docker_rollback.Click += new System.EventHandler(this.btn_docker_rollback_Click);
-            // 
-            // label_docker_demo
-            // 
-            this.label_docker_demo.AutoSize = true;
-            this.label_docker_demo.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.label_docker_demo.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.label_docker_demo.Location = new System.Drawing.Point(2, 0);
-            this.label_docker_demo.Name = "label_docker_demo";
-            this.label_docker_demo.Size = new System.Drawing.Size(29, 12);
-            this.label_docker_demo.TabIndex = 27;
-            this.label_docker_demo.Text = "Demo";
-            this.label_docker_demo.Click += new System.EventHandler(this.label_docker_demo_Click);
             // 
             // tabControl_docker
             // 
@@ -579,6 +545,18 @@
             this.label22.TabIndex = 10;
             this.label22.Text = "Env Name:";
             // 
+            // label_docker_demo
+            // 
+            this.label_docker_demo.AutoSize = true;
+            this.label_docker_demo.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.label_docker_demo.ForeColor = System.Drawing.Color.RoyalBlue;
+            this.label_docker_demo.Location = new System.Drawing.Point(2, 0);
+            this.label_docker_demo.Name = "label_docker_demo";
+            this.label_docker_demo.Size = new System.Drawing.Size(29, 12);
+            this.label_docker_demo.TabIndex = 27;
+            this.label_docker_demo.Text = "Demo";
+            this.label_docker_demo.Click += new System.EventHandler(this.label_docker_demo_Click);
+            // 
             // page_window_service
             // 
             this.page_window_service.Controls.Add(this.b_windows_service_rollback);
@@ -599,17 +577,6 @@
             this.page_window_service.TabIndex = 3;
             this.page_window_service.Text = "WindowsService";
             this.page_window_service.UseVisualStyleBackColor = true;
-            // 
-            // b_windows_service_rollback
-            // 
-            this.b_windows_service_rollback.ForeColor = System.Drawing.Color.Red;
-            this.b_windows_service_rollback.Location = new System.Drawing.Point(541, 3);
-            this.b_windows_service_rollback.Name = "b_windows_service_rollback";
-            this.b_windows_service_rollback.Size = new System.Drawing.Size(81, 43);
-            this.b_windows_service_rollback.TabIndex = 31;
-            this.b_windows_service_rollback.Text = "RollBack";
-            this.b_windows_service_rollback.UseVisualStyleBackColor = true;
-            this.b_windows_service_rollback.Click += new System.EventHandler(this.b_windows_service_rollback_Click);
             // 
             // checkBox_Increment_window_service
             // 
@@ -1147,6 +1114,69 @@
             this.combo_env_list.TabIndex = 0;
             this.combo_env_list.SelectedIndexChanged += new System.EventHandler(this.combo_env_list_SelectedIndexChanged);
             // 
+            // b_iis_rollback
+            // 
+            this.b_iis_rollback.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
+            this.b_iis_rollback.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
+            this.b_iis_rollback.BackColor = System.Drawing.Color.Transparent;
+            this.b_iis_rollback.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.b_iis_rollback.Font = new System.Drawing.Font("Comic Sans MS", 10F, System.Drawing.FontStyle.Bold);
+            this.b_iis_rollback.ForeColor = System.Drawing.Color.Black;
+            this.b_iis_rollback.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.b_iis_rollback.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.b_iis_rollback.Location = new System.Drawing.Point(561, 5);
+            this.b_iis_rollback.Name = "b_iis_rollback";
+            this.b_iis_rollback.Radius = 10;
+            this.b_iis_rollback.Size = new System.Drawing.Size(62, 29);
+            this.b_iis_rollback.Stroke = false;
+            this.b_iis_rollback.StrokeColor = System.Drawing.Color.Gray;
+            this.b_iis_rollback.TabIndex = 33;
+            this.b_iis_rollback.Text = "RollBack";
+            this.b_iis_rollback.Transparency = false;
+            this.b_iis_rollback.Click += new System.EventHandler(this.b_iis_rollback_Click);
+            // 
+            // b_docker_rollback
+            // 
+            this.b_docker_rollback.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
+            this.b_docker_rollback.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
+            this.b_docker_rollback.BackColor = System.Drawing.Color.Transparent;
+            this.b_docker_rollback.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.b_docker_rollback.Font = new System.Drawing.Font("Comic Sans MS", 10F, System.Drawing.FontStyle.Bold);
+            this.b_docker_rollback.ForeColor = System.Drawing.Color.Black;
+            this.b_docker_rollback.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.b_docker_rollback.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.b_docker_rollback.Location = new System.Drawing.Point(562, 3);
+            this.b_docker_rollback.Name = "b_docker_rollback";
+            this.b_docker_rollback.Radius = 10;
+            this.b_docker_rollback.Size = new System.Drawing.Size(60, 30);
+            this.b_docker_rollback.Stroke = false;
+            this.b_docker_rollback.StrokeColor = System.Drawing.Color.Gray;
+            this.b_docker_rollback.TabIndex = 34;
+            this.b_docker_rollback.Text = "RollBack";
+            this.b_docker_rollback.Transparency = false;
+            this.b_docker_rollback.Click += new System.EventHandler(this.btn_docker_rollback_Click);
+            // 
+            // b_windows_service_rollback
+            // 
+            this.b_windows_service_rollback.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
+            this.b_windows_service_rollback.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
+            this.b_windows_service_rollback.BackColor = System.Drawing.Color.Transparent;
+            this.b_windows_service_rollback.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.b_windows_service_rollback.Font = new System.Drawing.Font("Comic Sans MS", 10F, System.Drawing.FontStyle.Bold);
+            this.b_windows_service_rollback.ForeColor = System.Drawing.Color.Black;
+            this.b_windows_service_rollback.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.b_windows_service_rollback.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.b_windows_service_rollback.Location = new System.Drawing.Point(563, 5);
+            this.b_windows_service_rollback.Name = "b_windows_service_rollback";
+            this.b_windows_service_rollback.Radius = 10;
+            this.b_windows_service_rollback.Size = new System.Drawing.Size(60, 30);
+            this.b_windows_service_rollback.Stroke = false;
+            this.b_windows_service_rollback.StrokeColor = System.Drawing.Color.Gray;
+            this.b_windows_service_rollback.TabIndex = 35;
+            this.b_windows_service_rollback.Text = "RollBack";
+            this.b_windows_service_rollback.Transparency = false;
+            this.b_windows_service_rollback.Click += new System.EventHandler(this.b_windows_service_rollback_Click);
+            // 
             // Deploy
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -1290,8 +1320,8 @@
         private System.Windows.Forms.Label label_iis_demo;
         private System.Windows.Forms.CheckBox checkBox_Increment_iis;
         private System.Windows.Forms.CheckBox checkBox_Increment_window_service;
-        private System.Windows.Forms.Button b_docker_rollback;
-        private System.Windows.Forms.Button b_windows_service_rollback;
-        private System.Windows.Forms.Button b_iis_rollback;
+        private AltoControls.AltoButton b_iis_rollback;
+        private AltoControls.AltoButton b_docker_rollback;
+        private AltoControls.AltoButton b_windows_service_rollback;
     }
 }
