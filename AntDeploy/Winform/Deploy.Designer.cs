@@ -164,7 +164,6 @@
             // 
             this.page_web_iis.Controls.Add(this.b_iis_rollback);
             this.page_web_iis.Controls.Add(this.checkBox_Increment_iis);
-            this.page_web_iis.Controls.Add(this.label_iis_demo);
             this.page_web_iis.Controls.Add(this.label25);
             this.page_web_iis.Controls.Add(this.tab_iis);
             this.page_web_iis.Controls.Add(this.groupBox4);
@@ -176,6 +175,7 @@
             this.page_web_iis.Controls.Add(this.label7);
             this.page_web_iis.Controls.Add(this.combo_iis_sdk_type);
             this.page_web_iis.Controls.Add(this.label6);
+            this.page_web_iis.Controls.Add(this.label_iis_demo);
             this.page_web_iis.Location = new System.Drawing.Point(4, 22);
             this.page_web_iis.Name = "page_web_iis";
             this.page_web_iis.Padding = new System.Windows.Forms.Padding(3);
@@ -187,7 +187,7 @@
             // b_iis_rollback
             // 
             this.b_iis_rollback.ForeColor = System.Drawing.Color.Red;
-            this.b_iis_rollback.Location = new System.Drawing.Point(542, 44);
+            this.b_iis_rollback.Location = new System.Drawing.Point(542, 3);
             this.b_iis_rollback.Name = "b_iis_rollback";
             this.b_iis_rollback.Size = new System.Drawing.Size(81, 43);
             this.b_iis_rollback.TabIndex = 32;
@@ -211,7 +211,7 @@
             this.label_iis_demo.AutoSize = true;
             this.label_iis_demo.Cursor = System.Windows.Forms.Cursors.Hand;
             this.label_iis_demo.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.label_iis_demo.Location = new System.Drawing.Point(594, 0);
+            this.label_iis_demo.Location = new System.Drawing.Point(8, 5);
             this.label_iis_demo.Name = "label_iis_demo";
             this.label_iis_demo.Size = new System.Drawing.Size(29, 12);
             this.label_iis_demo.TabIndex = 28;
@@ -406,13 +406,13 @@
             // page_docker
             // 
             this.page_docker.Controls.Add(this.b_docker_rollback);
-            this.page_docker.Controls.Add(this.label_docker_demo);
             this.page_docker.Controls.Add(this.tabControl_docker);
             this.page_docker.Controls.Add(this.label24);
             this.page_docker.Controls.Add(this.groupBox5);
             this.page_docker.Controls.Add(this.b_docker_deploy);
             this.page_docker.Controls.Add(this.combo_docker_env);
             this.page_docker.Controls.Add(this.label22);
+            this.page_docker.Controls.Add(this.label_docker_demo);
             this.page_docker.Location = new System.Drawing.Point(4, 22);
             this.page_docker.Name = "page_docker";
             this.page_docker.Size = new System.Drawing.Size(626, 422);
@@ -423,7 +423,7 @@
             // b_docker_rollback
             // 
             this.b_docker_rollback.ForeColor = System.Drawing.Color.Red;
-            this.b_docker_rollback.Location = new System.Drawing.Point(537, 26);
+            this.b_docker_rollback.Location = new System.Drawing.Point(542, 3);
             this.b_docker_rollback.Name = "b_docker_rollback";
             this.b_docker_rollback.Size = new System.Drawing.Size(81, 43);
             this.b_docker_rollback.TabIndex = 28;
@@ -436,7 +436,7 @@
             this.label_docker_demo.AutoSize = true;
             this.label_docker_demo.Cursor = System.Windows.Forms.Cursors.Hand;
             this.label_docker_demo.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.label_docker_demo.Location = new System.Drawing.Point(593, 0);
+            this.label_docker_demo.Location = new System.Drawing.Point(2, 0);
             this.label_docker_demo.Name = "label_docker_demo";
             this.label_docker_demo.Size = new System.Drawing.Size(29, 12);
             this.label_docker_demo.TabIndex = 27;
@@ -510,7 +510,7 @@
             this.groupBox5.Controls.Add(this.txt_docker_envname);
             this.groupBox5.Controls.Add(this.label23);
             this.groupBox5.Controls.Add(this.txt_docker_port);
-            this.groupBox5.Location = new System.Drawing.Point(14, 9);
+            this.groupBox5.Location = new System.Drawing.Point(19, 15);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(517, 60);
             this.groupBox5.TabIndex = 16;
@@ -603,7 +603,7 @@
             // b_windows_service_rollback
             // 
             this.b_windows_service_rollback.ForeColor = System.Drawing.Color.Red;
-            this.b_windows_service_rollback.Location = new System.Drawing.Point(541, 15);
+            this.b_windows_service_rollback.Location = new System.Drawing.Point(541, 3);
             this.b_windows_service_rollback.Name = "b_windows_service_rollback";
             this.b_windows_service_rollback.Size = new System.Drawing.Size(81, 43);
             this.b_windows_service_rollback.TabIndex = 31;
@@ -627,7 +627,7 @@
             this.label_windows_serivce_demo.AutoSize = true;
             this.label_windows_serivce_demo.Cursor = System.Windows.Forms.Cursors.Hand;
             this.label_windows_serivce_demo.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.label_windows_serivce_demo.Location = new System.Drawing.Point(589, 0);
+            this.label_windows_serivce_demo.Location = new System.Drawing.Point(3, 0);
             this.label_windows_serivce_demo.Name = "label_windows_serivce_demo";
             this.label_windows_serivce_demo.Size = new System.Drawing.Size(29, 12);
             this.label_windows_serivce_demo.TabIndex = 26;
