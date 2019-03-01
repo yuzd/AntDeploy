@@ -586,20 +586,61 @@ namespace AntDeploy.Winform
                 return;
             }
 
-            try
+            this.loading_win_server_test.Visible = true;
+            new Task(() =>
             {
-                WebClient client = new WebClient();
-                var result = client.DownloadString($"http://{serverHost}/publish?Token={WebUtility.UrlEncode(serverTolen)}");
-                if (result.Equals("success"))
+                EnableForTestWinServer(false);
+
+                try
                 {
-                    MessageBox.Show("Connect Sussess");
-                    return;
+
+                    WebClient client = new WebClient();
+                    var result = client.DownloadString($"http://{serverHost}/publish?Token={WebUtility.UrlEncode(serverTolen)}");
+
+                    this.BeginInvokeLambda(() =>
+                    {
+                        if (result.Equals("success"))
+                        {
+                            MessageBox.Show("Connect Sussess");
+                        }
+                        else
+                        {
+                            MessageBox.Show("Connect fail");
+                        }
+                    });
                 }
-            }
-            catch (Exception)
+                catch (Exception)
+                {
+                    this.BeginInvokeLambda(() =>
+                    {
+                        MessageBox.Show("Connect Fail");
+                    });
+                }
+                finally
+                {
+                    EnableForTestWinServer(true);
+                }
+
+            }).Start();
+
+        }
+        private void EnableForTestWinServer(bool flag)
+        {
+            this.BeginInvokeLambda(() =>
             {
-                MessageBox.Show("Connect Fail");
-            }
+
+                this.txt_env_server_host.Enabled = flag;
+                this.txt_env_server_token.Enabled = flag;
+                this.b_env_server_add.Enabled = flag;
+                this.b_env_server_test.Enabled = flag;
+                this.b_env_server_remove.Enabled = flag;
+                this.combo_env_server_list.Enabled = flag;
+                if (flag)
+                {
+                    this.loading_win_server_test.Visible = false;
+                }
+            });
+
         }
 
         /// <summary>
@@ -744,26 +785,63 @@ namespace AntDeploy.Winform
                 MessageBox.Show("please input server pwd");
                 return;
             }
-
-            try
+            this.loading_linux_server_test.Visible = true;
+            new Task(() =>
             {
-                using (SSHClient sshClient = new SSHClient(serverHost, userName, pwd, Console.WriteLine, Console.WriteLine))
+                EnableForTestLinuxServer(false);
+                try
                 {
-                    var r = sshClient.Connect(true);
-                    if (r)
+                    using (SSHClient sshClient =
+                        new SSHClient(serverHost, userName, pwd, Console.WriteLine, Console.WriteLine))
                     {
-                        MessageBox.Show("Connect Success");
-                    }
-                    else
-                    {
-                        MessageBox.Show("Connect Fail");
+                        var r = sshClient.Connect(true);
+                        this.BeginInvokeLambda(() =>
+                        {
+                            if (r)
+                            {
+                                MessageBox.Show("Connect Success");
+                            }
+                            else
+                            {
+                                MessageBox.Show("Connect Fail");
+                            }
+                        });
+                        
                     }
                 }
-            }
-            catch (Exception)
+                catch (Exception)
+                {
+                    this.BeginInvokeLambda(() =>
+                    {
+                        MessageBox.Show("Connect Fail");
+                    });
+                }
+                finally
+                {
+                    EnableForTestLinuxServer(true);
+                }
+            }).Start();
+
+        }
+
+        private void EnableForTestLinuxServer(bool flag)
+        {
+            this.BeginInvokeLambda(() =>
             {
-                MessageBox.Show("Connect Fail");
-            }
+
+                this.txt_linux_host.Enabled = flag;
+                this.txt_linux_username.Enabled = flag;
+                this.txt_linux_pwd.Enabled = flag;
+                this.b_add_linux_server.Enabled = flag;
+                this.b_linux_server_test.Enabled = flag;
+                this.b_linux_server_remove.Enabled = flag;
+                this.combo_linux_server_list.Enabled = flag;
+                if (flag)
+                {
+                    this.loading_linux_server_test.Visible = false;
+                }
+            });
+
         }
 
         /// <summary>
@@ -1295,7 +1373,7 @@ namespace AntDeploy.Winform
                 MessageBox.Show("current project is not web project!");
                 return;
             }
-            
+
             var websiteName = this.txt_iis_web_site_name.Text.Trim();
             if (websiteName.Length < 1)
             {
@@ -1358,11 +1436,12 @@ namespace AntDeploy.Winform
 
                     this.nlog_iis.Info("Start get rollBack version list from first Server:" + firstServer.Host);
 
-                    var getVersionResult = await WebUtil.HttpPostAsync<GetVersionResult>($"http://{firstServer.Host}/version", new {
+                    var getVersionResult = await WebUtil.HttpPostAsync<GetVersionResult>($"http://{firstServer.Host}/version", new
+                    {
                         Token = firstServer.Token,
                         Type = "iis",
                         Name = DeployConfig.IIsConfig.WebSiteName
-                    },nlog_iis);
+                    }, nlog_iis);
 
                     if (getVersionResult == null)
                     {
@@ -1413,20 +1492,20 @@ namespace AntDeploy.Winform
                 });
 
             }).Start();
-                
+
         }
 
 
-        private void DoIIsRollback(List<Server> serverList,string dateTimeFolderName)
+        private void DoIIsRollback(List<Server> serverList, string dateTimeFolderName)
         {
             new Task(async () =>
             {
-                Enable(false,true);
+                Enable(false, true);
                 try
                 {
-                    
+
                     var loggerId = Guid.NewGuid().ToString("N");
-                    
+
                     this.nlog_iis.Info("Rollback Start");
 
                     foreach (var server in serverList)
@@ -1435,7 +1514,7 @@ namespace AntDeploy.Winform
                         UpdatePackageProgress(this.tabPage_progress, server.Host, 100);
                         UpdateUploadProgress(this.tabPage_progress, server.Host, 100);
 
-                      
+
                         if (string.IsNullOrEmpty(server.Token))
                         {
                             this.nlog_iis.Warn($"{server.Host} Rollback skip,Token is null or empty!");
@@ -1487,7 +1566,7 @@ namespace AntDeploy.Winform
                             httpRequestClient.SetFieldValue("wsKey", hostKey);
 
                             var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/rollback",
-                                (client) => {  });
+                                (client) => { });
 
                             if (haveError)
                             {
@@ -1523,7 +1602,7 @@ namespace AntDeploy.Winform
                         }
 
                     }
-                   
+
                 }
                 catch (Exception ex1)
                 {
@@ -1550,7 +1629,7 @@ namespace AntDeploy.Winform
             }
         }
 
-        private void Enable(bool flag,bool ignore = false)
+        private void Enable(bool flag, bool ignore = false)
         {
             this.BeginInvokeLambda(() =>
             {
@@ -1839,7 +1918,7 @@ namespace AntDeploy.Winform
 
 
 
-        private void EnableForWindowsService(bool flag,bool ignore=false)
+        private void EnableForWindowsService(bool flag, bool ignore = false)
         {
             this.BeginInvokeLambda(() =>
             {
@@ -2411,7 +2490,7 @@ namespace AntDeploy.Winform
                 var versionList = new List<string>();
                 try
                 {
-                    EnableForWindowsService(false,true);
+                    EnableForWindowsService(false, true);
                     var firstServer = serverList.First();
 
                     if (string.IsNullOrEmpty(firstServer.Host))
@@ -2426,11 +2505,12 @@ namespace AntDeploy.Winform
                         return;
                     }
                     this.nlog_windowservice.Info("Start get rollBack version list from first Server:" + firstServer.Host);
-                    var getVersionResult = await WebUtil.HttpPostAsync<GetVersionResult>($"http://{firstServer.Host}/version", new {
+                    var getVersionResult = await WebUtil.HttpPostAsync<GetVersionResult>($"http://{firstServer.Host}/version", new
+                    {
                         Token = firstServer.Token,
                         Type = "winservice",
-                        Name =DeployConfig.WindowsServiveConfig.ServiceName
-                    },nlog_windowservice);
+                        Name = DeployConfig.WindowsServiveConfig.ServiceName
+                    }, nlog_windowservice);
 
                     if (getVersionResult == null)
                     {
@@ -2475,22 +2555,22 @@ namespace AntDeploy.Winform
                         PrintCommonLog(this.nlog_windowservice);
                         this.nlog_windowservice.Info("Start rollBack from version:" + rolleback.SelectRollBackVersion);
                         this.tabControl_window_service.SelectedIndex = 0;
-                        DoWindowsServiceRollback(serverList,rolleback.SelectRollBackVersion);
+                        DoWindowsServiceRollback(serverList, rolleback.SelectRollBackVersion);
                     }
                 });
             }).Start();
         }
 
-        private void DoWindowsServiceRollback(List<Server> serverList,string dateTimeFolderName)
+        private void DoWindowsServiceRollback(List<Server> serverList, string dateTimeFolderName)
         {
             new Task(async () =>
             {
-                EnableForWindowsService(false,true);
+                EnableForWindowsService(false, true);
                 try
                 {
-                    
+
                     var loggerId = Guid.NewGuid().ToString("N");
-                    
+
                     this.nlog_windowservice.Info("Rollback Start");
 
                     foreach (var server in serverList)
@@ -2499,7 +2579,7 @@ namespace AntDeploy.Winform
                         UpdatePackageProgress(this.tabPage_windows_service, server.Host, 100);
                         UpdateUploadProgress(this.tabPage_windows_service, server.Host, 100);
 
-                      
+
                         if (string.IsNullOrEmpty(server.Token))
                         {
                             this.nlog_windowservice.Warn($"{server.Host} Rollback skip,Token is null or empty!");
@@ -2551,7 +2631,7 @@ namespace AntDeploy.Winform
                             httpRequestClient.SetFieldValue("wsKey", hostKey);
 
                             var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/rollback",
-                                (client) => {  });
+                                (client) => { });
 
                             if (haveError)
                             {
@@ -2566,7 +2646,7 @@ namespace AntDeploy.Winform
                                     UpdateDeployProgress(this.tabPage_windows_service, server.Host, true);
                                 }
                                 else
-                                { 
+                                {
                                     this.nlog_windowservice.Error($"Host:{server.Host},Response:{uploadResult.Item2},Skip to Next");
                                     UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
                                 }
@@ -2587,7 +2667,7 @@ namespace AntDeploy.Winform
                         }
 
                     }
-                   
+
                 }
                 catch (Exception ex1)
                 {

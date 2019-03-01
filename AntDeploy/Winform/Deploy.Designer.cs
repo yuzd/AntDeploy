@@ -123,6 +123,8 @@
             this.b_iis_rollback = new AltoControls.AltoButton();
             this.b_docker_rollback = new AltoControls.AltoButton();
             this.b_windows_service_rollback = new AltoControls.AltoButton();
+            this.loading_win_server_test = new AltoControls.SpinningCircles();
+            this.loading_linux_server_test = new AltoControls.SpinningCircles();
             this.tabcontrol.SuspendLayout();
             this.page_web_iis.SuspendLayout();
             this.tab_iis.SuspendLayout();
@@ -833,6 +835,7 @@
             // 
             // page_winserver
             // 
+            this.page_winserver.Controls.Add(this.loading_win_server_test);
             this.page_winserver.Controls.Add(this.label5);
             this.page_winserver.Controls.Add(this.b_env_server_test);
             this.page_winserver.Controls.Add(this.combo_env_server_list);
@@ -937,6 +940,7 @@
             // 
             // page_linux_server
             // 
+            this.page_linux_server.Controls.Add(this.loading_linux_server_test);
             this.page_linux_server.Controls.Add(this.label20);
             this.page_linux_server.Controls.Add(this.combo_linux_server_list);
             this.page_linux_server.Controls.Add(this.txt_linux_pwd);
@@ -1177,6 +1181,34 @@
             this.b_windows_service_rollback.Transparency = false;
             this.b_windows_service_rollback.Click += new System.EventHandler(this.b_windows_service_rollback_Click);
             // 
+            // loading_win_server_test
+            // 
+            this.loading_win_server_test.BackColor = System.Drawing.Color.Transparent;
+            this.loading_win_server_test.FullTransparent = true;
+            this.loading_win_server_test.Increment = 1F;
+            this.loading_win_server_test.Location = new System.Drawing.Point(222, 6);
+            this.loading_win_server_test.N = 8;
+            this.loading_win_server_test.Name = "loading_win_server_test";
+            this.loading_win_server_test.Radius = 2.5F;
+            this.loading_win_server_test.Size = new System.Drawing.Size(90, 100);
+            this.loading_win_server_test.TabIndex = 12;
+            this.loading_win_server_test.Text = "spinningCircles1";
+            this.loading_win_server_test.Visible = false;
+            // 
+            // loading_linux_server_test
+            // 
+            this.loading_linux_server_test.BackColor = System.Drawing.Color.Transparent;
+            this.loading_linux_server_test.FullTransparent = true;
+            this.loading_linux_server_test.Increment = 1F;
+            this.loading_linux_server_test.Location = new System.Drawing.Point(222, 11);
+            this.loading_linux_server_test.N = 8;
+            this.loading_linux_server_test.Name = "loading_linux_server_test";
+            this.loading_linux_server_test.Radius = 2.5F;
+            this.loading_linux_server_test.Size = new System.Drawing.Size(90, 100);
+            this.loading_linux_server_test.TabIndex = 21;
+            this.loading_linux_server_test.Text = "spinningCircles1";
+            this.loading_linux_server_test.Visible = false;
+            // 
             // Deploy
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -1323,5 +1355,7 @@
         private AltoControls.AltoButton b_iis_rollback;
         private AltoControls.AltoButton b_docker_rollback;
         private AltoControls.AltoButton b_windows_service_rollback;
+        private AltoControls.SpinningCircles loading_win_server_test;
+        private AltoControls.SpinningCircles loading_linux_server_test;
     }
 }
