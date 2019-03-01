@@ -40,7 +40,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
             {
                 if(service.Status == ServiceControllerStatus.Stopped)
                 {
-
+                    logger("Success to Windows Service Stop :" + this.args.AppName);
                 }
                 else
                 {
@@ -79,12 +79,12 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
             var service = WindowServiceHelper.GetWindowServiceByName(this.args.AppName);
             if (service.Status == ServiceControllerStatus.Stopped)
             {
-                var re = WindowServiceHelper.StartService(this.args.AppName, 120);
+                var re = WindowServiceHelper.StartService(this.args.AppName, 300);
                 if (string.IsNullOrEmpty(re))
                 {
                     service = WindowServiceHelper.GetWindowServiceByName(this.args.AppName);
                     service.Refresh();
-                    if (service.Status != ServiceControllerStatus.Running)
+                    if (service.Status != ServiceControllerStatus.Running&&service.Status != ServiceControllerStatus.StartPending)
                     {
                         logger("【Error】 Windows Service Start :" + this.args.AppName + ",Err: service can not start");
                     }
@@ -95,8 +95,22 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
                 }
                 else
                 {
-                    throw new Exception("【Error】 Windows Service Start :" + this.args.AppName + ",Err:" + re);
+                    service = WindowServiceHelper.GetWindowServiceByName(this.args.AppName);
+                    service.Refresh();
+
+                    if (service.Status != ServiceControllerStatus.Running&&service.Status != ServiceControllerStatus.StartPending)
+                    {
+                        throw new Exception("【Error】 Windows Service Start :" + this.args.AppName + ",Err:" + re + "=>[suggestion]if this is your first time,you can try again!");
+                    }
+                    else
+                    {
+                        logger("Success to Windows Service Start :" + this.args.AppName);
+                    }
                 }
+            }
+            else if (service.Status == ServiceControllerStatus.Running)
+            {
+                logger("Success to Windows Service Start :" + this.args.AppName);
             }
             else
             {
