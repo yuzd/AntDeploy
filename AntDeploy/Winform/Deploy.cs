@@ -1292,7 +1292,8 @@ namespace AntDeploy.Winform
                             var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/publish",
                                 (client) => { client.UploadProgressChanged += ClientOnUploadProgressChanged; });
 
-                            if (ProgressPercentage < 100) UpdateUploadProgress(this.tabPage_progress, ProgressCurrentHost, 100);//结束上传
+                            if(ProgressPercentage == 0) UploadError(this.tabPage_progress, server.Host);
+                            if (ProgressPercentage>0 && ProgressPercentage < 100) UpdateUploadProgress(this.tabPage_progress, ProgressCurrentHost, 100);//结束上传
 
                             if (haveError)
                             {
@@ -2343,7 +2344,8 @@ namespace AntDeploy.Winform
 
                              var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/publish",
                                  (client) => { client.UploadProgressChanged += ClientOnUploadProgressChanged2; });
-                             if (ProgressPercentageForWindowsService < 100) UpdateUploadProgress(this.tabPage_windows_service, ProgressCurrentHostForWindowsService, 100);//结束上传
+                             if(ProgressPercentageForWindowsService==0)UploadError(this.tabPage_windows_service, server.Host);
+                             if (ProgressPercentageForWindowsService>0&&ProgressPercentageForWindowsService < 100) UpdateUploadProgress(this.tabPage_windows_service, ProgressCurrentHostForWindowsService, 100);//结束上传
 
                              if (haveError)
                              {

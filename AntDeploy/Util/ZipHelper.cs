@@ -5,6 +5,8 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
+using ICSharpCode.SharpZipLib.Core;
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace AntDeploy.Util
 {
@@ -288,17 +290,21 @@ namespace AntDeploy.Util
             }
         }
 
-        public static MemoryStream DoCreateFromDirectory2(string sourceDirectoryName, CompressionLevel? compressionLevel, bool includeBaseDirectory, List<string> ignoreList = null, Action<int> progress = null)
+         /// <summary>
+        /// 打包文件夹
+        /// </summary>
+        /// <param name="sourceDirectoryName"></param>
+        /// <returns></returns>
+        public static byte[] DoCreateFromDirectorySharpZipLib(string sourceDirectoryName, List<string> ignoreList = null, Action<int> progress = null)
         {
+            
             sourceDirectoryName = Path.GetFullPath(sourceDirectoryName);
-            var outStream = new MemoryStream();
-            using (ZipArchive destination = new ZipArchive(outStream, ZipArchiveMode.Create, true))
+            using (var outputMemStream = new MemoryStream())
             {
-                bool flag = true;
+                ZipOutputStream zipStream = new ZipOutputStream(outputMemStream);
+                zipStream.SetLevel(1);
                 DirectoryInfo directoryInfo = new DirectoryInfo(sourceDirectoryName);
                 string fullName = directoryInfo.FullName;
-                if (includeBaseDirectory && directoryInfo.Parent != null)
-                    fullName = directoryInfo.Parent.FullName;
                 var allFile = FindFileDir(sourceDirectoryName);
                 var allFileLength = allFile.Count();
                 var index = 0;
@@ -307,7 +313,6 @@ namespace AntDeploy.Util
                     index++;
                     var lastProgressNumber = (((long)index * 100 / allFileLength));
                     progress?.Invoke((int)lastProgressNumber);
-                    flag = false;
                     int length = enumerateFileSystemInfo.FullName.Length - fullName.Length;
                     string entryName = EntryFromPath(enumerateFileSystemInfo.FullName, fullName.Length, length);
                     if (ignoreList != null)
@@ -348,29 +353,29 @@ namespace AntDeploy.Util
                             continue;
                         }
                     }
-                    if (enumerateFileSystemInfo is FileInfo)
-                    {
 
-                        DoCreateEntryFromFile(destination, enumerateFileSystemInfo.FullName, entryName, compressionLevel);
-                    }
-                    else
+                    if (enumerateFileSystemInfo is FileInfo filInfo)
                     {
-                        DirectoryInfo possiblyEmptyDir = enumerateFileSystemInfo as DirectoryInfo;
-                        if (possiblyEmptyDir != null && IsDirEmpty(possiblyEmptyDir))
-                            destination.CreateEntry(entryName + s_pathSeperator.ToString());
+                        entryName = ZipEntry.CleanName(entryName);
+                        ZipEntry newEntry = new ZipEntry(entryName);
+                        newEntry.DateTime = filInfo.LastWriteTime;
+                        newEntry.Size = filInfo.Length;
+                        zipStream.PutNextEntry(newEntry);
+                        byte[ ] buffer = new byte[filInfo.Length];
+                        
+                        using (FileStream streamReader = File.OpenRead(filInfo.FullName)) {
+                            streamReader.Read(buffer, 0, buffer.Length);
+                            zipStream.Write(buffer, 0, buffer.Length);
+                        }
+                        zipStream.CloseEntry();
                     }
                 }
-
-                if ((includeBaseDirectory & flag))
-                {
-                    string str = directoryInfo.Name;
-                    destination.CreateEntry(str + s_pathSeperator.ToString());
-                }
+                zipStream.IsStreamOwner = false;	
+                var arr = outputMemStream.GetBuffer();
+                zipStream.Close();
+                return arr;
             }
-            outStream.Seek(0, SeekOrigin.Begin);
-            return outStream;
         }
-
 
         public static MemoryStream DoCreateTarFromDirectory(string sourceDirectory, List<string> ignoreList = null, Action<int> progress = null)
         {
@@ -450,28 +455,7 @@ namespace AntDeploy.Util
             return outputMemStream;
         }
 
-        private static void AddDirectoryFilesToTar(TarArchive tarArchive, string sourceDirectory, bool recurse)
-        {
-            // Optionally, write an entry for the directory itself.
-            // Specify false for recursion here if we will add the directory's files individually.
-            TarEntry tarEntry = TarEntry.CreateEntryFromFile(sourceDirectory);
-            tarArchive.WriteEntry(tarEntry, false);
-
-            // Write each file to the tar.
-            string[] filenames = Directory.GetFiles(sourceDirectory);
-            foreach (string filename in filenames)
-            {
-                tarEntry = TarEntry.CreateEntryFromFile(filename);
-                tarArchive.WriteEntry(tarEntry, true);
-            }
-
-            if (recurse)
-            {
-                string[] directories = Directory.GetDirectories(sourceDirectory);
-                foreach (string directory in directories)
-                    AddDirectoryFilesToTar(tarArchive, directory, recurse);
-            }
-        }
+      
         internal static ZipArchiveEntry DoCreateEntryFromFile(
             ZipArchive destination,
             string sourceFileName,

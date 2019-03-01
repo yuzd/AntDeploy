@@ -372,14 +372,6 @@ namespace AntDeploy.Util
         }
 
 
-        public void PublishZip(string zipFolder, List<string> ignorList, string destinationFolder, string destinationfileName)
-        {
-            using (var stream = ZipHelper.DoCreateFromDirectory2(zipFolder, CompressionLevel.Optimal, true, ignorList))
-            {
-
-                PublishZip(stream, destinationFolder, destinationfileName);
-            }
-        }
 
 
 
