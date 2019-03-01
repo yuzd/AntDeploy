@@ -225,7 +225,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 }
 
                 Log("Start to deploy IIS:");
-                Log("SiteName ===>" + projectLocation.Item2);
+                Log("SiteName ===>" +_webSiteName);
                 Log("SiteFolder ===> " + projectLocation.Item1);
                 Log("SiteApplicationPoolName ===> " + projectLocation.Item3);
 

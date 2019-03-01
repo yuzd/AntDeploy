@@ -1346,17 +1346,17 @@ namespace AntDeploy.Winform
 
                     if (string.IsNullOrEmpty(firstServer.Host))
                     {
-                        this.nlog_iis.Warn($"Server Host is Empty!");
+                        this.nlog_iis.Error($"Server Host is Empty!");
                         return;
                     }
 
                     if (string.IsNullOrEmpty(firstServer.Token))
                     {
-                        this.nlog_iis.Warn($"Server Token is Empty!");
+                        this.nlog_iis.Error($"Server Token is Empty!");
                         return;
                     }
 
-                    this.nlog_docker.Info("Start get rollBack version list from first Server:" + firstServer.Host);
+                    this.nlog_iis.Info("Start get rollBack version list from first Server:" + firstServer.Host);
 
                     var getVersionResult = await WebUtil.HttpPostAsync<GetVersionResult>($"http://{firstServer.Host}/version", new {
                         Token = firstServer.Token,
@@ -1366,13 +1366,13 @@ namespace AntDeploy.Winform
 
                     if (getVersionResult == null)
                     {
-                        this.nlog_iis.Warn($"get rollBack version list fail");
+                        this.nlog_iis.Error($"get rollBack version list fail");
                         return;
                     }
 
                     if (!string.IsNullOrEmpty(getVersionResult.Msg))
                     {
-                        this.nlog_iis.Warn($"get rollBack version list failL" + getVersionResult.Msg);
+                        this.nlog_iis.Error($"get rollBack version list fail：" + getVersionResult.Msg);
                         return;
                     }
 
@@ -1406,7 +1406,7 @@ namespace AntDeploy.Winform
                     else
                     {
                         PrintCommonLog(this.nlog_iis);
-                        this.nlog_docker.Info("Start rollBack from version:" + rolleback.SelectRollBackVersion);
+                        this.nlog_iis.Info("Start rollBack from version:" + rolleback.SelectRollBackVersion);
                         this.tab_iis.SelectedIndex = 0;
                         DoIIsRollback(serverList, rolleback.SelectRollBackVersion);
                     }
@@ -1421,7 +1421,6 @@ namespace AntDeploy.Winform
         {
             new Task(async () =>
             {
-                this.nlog_iis.Info("Start Rollback");
                 Enable(false,true);
                 try
                 {
@@ -1434,7 +1433,7 @@ namespace AntDeploy.Winform
                     {
                         BuildEnd(this.tabPage_progress, server.Host);
                         UpdatePackageProgress(this.tabPage_progress, server.Host, 100);
-                        UpdateUploadProgress(this.tabPage_progress, ProgressCurrentHost, 100);
+                        UpdateUploadProgress(this.tabPage_progress, server.Host, 100);
 
                       
                         if (string.IsNullOrEmpty(server.Token))
@@ -1556,6 +1555,7 @@ namespace AntDeploy.Winform
             this.BeginInvokeLambda(() =>
             {
 
+                this.b_iis_rollback.Enabled = flag;
                 this.b_iis_deploy.Enabled = flag;
                 this.txt_iis_web_site_name.Enabled = flag;
                 this.txt_iis_port.Enabled = flag;
@@ -1839,10 +1839,11 @@ namespace AntDeploy.Winform
 
 
 
-        private void EnableForWindowsService(bool flag)
+        private void EnableForWindowsService(bool flag,bool ignore=false)
         {
             this.BeginInvokeLambda(() =>
             {
+                this.b_windows_service_rollback.Enabled = flag;
                 this.b_windowservice_deploy.Enabled = flag;
                 this.combo_windowservice_env.Enabled = flag;
                 this.combo_windowservice_sdk_type.Enabled = flag;
@@ -1859,6 +1860,7 @@ namespace AntDeploy.Winform
                 else
                 {
                     tabcontrol.Tag = "2";
+                    if (ignore) return;
                     if (this.tabPage_windows_service.Tag is Dictionary<string, ProgressBox> progressBoxList)
                     {
                         foreach (var box in progressBoxList)
@@ -2322,7 +2324,282 @@ namespace AntDeploy.Winform
 
         private void b_windows_service_rollback_Click(object sender, EventArgs e)
         {
+            if (ProjectHelper.IsWebProject(_project))
+            {
+                MessageBox.Show("current project is not windows service project!");
+                return;
+            }
 
+            //检查工程文件里面是否含有 WebProjectProperties字样
+            if (!string.IsNullOrEmpty(ProjectPath) && File.Exists(ProjectPath))
+            {
+                var fileInfo = File.ReadAllText(ProjectPath);
+                if (fileInfo.Contains("<WebProjectProperties>") && fileInfo.Contains("</WebProjectProperties>"))
+                {
+                    MessageBox.Show("current project is not windows service project!");
+                    return;
+                }
+            }
+
+
+            var serviceName = this.txt_windowservice_name.Text.Trim();
+            if (serviceName.Length < 1)
+            {
+                MessageBox.Show("please input serviceName");
+                return;
+            }
+
+            DeployConfig.WindowsServiveConfig.ServiceName = serviceName;
+
+
+
+            var envName = this.combo_windowservice_env.SelectedItem as string;
+            if (string.IsNullOrEmpty(envName))
+            {
+                MessageBox.Show("please select env");
+                return;
+            }
+
+#if DEBUG
+            var execFilePath = "AntDeployAgentWindowsService.exe";
+#else
+            var execFilePath = _project.GetProjectProperty("OutputFileName");
+            if (string.IsNullOrEmpty(execFilePath))
+            {
+                MessageBox.Show("get current project property:outputfilename error");
+                return;
+            }
+
+            if (!DeployConfig.WindowsServiveConfig.SdkType.Equals("netcore") && !execFilePath.Trim().ToLower().EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+            {
+                MessageBox.Show("current project out file name is not exe!");
+                return;
+            }
+
+            
+#endif
+
+
+
+
+            var serverList = DeployConfig.Env.Where(r => r.Name.Equals(envName)).Select(r => r.ServerList)
+                .FirstOrDefault();
+
+            if (serverList == null || !serverList.Any())
+            {
+                MessageBox.Show("selected env have no server set yet!");
+                return;
+            }
+
+            var serverHostList = string.Join(Environment.NewLine, serverList.Select(r => r.Host).ToList());
+
+            var confirmResult = MessageBox.Show("Are you sure to deploy to Server: " + Environment.NewLine + serverHostList,
+                "Confirm Deploy!!",
+                MessageBoxButtons.YesNo);
+            if (confirmResult != DialogResult.Yes)
+            {
+                return;
+            }
+
+            combo_windowservice_env_SelectedIndexChanged(null, null);
+
+            this.rich_windowservice_log.Text = "";
+            this.nlog_windowservice.Info($"windows Service exe name:{execFilePath.Replace(".dll", ".exe")}");
+            this.tabControl_window_service.SelectedIndex = 1;
+            new Task(async () =>
+            {
+                var versionList = new List<string>();
+                try
+                {
+                    EnableForWindowsService(false,true);
+                    var firstServer = serverList.First();
+
+                    if (string.IsNullOrEmpty(firstServer.Host))
+                    {
+                        this.nlog_windowservice.Error($"Server Host is Empty!");
+                        return;
+                    }
+
+                    if (string.IsNullOrEmpty(firstServer.Token))
+                    {
+                        this.nlog_windowservice.Error($"Server Token is Empty!");
+                        return;
+                    }
+                    this.nlog_windowservice.Info("Start get rollBack version list from first Server:" + firstServer.Host);
+                    var getVersionResult = await WebUtil.HttpPostAsync<GetVersionResult>($"http://{firstServer.Host}/version", new {
+                        Token = firstServer.Token,
+                        Type = "winservice",
+                        Name =DeployConfig.WindowsServiveConfig.ServiceName
+                    },nlog_windowservice);
+
+                    if (getVersionResult == null)
+                    {
+                        this.nlog_windowservice.Error($"get rollBack version list fail");
+                        return;
+                    }
+
+                    if (!string.IsNullOrEmpty(getVersionResult.Msg))
+                    {
+                        this.nlog_windowservice.Error($"get rollBack version list fail：" + getVersionResult.Msg);
+                        return;
+                    }
+
+                    versionList = getVersionResult.Data;
+
+                }
+                catch (Exception ex1)
+                {
+                    this.nlog_windowservice.Error(ex1);
+                    return;
+                }
+                finally
+                {
+                    EnableForWindowsService(true);
+                }
+                if (versionList == null || versionList.Count < 1)
+                {
+                    this.nlog_windowservice.Error($"get rollBack version list count = 0");
+                    return;
+                }
+                this.BeginInvokeLambda(() =>
+                {
+                    RollBack rolleback = new RollBack(versionList);
+                    var r = rolleback.ShowDialog();
+                    if (r == DialogResult.Cancel)
+                    {
+                        this.nlog_windowservice.Info($"rollback canceled!");
+                        return;
+                    }
+                    else
+                    {
+                        PrintCommonLog(this.nlog_windowservice);
+                        this.nlog_windowservice.Info("Start rollBack from version:" + rolleback.SelectRollBackVersion);
+                        this.tabControl_window_service.SelectedIndex = 0;
+                        DoWindowsServiceRollback(serverList,rolleback.SelectRollBackVersion);
+                    }
+                });
+            }).Start();
+        }
+
+        private void DoWindowsServiceRollback(List<Server> serverList,string dateTimeFolderName)
+        {
+            new Task(async () =>
+            {
+                EnableForWindowsService(false,true);
+                try
+                {
+                    
+                    var loggerId = Guid.NewGuid().ToString("N");
+                    
+                    this.nlog_windowservice.Info("Rollback Start");
+
+                    foreach (var server in serverList)
+                    {
+                        BuildEnd(this.tabPage_windows_service, server.Host);
+                        UpdatePackageProgress(this.tabPage_windows_service, server.Host, 100);
+                        UpdateUploadProgress(this.tabPage_windows_service, server.Host, 100);
+
+                      
+                        if (string.IsNullOrEmpty(server.Token))
+                        {
+                            this.nlog_windowservice.Warn($"{server.Host} Rollback skip,Token is null or empty!");
+                            UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
+                            continue;
+                        }
+
+                        HttpRequestClient httpRequestClient = new HttpRequestClient();
+                        httpRequestClient.SetFieldValue("publishType", "windowservice_rollback");
+                        httpRequestClient.SetFieldValue("id", loggerId);
+                        httpRequestClient.SetFieldValue("serviceName", DeployConfig.WindowsServiveConfig.ServiceName);
+                        httpRequestClient.SetFieldValue("deployFolderName", dateTimeFolderName);
+                        httpRequestClient.SetFieldValue("Token", server.Token);
+                        System.Net.WebSockets.Managed.ClientWebSocket webSocket = null;
+                        HttpLogger HttpLogger = null;
+                        var haveError = false;
+                        try
+                        {
+                            var hostKey = "";
+
+                            HttpLogger = new HttpLogger
+                            {
+                                Key = loggerId,
+                                Url = $"http://{server.Host}/logger?key=" + loggerId
+                            };
+                            webSocket = await WebSocketHelper.Connect($"ws://{server.Host}/socket", (receiveMsg) =>
+                            {
+                                if (!string.IsNullOrEmpty(receiveMsg))
+                                {
+                                    if (receiveMsg.StartsWith("hostKey@"))
+                                    {
+                                        hostKey = receiveMsg.Replace("hostKey@", "");
+                                    }
+                                    else
+                                    {
+                                        if (receiveMsg.Contains("【Error】"))
+                                        {
+                                            haveError = true;
+                                            this.nlog_windowservice.Warn($"【Server】{receiveMsg}");
+                                        }
+                                        else
+                                        {
+                                            this.nlog_windowservice.Info($"【Server】{receiveMsg}");
+                                        }
+                                    }
+                                }
+                            }, HttpLogger);
+
+                            httpRequestClient.SetFieldValue("wsKey", hostKey);
+
+                            var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/rollback",
+                                (client) => {  });
+
+                            if (haveError)
+                            {
+                                this.nlog_windowservice.Error($"Host:{server.Host},Rollback Fail,Skip to Next");
+                                UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
+                            }
+                            else
+                            {
+                                if (uploadResult.Item1)
+                                {
+                                    this.nlog_windowservice.Info($"Host:{server.Host},Response:{uploadResult.Item2}");
+                                    UpdateDeployProgress(this.tabPage_windows_service, server.Host, true);
+                                }
+                                else
+                                { 
+                                    this.nlog_windowservice.Error($"Host:{server.Host},Response:{uploadResult.Item2},Skip to Next");
+                                    UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
+                                }
+                            }
+
+                        }
+                        catch (Exception ex)
+                        {
+                            this.nlog_windowservice.Error($"Fail Rollback,Host:{server.Host},Response:{ex.Message},Skip to Next");
+                            UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
+                        }
+                        finally
+                        {
+                            await WebSocketHelper.SendText(webSocket, "close");
+                            webSocket?.Dispose();
+                            HttpLogger?.Dispose();
+
+                        }
+
+                    }
+                   
+                }
+                catch (Exception ex1)
+                {
+                    this.nlog_windowservice.Error(ex1);
+                }
+                finally
+                {
+                    EnableForWindowsService(true);
+                }
+
+
+            }).Start();
         }
         #endregion
 

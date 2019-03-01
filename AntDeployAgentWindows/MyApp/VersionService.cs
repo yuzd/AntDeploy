@@ -74,7 +74,7 @@ namespace AntDeployAgentWindows.MyApp
             var projectPath = Path.Combine(Setting.PublishWindowServicePathFolder, requestName);
             if (!Directory.Exists(projectPath))
             {
-                WriteError("publisher folder not found:" + projectPath);
+                WriteError("publisher folder not found:" + projectPath  + ",please deploy first!");
                 return;
             }
 
@@ -84,13 +84,13 @@ namespace AntDeployAgentWindows.MyApp
                 WriteError("there is no rollback version yet in publisher folder:" + projectPath);
                 return;
             }
-
             var list = new List<Tuple<string, DateTime>>();
             foreach (var item in all)
             {
-                if (DateTime.TryParseExact(item, "yyyyMMddHHmmss", null, DateTimeStyles.None, out DateTime d))
+                var itemD = new DirectoryInfo(item);
+                if (DateTime.TryParseExact(itemD.Name, "yyyyMMddHHmmss", null, DateTimeStyles.None, out DateTime d))
                 {
-                    list.Add(new Tuple<string, DateTime>(item, d));
+                    list.Add(new Tuple<string, DateTime>(itemD.Name, d));
                 }
             }
             var result = list.OrderByDescending(r => r.Item2).Select(r => r.Item1).Skip(1).Take(10).ToList();
@@ -109,7 +109,7 @@ namespace AntDeployAgentWindows.MyApp
             var projectPath = Path.Combine(Setting.PublishIIsPathFolder, projectName);
             if (!Directory.Exists(projectPath))
             {
-                WriteError("publisher folder not found:" + projectPath);
+                WriteError("publisher folder not found:" + projectPath + ",please deploy first!");
                 return;
             }
 
@@ -123,9 +123,10 @@ namespace AntDeployAgentWindows.MyApp
             var list = new List<Tuple<string, DateTime>>();
             foreach (var item in all)
             {
-                if (DateTime.TryParseExact(item, "yyyyMMddHHmmss", null, DateTimeStyles.None, out DateTime d))
+                var itemD = new DirectoryInfo(item);
+                if (DateTime.TryParseExact(itemD.Name, "yyyyMMddHHmmss", null, DateTimeStyles.None, out DateTime d))
                 {
-                    list.Add(new Tuple<string, DateTime>(item, d));
+                    list.Add(new Tuple<string, DateTime>(itemD.Name, d));
                 }
             }
             var result = list.OrderByDescending(r => r.Item2).Select(r => r.Item1).Skip(1).Take(10).ToList();

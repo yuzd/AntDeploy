@@ -35,7 +35,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 var projectPath = Path.Combine(Setting.PublishIIsPathFolder, _projectName);
                 _projectPublishFolder = Path.Combine(projectPath, _dateTimeFolderName);
 
-                if (Directory.Exists(_projectPublishFolder))
+                if (!Directory.Exists(_projectPublishFolder))
                 {
                     return "rollback folder not found:" + _projectPublishFolder;
                 }
@@ -92,7 +92,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 }
 
                 Log("Start to rollback IIS:");
-                Log("SiteName ===>" + projectLocation.Item2);
+                Log("SiteName ===>" +_webSiteName);
                 Log("SiteFolder ===> " + projectLocation.Item1);
                 Log("SiteApplicationPoolName ===> " + projectLocation.Item3);
 

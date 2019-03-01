@@ -48,7 +48,7 @@ namespace AntDeploy.Util
             }
             catch (Exception ex1)
             {
-                logger.Error(ex1);
+                logger.Error(ex1.Message);
                 //ignore
             }
             return default(T);

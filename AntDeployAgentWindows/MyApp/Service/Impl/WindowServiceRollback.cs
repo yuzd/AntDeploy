@@ -26,7 +26,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
             {
                 var projectPath = Path.Combine(Setting.PublishWindowServicePathFolder, _serviceName);
                 _projectPublishFolder = Path.Combine(projectPath, _dateTimeFolderName);
-                if (Directory.Exists(_projectPublishFolder))
+                if (!Directory.Exists(_projectPublishFolder))
                 {
                     return "rollback folder not found:" + _projectPublishFolder;
                 }
