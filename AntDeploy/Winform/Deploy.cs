@@ -338,7 +338,11 @@ namespace AntDeploy.Winform
                 }
             }
 
-
+            this.b_iis_rollback.Dispose();
+            this.b_windows_service_rollback.Dispose();
+            this.b_docker_rollback.Dispose();
+            this.loading_win_server_test.Dispose();
+            this.loading_linux_server_test.Dispose();
         }
 
 
