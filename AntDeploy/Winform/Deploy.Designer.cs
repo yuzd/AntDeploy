@@ -550,7 +550,7 @@
             this.label_docker_demo.AutoSize = true;
             this.label_docker_demo.Cursor = System.Windows.Forms.Cursors.Hand;
             this.label_docker_demo.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.label_docker_demo.Location = new System.Drawing.Point(2, 0);
+            this.label_docker_demo.Location = new System.Drawing.Point(2, 3);
             this.label_docker_demo.Name = "label_docker_demo";
             this.label_docker_demo.Size = new System.Drawing.Size(29, 12);
             this.label_docker_demo.TabIndex = 27;
@@ -594,7 +594,7 @@
             this.label_windows_serivce_demo.AutoSize = true;
             this.label_windows_serivce_demo.Cursor = System.Windows.Forms.Cursors.Hand;
             this.label_windows_serivce_demo.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.label_windows_serivce_demo.Location = new System.Drawing.Point(3, 0);
+            this.label_windows_serivce_demo.Location = new System.Drawing.Point(3, 5);
             this.label_windows_serivce_demo.Name = "label_windows_serivce_demo";
             this.label_windows_serivce_demo.Size = new System.Drawing.Size(29, 12);
             this.label_windows_serivce_demo.TabIndex = 26;
