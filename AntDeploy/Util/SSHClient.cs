@@ -258,7 +258,7 @@ namespace AntDeploy.Util
         /// <summary>
         /// 回退
         /// </summary>
-        /// <param name="path">具体的日期文件夹路径</param>
+        /// <param name="version">具体的日期文件夹路径</param>
         public void RollBack(string version)
         {
             var path = "antdeploy/" + PorjectName + "/" + version + "/";

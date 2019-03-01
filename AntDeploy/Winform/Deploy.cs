@@ -204,10 +204,7 @@ namespace AntDeploy.Winform
                     this.txt_windowservice_name.Text = DeployConfig.WindowsServiveConfig.ServiceName;
                 }
 
-                if (!string.IsNullOrEmpty(DeployConfig.WindowsServiveConfig.StopTimeOutSeconds))
-                {
-                    this.txt_windowservice_timeout.Text = DeployConfig.WindowsServiveConfig.StopTimeOutSeconds;
-                }
+               
             }
 
             if (DeployConfig.DockerConfig != null)
@@ -294,7 +291,6 @@ namespace AntDeploy.Winform
             DeployConfig.IIsConfig.WebSiteName = this.txt_iis_web_site_name.Text.Trim();
 
             DeployConfig.WindowsServiveConfig.ServiceName = this.txt_windowservice_name.Text.Trim();
-            DeployConfig.WindowsServiveConfig.StopTimeOutSeconds = this.txt_windowservice_timeout.Text.Trim();
 
             DeployConfig.DockerConfig.Prot = this.txt_docker_port.Text.Trim();
             DeployConfig.DockerConfig.AspNetCoreEnv = this.txt_docker_envname.Text.Trim();
@@ -1138,6 +1134,7 @@ namespace AntDeploy.Winform
                     }
                     this.nlog_iis.Info("package success");
                     var loggerId = Guid.NewGuid().ToString("N");
+                    var dateTimeFolderName = DateTime.Now.ToString("yyyyMMddHHmmss");
                     //执行 上传
                     this.nlog_iis.Info("Deploy Start");
                     var index = 0;
@@ -1169,6 +1166,7 @@ namespace AntDeploy.Winform
                         httpRequestClient.SetFieldValue("id", loggerId);
                         httpRequestClient.SetFieldValue("poolName", PoolName);
                         httpRequestClient.SetFieldValue("webSiteName", DeployConfig.IIsConfig.WebSiteName);
+                        httpRequestClient.SetFieldValue("deployFolderName", dateTimeFolderName);
                         httpRequestClient.SetFieldValue("Token", server.Token);
                         httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream", zipBytes);
                         System.Net.WebSockets.Managed.ClientWebSocket webSocket = null;
@@ -1580,7 +1578,6 @@ namespace AntDeploy.Winform
                 this.combo_windowservice_env.Enabled = flag;
                 this.combo_windowservice_sdk_type.Enabled = flag;
                 this.txt_windowservice_name.Enabled = flag;
-                txt_windowservice_timeout.Enabled = flag;
                 this.page_set.Enabled = flag;
                 this.page_docker.Enabled = flag;
                 this.page_web_iis.Enabled = flag;
@@ -1653,24 +1650,6 @@ namespace AntDeploy.Winform
 
             DeployConfig.WindowsServiveConfig.ServiceName = serviceName;
 
-            var stopSenconds = this.txt_windowservice_timeout.Text.Trim();
-            if (!string.IsNullOrEmpty(stopSenconds))
-            {
-                int.TryParse(stopSenconds, out var stopSencondsInt);
-                if (stopSencondsInt == 0)
-                {
-                    MessageBox.Show("please input right stopTimout value");
-                    return;
-                }
-                else
-                {
-                    DeployConfig.WindowsServiveConfig.StopTimeOutSeconds = stopSenconds;
-                }
-            }
-            else
-            {
-                DeployConfig.WindowsServiveConfig.StopTimeOutSeconds = "";
-            }
 
 
             var envName = this.combo_windowservice_env.SelectedItem as string;
@@ -1939,6 +1918,7 @@ namespace AntDeploy.Winform
                      this.nlog_windowservice.Info("Deploy Start");
                      var index = 0;
                      var allSuccess = true;
+                     var dateTimeFolderName = DateTime.Now.ToString("yyyyMMddHHmmss");
                      foreach (var server in serverList)
                      {
                          if (index != 0)//因为编译和打包只会占用第一台服务器的时间
@@ -1966,7 +1946,7 @@ namespace AntDeploy.Winform
                          httpRequestClient.SetFieldValue("sdkType", DeployConfig.WindowsServiveConfig.SdkType);
                          httpRequestClient.SetFieldValue("isProjectInstallService", isProjectInstallService ? "yes" : "no");
                          httpRequestClient.SetFieldValue("execFilePath", execFilePath);
-                         httpRequestClient.SetFieldValue("stopTimeOut", DeployConfig.WindowsServiveConfig.StopTimeOutSeconds);
+                         httpRequestClient.SetFieldValue("deployFolderName", dateTimeFolderName);
                          httpRequestClient.SetFieldValue("Token", server.Token);
                          httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream", zipBytes);
                          System.Net.WebSockets.Managed.ClientWebSocket webSocket = null;
@@ -2739,6 +2719,7 @@ namespace AntDeploy.Winform
                     {
                         PrintCommonLog(this.nlog_docker);
                         this.nlog_docker.Info("Start rollBack from version:" + rolleback.SelectRollBackVersion);
+                        this.tabControl_docker.SelectedIndex = 0;
                         DoRollBack(serverList, ENTRYPOINT, SDKVersion, rolleback.SelectRollBackVersion);
                     }
                 });

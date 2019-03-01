@@ -18,6 +18,7 @@ namespace AntDeployAgentWindows.MyApp.Service
         /// </summary>
         /// <returns></returns>
         string Deploy(FormHandler.FormItem fileItem);
+        string RollBack();
 
         string Check(FormHandler formHandler);
 

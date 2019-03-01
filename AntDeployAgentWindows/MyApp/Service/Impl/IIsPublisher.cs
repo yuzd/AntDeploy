@@ -19,6 +19,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
         private string _projectName;
         private string _port;
         private string _poolName;
+        private string _dateTimeFolderName;
 
         private string _projectPublishFolder;
         private FormHandler _formHandler;
@@ -29,7 +30,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
         public override string DeployExcutor(FormHandler.FormItem fileItem)
         {
             var projectPath = Path.Combine(Setting.PublishIIsPathFolder, _projectName);
-            _projectPublishFolder = Path.Combine(projectPath, DateTime.Now.ToString("yyyyMMddHHmmss"));
+            _projectPublishFolder = Path.Combine(projectPath, !string.IsNullOrEmpty(_dateTimeFolderName)? _dateTimeFolderName: DateTime.Now.ToString("yyyyMMddHHmmss"));
             EnsureProjectFolder(projectPath);
             EnsureProjectFolder(_projectPublishFolder);
 
@@ -321,7 +322,12 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 _poolName = poolNameItem.TextValue;
             }
 
-            
+            var dateTimeFolderName = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("deployFolderName"));
+            if (dateTimeFolderName != null && !string.IsNullOrEmpty(dateTimeFolderName.TextValue))
+            {
+                _dateTimeFolderName = dateTimeFolderName.TextValue;
+            }
+
             _projectName = getCorrectFolderName(_webSiteName);
             return string.Empty;
         }
