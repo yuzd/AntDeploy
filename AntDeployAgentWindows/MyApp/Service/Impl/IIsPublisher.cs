@@ -22,6 +22,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
         private string _dateTimeFolderName;
 
         private string _projectPublishFolder;
+        private bool _isIncrement ;//是否增量
         private FormHandler _formHandler;
 
         public override string ProviderName => "iis";
@@ -244,6 +245,23 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 try
                 {
                     ops.Execute();
+                    try
+                    {
+                        //如果是增量的话 要把复制过来
+                        if (_isIncrement)
+                        {
+                            Log("Increment deploy start to backup...");
+                            //projectLocation.Item1 转到 increment 的目录
+                            var incrementFolder = Path.Combine(_projectPublishFolder, "increment");
+                            EnsureProjectFolder(incrementFolder);
+                            CopyHelper.DirectoryCopy(projectLocation.Item1, incrementFolder, true);
+                            Log("Increment deploy backup success...");
+                        }
+                    }
+                    catch (Exception ex3)
+                    {
+                        Log("Increment deploy folder backup fail:" + ex3.Message);
+                    }
 
                     Log("Deploy IIS Execute Success");
                 }
@@ -326,6 +344,12 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
             if (dateTimeFolderName != null && !string.IsNullOrEmpty(dateTimeFolderName.TextValue))
             {
                 _dateTimeFolderName = dateTimeFolderName.TextValue;
+            }
+
+            var isIncrement = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("isIncrement"));
+            if (isIncrement != null && !string.IsNullOrEmpty(isIncrement.TextValue) && isIncrement.TextValue.ToLower().Equals("true"))
+            {
+                _isIncrement = true;
             }
 
             _projectName = getCorrectFolderName(_webSiteName);

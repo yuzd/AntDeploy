@@ -1,12 +1,12 @@
-﻿using AntDeployAgentWindows.WebApiCore;
+﻿using AntDeployAgentWindows.Model;
+using AntDeployAgentWindows.Operation;
+using AntDeployAgentWindows.Operation.OperationTypes;
+using AntDeployAgentWindows.Util;
+using AntDeployAgentWindows.WebApiCore;
 using System;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using AntDeployAgentWindows.Model;
-using AntDeployAgentWindows.Operation;
-using AntDeployAgentWindows.Operation.OperationTypes;
-using AntDeployAgentWindows.Util;
 
 namespace AntDeployAgentWindows.MyApp.Service.Impl
 {
@@ -17,10 +17,10 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
         private string _serviceName;
         private string _serviceExecName;
         private int _waitForServiceStopTimeOut = 15;
-     
+
         private string _projectPublishFolder;
         private string _dateTimeFolderName;
-
+        private bool _isIncrement;//是否增量
         public override string ProviderName => "windowService";
         public override string ProjectName => _serviceName;
 
@@ -78,7 +78,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     Log($"windowService : {_serviceName} not found,start to create!");
 
                     //创建发布目录
-                    var firstDeployFolder = Path.Combine(projectPath,"deploy");
+                    var firstDeployFolder = Path.Combine(projectPath, "deploy");
                     EnsureProjectFolder(firstDeployFolder);
 
                     Log($"deploy folder create success : {firstDeployFolder} ");
@@ -89,10 +89,10 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     Log($"copy files success from [{deployFolder}] to [{firstDeployFolder}]");
 
                     //部署windows service
-                    var execFullPath = Path.Combine(firstDeployFolder,_serviceExecName);
+                    var execFullPath = Path.Combine(firstDeployFolder, _serviceExecName);
                     if (!File.Exists(execFullPath))
                     {
-                        try{ Directory.Delete(firstDeployFolder, true);}catch (Exception) {}
+                        try { Directory.Delete(firstDeployFolder, true); } catch (Exception) { }
                         return $"windows service exec file not found : {execFullPath} ";
                     }
 
@@ -118,7 +118,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     //    try{ Directory.Delete(firstDeployFolder, true);}catch (Exception) {}
                     //    return installResult;
                     //}
-                  
+
 
                     ////部署成功 启动服务
                     //Log($"start windows service : " + _serviceName);
@@ -141,7 +141,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
                 try
                 {
-                    projectLocation = projectLocation.Replace("\"","");
+                    projectLocation = projectLocation.Replace("\"", "");
                     projectLocationFolder = new FileInfo(projectLocation).DirectoryName;
                     if (!Directory.Exists(projectLocationFolder))
                     {
@@ -160,7 +160,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
                 Arguments args = new Arguments
                 {
-                    DeployType =  "WindowsService",
+                    DeployType = "WindowsService",
                     BackupFolder = Setting.BackUpWindowServicePathFolder,
                     AppName = _serviceName,
                     AppFolder = projectLocationFolder,
@@ -173,6 +173,24 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 try
                 {
                     ops.Execute();
+
+                    try
+                    {
+                        //如果是增量的话 要把复制过来
+                        if (_isIncrement)
+                        {
+                            Log("Increment deploy start to backup...");
+                            //projectLocation.Item1 转到 increment 的目录
+                            var incrementFolder = Path.Combine(_projectPublishFolder, "increment");
+                            EnsureProjectFolder(incrementFolder);
+                            CopyHelper.DirectoryCopy(projectLocationFolder, incrementFolder, true);
+                            Log("Increment deploy backup success...");
+                        }
+                    }
+                    catch (Exception ex3)
+                    {
+                        Log("Increment deploy folder backup fail:" + ex3.Message);
+                    }
 
                     Log("Deploy WindowsService Execute Success");
                 }
@@ -201,7 +219,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
 
 
-      
+
 
         public override string CheckData(FormHandler formHandler)
         {
@@ -229,7 +247,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
             }
 
             _serviceName = serviceNameItem.TextValue.Trim();
-           
+
 
             var serviceExecItem = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("execFilePath"));
             if (serviceExecItem == null || string.IsNullOrEmpty(serviceExecItem.TextValue))
@@ -253,6 +271,11 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 _dateTimeFolderName = dateTimeFolderName.TextValue;
             }
 
+            var isIncrement = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("isIncrement"));
+            if (isIncrement != null && !string.IsNullOrEmpty(isIncrement.TextValue) && isIncrement.TextValue.ToLower().Equals("true"))
+            {
+                _isIncrement = true;
+            }
             return string.Empty;
         }
     }

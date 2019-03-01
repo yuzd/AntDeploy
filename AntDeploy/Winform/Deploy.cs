@@ -1161,6 +1161,7 @@ namespace AntDeploy.Winform
                         this.nlog_iis.Info($"Start Uppload,Host:{server.Host}");
                         HttpRequestClient httpRequestClient = new HttpRequestClient();
                         httpRequestClient.SetFieldValue("publishType", "iis");
+                        httpRequestClient.SetFieldValue("isIncrement", this.PluginConfig.IISEnableIncrement?"true":"");
                         httpRequestClient.SetFieldValue("sdkType", DeployConfig.IIsConfig.SdkType);
                         httpRequestClient.SetFieldValue("port", Port);
                         httpRequestClient.SetFieldValue("id", loggerId);
@@ -1941,6 +1942,7 @@ namespace AntDeploy.Winform
                          this.nlog_windowservice.Info($"Start Uppload,Host:{server.Host}");
                          HttpRequestClient httpRequestClient = new HttpRequestClient();
                          httpRequestClient.SetFieldValue("publishType", "windowservice");
+                         httpRequestClient.SetFieldValue("isIncrement", this.PluginConfig.WindowsServiceEnableIncrement?"true":"");
                          httpRequestClient.SetFieldValue("serviceName", serviceName);
                          httpRequestClient.SetFieldValue("id", loggerId);
                          httpRequestClient.SetFieldValue("sdkType", DeployConfig.WindowsServiveConfig.SdkType);

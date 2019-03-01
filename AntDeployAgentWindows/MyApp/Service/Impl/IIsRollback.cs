@@ -5,9 +5,7 @@ using AntDeployAgentWindows.Util;
 using AntDeployAgentWindows.WebApiCore;
 using System;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
-using System.Runtime.InteropServices;
 
 namespace AntDeployAgentWindows.MyApp.Service.Impl
 {
@@ -15,10 +13,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
     {
 
         private string _webSiteName;
-        private string _sdkTypeName;
         private string _projectName;
-        private string _port;
-        private string _poolName;
         private string _dateTimeFolderName;
 
         private string _projectPublishFolder;
@@ -29,13 +24,117 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
         public override string RollBack()
         {
-            //获取到版本
-            //check版本是会否存在
-            //如果存在那么执行重新覆盖
-            //读取该项目是否存在 不存在就报错
-            //读取该项目的地址 地址不存在就报错
-            //执行覆盖
-            return base.RollBack();
+            try
+            {
+                //获取到版本
+                //check版本是会否存在
+                //如果存在那么执行重新覆盖
+                //读取该项目是否存在 不存在就报错
+                //读取该项目的地址 地址不存在就报错
+                //执行覆盖
+                var projectPath = Path.Combine(Setting.PublishIIsPathFolder, _projectName);
+                _projectPublishFolder = Path.Combine(projectPath, _dateTimeFolderName);
+
+                if (Directory.Exists(_projectPublishFolder))
+                {
+                    return "rollback folder not found:" + _projectPublishFolder;
+                }
+
+                Log("agent  version ==>" + AntDeployAgentWindows.Version.VERSION);
+
+                var deployFolder = Path.Combine(_projectPublishFolder, "publish");
+
+                var incrementFolder = Path.Combine(_projectPublishFolder, "increment");
+
+                if (Directory.Exists(incrementFolder))
+                {
+                    deployFolder = incrementFolder;
+                }
+
+                if (!Directory.Exists(deployFolder))
+                {
+                    return "rollback folder not found:" + deployFolder;
+                }
+
+                Log("rollback from folder ==>" + deployFolder);
+
+                //查找 IIS 里面是否存在
+                var siteArr = _webSiteName.Split('/');
+                if (siteArr.Length > 2)
+                {
+                    return $"website level limit is 2！";
+                }
+                var level1 = siteArr[0];
+                var level2 = siteArr.Length == 2 ? siteArr[1] : string.Empty;
+                var isSiteExistResult = IISHelper.IsSiteExist(level1, level2);
+                if (!isSiteExistResult.Item1)//一级都不存在
+                {
+                    return $"website: ${level1} not found";
+                }
+                if (!isSiteExistResult.Item2)//一级都不存在
+                {
+                    return $"website:${level2} not found in ${level1}";
+                }
+                var projectLocation = IISHelper.GetWebSiteLocationInIIS(level1, level2, Log);
+                if (projectLocation == null)
+                {
+                    return $"website:${_webSiteName} location not found";
+                }
+
+                if (string.IsNullOrEmpty(projectLocation.Item1))
+                {
+                    return $"website : {_webSiteName} not found in iis";
+                }
+
+                if (!Directory.Exists(projectLocation.Item1))
+                {
+                    return $"website:${_webSiteName} location not found";
+                }
+
+                Log("Start to rollback IIS:");
+                Log("SiteName ===>" + projectLocation.Item2);
+                Log("SiteFolder ===> " + projectLocation.Item1);
+                Log("SiteApplicationPoolName ===> " + projectLocation.Item3);
+
+                Arguments args = new Arguments
+                {
+                    DeployType = "IIS",
+                    BackupFolder = Setting.BackUpIIsPathFolder,
+                    AppName = _projectName,
+                    ApplicationPoolName = projectLocation.Item3,
+                    AppFolder = projectLocation.Item1,
+                    DeployFolder = deployFolder,
+                    SiteName = projectLocation.Item2,
+                    NoBackup = true
+                };
+
+                var ops = new OperationsIIS(args, Log);
+
+                try
+                {
+                    ops.Execute();
+
+                    Log("Rollback IIS Execute Success");
+                }
+                catch (Exception ex)
+                {
+                    try
+                    {
+                        //ops.Rollback();
+
+                        return $"Rollback to iis err:{ex.Message}";
+                    }
+                    catch (Exception ex2)
+                    {
+                        return $"Rollback to iis err:{ex.Message},fail:{ex2.Message}";
+                    }
+                }
+                return string.Empty;
+            }
+            catch (Exception exx)
+            {
+                return exx.Message;
+            }
         }
 
         public override string DeployExcutor(FormHandler.FormItem fileItem)
@@ -49,20 +148,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
         public override string CheckData(FormHandler formHandler)
         {
             _formHandler = formHandler;
-            var sdkType = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("sdkType"));
-            if (sdkType == null || string.IsNullOrEmpty(sdkType.TextValue))
-            {
-                return "sdkType required";
-            }
 
-            var sdkTypeValue = sdkType.TextValue.ToLower();
-
-            if (!new string[] { "netframework", "netcore" }.Contains(sdkTypeValue))
-            {
-                return $"sdkType value :{sdkTypeValue} is not suppored";
-            }
-
-            _sdkTypeName = sdkTypeValue;
 
             var website = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("webSiteName"));
             if (website == null || string.IsNullOrEmpty(website.TextValue))
@@ -82,28 +168,21 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 return "webSiteName level limit is 2";
             }
 
-            var portItem = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("port"));
-            if (portItem != null && !string.IsNullOrEmpty(portItem.TextValue))
-            {
-                _port = portItem.TextValue;
-            }
-
-            var poolNameItem = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("poolName"));
-            if (poolNameItem != null && !string.IsNullOrEmpty(poolNameItem.TextValue))
-            {
-                _poolName = poolNameItem.TextValue;
-            }
 
             var dateTimeFolderName = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("deployFolderName"));
             if (dateTimeFolderName != null && !string.IsNullOrEmpty(dateTimeFolderName.TextValue))
             {
                 _dateTimeFolderName = dateTimeFolderName.TextValue;
             }
+            else
+            {
+                return "rollback version is required";
+            }
 
             _projectName = getCorrectFolderName(_webSiteName);
             return string.Empty;
         }
 
-        
+
     }
 }
