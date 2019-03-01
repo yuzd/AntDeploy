@@ -5,7 +5,7 @@ AntDeploy Agent In Windows Server
 * 支持docker一键部署(支持netcore)
 * 支持iis一键部署(支持netcore和framework)(支持增量发布)
 * 支持windows服务一键部署(支持netcore和framework)(支持增量发布)
-
+* 支持一键回滚(windows服务器需要装>=2.7版本的agent)
 
 # (如要安装Windows服务器上agent服务)How to install 
 
