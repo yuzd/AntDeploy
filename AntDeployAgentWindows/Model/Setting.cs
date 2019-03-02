@@ -158,11 +158,7 @@ namespace AntDeployAgentWindows.Model
 
                     var diff = subFolders.Length - targetList.Count;
 
-                    if (diff == 0)
-                    {
-                        targetList = targetList.Skip(10).ToList();
-                    }
-                    else if (diff > 0 && diff <= 10)
+                    if (diff >= 0 && diff < 10)
                     {
                         targetList = targetList.Skip(10 - diff).ToList();
                     }
