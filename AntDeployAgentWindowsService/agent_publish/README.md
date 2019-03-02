@@ -1,5 +1,6 @@
-# AntDeployAgent
-AntDeploy Agent In Windows Server
+# AntDeploy
+Download url:
+https://marketplace.visualstudio.com/items?itemName=nainaigu.AntDeploy
 
 # 功能
 * 支持docker一键部署(支持netcore)
@@ -42,4 +43,4 @@ https://github.com/yuzd/AntDeployAgent/issues/5
  ![image](https://images4.c-ctrip.com/target/zb0711000000rv06a5645.jpg)
 
 # 关于源码
-有人用我才有激情,该插件install超过200+ 所有源代码会全部开源!
+该visual studio插件install超过200+ 所有源代码会全部开源!

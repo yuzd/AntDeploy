@@ -7,12 +7,14 @@ using System.Linq;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
+using AntDeployAgentWindows;
 using TinyFox;
 
 namespace AntDeployAgentWindowsService
 {
     public partial class AntDeployAgentWindowsService : ServiceBase
     {
+        private Startup _startup;
         public AntDeployAgentWindowsService()
         {
             InitializeComponent();
@@ -27,12 +29,13 @@ namespace AntDeployAgentWindowsService
         {
             var port = System.Configuration.ConfigurationManager.AppSettings["Port"];
             TinyFoxService.Port = string.IsNullOrEmpty(port) ? 8088 : int.Parse(port);
-            var startup = new AntDeployAgentWindows.Startup();
-            TinyFoxService.Start(startup.OwinMain);
+            _startup = new AntDeployAgentWindows.Startup();
+            TinyFoxService.Start(_startup.OwinMain);
         }
 
         protected override void OnStop()
         {
+            _startup?.Stop();
             TinyFoxService.Stop();
         }
     }

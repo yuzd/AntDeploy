@@ -88,5 +88,9 @@ namespace AntDeployAgentWindows
             return _owinAppFunc != null ? _owinAppFunc(env) : null;
         }
 
+        public void Stop()
+        {
+            Setting.StopWatchFolderTask();
+        }
     }
 }
