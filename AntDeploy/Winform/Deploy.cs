@@ -1027,7 +1027,7 @@ namespace AntDeploy.Winform
             DeployConfig.IIsConfig.WebSiteName = websiteName;
             new Task(async () =>
             {
-                this.nlog_iis.Info("-----------------Start publish-----------------");
+                this.nlog_iis.Info($"-----------------Start publish[Ver:{Vsix.VERSION}]-----------------");
                 PrintCommonLog(this.nlog_iis);
                 Enable(false);//第一台开始编译
                 GitClient gitModel = null;
@@ -1508,7 +1508,7 @@ namespace AntDeploy.Winform
 
                     var loggerId = Guid.NewGuid().ToString("N");
 
-                    this.nlog_iis.Info("Rollback Start");
+                    this.nlog_iis.Info($"-----------------Rollback Start[Ver:{Vsix.VERSION}]-----------------");
 
                     foreach (var server in serverList)
                     {
@@ -2061,7 +2061,7 @@ namespace AntDeploy.Winform
 
             new Task(async () =>
              {
-                 this.nlog_windowservice.Info("-----------------Start publish-----------------");
+                 this.nlog_windowservice.Info($"-----------------Start publish[Ver:{Vsix.VERSION}]-----------------");
                  PrintCommonLog(this.nlog_windowservice);
                  EnableForWindowsService(false);//第一台开始编译
                  GitClient gitModel = null;
@@ -2572,7 +2572,7 @@ namespace AntDeploy.Winform
 
                     var loggerId = Guid.NewGuid().ToString("N");
 
-                    this.nlog_windowservice.Info("Rollback Start");
+                    this.nlog_windowservice.Info($"-----------------Rollback Start[Ver:{Vsix.VERSION}]-----------------");
 
                     foreach (var server in serverList)
                     {
@@ -2981,7 +2981,7 @@ namespace AntDeploy.Winform
             var clientDateTimeFolderName = DateTime.Now.ToString("yyyyMMddHHmmss");
             new Task(async () =>
             {
-                this.nlog_docker.Info("-----------------Start publish-----------------");
+                this.nlog_docker.Info($"-----------------Start publish[Ver:{Vsix.VERSION}]-----------------");
                 PrintCommonLog(this.nlog_docker);
                 EnableForDocker(false);
 
@@ -3368,7 +3368,7 @@ namespace AntDeploy.Winform
             new Task(async () =>
             {
 
-
+                this.nlog_docker.Info($"-----------------Rollback Start[Ver:{Vsix.VERSION}]-----------------");
                 try
                 {
                     EnableForDocker(false, true);
