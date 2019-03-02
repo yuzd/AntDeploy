@@ -31,7 +31,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     return "rollback folder not found:" + _projectPublishFolder;
                 }
 
-                Log("agent  version ==>" + AntDeployAgentWindows.Version.VERSION);
+                Log("agent version ==>" + AntDeployAgentWindows.Version.VERSION);
                 var deployFolder = Path.Combine(_projectPublishFolder, "publish");
 
                 var incrementFolder = Path.Combine(_projectPublishFolder, "increment");

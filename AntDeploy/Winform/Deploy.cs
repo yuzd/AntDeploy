@@ -1027,7 +1027,7 @@ namespace AntDeploy.Winform
             DeployConfig.IIsConfig.WebSiteName = websiteName;
             new Task(async () =>
             {
-                this.nlog_iis.Info("Start publish");
+                this.nlog_iis.Info("-----------------Start publish-----------------");
                 PrintCommonLog(this.nlog_iis);
                 Enable(false);//第一台开始编译
                 GitClient gitModel = null;
@@ -1042,13 +1042,7 @@ namespace AntDeploy.Winform
                         var publishLog = new List<string>();
                         //执行 publish
                         var isSuccess = CommandHelper.RunDotnetExternalExe(ProjectFolderPath, "dotnet",
-                            "publish -c Release",
-                            (r) =>
-                            {
-                                this.nlog_iis.Info(r);
-                                publishLog.Add(r);
-                            },
-                            (er) => this.nlog_iis.Error(er));
+                            "publish -c Release", this.nlog_iis, publishLog);
 
                         if (!isSuccess)
                         {
@@ -1080,10 +1074,7 @@ namespace AntDeploy.Winform
                     }
                     else
                     {
-                        var isSuccess = CommandHelper.RunMsbuild(
-                            ProjectPath,
-                            (r) => { this.nlog_iis.Info(r); },
-                            (er) => this.nlog_iis.Error(er));
+                        var isSuccess = CommandHelper.RunMsbuild(ProjectPath, this.nlog_iis);
 
                         if (!isSuccess)
                         {
@@ -1113,7 +1104,7 @@ namespace AntDeploy.Winform
                     }
 
                     BuildEnd(this.tabPage_progress);//第一台结束编译
-                    LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish success,  ==> ");
+                    LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish success  ==> ");
                     publisEvent.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
                     this.nlog_iis.Log(publisEvent);
 
@@ -1134,7 +1125,7 @@ namespace AntDeploy.Winform
 
 
                     //执行 打包
-                    this.nlog_iis.Info("Start package");
+                    this.nlog_iis.Info("-----------------Start package-----------------");
 
                     //查看是否开启了增量
                     if (this.PluginConfig.IISEnableIncrement)
@@ -1214,11 +1205,11 @@ namespace AntDeploy.Winform
                         PackageError(this.tabPage_progress);
                         return;
                     }
-                    this.nlog_iis.Info("package success");
+                    this.nlog_iis.Info($"package success,package size:{(zipBytes.Length/1024/1024)}M");
                     var loggerId = Guid.NewGuid().ToString("N");
                     var dateTimeFolderName = DateTime.Now.ToString("yyyyMMddHHmmss");
                     //执行 上传
-                    this.nlog_iis.Info("Deploy Start");
+                    this.nlog_iis.Info("-----------------Deploy Start-----------------");
                     var index = 0;
                     var allSuccess = true;
                     foreach (var server in serverList)
@@ -1338,6 +1329,12 @@ namespace AntDeploy.Winform
                     {
                         gitModel.SubmitChanges();
                     }
+
+                    LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local publish folder  ==> ");
+                    publisEvent2.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
+                    this.nlog_iis.Log(publisEvent2);
+                    this.nlog_iis.Info("-----------------Deploy End-----------------");
+
                 }
                 catch (Exception ex1)
                 {
@@ -2064,7 +2061,7 @@ namespace AntDeploy.Winform
 
             new Task(async () =>
              {
-                 this.nlog_windowservice.Info("Start publish");
+                 this.nlog_windowservice.Info("-----------------Start publish-----------------");
                  PrintCommonLog(this.nlog_windowservice);
                  EnableForWindowsService(false);//第一台开始编译
                  GitClient gitModel = null;
@@ -2078,13 +2075,7 @@ namespace AntDeploy.Winform
                          var publishLog = new List<string>();
                          //执行 publish
                          var isSuccess = CommandHelper.RunDotnetExternalExe(ProjectFolderPath, "dotnet",
-                             "publish -c Release --runtime win-x64",
-                             (r) =>
-                             {
-                                 this.nlog_iis.Info(r);
-                                 publishLog.Add(r);
-                             },
-                             (er) => this.nlog_windowservice.Error(er));
+                             "publish -c Release --runtime win-x64", nlog_windowservice, publishLog);
 
                          if (!isSuccess)
                          {
@@ -2115,10 +2106,7 @@ namespace AntDeploy.Winform
                      else
                      {
                          //执行 publish
-                         var isSuccess = CommandHelper.RunMsbuild(
-                             ProjectPath,
-                             (r) => { this.nlog_windowservice.Info(r); },
-                             (er) => this.nlog_windowservice.Error(er));
+                         var isSuccess = CommandHelper.RunMsbuild(ProjectPath, nlog_windowservice);
 
                          if (!isSuccess)
                          {
@@ -2193,14 +2181,14 @@ namespace AntDeploy.Winform
 
 
                      BuildEnd(this.tabPage_windows_service);//第一台结束编译
-                     LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish success,  ==> ");
+                     LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish success  ==> ");
                      publisEvent.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
                      this.nlog_windowservice.Log(publisEvent);
 
 
 
                      //执行 打包
-                     this.nlog_windowservice.Info("Start package");
+                     this.nlog_windowservice.Info("-----------------Start package-----------------");
 
 
                      //查看是否开启了增量
@@ -2269,10 +2257,10 @@ namespace AntDeploy.Winform
                          return;
                      }
 
-                     this.nlog_windowservice.Info("package success");
+                     this.nlog_windowservice.Info($"package success,package size:{(zipBytes.Length / 1024 / 1024)}M");
                      var loggerId = Guid.NewGuid().ToString("N");
                      //执行 上传
-                     this.nlog_windowservice.Info("Deploy Start");
+                     this.nlog_windowservice.Info("-----------------Deploy Start-----------------");
                      var index = 0;
                      var allSuccess = true;
                      var dateTimeFolderName = DateTime.Now.ToString("yyyyMMddHHmmss");
@@ -2391,6 +2379,11 @@ namespace AntDeploy.Winform
                      {
                          gitModel.SubmitChanges();
                      }
+
+                     LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local publish folder  ==> ");
+                     publisEvent2.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
+                     this.nlog_windowservice.Log(publisEvent2);
+                     this.nlog_windowservice.Info("-----------------Deploy End-----------------");
                  }
                  catch (Exception ex1)
                  {
@@ -2988,7 +2981,7 @@ namespace AntDeploy.Winform
             var clientDateTimeFolderName = DateTime.Now.ToString("yyyyMMddHHmmss");
             new Task(async () =>
             {
-                this.nlog_docker.Info("Start publish");
+                this.nlog_docker.Info("-----------------Start publish-----------------");
                 PrintCommonLog(this.nlog_docker);
                 EnableForDocker(false);
 
@@ -2997,13 +2990,7 @@ namespace AntDeploy.Winform
                     var publishLog = new List<string>();
                     //执行 publish
                     var isSuccess = CommandHelper.RunDotnetExternalExe(ProjectFolderPath, "dotnet",
-                       "publish -c Release",
-                       (r) =>
-                       {
-                           this.nlog_docker.Info(r);
-                           publishLog.Add(r);
-                       },
-                       (er) => this.nlog_docker.Error(er));
+                       "publish -c Release", nlog_docker, publishLog);
 
                     if (!isSuccess)
                     {
@@ -3049,14 +3036,14 @@ namespace AntDeploy.Winform
 
                     BuildEnd(this.tabPage_docker);//第一台结束编译
 
-                    LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish success,  ==> ");
+                    LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish success  ==> ");
                     publisEvent.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
                     this.nlog_docker.Log(publisEvent);
 
 
 
                     //执行 打包
-                    this.nlog_docker.Info("Start package");
+                    this.nlog_docker.Info("-----------------Start package-----------------");
                     MemoryStream zipBytes;
                     try
                     {
@@ -3081,9 +3068,9 @@ namespace AntDeploy.Winform
                         return;
                     }
 
-                    this.nlog_docker.Info("package success");
+                    this.nlog_docker.Info($"package success,package size:{(zipBytes.Length / 1024 / 1024)}M");
                     //执行 上传
-                    this.nlog_docker.Info("Deploy Start");
+                    this.nlog_docker.Info("-----------------Deploy Start-----------------");
                     var index = 0;
                     foreach (var server in serverList)
                     {
@@ -3176,7 +3163,10 @@ namespace AntDeploy.Winform
                         index++;
                     }
                     zipBytes.Dispose();
-                    this.nlog_docker.Info("Deploy End");
+                    LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local publish folder  ==> ");
+                    publisEvent2.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
+                    this.nlog_docker.Log(publisEvent2);
+                    this.nlog_docker.Info("-----------------Deploy End-----------------");
                 }
                 catch (Exception ex1)
                 {

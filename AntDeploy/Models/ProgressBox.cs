@@ -248,6 +248,7 @@ namespace AntDeploy.Models
             {
                 progress_iis_package.Value = 100;
                 PackageEnd();
+                progress_iis_upload.Value = 20;
             }
         }
 

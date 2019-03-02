@@ -18,7 +18,7 @@ namespace AntDeploy.Util
     {
         
 
-        public static bool RunMsbuild(string path,Action<string> logAction,Action<string> errLogAction)
+        public static bool RunMsbuild(string path,NLog.Logger logger)
         {
             var msBuild = GetMsBuildPath();
             if (string.IsNullOrEmpty(msBuild))
@@ -29,7 +29,7 @@ namespace AntDeploy.Util
             var outPath = Path.Combine(new FileInfo(path).Directory.FullName,"bin","Release","publish") + "\\";
             return RunDotnetExternalExe(string.Empty,msBuild+"\\MsBuild.exe",
                 path + " /t:Rebuild /v:m /p:OutDir="+ outPath.Replace("\\\\","\\") +";Configuration=Release",
-                logAction,errLogAction);
+                 logger,null);
         }
 
 
@@ -86,10 +86,10 @@ namespace AntDeploy.Util
         /// </summary>
         /// <param name="projectPath"></param>
         /// <param name="arguments"></param>
-        /// <param name="logAction"></param>
-        /// <param name="errLogAction"></param>
+        /// <param name="logger"></param>
+        /// <param name="refList"></param>
         /// <returns></returns>
-        public static bool RunDotnetExternalExe(string projectPath,string fileName,string arguments,Action<string> logAction,Action<string> errLogAction)
+        public static bool RunDotnetExternalExe(string projectPath,string fileName,string arguments, NLog.Logger logger, List<string> refList)
         {
             Process process = null;
             try
@@ -125,13 +125,18 @@ namespace AntDeploy.Util
                 {
                     if (!string.IsNullOrWhiteSpace(args.Data))
                     {
-                        if (args.Data.Contains(".csproj : error"))
+                        refList?.Add(args.Data);
+                        if (!args.Data.StartsWith(" ")&&args.Data.Contains(": error"))
                         {
-                            errLogAction(args.Data);
+                            logger?.Warn(args.Data);
+                        }
+                        else if (args.Data.Contains(".csproj : error"))
+                        {
+                            logger?.Error(args.Data);
                         }
                         else
                         {
-                            logAction(args.Data);
+                            logger?.Info(args.Data);
                         }
                     }
                 };
@@ -139,7 +144,7 @@ namespace AntDeploy.Util
 
                 process.ErrorDataReceived += (sender, data) =>
                 {
-                    if (!string.IsNullOrWhiteSpace(data.Data)) errLogAction(data.Data);
+                    if (!string.IsNullOrWhiteSpace(data.Data)) logger?.Error(data.Data);
                 };
                 process.BeginErrorReadLine();
 
@@ -157,7 +162,7 @@ namespace AntDeploy.Util
             }
             catch (Exception ex)
             {
-                errLogAction(ex.Message);
+                logger?.Error(ex.Message);
                 return false;
             }
             finally

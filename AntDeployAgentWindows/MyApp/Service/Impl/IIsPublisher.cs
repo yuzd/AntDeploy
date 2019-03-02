@@ -50,7 +50,8 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 {
                     return "publish file save fail";
                 }
-                Log("agent  version ==>" + AntDeployAgentWindows.Version.VERSION);
+
+                Log("agent version ==>" + AntDeployAgentWindows.Version.VERSION);
                 
                 Log("upload success ==>" + filePath);
                 //解压
