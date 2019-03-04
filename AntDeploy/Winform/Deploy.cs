@@ -225,6 +225,11 @@ namespace AntDeploy.Winform
                 {
                     this.txt_docker_envname.Text = DeployConfig.DockerConfig.AspNetCoreEnv;
                 }
+
+                if (!string.IsNullOrEmpty(DeployConfig.DockerConfig.RemoveDaysFromPublished))
+                {
+                    this.t_docker_delete_days.Text = DeployConfig.DockerConfig.RemoveDaysFromPublished;
+                }
             }
 
             if (PluginConfig.LastTabIndex >= 0 && PluginConfig.LastTabIndex < this.tabcontrol.TabPages.Count)
@@ -294,6 +299,7 @@ namespace AntDeploy.Winform
 
             DeployConfig.DockerConfig.Prot = this.txt_docker_port.Text.Trim();
             DeployConfig.DockerConfig.AspNetCoreEnv = this.txt_docker_envname.Text.Trim();
+            DeployConfig.DockerConfig.RemoveDaysFromPublished = this.t_docker_delete_days.Text.Trim();
 
             if (!string.IsNullOrEmpty(ProjectConfigPath))
             {
@@ -1325,9 +1331,10 @@ namespace AntDeploy.Winform
                         index++;
                     }
                     //交互
-                    if (allSuccess && gitModel != null)
+                    if (allSuccess)
                     {
-                        gitModel.SubmitChanges();
+                        this.nlog_iis.Info("Deploy Version：" + dateTimeFolderName);
+                        if(gitModel != null)gitModel.SubmitChanges();
                     }
 
                     LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local publish folder  ==> ");
@@ -1509,7 +1516,7 @@ namespace AntDeploy.Winform
                     var loggerId = Guid.NewGuid().ToString("N");
 
                     this.nlog_iis.Info($"-----------------Rollback Start[Ver:{Vsix.VERSION}]-----------------");
-
+                    var allSuccess = true;
                     foreach (var server in serverList)
                     {
                         BuildEnd(this.tabPage_progress, server.Host);
@@ -1521,6 +1528,7 @@ namespace AntDeploy.Winform
                         {
                             this.nlog_iis.Warn($"{server.Host} Rollback skip,Token is null or empty!");
                             UpdateDeployProgress(this.tabPage_progress, server.Host, false);
+                            allSuccess = false;
                             continue;
                         }
 
@@ -1555,6 +1563,7 @@ namespace AntDeploy.Winform
                                         if (receiveMsg.Contains("【Error】"))
                                         {
                                             haveError = true;
+                                            allSuccess = false;
                                             this.nlog_iis.Warn($"【Server】{receiveMsg}");
                                         }
                                         else
@@ -1572,6 +1581,7 @@ namespace AntDeploy.Winform
 
                             if (haveError)
                             {
+                                allSuccess = false;
                                 this.nlog_iis.Error($"Host:{server.Host},Rollback Fail,Skip to Next");
                                 UpdateDeployProgress(this.tabPage_progress, server.Host, false);
                             }
@@ -1584,6 +1594,7 @@ namespace AntDeploy.Winform
                                 }
                                 else
                                 {
+                                    allSuccess = false;
                                     this.nlog_iis.Error($"Host:{server.Host},Response:{uploadResult.Item2},Skip to Next");
                                     UpdateDeployProgress(this.tabPage_progress, server.Host, false);
                                 }
@@ -1594,6 +1605,7 @@ namespace AntDeploy.Winform
                         {
                             this.nlog_iis.Error($"Fail Rollback,Host:{server.Host},Response:{ex.Message},Skip to Next");
                             UpdateDeployProgress(this.tabPage_progress, server.Host, false);
+                            allSuccess = false;
                         }
                         finally
                         {
@@ -1604,7 +1616,11 @@ namespace AntDeploy.Winform
                         }
 
                     }
-
+                    if (allSuccess)
+                    {
+                        this.nlog_iis.Info($"Rollback Version："+ dateTimeFolderName);
+                    }
+                    this.nlog_iis.Info($"Rollback End");
                 }
                 catch (Exception ex1)
                 {
@@ -2375,9 +2391,10 @@ namespace AntDeploy.Winform
                      }
 
                      //交互
-                     if (allSuccess && gitModel != null)
+                     if (allSuccess)
                      {
-                         gitModel.SubmitChanges();
+                         this.nlog_windowservice.Info("Deploy Version：" + dateTimeFolderName);
+                         if(gitModel != null)gitModel.SubmitChanges();
                      }
 
                      LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local publish folder  ==> ");
@@ -2573,7 +2590,7 @@ namespace AntDeploy.Winform
                     var loggerId = Guid.NewGuid().ToString("N");
 
                     this.nlog_windowservice.Info($"-----------------Rollback Start[Ver:{Vsix.VERSION}]-----------------");
-
+                    var allSuccess = true;
                     foreach (var server in serverList)
                     {
                         BuildEnd(this.tabPage_windows_service, server.Host);
@@ -2585,6 +2602,7 @@ namespace AntDeploy.Winform
                         {
                             this.nlog_windowservice.Warn($"{server.Host} Rollback skip,Token is null or empty!");
                             UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
+                            allSuccess =false;
                             continue;
                         }
 
@@ -2619,6 +2637,7 @@ namespace AntDeploy.Winform
                                         if (receiveMsg.Contains("【Error】"))
                                         {
                                             haveError = true;
+                                            allSuccess =false;
                                             this.nlog_windowservice.Warn($"【Server】{receiveMsg}");
                                         }
                                         else
@@ -2636,6 +2655,7 @@ namespace AntDeploy.Winform
 
                             if (haveError)
                             {
+                                allSuccess =false;
                                 this.nlog_windowservice.Error($"Host:{server.Host},Rollback Fail,Skip to Next");
                                 UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
                             }
@@ -2648,6 +2668,7 @@ namespace AntDeploy.Winform
                                 }
                                 else
                                 {
+                                    allSuccess =false;
                                     this.nlog_windowservice.Error($"Host:{server.Host},Response:{uploadResult.Item2},Skip to Next");
                                     UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
                                 }
@@ -2656,6 +2677,7 @@ namespace AntDeploy.Winform
                         }
                         catch (Exception ex)
                         {
+                            allSuccess =false;
                             this.nlog_windowservice.Error($"Fail Rollback,Host:{server.Host},Response:{ex.Message},Skip to Next");
                             UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
                         }
@@ -2667,6 +2689,11 @@ namespace AntDeploy.Winform
 
                         }
 
+                        if (allSuccess)
+                        {
+                            this.nlog_windowservice.Info($"Rollback Version："+dateTimeFolderName);
+                        }
+                        this.nlog_windowservice.Info($"RollBack End");
                     }
 
                 }
@@ -2898,7 +2925,7 @@ namespace AntDeploy.Winform
             if (!string.IsNullOrEmpty(port))
             {
                 int.TryParse(port, out var dockerPort);
-                if (dockerPort == 0)
+                if (dockerPort <= 0)
                 {
                     MessageBox.Show("please input right port value");
                     return;
@@ -2913,6 +2940,8 @@ namespace AntDeploy.Winform
                 DeployConfig.DockerConfig.Prot = "";
             }
 
+           
+
             var aspnetcoreEnvName = this.txt_docker_envname.Text.Trim();
             if (aspnetcoreEnvName.Length > 0)
             {
@@ -2924,6 +2953,26 @@ namespace AntDeploy.Winform
             {
                 MessageBox.Show("please select env");
                 return;
+            }
+
+
+            var removeDays = this.t_docker_delete_days.Text.Trim();
+            if (!string.IsNullOrEmpty(removeDays))
+            {
+                int.TryParse(removeDays, out var _removeDays);
+                if (_removeDays <= 0)
+                {
+                    MessageBox.Show("please input right days value");
+                    return;
+                }
+                else
+                {
+                    DeployConfig.DockerConfig.RemoveDaysFromPublished = removeDays;
+                }
+            }
+            else
+            {
+                DeployConfig.DockerConfig.RemoveDaysFromPublished = "";
             }
 
 #if DEBUG
@@ -3072,6 +3121,7 @@ namespace AntDeploy.Winform
                     //执行 上传
                     this.nlog_docker.Info("-----------------Deploy Start-----------------");
                     var index = 0;
+                    var allSuccess = true;
                     foreach (var server in serverList)
                     {
                         if (index != 0)//因为编译和打包只会占用第一台服务器的时间
@@ -3085,18 +3135,21 @@ namespace AntDeploy.Winform
                         {
                             this.nlog_docker.Error("Server Host is Empty");
                             UploadError(this.tabPage_docker);
+                            allSuccess = false;
                             continue;
                         }
                         if (string.IsNullOrEmpty(server.UserName))
                         {
                             this.nlog_docker.Error("Server UserName is Empty");
                             UploadError(this.tabPage_docker);
+                            allSuccess = false;
                             continue;
                         }
                         if (string.IsNullOrEmpty(server.Pwd))
                         {
                             this.nlog_docker.Error("Server Pwd is Empty");
                             UploadError(this.tabPage_docker);
+                            allSuccess = false;
                             continue;
                         }
                         var pwd = CodingHelper.AESDecrypt(server.Pwd);
@@ -3104,6 +3157,7 @@ namespace AntDeploy.Winform
                         {
                             this.nlog_docker.Error("Server Pwd is Empty");
                             UploadError(this.tabPage_docker);
+                            allSuccess = false;
                             continue;
                         }
                         #endregion
@@ -3116,6 +3170,7 @@ namespace AntDeploy.Winform
                                if (logLevel == NLog.LogLevel.Error)
                                {
                                    hasError = true;
+                                   allSuccess = false;
                                    this.nlog_docker.Error("【Server】" + str);
                                }
                                else
@@ -3131,7 +3186,8 @@ namespace AntDeploy.Winform
                             NetCoreVersion = SDKVersion,
                             NetCorePort = DeployConfig.DockerConfig.Prot,
                             NetCoreEnvironment = DeployConfig.DockerConfig.AspNetCoreEnv,
-                            ClientDateTimeFolderName = clientDateTimeFolderName
+                            ClientDateTimeFolderName = clientDateTimeFolderName,
+                            RemoveDaysFromPublished =DeployConfig.DockerConfig.RemoveDaysFromPublished
                         })
                         {
                             var connectResult = sshClient.Connect();
@@ -3139,6 +3195,7 @@ namespace AntDeploy.Winform
                             {
                                 this.nlog_docker.Error($"Deploy Host:{server.Host} Fail: connect fail");
                                 UploadError(this.tabPage_docker);
+                                allSuccess = false;
                                 continue;
                             }
 
@@ -3149,12 +3206,14 @@ namespace AntDeploy.Winform
                                 UpdateDeployProgress(this.tabPage_docker, server.Host, !hasError);
                                 if (hasError)
                                 {
+                                    allSuccess = false;
                                     sshClient.DeletePublishFolder("antdeploy");
                                 }
                                 this.nlog_docker.Info($"publish Host: {server.Host} End");
                             }
                             catch (Exception ex)
                             {
+                                allSuccess = false;
                                 this.nlog_docker.Error($"Deploy Host:{server.Host} Fail:" + ex.Message);
                                 UpdateDeployProgress(this.tabPage_docker, server.Host, false);
                             }
@@ -3163,6 +3222,10 @@ namespace AntDeploy.Winform
                         index++;
                     }
                     zipBytes.Dispose();
+                    if (allSuccess)
+                    {
+                        this.nlog_docker.Info("Deploy Version：" + clientDateTimeFolderName);
+                    }
                     LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local publish folder  ==> ");
                     publisEvent2.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
                     this.nlog_docker.Log(publisEvent2);
@@ -3248,7 +3311,7 @@ namespace AntDeploy.Winform
             {
 
 
-                var versionListDic = new Dictionary<string, string>();
+                var versionList = new List<string>();
 
                 try
                 {
@@ -3314,7 +3377,7 @@ namespace AntDeploy.Winform
                             return;
                         }
 
-                        versionListDic = sshClient.GetDeployHistory("antdeploy");
+                        versionList = sshClient.GetDeployHistory("antdeploy",11);
                     }
                 }
                 catch (Exception ex1)
@@ -3327,13 +3390,12 @@ namespace AntDeploy.Winform
                     EnableForDocker(true);
                 }
 
-                if (versionListDic.Count <= 1)
+                if (versionList.Count <= 1)
                 {
                     this.nlog_docker.Error($"get rollBack version list count = 0");
                     return;
                 }
 
-                var versionList = versionListDic.Keys.Skip(1).ToList();
                 this.BeginInvokeLambda(() =>
                 {
                     RollBack rolleback = new RollBack(versionList);
@@ -3372,7 +3434,7 @@ namespace AntDeploy.Winform
                 try
                 {
                     EnableForDocker(false, true);
-
+                    var allSuccess = true;
                     foreach (var server in serverList)
                     {
                         this.nlog_docker.Info("ignore build...");
@@ -3385,18 +3447,21 @@ namespace AntDeploy.Winform
                         {
                             this.nlog_docker.Error("Server Host is Empty");
                             UploadError(this.tabPage_docker);
+                            allSuccess = false;
                             continue;
                         }
                         if (string.IsNullOrEmpty(server.UserName))
                         {
                             this.nlog_docker.Error("Server UserName is Empty");
                             UploadError(this.tabPage_docker);
+                            allSuccess = false;
                             continue;
                         }
                         if (string.IsNullOrEmpty(server.Pwd))
                         {
                             this.nlog_docker.Error("Server Pwd is Empty");
                             UploadError(this.tabPage_docker);
+                            allSuccess = false;
                             continue;
                         }
                         var pwd = CodingHelper.AESDecrypt(server.Pwd);
@@ -3404,6 +3469,7 @@ namespace AntDeploy.Winform
                         {
                             this.nlog_docker.Error("Server Pwd is Empty");
                             UploadError(this.tabPage_docker);
+                            allSuccess = false;
                             continue;
                         }
 
@@ -3417,6 +3483,7 @@ namespace AntDeploy.Winform
                                if (logLevel == NLog.LogLevel.Error)
                                {
                                    hasError = true;
+                                   allSuccess = false;
                                    this.nlog_docker.Error("【Server】" + str);
                                }
                                else
@@ -3439,6 +3506,7 @@ namespace AntDeploy.Winform
                             {
                                 this.nlog_docker.Error($"RollBack Host:{server.Host} Fail: connect fail");
                                 UploadError(this.tabPage_docker);
+                                allSuccess = false;
                                 continue;
                             }
 
@@ -3455,6 +3523,10 @@ namespace AntDeploy.Winform
                             }
                         }
 
+                    }
+                    if (allSuccess)
+                    {
+                        this.nlog_docker.Info("RollBack Version：" + rollbackVersion);
                     }
                     this.nlog_docker.Info("RollBack End");
                 }
@@ -3473,6 +3545,7 @@ namespace AntDeploy.Winform
         {
             this.BeginInvokeLambda(() =>
             {
+                this.t_docker_delete_days.Enabled = flag;
                 this.b_docker_rollback.Enabled = flag;
                 this.b_docker_deploy.Enabled = flag;
                 this.combo_docker_env.Enabled = flag;

@@ -78,6 +78,7 @@ namespace AntDeploy.Models
         public string Prot { get; set; }
         public string AspNetCoreEnv { get; set; }
         public string LastEnvName { get; set; }
+        public string RemoveDaysFromPublished { get; set; }
     }
 
     public class Env

@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -37,6 +36,8 @@ namespace AntDeploy.Util
         public string NetCoreEnvironment { get; set; }
         public string NetCoreENTRYPOINT { get; set; }
         public string ClientDateTimeFolderName { get; set; }
+        public string RemoveDaysFromPublished { get; set; }
+        public string RootFolder { get; set; }
 
         private readonly Action<string, NLog.LogLevel> _logger;
         private readonly Action<int> _uploadLogger;
@@ -75,6 +76,7 @@ namespace AntDeploy.Util
                 {
                     if (!ignoreLog)
                     {
+                        RootFolder = _sftpClient.WorkingDirectory;
                         _logger($"ssh connect success:{Host}", NLog.LogLevel.Info);
                     }
                     return true;
@@ -178,10 +180,11 @@ namespace AntDeploy.Util
         /// 获取发布的历史
         /// </summary>
         /// <param name="destinationFolder"></param>
+        /// <param name="pageNumber">数量</param>
         /// <returns></returns>
-        public Dictionary<string, string> GetDeployHistory(string destinationFolder)
+        public List<string> GetDeployHistory(string destinationFolder,int pageNumber = 0)
         {
-            var result = new Dictionary<string, string>();
+            var result = new List<Tuple<string,DateTime>>();
             try
             {
 
@@ -192,29 +195,37 @@ namespace AntDeploy.Util
 
                 if (!_sftpClient.Exists(destinationFolder))
                 {
-                    return result;
+                    return new List<string>();
                 }
 
                 //获取该目录下的所有日期文件夹
-
-                var folderList = _sftpClient.ListDirectory(destinationFolder).Where(r => r.IsDirectory).
-                    OrderByDescending(r => r.LastWriteTime).Take(11).ToList();
+                List<SftpFile> folderList;
+                if (pageNumber < 1)
+                {
+                    folderList = _sftpClient.ListDirectory(destinationFolder).Where(r => r.IsDirectory).
+                        OrderByDescending(r => r.LastWriteTime).ToList();
+                }
+                else
+                {
+                    folderList = _sftpClient.ListDirectory(destinationFolder).Where(r => r.IsDirectory).
+                        OrderByDescending(r => r.LastWriteTime).Take(pageNumber).ToList();
+                }
+               
                 foreach (var folder in folderList)
                 {
                     if ((folder.Name == ".") || (folder.Name == "..")) continue;
                     if (DateTime.TryParseExact(folder.Name, "yyyyMMddHHmmss", null, DateTimeStyles.None, out DateTime d))
                     {
-                        result.Add(folder.Name, folder.FullName);
+                        result.Add(new Tuple<string, DateTime>(folder.Name,d));
                     }
                 }
-
             }
             catch (Exception ex)
             {
                 _logger(ex.Message, LogLevel.Error);
             }
 
-            return result;
+            return result.OrderByDescending(r => r.Item2).Select(r => r.Item1).ToList();
         }
 
         public void PublishZip(Stream stream, string destinationFolder, string destinationfileName)
@@ -272,6 +283,7 @@ namespace AntDeploy.Util
                 return;
             }
 
+            ClientDateTimeFolderName = version;
             DoDockerCommand(publishFolder, true);
         }
 
@@ -296,53 +308,51 @@ namespace AntDeploy.Util
             }
             else
             {
-                if (isrollBack)
+                //如果项目中存在dockerFile 那么check 该DockerFile的Expose是否配置了 没有配置就报错
+                try
                 {
-                    try
+                    var dockerFileText = _sftpClient.ReadAllText(dockFilePath);
+                    if (string.IsNullOrEmpty(dockerFileText))
                     {
-                        var dockerFileText = _sftpClient.ReadAllText(dockFilePath);
-                        if (string.IsNullOrEmpty(dockerFileText))
-                        {
-                            _logger($"dockerFile is empty: {dockFilePath}", NLog.LogLevel.Error);
-                            return;
-                        }
-
-                        var newPortA = dockerFileText.Split(new string[] { "EXPOSE " }, StringSplitOptions.None);
-                        if (newPortA.Length != 2)
-                        {
-                            _logger($"EXPOSE in dockerFile is empty: {dockFilePath}", NLog.LogLevel.Error);
-                            return;
-                        }
-                        var newPort = string.Empty;
-                        foreach (var item in newPortA[1].Trim())
-                        {
-                            if (Char.IsDigit(item))
-                            {
-                                newPort += item;
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
-                        if (string.IsNullOrEmpty(newPort))
-                        {
-                            _logger($"EXPOSE in dockerFile is invalid: {dockFilePath}", NLog.LogLevel.Error);
-                            return;
-                        }
-
-                        NetCorePort = newPort;
-                    }
-                    catch (Exception)
-                    {
-                        _logger($"Get EXPOSE param in dockerFile fail: {dockFilePath}", NLog.LogLevel.Error);
+                        _logger($"dockerFile is empty: {dockFilePath}", NLog.LogLevel.Error);
                         return;
                     }
+
+                    var newPortA = dockerFileText.Split(new string[] { "EXPOSE " }, StringSplitOptions.None);
+                    if (newPortA.Length != 2)
+                    {
+                        _logger($"EXPOSE param in dockerFile is empty: {dockFilePath}", NLog.LogLevel.Error);
+                        return;
+                    }
+                    var newPort = string.Empty;
+                    foreach (var item in newPortA[1].Trim())
+                    {
+                        if (Char.IsDigit(item))
+                        {
+                            newPort += item;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    if (string.IsNullOrEmpty(newPort))
+                    {
+                        _logger($"EXPOSE in dockerFile is invalid: {dockFilePath}", NLog.LogLevel.Error);
+                        return;
+                    }
+
+                    NetCorePort = newPort;
+                }
+                catch (Exception)
+                {
+                    _logger($"Get EXPOSE param in dockerFile fail: {dockFilePath}", NLog.LogLevel.Error);
+                    return;
                 }
             }
 
             //执行docker build 生成一个镜像
-            var dockerBuildResult = RunSheell($"sudo docker build --no-cache --rm -t {PorjectName} -f {dockFilePath} {publishFolder} ");
+            var dockerBuildResult = RunSheell($"sudo docker build --no-cache --rm -t {PorjectName}:{ClientDateTimeFolderName} -f {dockFilePath} {publishFolder} ");
             if (!dockerBuildResult) return;
 
             var continarName = "d_" + PorjectName;
@@ -350,12 +360,20 @@ namespace AntDeploy.Util
 
             //先发送退出命令
             //https://stackoverflow.com/questions/40742192/how-to-do-gracefully-shutdown-on-dotnet-with-docker
-            _sshClient.RunCommand($"sudo docker stop -t 10 {continarName}");
-            //_logger($"wait for continar stop 5seconds: {continarName}");
+            var r1 = _sshClient.RunCommand($"sudo docker stop -t 10 {continarName}");
+            if (r1.ExitStatus == 0)
+            {
+                _logger($"sudo docker stop -t 10 {continarName}", LogLevel.Info);
+            }
+
             Thread.Sleep(5000);
 
             //查看容器有没有在runing 如果有就干掉它
-            _sshClient.RunCommand($"sudo docker rm -f {continarName}");
+            r1 = _sshClient.RunCommand($"sudo docker rm -f {continarName}");
+            if (r1.ExitStatus == 0)
+            {
+                _logger($"sudo docker rm -f {continarName}", LogLevel.Info);
+            }
 
             string port = NetCorePort;
             if (string.IsNullOrEmpty(port))
@@ -364,13 +382,116 @@ namespace AntDeploy.Util
             }
 
             // 根据image启动一个容器
-            RunSheell($"sudo docker run --name {continarName} -d --restart=always -p {port}:{port} {PorjectName}:latest");
+            var dockerRunRt = RunSheell($"sudo docker run --name {continarName} -d --restart=always -p {port}:{port} {PorjectName}:{ClientDateTimeFolderName}");
+
+            if (dockerRunRt)
+            {
+                //把旧的image给删除
+                r1 = _sshClient.RunCommand("docker images --format '{{.Repository}}:{{.Tag}}:{{.ID}}' | grep '^" + PorjectName + ":'");
+                if (r1.ExitStatus == 0 && !string.IsNullOrEmpty(r1.Result))
+                {
+                    var deleteImageArr = r1.Result.Split('\n');
+                    var clearOldImages = false;
+                    foreach (var imageName in deleteImageArr)
+                    {
+                        if (imageName.StartsWith($"{PorjectName}:{ClientDateTimeFolderName}:"))
+                        {
+                            //当前版本
+                            continue;
+                        }
+
+                        var imageArr = imageName.Split(':');
+                        if (imageArr.Length == 3)
+                        {
+                            var r2 = _sshClient.RunCommand($"sudo docker rmi {imageArr[2]}");
+                            if (r2.ExitStatus == 0)
+                            {
+                                if (!clearOldImages)
+                                {
+                                    _logger($"start to clear old images of name:{PorjectName}", LogLevel.Info);
+                                    clearOldImages = true;
+                                }
+                                _logger($"sudo docker rmi {imageArr[2]} [{imageName}]", LogLevel.Info);
+                            }
+                        }
+                    }
+
+                }
+            }
+
 
             //查看是否有<none>的image 把它删掉 因为我们创建image的时候每次都会覆盖所以会产生一些没有的image
-
             _sshClient.RunCommand($"if sudo docker images -f \"dangling=true\" | grep ago --quiet; then sudo docker rmi -f $(sudo docker images -f \"dangling=true\" -q); fi");
+
+
+            ClearOldHistroy();
+
         }
 
+
+        public void ClearOldHistroy()
+        {
+            if(string.IsNullOrEmpty(RemoveDaysFromPublished)) return;
+
+            if(!int.TryParse(RemoveDaysFromPublished,out var _removeDays))
+            {
+                return;
+            }
+            //删除超过10天以上的发布版本目录
+            if (string.IsNullOrEmpty(RootFolder))
+            {
+                return;
+            }
+
+            _sftpClient.ChangeDirectory(RootFolder);
+            var now = DateTime.Now.Date;
+            var histroryList = GetDeployHistory("antdeploy");
+            if (histroryList.Count <= 10) return;
+            var oldFolderList = new List<OldFolder>();
+            foreach (var histroy in histroryList)
+            {
+                if (!DateTime.TryParseExact(histroy, "yyyyMMddHHmmss", null, DateTimeStyles.None, out DateTime createDate))
+                {
+                    continue;
+                }
+
+                oldFolderList.Add(new OldFolder
+                {
+                    DateTime = createDate,
+                    Name =  histroy,
+                    DiffDays = (now - createDate.Date).TotalDays
+                });
+            }
+
+            var targetList = oldFolderList.OrderByDescending(r => r.DateTime)
+                .Where(r => r.DiffDays >= _removeDays)
+                .ToList();
+
+            var diff = histroryList.Count - targetList.Count;
+
+            if (diff >= 0 && diff < 10)
+            {
+                targetList = targetList.Skip(10 - diff).ToList();
+            }
+
+            if (targetList.Any())
+            {
+                _logger($"Remove backup version that have been published for more than:{_removeDays} days" , LogLevel.Info);
+            }
+            foreach (var target in targetList)
+            {
+                try
+                {
+                    var toDelete = $"antdeploy/{PorjectName}/{target.Name}/";
+                    this.DeleteDirectory(toDelete);
+                    _logger($"Remove backup version success: {toDelete}", LogLevel.Info);
+                }
+                catch
+                {
+                    //ignore
+                }
+            }
+        }
 
 
 
@@ -593,6 +714,13 @@ namespace AntDeploy.Util
     }
 
 
+
+    class OldFolder
+    {
+        public string Name { get; set; }
+        public DateTime DateTime { get; set; }
+        public double DiffDays { get; set; }
+    }
 
 
 
