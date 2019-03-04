@@ -182,9 +182,9 @@ namespace AntDeploy.Util
         /// <param name="destinationFolder"></param>
         /// <param name="pageNumber">数量</param>
         /// <returns></returns>
-        public List<string> GetDeployHistory(string destinationFolder,int pageNumber = 0)
+        public List<string> GetDeployHistory(string destinationFolder, int pageNumber = 0)
         {
-            var result = new List<Tuple<string,DateTime>>();
+            var result = new List<Tuple<string, DateTime>>();
             try
             {
 
@@ -210,13 +210,13 @@ namespace AntDeploy.Util
                     folderList = _sftpClient.ListDirectory(destinationFolder).Where(r => r.IsDirectory).
                         OrderByDescending(r => r.LastWriteTime).Take(pageNumber).ToList();
                 }
-               
+
                 foreach (var folder in folderList)
                 {
                     if ((folder.Name == ".") || (folder.Name == "..")) continue;
                     if (DateTime.TryParseExact(folder.Name, "yyyyMMddHHmmss", null, DateTimeStyles.None, out DateTime d))
                     {
-                        result.Add(new Tuple<string, DateTime>(folder.Name,d));
+                        result.Add(new Tuple<string, DateTime>(folder.Name, d));
                     }
                 }
             }
@@ -384,39 +384,38 @@ namespace AntDeploy.Util
             // 根据image启动一个容器
             var dockerRunRt = RunSheell($"sudo docker run --name {continarName} -d --restart=always -p {port}:{port} {PorjectName}:{ClientDateTimeFolderName}");
 
-            if (dockerRunRt)
-            {
-                //把旧的image给删除
-                r1 = _sshClient.RunCommand("docker images --format '{{.Repository}}:{{.Tag}}:{{.ID}}' | grep '^" + PorjectName + ":'");
-                if (r1.ExitStatus == 0 && !string.IsNullOrEmpty(r1.Result))
-                {
-                    var deleteImageArr = r1.Result.Split('\n');
-                    var clearOldImages = false;
-                    foreach (var imageName in deleteImageArr)
-                    {
-                        if (imageName.StartsWith($"{PorjectName}:{ClientDateTimeFolderName}:"))
-                        {
-                            //当前版本
-                            continue;
-                        }
+            if (!dockerRunRt) return;
 
-                        var imageArr = imageName.Split(':');
-                        if (imageArr.Length == 3)
-                        {
-                            var r2 = _sshClient.RunCommand($"sudo docker rmi {imageArr[2]}");
-                            if (r2.ExitStatus == 0)
-                            {
-                                if (!clearOldImages)
-                                {
-                                    _logger($"start to clear old images of name:{PorjectName}", LogLevel.Info);
-                                    clearOldImages = true;
-                                }
-                                _logger($"sudo docker rmi {imageArr[2]} [{imageName}]", LogLevel.Info);
-                            }
-                        }
+            //把旧的image给删除
+            r1 = _sshClient.RunCommand("docker images --format '{{.Repository}}:{{.Tag}}:{{.ID}}' | grep '^" + PorjectName + ":'");
+            if (r1.ExitStatus == 0 && !string.IsNullOrEmpty(r1.Result))
+            {
+                var deleteImageArr = r1.Result.Split('\n');
+                var clearOldImages = false;
+                foreach (var imageName in deleteImageArr)
+                {
+                    if (imageName.StartsWith($"{PorjectName}:{ClientDateTimeFolderName}:"))
+                    {
+                        //当前版本
+                        continue;
                     }
 
+                    var imageArr = imageName.Split(':');
+                    if (imageArr.Length == 3)
+                    {
+                        var r2 = _sshClient.RunCommand($"sudo docker rmi {imageArr[2]}");
+                        if (r2.ExitStatus == 0)
+                        {
+                            if (!clearOldImages)
+                            {
+                                _logger($"start to clear old images of name:{PorjectName}", LogLevel.Info);
+                                clearOldImages = true;
+                            }
+                            _logger($"sudo docker rmi {imageArr[2]} [{imageName}]", LogLevel.Info);
+                        }
+                    }
                 }
+
             }
 
 
@@ -431,9 +430,9 @@ namespace AntDeploy.Util
 
         public void ClearOldHistroy()
         {
-            if(string.IsNullOrEmpty(RemoveDaysFromPublished)) return;
+            if (string.IsNullOrEmpty(RemoveDaysFromPublished)) return;
 
-            if(!int.TryParse(RemoveDaysFromPublished,out var _removeDays))
+            if (!int.TryParse(RemoveDaysFromPublished, out var _removeDays))
             {
                 return;
             }
@@ -458,7 +457,7 @@ namespace AntDeploy.Util
                 oldFolderList.Add(new OldFolder
                 {
                     DateTime = createDate,
-                    Name =  histroy,
+                    Name = histroy,
                     DiffDays = (now - createDate.Date).TotalDays
                 });
             }
@@ -476,7 +475,7 @@ namespace AntDeploy.Util
 
             if (targetList.Any())
             {
-                _logger($"Remove backup version that have been published for more than:{_removeDays} days" , LogLevel.Info);
+                _logger($"Remove backup version that have been published for more than:{_removeDays} days", LogLevel.Info);
             }
             foreach (var target in targetList)
             {
