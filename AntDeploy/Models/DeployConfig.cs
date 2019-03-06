@@ -34,6 +34,7 @@ namespace AntDeploy.Models
         }
 
         public List<string> IgnoreList { get; set; } = new List<string>();
+        public List<string> WindowsBackUpIgnoreList { get; set; } = new List<string>();
 
 
         #region IIS
@@ -79,6 +80,7 @@ namespace AntDeploy.Models
         public string AspNetCoreEnv { get; set; }
         public string LastEnvName { get; set; }
         public string RemoveDaysFromPublished { get; set; }
+        public string Volume { get; set; }
     }
 
     public class Env

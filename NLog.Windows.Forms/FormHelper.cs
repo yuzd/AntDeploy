@@ -167,7 +167,7 @@ namespace NLog.Windows.Forms
 
             //using \v tag to hide hyperlink part of the text, and \v0 to end hiding. See http://stackoverflow.com/a/14339531/376066
             //so in the control the link would consist only of "<text>", but in link clicked event we would get "<text>#<hyperlink>"
-            textBox.SelectedRtf = @"{\rtf1\ansi " + text + @"\v #" + hyperlink + @"\v0}";   
+            textBox.SelectedRtf = @"{\rtf1\ansicpg936" + text + @"\v #" + hyperlink + @"\v0}";   
 
             textBox.Select(selectionStart, text.Length + 1 + hyperlink.Length); //now select both visible and invisible part
             SetSelectionStyle(textBox, CFM_LINK, CFE_LINK);                     //and turn into a link

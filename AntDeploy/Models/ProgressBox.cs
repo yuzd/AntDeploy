@@ -156,7 +156,7 @@ namespace AntDeploy.Models
             this.progress_iis_deploy.SubscriptMargin = new System.Windows.Forms.Padding(0);
             this.progress_iis_deploy.SubscriptText = "";
             this.progress_iis_deploy.SuperscriptColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(99)))), ((int)(((byte)(180)))));
-            this.progress_iis_deploy.SuperscriptMargin = new System.Windows.Forms.Padding(-23, 0, 0, 0);
+            this.progress_iis_deploy.SuperscriptMargin = new System.Windows.Forms.Padding(-28, 0, 0, 0);
             this.progress_iis_deploy.SuperscriptText = "Wait";
             this.progress_iis_deploy.TabIndex = 12;
             this.progress_iis_deploy.Text = "Deploy";

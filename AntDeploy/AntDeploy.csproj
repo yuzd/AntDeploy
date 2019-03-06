@@ -60,7 +60,13 @@
     <Compile Include="Models\AltoButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Models\AltoTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Models\DeployConfig.cs" />
+    <Compile Include="Models\ExRichTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Models\GetVersionResult.cs" />
     <Compile Include="Models\Helpers\ExtensionMethods.cs" />
     <Compile Include="Models\Helpers\RoundedRectangleF.cs" />
@@ -70,6 +76,7 @@
     </Compile>
     <Compile Include="Models\ProjectHelper.cs" />
     <Compile Include="Models\ProjectKinds.cs" />
+    <Compile Include="Models\RichTextBoxPrintHelper.cs" />
     <Compile Include="Models\SpinningCircles.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -88,6 +95,12 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>VSPackage.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Winform\About.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Winform\About.Designer.cs">
+      <DependentUpon>About.cs</DependentUpon>
     </Compile>
     <Compile Include="Winform\Deploy.cs">
       <SubType>Form</SubType>
@@ -315,6 +328,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Winform\About.resx">
+      <DependentUpon>About.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Winform\RollBack.resx">
       <DependentUpon>RollBack.cs</DependentUpon>
     </EmbeddedResource>
@@ -330,6 +346,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Resources\Logo1.ico" />
+    <EmbeddedResource Include="Resources\qq.jpg" />
     <Content Include="Resources\__TemplateIcon.png">
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
