@@ -57,5 +57,10 @@ namespace AntDeploy.Winform
             SelectRollBackVersion = selectItem;
             this.DialogResult = DialogResult.OK;
         }
+
+        public void SetButtonName(string name)
+        {
+            this.b_rollback_Rollback.Text = name;
+        }
     }
 }

@@ -159,21 +159,6 @@ namespace AntDeploy.Winform
                 this.combo_env_list.SelectedIndex = 0;
             }
 
-            if (DeployConfig.IgnoreList != null && DeployConfig.IgnoreList.Any())
-            {
-                foreach (var ignore in DeployConfig.IgnoreList)
-                {
-                    this.list_env_ignore.Items.Add(ignore);
-                }
-            }
-
-            if (DeployConfig.WindowsBackUpIgnoreList != null && DeployConfig.WindowsBackUpIgnoreList.Any())
-            {
-                foreach (var ignore in DeployConfig.WindowsBackUpIgnoreList)
-                {
-                    this.list_backUp_ignore.Items.Add(ignore);
-                }
-            }
 
             if (DeployConfig.IIsConfig != null)
             {
@@ -452,6 +437,8 @@ namespace AntDeploy.Winform
         {
             this.combo_env_server_list.Items.Clear();
             this.combo_linux_server_list.Items.Clear();
+            this.list_env_ignore.Items.Clear();
+            this.list_backUp_ignore.Items.Clear();
 
             var selectedEnv = this.combo_env_list.SelectedItem as string;
             if (string.IsNullOrEmpty(selectedEnv))
@@ -470,8 +457,19 @@ namespace AntDeploy.Winform
                 this.txt_linux_host.Text = string.Empty;
                 this.txt_linux_pwd.Text = string.Empty;
 
+                this.txt_env_ignore.Text = string.Empty;
+                this.txt_backUp_ignore.Text = string.Empty;
+
+                this.b_env_ignore_add.Enabled = false;
+                this.b_copy_pack_ignore.Enabled = false;
+                this.b_env_ignore_remove.Enabled = false;
+                this.b_backUp_ignore_add.Enabled = false;
+                this.b_copy_backup_ignore.Enabled = false;
+                this.b_backUp_ignore_remove.Enabled = false;
+
                 return;
             }
+
 
             this.b_env_server_add.Enabled = true;
             this.b_env_server_remove.Enabled = true;
@@ -480,6 +478,14 @@ namespace AntDeploy.Winform
             this.b_linux_server_test.Enabled = true;
             this.b_linux_server_remove.Enabled = true;
             this.b_add_linux_server.Enabled = true;
+
+
+            this.b_env_ignore_add.Enabled = true;
+            this.b_copy_pack_ignore.Enabled = true;
+            this.b_env_ignore_remove.Enabled = true;
+            this.b_backUp_ignore_add.Enabled = true;
+            this.b_copy_backup_ignore.Enabled = true;
+            this.b_backUp_ignore_remove.Enabled = true;
 
             var env = this.DeployConfig.Env.FirstOrDefault(r => r.Name.Equals(selectedEnv));
 
@@ -493,6 +499,15 @@ namespace AntDeploy.Winform
                 this.combo_linux_server_list.Items.AddRange(items: env.LinuxServerList
                     .Select(r => r.Host + "@_@" + r.UserName).ToArray());
 
+                foreach (var item in env.IgnoreList)
+                {
+                    this.list_env_ignore.Items.Add(item);
+                }
+
+                foreach (var item in env.WindowsBackUpIgnoreList)
+                {
+                    this.list_backUp_ignore.Items.Add(item);
+                }
             }
 
             if (this.combo_env_server_list.Items.Count > 0)
@@ -505,6 +520,18 @@ namespace AntDeploy.Winform
             {
                 this.combo_linux_server_list.Tag = "active";
                 this.combo_linux_server_list.SelectedIndex = 0;
+            }
+
+
+            if (this.list_env_ignore.Items.Count > 0)
+            {
+                this.list_env_ignore.Tag = "active";
+                this.list_env_ignore.SelectedIndex = 0;
+            }
+            if (this.list_backUp_ignore.Items.Count > 0)
+            {
+                this.list_backUp_ignore.Tag = "active";
+                this.list_backUp_ignore.SelectedIndex = 0;
             }
         }
 
@@ -706,7 +733,7 @@ namespace AntDeploy.Winform
             }
             else
             {
-                DeployConfig.IgnoreList.Add(ignoreTxt);
+                this.DeployConfig.Env[this.combo_env_list.SelectedIndex].IgnoreList.Add(ignoreTxt);
                 this.list_env_ignore.Items.Add(ignoreTxt);
                 this.txt_env_ignore.Text = string.Empty;
                 this.list_env_ignore.SelectedItem = ignoreTxt;
@@ -721,7 +748,7 @@ namespace AntDeploy.Winform
         private void b_env_ignore_remove_Click(object sender, EventArgs e)
         {
             if (this.list_env_ignore.SelectedIndex < 0) return;
-            DeployConfig.IgnoreList.RemoveAt(this.list_env_ignore.SelectedIndex);
+            this.DeployConfig.Env[this.combo_env_list.SelectedIndex].IgnoreList.RemoveAt(this.list_env_ignore.SelectedIndex);
             this.list_env_ignore.Items.RemoveAt(this.list_env_ignore.SelectedIndex);
             if (this.list_env_ignore.Items.Count >= 0)
                 this.list_env_ignore.SelectedIndex = this.list_env_ignore.Items.Count - 1;
@@ -743,7 +770,7 @@ namespace AntDeploy.Winform
             }
             else
             {
-                DeployConfig.WindowsBackUpIgnoreList.Add(ignoreTxt);
+                this.DeployConfig.Env[this.combo_env_list.SelectedIndex].WindowsBackUpIgnoreList.Add(ignoreTxt);
                 this.list_backUp_ignore.Items.Add(ignoreTxt);
                 this.txt_backUp_ignore.Text = string.Empty;
                 this.list_backUp_ignore.SelectedItem = ignoreTxt;
@@ -753,7 +780,7 @@ namespace AntDeploy.Winform
         private void b_backUp_ignore_remove_Click(object sender, EventArgs e)
         {
             if (this.list_backUp_ignore.SelectedIndex < 0) return;
-            DeployConfig.WindowsBackUpIgnoreList.RemoveAt(this.list_backUp_ignore.SelectedIndex);
+            this.DeployConfig.Env[this.combo_env_list.SelectedIndex].WindowsBackUpIgnoreList.RemoveAt(this.list_backUp_ignore.SelectedIndex);
             this.list_backUp_ignore.Items.RemoveAt(this.list_backUp_ignore.SelectedIndex);
             if (this.list_backUp_ignore.Items.Count >= 0)
                 this.list_backUp_ignore.SelectedIndex = this.list_backUp_ignore.Items.Count - 1;
@@ -1072,6 +1099,9 @@ namespace AntDeploy.Winform
                 return;
             }
 
+            var ignoreList = DeployConfig.Env.First(r => r.Name.Equals(envName)).IgnoreList;
+            var backUpIgnoreList = DeployConfig.Env.First(r => r.Name.Equals(envName)).WindowsBackUpIgnoreList;
+
             var Port = this.txt_iis_port.Text.Trim();
             var PoolName = this.txt_pool_name.Text.Trim();
 
@@ -1247,7 +1277,7 @@ namespace AntDeploy.Winform
                         try
                         {
                             zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, fileList, CompressionLevel.Optimal,
-                                true, DeployConfig.IgnoreList,
+                                true, ignoreList,
                                 (progressValue) =>
                                 {
                                     UpdatePackageProgress(this.tabPage_progress, null, progressValue); //打印打包记录
@@ -1266,7 +1296,7 @@ namespace AntDeploy.Winform
                         try
                         {
                             zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, CompressionLevel.Optimal, true,
-                                DeployConfig.IgnoreList,
+                                ignoreList,
                                 (progressValue) =>
                                 {
                                     UpdatePackageProgress(this.tabPage_progress, null, progressValue); //打印打包记录
@@ -1326,7 +1356,7 @@ namespace AntDeploy.Winform
                         httpRequestClient.SetFieldValue("webSiteName", DeployConfig.IIsConfig.WebSiteName);
                         httpRequestClient.SetFieldValue("deployFolderName", dateTimeFolderName);
                         httpRequestClient.SetFieldValue("Token", server.Token);
-                        httpRequestClient.SetFieldValue("backUpIgnore",(DeployConfig.WindowsBackUpIgnoreList!=null&&DeployConfig.WindowsBackUpIgnoreList.Any())?string.Join("@_@",DeployConfig.WindowsBackUpIgnoreList):"");
+                        httpRequestClient.SetFieldValue("backUpIgnore", (backUpIgnoreList != null && backUpIgnoreList.Any()) ? string.Join("@_@", backUpIgnoreList) : "");
                         httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream", zipBytes);
                         System.Net.WebSockets.Managed.ClientWebSocket webSocket = null;
                         HttpLogger HttpLogger = null;
@@ -2122,6 +2152,8 @@ namespace AntDeploy.Winform
                 MessageBox.Show("please select env");
                 return;
             }
+            var ignoreList = DeployConfig.Env.First(r => r.Name.Equals(envName)).IgnoreList;
+            var backUpIgnoreList = DeployConfig.Env.First(r => r.Name.Equals(envName)).WindowsBackUpIgnoreList;
 
 #if DEBUG
             var execFilePath = "AntDeployAgentWindowsService.exe";
@@ -2332,7 +2364,7 @@ namespace AntDeploy.Winform
                         {
                             zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, fileList, CompressionLevel.Optimal,
                                 true,
-                                DeployConfig.IgnoreList,
+                                ignoreList,
                                 (progressValue) =>
                                 {
                                     UpdatePackageProgress(this.tabPage_windows_service, null, progressValue); //打印打包记录
@@ -2350,7 +2382,7 @@ namespace AntDeploy.Winform
                         try
                         {
                             zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, CompressionLevel.Optimal, true,
-                                DeployConfig.IgnoreList,
+                                ignoreList,
                                 (progressValue) =>
                                 {
                                     UpdatePackageProgress(this.tabPage_windows_service, null, progressValue); //打印打包记录
@@ -2411,7 +2443,7 @@ namespace AntDeploy.Winform
                         httpRequestClient.SetFieldValue("execFilePath", execFilePath);
                         httpRequestClient.SetFieldValue("deployFolderName", dateTimeFolderName);
                         httpRequestClient.SetFieldValue("Token", server.Token);
-                        httpRequestClient.SetFieldValue("backUpIgnore",(DeployConfig.WindowsBackUpIgnoreList!=null&&DeployConfig.WindowsBackUpIgnoreList.Any())?string.Join("@_@",DeployConfig.WindowsBackUpIgnoreList):"");
+                        httpRequestClient.SetFieldValue("backUpIgnore", (backUpIgnoreList != null && backUpIgnoreList.Any()) ? string.Join("@_@", backUpIgnoreList) : "");
                         httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream", zipBytes);
                         System.Net.WebSockets.Managed.ClientWebSocket webSocket = null;
                         HttpLogger HttpLogger = null;
@@ -2963,11 +2995,19 @@ namespace AntDeploy.Winform
                     if (!string.IsNullOrEmpty(config))
                     {
                         DeployConfig = JsonConvert.DeserializeObject<DeployConfig>(config);
-                        if (DeployConfig.Env == null) DeployConfig.Env = new List<Env>();
+                        if (DeployConfig.Env == null)
+                        {
+                            DeployConfig.Env = new List<Env>();
+                        }
+                        else
+                        {
+                            foreach (var env in DeployConfig.Env)
+                            {
+                                if (env.IgnoreList == null) env.IgnoreList = new List<string>();
+                                if (env.WindowsBackUpIgnoreList == null) env.WindowsBackUpIgnoreList = new List<string>();
+                            }
+                        }
                         if (DeployConfig.IIsConfig == null) DeployConfig.IIsConfig = new IIsConfig();
-                        if (DeployConfig.IgnoreList == null) DeployConfig.IgnoreList = new List<string>();
-                        if (DeployConfig.WindowsBackUpIgnoreList == null)
-                            DeployConfig.WindowsBackUpIgnoreList = new List<string>();
                     }
                 }
             }
@@ -3099,6 +3139,7 @@ namespace AntDeploy.Winform
                 return;
             }
 
+            var ignoreList = DeployConfig.Env.First(r => r.Name.Equals(envName)).IgnoreList;
 
             var removeDays = this.t_docker_delete_days.Text.Trim();
             if (!string.IsNullOrEmpty(removeDays))
@@ -3243,7 +3284,7 @@ namespace AntDeploy.Winform
                     try
                     {
                         zipBytes = ZipHelper.DoCreateTarFromDirectory(publishPath,
-                            DeployConfig.IgnoreList,
+                            ignoreList,
                             (progressValue) =>
                             {
                                 UpdatePackageProgress(this.tabPage_docker, null, progressValue); //打印打包记录
@@ -3336,7 +3377,7 @@ namespace AntDeploy.Winform
                             NetCoreEnvironment = DeployConfig.DockerConfig.AspNetCoreEnv,
                             ClientDateTimeFolderName = clientDateTimeFolderName,
                             RemoveDaysFromPublished = DeployConfig.DockerConfig.RemoveDaysFromPublished,
-                            Volume=DeployConfig.DockerConfig.Volume
+                            Volume = DeployConfig.DockerConfig.Volume
                         })
                         {
                             var connectResult = sshClient.Connect();
@@ -3829,6 +3870,86 @@ namespace AntDeploy.Winform
             e.Cancel = true;
             About about = new About();
             about.ShowDialog();
+        }
+
+        private void b_copy_pack_ignore_Click(object sender, EventArgs e)
+        {
+            var current = this.combo_env_list.SelectedItem as string;
+            if (string.IsNullOrEmpty(current)) return;
+
+
+            var envList = this.DeployConfig.Env.Where(r=>!r.Name.Equals(current) && r.IgnoreList.Any()).Select(r=>r.Name).ToList();
+            if (envList.Count < 1)
+            {
+                MessageBox.Show("no env have ignore value!");
+                return;
+            }
+            RollBack rollBack = new RollBack(envList) {Text = "Select Env Name"};
+            rollBack.SetButtonName("Copy");
+            var r1 = rollBack.ShowDialog();
+            if (r1 == DialogResult.Cancel)
+            {
+                return;
+            }
+            else
+            {
+                var target = this.DeployConfig.Env.FirstOrDefault(r => r.Name.Equals(rollBack.SelectRollBackVersion));
+                if (target != null)
+                {
+                    var existItem = list_env_ignore.Items.Cast<string>().ToList();
+                    foreach (var item in target.IgnoreList)
+                    {
+                        if(!existItem.Contains(item))list_env_ignore.Items.Add(item);
+                    }
+                    
+                    if (this.list_env_ignore.Items.Count > 0)
+                    {
+                        this.list_env_ignore.Tag = "active";
+                        this.list_env_ignore.SelectedIndex = 0;
+                    }
+                }
+            }
+
+        }
+
+        private void b_copy_backup_ignore_Click(object sender, EventArgs e)
+        {
+            var current = this.combo_env_list.SelectedItem as string;
+            if (string.IsNullOrEmpty(current)) return;
+
+
+            var envList = this.DeployConfig.Env.Where(r=>!r.Name.Equals(current) && r.WindowsBackUpIgnoreList.Any()).Select(r=>r.Name).ToList();
+
+            if (envList.Count < 1)
+            {
+                MessageBox.Show("no env have ignore value!");
+                return;
+            }
+            RollBack rollBack = new RollBack(envList) {Text = "Select Env Name"};
+            rollBack.SetButtonName("Copy");
+            var r1 = rollBack.ShowDialog();
+            if (r1 == DialogResult.Cancel)
+            {
+                return;
+            }
+            else
+            {
+                var target = this.DeployConfig.Env.FirstOrDefault(r => r.Name.Equals(rollBack.SelectRollBackVersion));
+                if (target != null)
+                {
+                    var existItem = list_backUp_ignore.Items.Cast<string>().ToList();
+                    foreach (var item in target.WindowsBackUpIgnoreList)
+                    {
+                        if(!existItem.Contains(item))list_backUp_ignore.Items.Add(item);
+                    }
+
+                    if (this.list_backUp_ignore.Items.Count > 0)
+                    {
+                        this.list_backUp_ignore.Tag = "active";
+                        this.list_backUp_ignore.SelectedIndex = 0;
+                    }
+                }
+            }
         }
     }
 }

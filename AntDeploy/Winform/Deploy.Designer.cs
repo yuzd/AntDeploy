@@ -94,12 +94,14 @@
             this.rich_windowservice_log = new AntDeploy.ExRichTextBox();
             this.page_set = new System.Windows.Forms.TabPage();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.b_copy_backup_ignore = new System.Windows.Forms.Button();
             this.b_backUp_ignore_remove = new System.Windows.Forms.Button();
             this.b_backUp_ignore_add = new System.Windows.Forms.Button();
             this.txt_backUp_ignore = new System.Windows.Forms.TextBox();
             this.list_backUp_ignore = new System.Windows.Forms.ListBox();
             this.label_check_update = new System.Windows.Forms.Label();
             this.groupBoxIgnore = new System.Windows.Forms.GroupBox();
+            this.b_copy_pack_ignore = new System.Windows.Forms.Button();
             this.b_env_ignore_remove = new System.Windows.Forms.Button();
             this.b_env_ignore_add = new System.Windows.Forms.Button();
             this.txt_env_ignore = new System.Windows.Forms.TextBox();
@@ -505,9 +507,9 @@
             this.label28.AutoSize = true;
             this.label28.Location = new System.Drawing.Point(79, 77);
             this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(365, 12);
+            this.label28.Size = new System.Drawing.Size(299, 12);
             this.label28.TabIndex = 18;
-            this.label28.Text = "example:/root/data:/container/datadir  Multiple split with ;";
+            this.label28.Text = "example:/log:/publish/logs  Multiple split with ;";
             // 
             // txt_docker_volume
             // 
@@ -891,21 +893,35 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.b_copy_backup_ignore);
             this.groupBox1.Controls.Add(this.b_backUp_ignore_remove);
             this.groupBox1.Controls.Add(this.b_backUp_ignore_add);
             this.groupBox1.Controls.Add(this.txt_backUp_ignore);
             this.groupBox1.Controls.Add(this.list_backUp_ignore);
-            this.groupBox1.Location = new System.Drawing.Point(329, 269);
+            this.groupBox1.Location = new System.Drawing.Point(317, 269);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(287, 179);
+            this.groupBox1.Size = new System.Drawing.Size(299, 179);
             this.groupBox1.TabIndex = 18;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Windows Server BackUp IgnoreRule";
             // 
+            // b_copy_backup_ignore
+            // 
+            this.b_copy_backup_ignore.Enabled = false;
+            this.b_copy_backup_ignore.ForeColor = System.Drawing.Color.Blue;
+            this.b_copy_backup_ignore.Location = new System.Drawing.Point(6, 112);
+            this.b_copy_backup_ignore.Name = "b_copy_backup_ignore";
+            this.b_copy_backup_ignore.Size = new System.Drawing.Size(129, 22);
+            this.b_copy_backup_ignore.TabIndex = 19;
+            this.b_copy_backup_ignore.Text = "Copy From Other Env";
+            this.b_copy_backup_ignore.UseVisualStyleBackColor = true;
+            this.b_copy_backup_ignore.Click += new System.EventHandler(this.b_copy_backup_ignore_Click);
+            // 
             // b_backUp_ignore_remove
             // 
+            this.b_backUp_ignore_remove.Enabled = false;
             this.b_backUp_ignore_remove.ForeColor = System.Drawing.Color.Red;
-            this.b_backUp_ignore_remove.Location = new System.Drawing.Point(6, 141);
+            this.b_backUp_ignore_remove.Location = new System.Drawing.Point(16, 150);
             this.b_backUp_ignore_remove.Name = "b_backUp_ignore_remove";
             this.b_backUp_ignore_remove.Size = new System.Drawing.Size(117, 23);
             this.b_backUp_ignore_remove.TabIndex = 12;
@@ -915,7 +931,8 @@
             // 
             // b_backUp_ignore_add
             // 
-            this.b_backUp_ignore_add.Location = new System.Drawing.Point(62, 79);
+            this.b_backUp_ignore_add.Enabled = false;
+            this.b_backUp_ignore_add.Location = new System.Drawing.Point(76, 82);
             this.b_backUp_ignore_add.Name = "b_backUp_ignore_add";
             this.b_backUp_ignore_add.Size = new System.Drawing.Size(59, 24);
             this.b_backUp_ignore_add.TabIndex = 17;
@@ -925,7 +942,7 @@
             // 
             // txt_backUp_ignore
             // 
-            this.txt_backUp_ignore.Location = new System.Drawing.Point(6, 43);
+            this.txt_backUp_ignore.Location = new System.Drawing.Point(18, 43);
             this.txt_backUp_ignore.Name = "txt_backUp_ignore";
             this.txt_backUp_ignore.Size = new System.Drawing.Size(115, 21);
             this.txt_backUp_ignore.TabIndex = 4;
@@ -934,7 +951,7 @@
             // 
             this.list_backUp_ignore.FormattingEnabled = true;
             this.list_backUp_ignore.ItemHeight = 12;
-            this.list_backUp_ignore.Location = new System.Drawing.Point(131, 13);
+            this.list_backUp_ignore.Location = new System.Drawing.Point(139, 13);
             this.list_backUp_ignore.Name = "list_backUp_ignore";
             this.list_backUp_ignore.Size = new System.Drawing.Size(152, 160);
             this.list_backUp_ignore.TabIndex = 15;
@@ -952,21 +969,35 @@
             // 
             // groupBoxIgnore
             // 
+            this.groupBoxIgnore.Controls.Add(this.b_copy_pack_ignore);
             this.groupBoxIgnore.Controls.Add(this.b_env_ignore_remove);
             this.groupBoxIgnore.Controls.Add(this.b_env_ignore_add);
             this.groupBoxIgnore.Controls.Add(this.txt_env_ignore);
             this.groupBoxIgnore.Controls.Add(this.list_env_ignore);
             this.groupBoxIgnore.Location = new System.Drawing.Point(19, 269);
             this.groupBoxIgnore.Name = "groupBoxIgnore";
-            this.groupBoxIgnore.Size = new System.Drawing.Size(304, 179);
+            this.groupBoxIgnore.Size = new System.Drawing.Size(294, 179);
             this.groupBoxIgnore.TabIndex = 2;
             this.groupBoxIgnore.TabStop = false;
             this.groupBoxIgnore.Text = "Package IgnoreRule";
             // 
+            // b_copy_pack_ignore
+            // 
+            this.b_copy_pack_ignore.Enabled = false;
+            this.b_copy_pack_ignore.ForeColor = System.Drawing.Color.Blue;
+            this.b_copy_pack_ignore.Location = new System.Drawing.Point(0, 112);
+            this.b_copy_pack_ignore.Name = "b_copy_pack_ignore";
+            this.b_copy_pack_ignore.Size = new System.Drawing.Size(129, 21);
+            this.b_copy_pack_ignore.TabIndex = 18;
+            this.b_copy_pack_ignore.Text = "Copy From Other Env";
+            this.b_copy_pack_ignore.UseVisualStyleBackColor = true;
+            this.b_copy_pack_ignore.Click += new System.EventHandler(this.b_copy_pack_ignore_Click);
+            // 
             // b_env_ignore_remove
             // 
+            this.b_env_ignore_remove.Enabled = false;
             this.b_env_ignore_remove.ForeColor = System.Drawing.Color.Red;
-            this.b_env_ignore_remove.Location = new System.Drawing.Point(21, 141);
+            this.b_env_ignore_remove.Location = new System.Drawing.Point(14, 150);
             this.b_env_ignore_remove.Name = "b_env_ignore_remove";
             this.b_env_ignore_remove.Size = new System.Drawing.Size(117, 23);
             this.b_env_ignore_remove.TabIndex = 12;
@@ -976,7 +1007,8 @@
             // 
             // b_env_ignore_add
             // 
-            this.b_env_ignore_add.Location = new System.Drawing.Point(79, 79);
+            this.b_env_ignore_add.Enabled = false;
+            this.b_env_ignore_add.Location = new System.Drawing.Point(72, 70);
             this.b_env_ignore_add.Name = "b_env_ignore_add";
             this.b_env_ignore_add.Size = new System.Drawing.Size(59, 24);
             this.b_env_ignore_add.TabIndex = 17;
@@ -988,14 +1020,14 @@
             // 
             this.txt_env_ignore.Location = new System.Drawing.Point(6, 43);
             this.txt_env_ignore.Name = "txt_env_ignore";
-            this.txt_env_ignore.Size = new System.Drawing.Size(132, 21);
+            this.txt_env_ignore.Size = new System.Drawing.Size(122, 21);
             this.txt_env_ignore.TabIndex = 4;
             // 
             // list_env_ignore
             // 
             this.list_env_ignore.FormattingEnabled = true;
             this.list_env_ignore.ItemHeight = 12;
-            this.list_env_ignore.Location = new System.Drawing.Point(144, 13);
+            this.list_env_ignore.Location = new System.Drawing.Point(135, 13);
             this.list_env_ignore.Name = "list_env_ignore";
             this.list_env_ignore.Size = new System.Drawing.Size(157, 160);
             this.list_env_ignore.TabIndex = 15;
@@ -1502,5 +1534,7 @@
         private ExRichTextBox rich_windowservice_log;
         private AltoControls.AltoTextBox txt_docker_volume;
         private System.Windows.Forms.Label label28;
+        private System.Windows.Forms.Button b_copy_backup_ignore;
+        private System.Windows.Forms.Button b_copy_pack_ignore;
     }
 }

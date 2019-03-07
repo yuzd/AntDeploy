@@ -9,7 +9,7 @@ namespace AntDeploy.Models
         public bool WindowsServiceEnableIncrement { get; set; }
     }
 
-    public delegate void EnvChange(Env env,bool isServerChange);
+    public delegate void EnvChange(Env env, bool isServerChange);
     public class DeployConfig
     {
         public event EnvChange EnvChangeEvent;
@@ -27,14 +27,13 @@ namespace AntDeploy.Models
             this.Env.RemoveAt(index);
             EnvChangeEvent?.Invoke(env, false);
         }
-       
-       public void EnvServerChange(Env env)
-       {
-           EnvChangeEvent?.Invoke(env, true);
+
+        public void EnvServerChange(Env env)
+        {
+            EnvChangeEvent?.Invoke(env, true);
         }
 
-        public List<string> IgnoreList { get; set; } = new List<string>();
-        public List<string> WindowsBackUpIgnoreList { get; set; } = new List<string>();
+
 
 
         #region IIS
@@ -88,6 +87,9 @@ namespace AntDeploy.Models
         public string Name { get; set; }
         public List<Server> ServerList { get; set; } = new List<Server>();
         public List<LinuxServr> LinuxServerList { get; set; } = new List<LinuxServr>();
+
+        public List<string> IgnoreList { get; set; } = new List<string>();
+        public List<string> WindowsBackUpIgnoreList { get; set; } = new List<string>();
     }
 
 
