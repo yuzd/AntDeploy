@@ -52,6 +52,7 @@ namespace AntDeploy.Models
         public string WebSiteName { get; set; }
 
         public string LastEnvName { get; set; }
+        public string FireWebSiteUrl { get; set; }
     }
 
 

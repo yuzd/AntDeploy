@@ -174,6 +174,10 @@ namespace AntDeploy.Winform
                     this.txt_iis_web_site_name.Text = DeployConfig.IIsConfig.WebSiteName;
                 }
 
+                if (!string.IsNullOrEmpty(DeployConfig.IIsConfig.FireWebSiteUrl))
+                {
+                    this.txt_iis_website_url.Text = DeployConfig.IIsConfig.FireWebSiteUrl;
+                }
 
                 if (this.combo_iis_env.Items.Count > 0 &&
                     !string.IsNullOrEmpty(DeployConfig.IIsConfig.LastEnvName)
@@ -303,6 +307,7 @@ namespace AntDeploy.Winform
             PluginConfig.WindowsServiceEnableIncrement = this.checkBox_Increment_window_service.Checked;
 
             DeployConfig.IIsConfig.WebSiteName = this.txt_iis_web_site_name.Text.Trim();
+            DeployConfig.IIsConfig.FireWebSiteUrl = this.txt_iis_website_url.Text.Trim();
 
             DeployConfig.WindowsServiveConfig.ServiceName = this.txt_windowservice_name.Text.Trim();
 
@@ -1099,6 +1104,17 @@ namespace AntDeploy.Winform
                 return;
             }
 
+            var fireSiteUrl = this.txt_iis_website_url.Text.Trim();
+            if (!string.IsNullOrEmpty(fireSiteUrl))
+            {
+                if (!fireSiteUrl.StartsWith("http"))
+                {
+                    MessageBox.Show("fire website url is not correct");
+                    return;
+                }
+
+                DeployConfig.IIsConfig.FireWebSiteUrl = fireSiteUrl;
+            }
             var ignoreList = DeployConfig.Env.First(r => r.Name.Equals(envName)).IgnoreList;
             var backUpIgnoreList = DeployConfig.Env.First(r => r.Name.Equals(envName)).WindowsBackUpIgnoreList;
 
@@ -1414,7 +1430,28 @@ namespace AntDeploy.Winform
                                 {
                                     this.nlog_iis.Info($"Host:{server.Host},Response:{uploadResult.Item2}");
 
-                                    UpdateDeployProgress(this.tabPage_progress, server.Host, true);
+                                    //fire the website
+                                    if (!string.IsNullOrEmpty(DeployConfig.IIsConfig.FireWebSiteUrl))
+                                    {
+                                        LogEventInfo publisEvent22 = new LogEventInfo(LogLevel.Info, "", "Start to Fire the website Url,TimeOut：10senconds  ==> ");
+                                        publisEvent22.Properties["ShowLink"] = DeployConfig.IIsConfig.FireWebSiteUrl;
+                                        this.nlog_iis.Log(publisEvent22);
+
+                                        var fireRt = WebUtil.IsHttpGetOk(DeployConfig.IIsConfig.FireWebSiteUrl, this.nlog_iis);
+                                        if (fireRt)
+                                        {
+                                            UpdateDeployProgress(this.tabPage_progress, server.Host, true);
+                                            this.nlog_iis.Info($"Host:{server.Host},Success Fire the website Url");
+                                        }
+                                        else
+                                        {
+                                            UpdateDeployProgress(this.tabPage_progress, server.Host, true);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        UpdateDeployProgress(this.tabPage_progress, server.Host, true);
+                                    }
                                 }
                                 else
                                 {
@@ -1771,6 +1808,7 @@ namespace AntDeploy.Winform
             this.BeginInvokeLambda(() =>
             {
 
+                this.txt_iis_website_url.Enabled = flag;
                 this.b_iis_rollback.Enabled = flag;
                 this.b_iis_deploy.Enabled = flag;
                 this.checkBox_Increment_iis.Enabled = flag;
@@ -3899,7 +3937,11 @@ namespace AntDeploy.Winform
                     var existItem = list_env_ignore.Items.Cast<string>().ToList();
                     foreach (var item in target.IgnoreList)
                     {
-                        if(!existItem.Contains(item))list_env_ignore.Items.Add(item);
+                        if (!existItem.Contains(item))
+                        {
+                            this.DeployConfig.Env[combo_env_list.SelectedIndex].IgnoreList.Add(item);
+                            list_env_ignore.Items.Add(item);
+                        }
                     }
                     
                     if (this.list_env_ignore.Items.Count > 0)
@@ -3940,6 +3982,7 @@ namespace AntDeploy.Winform
                     var existItem = list_backUp_ignore.Items.Cast<string>().ToList();
                     foreach (var item in target.WindowsBackUpIgnoreList)
                     {
+                        this.DeployConfig.Env[combo_env_list.SelectedIndex].WindowsBackUpIgnoreList.Add(item);
                         if(!existItem.Contains(item))list_backUp_ignore.Items.Add(item);
                     }
 
