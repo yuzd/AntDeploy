@@ -4,10 +4,10 @@ using AntDeployAgentWindows.Operation.OperationTypes;
 using AntDeployAgentWindows.Util;
 using AntDeployAgentWindows.WebApiCore;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Runtime.InteropServices;
 
 namespace AntDeployAgentWindows.MyApp.Service.Impl
 {
@@ -20,9 +20,10 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
         private string _port;
         private string _poolName;
         private string _dateTimeFolderName;
+        private List<string> _backUpIgnoreList = new List<string>();
 
         private string _projectPublishFolder;
-        private bool _isIncrement ;//是否增量
+        private bool _isIncrement;//是否增量
         private FormHandler _formHandler;
 
         public override string ProviderName => "iis";
@@ -31,7 +32,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
         public override string DeployExcutor(FormHandler.FormItem fileItem)
         {
             var projectPath = Path.Combine(Setting.PublishIIsPathFolder, _projectName);
-            _projectPublishFolder = Path.Combine(projectPath, !string.IsNullOrEmpty(_dateTimeFolderName)? _dateTimeFolderName: DateTime.Now.ToString("yyyyMMddHHmmss"));
+            _projectPublishFolder = Path.Combine(projectPath, !string.IsNullOrEmpty(_dateTimeFolderName) ? _dateTimeFolderName : DateTime.Now.ToString("yyyyMMddHHmmss"));
             EnsureProjectFolder(projectPath);
             EnsureProjectFolder(_projectPublishFolder);
 
@@ -52,7 +53,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 }
 
                 Log("agent version ==>" + AntDeployAgentWindows.Version.VERSION);
-                
+
                 Log("upload success ==>" + filePath);
                 //解压
                 try
@@ -70,12 +71,12 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
                 if (!Directory.Exists(deployFolder))
                 {
-                 
+
                     if (Directory.Exists(_projectPublishFolder))
                     {
                         var temp = new DirectoryInfo(_projectPublishFolder);
                         var tempFolderList = temp.GetDirectories();
-                        if (tempFolderList.Length==1)
+                        if (tempFolderList.Length == 1)
                         {
                             deployFolder = tempFolderList.First().FullName;
                         }
@@ -117,16 +118,16 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                             return $"website : {_webSiteName} not found,start to create,but port is required!";
                         }
                     }
-                    
+
                     Log($"website : {_webSiteName} not found,start to create!");
-                    
+
                     //创建发布目录
-                    var firstDeployFolder = Path.Combine(projectPath,"deploy");
+                    var firstDeployFolder = Path.Combine(projectPath, "deploy");
                     EnsureProjectFolder(firstDeployFolder);
                     Log($"deploy folder create success : {firstDeployFolder} ");
-                    
-                    
-                    var rt = IISHelper.InstallSite(level1, firstDeployFolder,_port,(string.IsNullOrEmpty(_poolName) ? _projectName : _poolName), isNetcore);
+
+
+                    var rt = IISHelper.InstallSite(level1, firstDeployFolder, _port, (string.IsNullOrEmpty(_poolName) ? _projectName : _poolName), isNetcore);
                     if (string.IsNullOrEmpty(rt))
                     {
                         Log($"create website : {level1} success ");
@@ -135,7 +136,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     {
                         return $"create website : {level1} error: {rt} ";
                     }
-                    
+
                     if (!string.IsNullOrEmpty(level2))
                     {
                         //创建一级 但是一级需要一个空的目录
@@ -152,10 +153,10 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                         {
                             return $"create virtualSite :{level2} website : {level1} error: {rt2} ";
                         }
-                        
+
                         //复制文件到发布目录
                         CopyHelper.DirectoryCopy(deployFolder, level2Folder, true);
-                        
+
                         Log($"copy files success from [{deployFolder}] to [{level2Folder}]");
                         return String.Empty;
                     }
@@ -164,7 +165,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                         //只需要一级 就是程序所在目录
                         //复制文件到发布目录
                         CopyHelper.DirectoryCopy(deployFolder, firstDeployFolder, true);
-                        
+
                         Log($"copy files success from [{deployFolder}] to [{firstDeployFolder}]");
                         return String.Empty;
                     }
@@ -187,7 +188,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     var level2Folder = Path.Combine(firstDeployFolder, level2);
                     EnsureProjectFolder(level2Folder);
 
-                    var rt2 = IISHelper.InstallVirtualSite(level1, level2, level2Folder,  (string.IsNullOrEmpty(_poolName) ? _projectName : _poolName), isNetcore);
+                    var rt2 = IISHelper.InstallVirtualSite(level1, level2, level2Folder, (string.IsNullOrEmpty(_poolName) ? _projectName : _poolName), isNetcore);
                     if (string.IsNullOrEmpty(rt2))
                     {
                         Log($"create virtualSite :{level2} Of Website : {level1} success ");
@@ -226,7 +227,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 }
 
                 Log("Start to deploy IIS:");
-                Log("SiteName ===>" +_webSiteName);
+                Log("SiteName ===>" + _webSiteName);
                 Log("SiteFolder ===> " + projectLocation.Item1);
                 Log("SiteApplicationPoolName ===> " + projectLocation.Item3);
 
@@ -238,7 +239,8 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     ApplicationPoolName = projectLocation.Item3,
                     AppFolder = projectLocation.Item1,
                     DeployFolder = deployFolder,
-                    SiteName = projectLocation.Item2
+                    SiteName = projectLocation.Item2,
+                    BackUpIgnoreList = this._backUpIgnoreList
                 };
 
                 var ops = new OperationsIIS(args, Log);
@@ -255,7 +257,11 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                             //projectLocation.Item1 转到 increment 的目录
                             var incrementFolder = Path.Combine(_projectPublishFolder, "increment");
                             EnsureProjectFolder(incrementFolder);
-                            CopyHelper.DirectoryCopy(projectLocation.Item1, incrementFolder, true);
+                            DirectoryInfo directoryInfo = new DirectoryInfo(projectLocation.Item1);
+                            string fullName = directoryInfo.FullName;
+                            if (directoryInfo.Parent != null)
+                                fullName = directoryInfo.Parent.FullName;
+                            CopyHelper.DirectoryCopy(projectLocation.Item1, incrementFolder, true, fullName, this._backUpIgnoreList);
                             Log("Increment deploy backup success...");
                         }
                     }
@@ -351,6 +357,12 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
             if (isIncrement != null && !string.IsNullOrEmpty(isIncrement.TextValue) && isIncrement.TextValue.ToLower().Equals("true"))
             {
                 _isIncrement = true;
+            }
+
+            var backUpIgnoreList = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("backUpIgnore"));
+            if (backUpIgnoreList != null && !string.IsNullOrEmpty(backUpIgnoreList.TextValue))
+            {
+                this._backUpIgnoreList = backUpIgnoreList.TextValue.Split(new string[] { "@_@" }, StringSplitOptions.None).ToList();
             }
 
             _projectName = IISHelper.GetCorrectFolderName(_webSiteName);

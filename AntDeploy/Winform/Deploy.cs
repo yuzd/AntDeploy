@@ -1326,6 +1326,7 @@ namespace AntDeploy.Winform
                         httpRequestClient.SetFieldValue("webSiteName", DeployConfig.IIsConfig.WebSiteName);
                         httpRequestClient.SetFieldValue("deployFolderName", dateTimeFolderName);
                         httpRequestClient.SetFieldValue("Token", server.Token);
+                        httpRequestClient.SetFieldValue("backUpIgnore",(DeployConfig.WindowsBackUpIgnoreList!=null&&DeployConfig.WindowsBackUpIgnoreList.Any())?string.Join("@_@",DeployConfig.WindowsBackUpIgnoreList):"");
                         httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream", zipBytes);
                         System.Net.WebSockets.Managed.ClientWebSocket webSocket = null;
                         HttpLogger HttpLogger = null;
@@ -2410,6 +2411,7 @@ namespace AntDeploy.Winform
                         httpRequestClient.SetFieldValue("execFilePath", execFilePath);
                         httpRequestClient.SetFieldValue("deployFolderName", dateTimeFolderName);
                         httpRequestClient.SetFieldValue("Token", server.Token);
+                        httpRequestClient.SetFieldValue("backUpIgnore",(DeployConfig.WindowsBackUpIgnoreList!=null&&DeployConfig.WindowsBackUpIgnoreList.Any())?string.Join("@_@",DeployConfig.WindowsBackUpIgnoreList):"");
                         httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream", zipBytes);
                         System.Net.WebSockets.Managed.ClientWebSocket webSocket = null;
                         HttpLogger HttpLogger = null;

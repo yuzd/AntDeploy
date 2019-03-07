@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using AntDeployAgentWindows.Util;
+using System;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AntDeployAgentWindows.Util;
 
 namespace AntDeployAgentWindows.Operation
 {
@@ -13,7 +9,7 @@ namespace AntDeployAgentWindows.Operation
         protected Arguments args;
         protected OperationStep step = OperationStep.NONE;
         protected Action<string> logger;
-        public OperationsBase(Arguments args,Action<string> log)
+        public OperationsBase(Arguments args, Action<string> log)
         {
             this.args = args;
             this.logger = log;
@@ -55,7 +51,11 @@ namespace AntDeployAgentWindows.Operation
             string destDir = Path.Combine(this.args.BackupFolder, this.args.AppName);
             destDir = Path.Combine(destDir, DateTime.Now.ToString("Backup_yyyyMMdd_HHmmss"));
             this.args.RestorePath = destDir;
-            CopyHelper.DirectoryCopy(this.args.AppFolder, destDir, true);
+            DirectoryInfo directoryInfo = new DirectoryInfo(this.args.AppFolder);
+            string fullName = directoryInfo.FullName;
+            if (directoryInfo.Parent != null)
+                fullName = directoryInfo.Parent.FullName;
+            CopyHelper.DirectoryCopy(this.args.AppFolder, destDir, true, fullName, this.args.BackUpIgnoreList);
             logger("Success Backup to folder:" + destDir);
         }
 
@@ -63,7 +63,7 @@ namespace AntDeployAgentWindows.Operation
         {
             logger("Start to Restore");
             CopyHelper.DirectoryCopy(this.args.RestorePath, this.args.AppFolder, true);
-            logger("Success Restore from folder:[" + this.args.RestorePath+ "] to folder:[" + this.args.AppFolder + "]" );
+            logger("Success Restore from folder:[" + this.args.RestorePath + "] to folder:[" + this.args.AppFolder + "]");
         }
 
         public virtual void Stop()

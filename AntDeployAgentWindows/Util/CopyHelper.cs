@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace AntDeployAgentWindows.Util
 {
@@ -81,6 +80,106 @@ namespace AntDeployAgentWindows.Util
                     DirectoryCopy(subDir.FullName, dstDirSub, copySubDirs);
                 }
             }
+        }
+
+        public static void DirectoryCopy(string srcDir, string dstDir, bool copySubDirs, string parentDir, List<string> backignoreUpList)
+        {
+            if (backignoreUpList == null || !backignoreUpList.Any())
+            {
+                DirectoryCopy(srcDir, dstDir, copySubDirs);
+                return;
+            }
+
+            if (string.IsNullOrEmpty(parentDir))
+            {
+                throw new DirectoryNotFoundException("parentDir is empty ");
+            }
+
+
+
+            DirectoryInfo dir = new DirectoryInfo(srcDir);
+
+            if (!dir.Exists)
+                throw new DirectoryNotFoundException("Source directory does not exist or could not be found: " + srcDir);
+
+            if (!Directory.Exists(dstDir))
+            {
+                Directory.CreateDirectory(dstDir);
+            }
+
+
+            FileInfo[] files = dir.GetFiles();
+            foreach (FileInfo file in files)
+            {
+                int length = file.FullName.Length -parentDir.Length ;
+                string entryName = EntryFromPath(file.FullName,parentDir.Length,length);
+                if (IsMacthIgnore(entryName, backignoreUpList)) continue;
+                string dstFile = Path.Combine(dstDir, file.Name);
+                file.CopyTo(dstFile, true);
+            }
+
+            if (copySubDirs)
+            {
+                DirectoryInfo[] subDirs = dir.GetDirectories();
+                foreach (DirectoryInfo subDir in subDirs)
+                {
+                    string dstDirSub = Path.Combine(dstDir, subDir.Name);
+                    int length = subDir.FullName.Length - parentDir.Length;
+                    string entryName = EntryFromPath(subDir.FullName,parentDir.Length, length);
+                    if (IsMacthIgnore(entryName, backignoreUpList)) continue;
+                    DirectoryCopy(subDir.FullName, dstDirSub, copySubDirs, parentDir, backignoreUpList);
+                }
+            }
+        }
+
+        private static bool IsMacthIgnore(string entryName, List<string> backignoreUpList)
+        {
+            var haveMatch = false;
+            foreach (var ignorRule in backignoreUpList)
+            {
+                try
+                {
+                    if (ignorRule.StartsWith("*"))
+                    {
+                        var ignorRule2 = ignorRule.Substring(1);
+                        if (entryName.EndsWith(ignorRule2))
+                        {
+                            haveMatch = true;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        var isMatch = Regex.Match(entryName, ignorRule, RegexOptions.IgnoreCase);//忽略大小写
+                        if (isMatch.Success)
+                        {
+                            haveMatch = true;
+                            break;
+                        }
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+
+            return haveMatch;
+        }
+
+        private static string EntryFromPath(string entry, int offset, int length)
+        {
+            for (; length > 0 && ((int)entry[offset] == (int)Path.DirectorySeparatorChar || (int)entry[offset] == (int)Path.AltDirectorySeparatorChar); --length)
+                ++offset;
+            if (length == 0)
+                return string.Empty;
+            char[] charArray = entry.ToCharArray(offset, length);
+            for (int index = 0; index < charArray.Length; ++index)
+            {
+                if ((int)charArray[index] == (int)Path.DirectorySeparatorChar || (int)charArray[index] == (int)Path.AltDirectorySeparatorChar)
+                    charArray[index] = '/';
+            }
+            return new string(charArray);
         }
     }
 }

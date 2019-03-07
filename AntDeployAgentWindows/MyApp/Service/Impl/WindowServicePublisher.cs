@@ -4,6 +4,7 @@ using AntDeployAgentWindows.Operation.OperationTypes;
 using AntDeployAgentWindows.Util;
 using AntDeployAgentWindows.WebApiCore;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
         private string _serviceName;
         private string _serviceExecName;
         private int _waitForServiceStopTimeOut = 15;
-
+        private List<string> _backUpIgnoreList = new List<string>();
         private string _projectPublishFolder;
         private string _dateTimeFolderName;
         private bool _isIncrement;//是否增量
@@ -165,7 +166,8 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     AppName = _serviceName,
                     AppFolder = projectLocationFolder,
                     DeployFolder = deployFolder,
-                    WaitForWindowsServiceStopTimeOut = _waitForServiceStopTimeOut
+                    WaitForWindowsServiceStopTimeOut = _waitForServiceStopTimeOut,
+                    BackUpIgnoreList = this._backUpIgnoreList
                 };
 
                 var ops = new OperationsWINDOWSSERVICE(args, Log);
@@ -183,7 +185,11 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                             //projectLocation.Item1 转到 increment 的目录
                             var incrementFolder = Path.Combine(_projectPublishFolder, "increment");
                             EnsureProjectFolder(incrementFolder);
-                            CopyHelper.DirectoryCopy(projectLocationFolder, incrementFolder, true);
+                            DirectoryInfo directoryInfo = new DirectoryInfo(projectLocationFolder);
+                            string fullName = directoryInfo.FullName;
+                            if (directoryInfo.Parent != null)
+                                fullName = directoryInfo.Parent.FullName;
+                            CopyHelper.DirectoryCopy(projectLocationFolder, incrementFolder, true,fullName,this._backUpIgnoreList);
                             Log("Increment deploy backup success...");
                         }
                     }
@@ -275,6 +281,12 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
             if (isIncrement != null && !string.IsNullOrEmpty(isIncrement.TextValue) && isIncrement.TextValue.ToLower().Equals("true"))
             {
                 _isIncrement = true;
+            }
+
+            var backUpIgnoreList = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("backUpIgnore"));
+            if (backUpIgnoreList != null && !string.IsNullOrEmpty(backUpIgnoreList.TextValue))
+            {
+                this._backUpIgnoreList = backUpIgnoreList.TextValue.Split(new string[] { "@_@" }, StringSplitOptions.None).ToList();
             }
             return string.Empty;
         }
