@@ -532,7 +532,7 @@ namespace AntDeploy.Winform
                 return;
             }
 
-            var arr = seletedServer.Split(new string[] {"@_@"}, StringSplitOptions.None);
+            var arr = seletedServer.Split(new string[] { "@_@" }, StringSplitOptions.None);
             if (arr.Length == 2)
             {
                 this.txt_env_server_host.Text = arr[0];
@@ -583,7 +583,7 @@ namespace AntDeploy.Winform
             }
 
             var existServer = this.combo_env_server_list.Items.Cast<string>()
-                .Select(r => r.Split(new string[] {"@_@"}, StringSplitOptions.None)[0])
+                .Select(r => r.Split(new string[] { "@_@" }, StringSplitOptions.None)[0])
                 .FirstOrDefault(r => r.Equals(serverHost));
 
             if (!string.IsNullOrEmpty(existServer))
@@ -789,7 +789,7 @@ namespace AntDeploy.Winform
 
             var pwd2 = CodingHelper.AESEncrypt(pwd);
             var existServer = this.combo_linux_server_list.Items.Cast<string>()
-                .Select(r => r.Split(new string[] {"@_@"}, StringSplitOptions.None)[0])
+                .Select(r => r.Split(new string[] { "@_@" }, StringSplitOptions.None)[0])
                 .FirstOrDefault(r => r.Equals(serverHost));
 
             if (!string.IsNullOrEmpty(existServer))
@@ -941,7 +941,7 @@ namespace AntDeploy.Winform
                 return;
             }
 
-            var arr = seletedServer.Split(new string[] {"@_@"}, StringSplitOptions.None);
+            var arr = seletedServer.Split(new string[] { "@_@" }, StringSplitOptions.None);
             if (arr.Length >= 2)
             {
                 this.txt_linux_host.Text = arr[0];
@@ -1135,7 +1135,7 @@ namespace AntDeploy.Winform
                             return;
                         }
 
-                        var publishPathArr = publishPathLine.Split(new string[] {" ->"}, StringSplitOptions.None);
+                        var publishPathArr = publishPathLine.Split(new string[] { " ->" }, StringSplitOptions.None);
                         if (publishPathArr.Length != 2)
                         {
                             this.nlog_iis.Error("can not find publishPath in log");
@@ -2138,7 +2138,7 @@ namespace AntDeploy.Winform
                 return;
             }
 
-            
+
 #endif
 
 
@@ -2204,7 +2204,7 @@ namespace AntDeploy.Winform
                             return;
                         }
 
-                        var publishPathArr = publishPathLine.Split(new string[] {" ->"}, StringSplitOptions.None);
+                        var publishPathArr = publishPathLine.Split(new string[] { " ->" }, StringSplitOptions.None);
                         if (publishPathArr.Length != 2)
                         {
                             this.nlog_windowservice.Error("can not find publishPath in log");
@@ -2578,7 +2578,7 @@ namespace AntDeploy.Winform
                 return;
             }
 
-            
+
 #endif
 
 
@@ -3074,6 +3074,22 @@ namespace AntDeploy.Winform
                 DeployConfig.DockerConfig.AspNetCoreEnv = aspnetcoreEnvName;
             }
 
+            var volume = this.txt_docker_volume.Text.Trim();
+            if (volume.Length > 0)
+            {
+                volume = volume.Replace('；', ';');
+                var arr = volume.Split(';');
+                foreach (var item in arr)
+                {
+                    if (!item.Contains(':'))
+                    {
+                        MessageBox.Show("volume is not correct!");
+                        return;
+                    }
+                }
+                DeployConfig.DockerConfig.Volume = volume;
+            }
+
             var envName = this.combo_docker_env.SelectedItem as string;
             if (string.IsNullOrEmpty(envName))
             {
@@ -3127,7 +3143,7 @@ namespace AntDeploy.Winform
                 return;
             }
 
-           
+
 #endif
 
             var serverList = DeployConfig.Env.Where(r => r.Name.Equals(envName)).Select(r => r.LinuxServerList)
@@ -3185,7 +3201,7 @@ namespace AntDeploy.Winform
                         return;
                     }
 
-                    var publishPathArr = publishPathLine.Split(new string[] {" ->"}, StringSplitOptions.None);
+                    var publishPathArr = publishPathLine.Split(new string[] { " ->" }, StringSplitOptions.None);
                     if (publishPathArr.Length != 2)
                     {
                         this.nlog_docker.Error("can not find publishPath in log");
@@ -3317,7 +3333,8 @@ namespace AntDeploy.Winform
                             NetCorePort = DeployConfig.DockerConfig.Prot,
                             NetCoreEnvironment = DeployConfig.DockerConfig.AspNetCoreEnv,
                             ClientDateTimeFolderName = clientDateTimeFolderName,
-                            RemoveDaysFromPublished = DeployConfig.DockerConfig.RemoveDaysFromPublished
+                            RemoveDaysFromPublished = DeployConfig.DockerConfig.RemoveDaysFromPublished,
+                            Volume=DeployConfig.DockerConfig.Volume
                         })
                         {
                             var connectResult = sshClient.Connect();
@@ -3412,7 +3429,7 @@ namespace AntDeploy.Winform
                 MessageBox.Show("get current project skd version error");
                 return;
             }
-           
+
 #endif
 
             combo_docker_env_SelectedIndexChanged(null, null);

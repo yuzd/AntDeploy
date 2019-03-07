@@ -14,6 +14,7 @@ namespace AntDeploy.Util
 {
     public class SSHClient : IDisposable
     {
+        private string volumeProfix = "# volume@";
         public string Host { get; set; }
         public string UserName { get; set; }
         public string Pwd { get; set; }
@@ -37,6 +38,7 @@ namespace AntDeploy.Util
         public string NetCoreENTRYPOINT { get; set; }
         public string ClientDateTimeFolderName { get; set; }
         public string RemoveDaysFromPublished { get; set; }
+        public string Volume { get; set; }
         public string RootFolder { get; set; }
 
         private readonly Action<string, NLog.LogLevel> _logger;
@@ -341,8 +343,46 @@ namespace AntDeploy.Util
                         _logger($"EXPOSE in dockerFile is invalid: {dockFilePath}", NLog.LogLevel.Error);
                         return;
                     }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(NetCorePort) && !NetCorePort.Equals(newPort) )
+                        {
+                            _logger($"EXPOSE in dockerFile is defined,will use【{newPort}】replace【{NetCorePort}】", NLog.LogLevel.Warn);
+                        }
+                        else
+                        {
+                            _logger($"EXPOSE in dockerFile is : 【{newPort}】", NLog.LogLevel.Info);
+                        }
+
+                    }
 
                     NetCorePort = newPort;
+
+                    var volumeInDockerFile = string.Empty;
+                    var volumeExist = dockerFileText.Split(new string[] { volumeProfix }, StringSplitOptions.None);
+                    if (volumeExist.Length == 2)
+                    {
+                        var temp2 = volumeExist[1].Split('@');
+                        if (temp2.Length == 2)
+                        {
+                            volumeInDockerFile = temp2[0];
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(volumeInDockerFile))
+                    {
+                        //dockerFIle里面有配置 volume
+                        if (!string.IsNullOrEmpty(Volume) && !Volume.Equals(volumeInDockerFile))
+                        {
+                            _logger($"Volume in dockerFile is defined,will use【{volumeInDockerFile}】replace【{Volume}】", NLog.LogLevel.Warn);
+                        }
+                        else
+                        {
+                            _logger($"Volume in dockerFile is : 【{volumeInDockerFile}】", NLog.LogLevel.Info);
+                        }
+
+                        Volume = volumeInDockerFile;
+                    }
                 }
                 catch (Exception)
                 {
@@ -381,8 +421,10 @@ namespace AntDeploy.Util
                 port = "5000";
             }
 
+            string volume = GetVolume();
+
             // 根据image启动一个容器
-            var dockerRunRt = RunSheell($"sudo docker run --name {continarName} -d --restart=always -p {port}:{port} {PorjectName}:{ClientDateTimeFolderName}");
+            var dockerRunRt = RunSheell($"sudo docker run --name {continarName}{volume} -d --restart=always -p {port}:{port} {PorjectName}:{ClientDateTimeFolderName}");
 
             if (!dockerRunRt) return;
 
@@ -528,6 +570,7 @@ namespace AntDeploy.Util
                     port = "5000";
                 }
 
+
                 string environment = NetCoreEnvironment;
 
                 _logger($"create docker file: {path}", NLog.LogLevel.Info);
@@ -566,6 +609,12 @@ namespace AntDeploy.Util
                     _logger(excuteLine, NLog.LogLevel.Info);
                     //writer.WriteLine(excuteCMDLine);
                     //_logger(excuteCMDLine);
+
+                    if (!string.IsNullOrEmpty(this.Volume))
+                    {
+                        writer.WriteLine(volumeProfix + this.Volume + "@");
+                        _logger(volumeProfix + this.Volume + "@", NLog.LogLevel.Info);
+                    }
 
                     writer.Flush();
                 }
@@ -709,6 +758,25 @@ namespace AntDeploy.Util
             aa = aa.Replace(" ", "").Replace("　", "");
             aa = Regex.Replace(aa, @"[~!@#\$%\^&\*\(\)\+=\|\\\}\]\{\[:;<,>\?\/""]+", "");
             return aa;
+        }
+
+        private string GetVolume(bool ignoreFirstSpace = false)
+        {
+            if (string.IsNullOrEmpty(this.Volume)) return string.Empty;
+            var volume = Volume.Replace('；', ';');
+            var arr = volume.Split(';');
+            var result = new List<string>();
+            foreach (var item in arr)
+            {
+                if (!item.Contains(':'))
+                {
+                    this._logger("ignore volume set,because is not correct!", LogLevel.Error);
+                    return string.Empty;
+                }
+                result.Add($"-v {item}");
+            }
+            if (!result.Any()) return string.Empty;
+            return (!ignoreFirstSpace ? " " : "") + string.Join(" ", result);
         }
     }
 
