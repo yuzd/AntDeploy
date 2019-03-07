@@ -1445,7 +1445,7 @@ namespace AntDeploy.Winform
                                         }
                                         else
                                         {
-                                            UpdateDeployProgress(this.tabPage_progress, server.Host, true);
+                                            UpdateDeployProgress(this.tabPage_progress, server.Host, false);
                                         }
                                     }
                                     else

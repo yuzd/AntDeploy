@@ -3,6 +3,8 @@ using NLog;
 using System;
 using System.IO;
 using System.Net;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,11 +12,22 @@ namespace AntDeploy.Util
 {
     public class WebUtil
     {
+        private static bool CheckValidationResult(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors errors)
+        {
+            return true;
+        }
+
         public static bool IsHttpGetOk(string url, Logger logger)
         {
             try
             {
                 HttpWebRequest WReq = (HttpWebRequest)WebRequest.Create(url);
+
+                if (url.StartsWith("https"))
+                {
+                    ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(CheckValidationResult);
+                }
+
                 WReq.Method = "GET";
                 WReq.Timeout = 10000;
                 HttpWebResponse WResp = (HttpWebResponse)WReq.GetResponse();
