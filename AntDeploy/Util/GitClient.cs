@@ -100,8 +100,8 @@ namespace AntDeploy.Util
                     return true;
                 }
                 
-                Branch branch = _repository.CreateBranch(name);
-                if (branch != null)
+                Branch newbranch = _repository.CreateBranch(name);
+                if (newbranch != null)
                 {
                     _logger?.Info($"【git】create branch success:{name}");
                     return true;
@@ -126,7 +126,7 @@ namespace AntDeploy.Util
         {
             try
             {
-                Func<bool> doBranch()=>
+                bool doBranch ()
                 {
                     if (envName == null) return false;
                     if (CreateBranch(envName))
