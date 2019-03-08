@@ -18,6 +18,14 @@ namespace AntDeploy.Util
             _projectPath = projectPath;
             CreateGit(_projectPath);
         }
+        
+        public GitClient(string projectPath,string envName, Logger logger) 
+        {
+            _logger = logger;
+            _projectPath = projectPath;
+            CreateGit(_projectPath,envName);
+        }
+        
 
         public GitClient(string projectPath)
         {
@@ -25,6 +33,12 @@ namespace AntDeploy.Util
             CreateGit(_projectPath);
         }
 
+        public GitClient(string projectPath,string envName)
+        {
+            _projectPath = projectPath;
+            CreateGit(_projectPath,envName);
+        }
+        
         public bool InitSuccess { get; private set; }
 
         //判断git残酷是否合法
@@ -47,21 +61,88 @@ namespace AntDeploy.Util
         }
 
         /// <summary>
-        /// 创建git仓库
+        /// 切换分支
         /// </summary>
-        /// <param name="path"></param>
         /// <returns></returns>
-        public bool CreateGit(string path = null)
+        public bool ChangeBranch(string name)
         {
             try
             {
+                var branch = _repository.Branches[name];
+                if (branch==null)
+                {
+                    _logger?.Warn($"【git】branch name:{name} not exist");
+                    return false;
+                }
+                Branch currentBranch = LibGit2Sharp.Commands.Checkout(_repository , branch);
+                return currentBranch != null;
+            }
+            catch (Exception e)
+            {
+                _logger?.Error($"【git】checkout branch:{name} fail:{e.Message}");
+                return false;
+            }
+        }
+        
+        /// <summary>
+        /// 创建分支
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool CreateBranch(string name)
+        {
+            try
+            {
+                var branch = _repository.Branches[name];
+                if (branch!=null)
+                {
+                    _logger?.Info($"【git】create branch warn:{name} is already exist");
+                    return true;
+                }
+                
+                Branch branch = _repository.CreateBranch(name);
+                if (branch != null)
+                {
+                    _logger?.Info($"【git】create branch success:{name}");
+                    return true;
+                }
+                _logger?.Error($"【git】create branch:{name} fail");
+                return false;
+            }
+            catch (Exception e)
+            {
+                _logger?.Error($"【git】create branch:{name} fail:{e.Message}");
+                return false;
+            }
+        }
+        
+        /// <summary>
+        /// 创建git仓库
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="envName"></param>
+        /// <returns></returns>
+        public bool CreateGit(string path = null,string envName = null)
+        {
+            try
+            {
+                Func<bool> doBranch()=>
+                {
+                    if (envName == null) return false;
+                    if (CreateBranch(envName))
+                    {
+                        return ChangeBranch(envName);
+                    }
+                    return false;
+                };
+
                 if (string.IsNullOrEmpty(path)) path = _projectPath;
                 var path2 = Path.Combine(path, ".git");
                 if (Directory.Exists(path2))
                 {
                     _logger?.Info("【git】 git Repository is already created!");
                     _repository = new Repository(_projectPath);
-                    InitSuccess = true;
+                    InitSuccess = doBranch();//切换成对应的分支
                     return true;
                 }
 
@@ -72,7 +153,8 @@ namespace AntDeploy.Util
                     _repository = new Repository(_projectPath);
 
                     CommitChanges("first init");
-                    InitSuccess = true;
+                    //master分支创建成功
+                    InitSuccess = doBranch();//切换成对应的分支
                     return true;
                 }
             }
@@ -85,6 +167,9 @@ namespace AntDeploy.Util
         }
 
 
+        /// <summary>
+        /// 提交所有变动
+        /// </summary>
         public void SubmitChanges()
         {
             _logger?.Info("【git】commit start");
@@ -103,7 +188,9 @@ namespace AntDeploy.Util
             _logger?.Info("【git】commit success");
         }
 
-
+        /// <summary>
+        /// 提交被忽略的文件列表
+        /// </summary>
         private void StageIgnoreFile()
         {
             RepositoryStatus status = _repository.RetrieveStatus();
@@ -117,6 +204,10 @@ namespace AntDeploy.Util
 
         }
 
+        /// <summary>
+        /// 获取有变动的列表
+        /// </summary>
+        /// <returns></returns>
         public List<string> GetChanges()
         {
             var result = new List<string>();
@@ -155,8 +246,12 @@ namespace AntDeploy.Util
             return result;
         }
 
-
-
+        
+        
+        /// <summary>
+        /// 提交
+        /// </summary>
+        /// <param name="commit"></param>
         public void CommitChanges(string commit)
         {
             try
