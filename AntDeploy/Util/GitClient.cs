@@ -126,15 +126,15 @@ namespace AntDeploy.Util
         {
             try
             {
-                bool doBranch ()
-                {
-                    if (envName == null) return false;
-                    if (CreateBranch(envName))
-                    {
-                        return ChangeBranch(envName);
-                    }
-                    return false;
-                };
+                //bool doBranch ()
+                //{
+                //    if (envName == null) return false;
+                //    if (CreateBranch(envName))
+                //    {
+                //        return ChangeBranch(envName);
+                //    }
+                //    return false;
+                //};
 
                 if (string.IsNullOrEmpty(path)) path = _projectPath;
                 var path2 = Path.Combine(path, ".git");
@@ -142,7 +142,7 @@ namespace AntDeploy.Util
                 {
                     _logger?.Info("【git】 git Repository is already created!");
                     _repository = new Repository(_projectPath);
-                    InitSuccess = doBranch();//切换成对应的分支
+                    InitSuccess =true;// doBranch();//切换成对应的分支
                     return true;
                 }
 
@@ -154,7 +154,7 @@ namespace AntDeploy.Util
 
                     CommitChanges("first init");
                     //master分支创建成功
-                    InitSuccess = doBranch();//切换成对应的分支
+                    InitSuccess =true;// doBranch();//切换成对应的分支
                     return true;
                 }
             }

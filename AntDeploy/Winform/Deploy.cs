@@ -1162,7 +1162,7 @@ namespace AntDeploy.Winform
                         var publishLog = new List<string>();
                         //执行 publish
                         var isSuccess = CommandHelper.RunDotnetExternalExe(ProjectFolderPath, "dotnet",
-                            "publish -c Release", this.nlog_iis, publishLog);
+                            "publish -c Release -o", this.nlog_iis, publishLog);
 
                         if (!isSuccess)
                         {
@@ -1256,11 +1256,11 @@ namespace AntDeploy.Winform
                         this.nlog_iis.Info("Enable Increment Deploy:true");
                         if (string.IsNullOrEmpty(gitPath))
                         {
-                            gitModel = new GitClient(publishPath,envName, this.nlog_iis);
+                            gitModel = new GitClient(publishPath, this.nlog_iis);
                         }
                         else
                         {
-                            gitModel = new GitClient(gitPath, envName,this.nlog_iis);
+                            gitModel = new GitClient(gitPath,this.nlog_iis);
                         }
 
                         if (!gitModel.InitSuccess)
@@ -2377,7 +2377,7 @@ namespace AntDeploy.Winform
                     if (this.PluginConfig.WindowsServiceEnableIncrement)
                     {
                         this.nlog_windowservice.Info("Enable Increment Deploy:true");
-                        gitModel = new GitClient(publishPath,envName, this.nlog_windowservice);
+                        gitModel = new GitClient(publishPath, this.nlog_windowservice);
                         if (!gitModel.InitSuccess)
                         {
                             this.nlog_windowservice.Error(
