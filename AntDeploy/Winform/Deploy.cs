@@ -1156,13 +1156,13 @@ namespace AntDeploy.Winform
                 try
                 {
                     var isNetcore = false;
-                    var publishPath = string.Empty;
+                    var publishPath =  Path.Combine(ProjectFolderPath, "bin", "Release", "publish",envName);
+                    var path = publishPath + "\\";
                     if (DeployConfig.IIsConfig.SdkType.Equals("netcore"))
                     {
-                        var publishLog = new List<string>();
                         //执行 publish
                         var isSuccess = CommandHelper.RunDotnetExternalExe(ProjectFolderPath, "dotnet",
-                            "publish -c Release -o", this.nlog_iis, publishLog);
+                            "publish -c Release -o " + path.Replace("\\\\","\\"), this.nlog_iis);
 
                         if (!isSuccess)
                         {
@@ -1170,31 +1170,12 @@ namespace AntDeploy.Winform
                             BuildError(this.tabPage_progress);
                             return;
                         }
-
-                        var publishPathLine = publishLog
-                            .FirstOrDefault(r => !string.IsNullOrEmpty(r) && r.EndsWith("\\publish\\"));
-
-                        if (string.IsNullOrEmpty(publishPathLine))
-                        {
-                            this.nlog_iis.Error("can not find publishPath in log");
-                            BuildError(this.tabPage_progress);
-                            return;
-                        }
-
-                        var publishPathArr = publishPathLine.Split(new string[] { " ->" }, StringSplitOptions.None);
-                        if (publishPathArr.Length != 2)
-                        {
-                            this.nlog_iis.Error("can not find publishPath in log");
-                            BuildError(this.tabPage_progress);
-                            return;
-                        }
-
-                        publishPath = publishPathArr[1].Trim();
+                        
                         isNetcore = true;
                     }
                     else
                     {
-                        var isSuccess = CommandHelper.RunMsbuild(ProjectPath, this.nlog_iis);
+                        var isSuccess = CommandHelper.RunMsbuild(ProjectPath,path, this.nlog_iis);
 
                         if (!isSuccess)
                         {
@@ -1203,7 +1184,7 @@ namespace AntDeploy.Winform
                             return;
                         }
 
-                        publishPath = Path.Combine(ProjectFolderPath, "bin", "Release", "publish");
+                       
 
                         if (Directory.Exists(publishPath))
                         {
@@ -2249,14 +2230,15 @@ namespace AntDeploy.Winform
                 try
                 {
                     var isNetcore = false;
-                    var publishPath = string.Empty;
+                    var publishPath = Path.Combine(ProjectFolderPath, "bin", "Release", "deploy",envName); 
+                    var path =publishPath+"\\";
                     if (DeployConfig.WindowsServiveConfig.SdkType.Equals("netcore"))
                     {
                         isNetcore = true;
-                        var publishLog = new List<string>();
+                       
                         //执行 publish
                         var isSuccess = CommandHelper.RunDotnetExternalExe(ProjectFolderPath, "dotnet",
-                            "publish -c Release --runtime win-x64", nlog_windowservice, publishLog);
+                            "publish -c Release --runtime win-x64 -o " + path.Replace("\\\\","\\"), nlog_windowservice);
 
                         if (!isSuccess)
                         {
@@ -2264,31 +2246,11 @@ namespace AntDeploy.Winform
                             BuildError(this.tabPage_windows_service);
                             return;
                         }
-
-                        var publishPathLine =
-                            publishLog.FirstOrDefault(r => !string.IsNullOrEmpty(r) && r.EndsWith("\\publish\\"));
-
-                        if (string.IsNullOrEmpty(publishPathLine))
-                        {
-                            this.nlog_windowservice.Error("can not find publishPath in log");
-                            BuildError(this.tabPage_windows_service);
-                            return;
-                        }
-
-                        var publishPathArr = publishPathLine.Split(new string[] { " ->" }, StringSplitOptions.None);
-                        if (publishPathArr.Length != 2)
-                        {
-                            this.nlog_windowservice.Error("can not find publishPath in log");
-                            BuildError(this.tabPage_windows_service);
-                            return;
-                        }
-
-                        publishPath = publishPathArr[1].Trim();
                     }
                     else
                     {
                         //执行 publish
-                        var isSuccess = CommandHelper.RunMsbuild(ProjectPath, nlog_windowservice);
+                        var isSuccess = CommandHelper.RunMsbuild(ProjectPath,path, nlog_windowservice);
 
                         if (!isSuccess)
                         {
@@ -2297,7 +2259,7 @@ namespace AntDeploy.Winform
                             return;
                         }
 
-                        publishPath = Path.Combine(ProjectFolderPath, "bin", "Release", "publish");
+                        
                     }
 
 
@@ -3260,10 +3222,11 @@ namespace AntDeploy.Winform
 
                 try
                 {
-                    var publishLog = new List<string>();
+                    var publishPath =  Path.Combine(ProjectFolderPath, "bin", "Release", "publish",envName);
+                    var path =publishPath+"\\";
                     //执行 publish
                     var isSuccess = CommandHelper.RunDotnetExternalExe(ProjectFolderPath, "dotnet",
-                        "publish -c Release", nlog_docker, publishLog);
+                        "publish -c Release -o " + path.Replace("\\\\","\\"), nlog_docker);
 
                     if (!isSuccess)
                     {
@@ -3271,34 +3234,6 @@ namespace AntDeploy.Winform
                         BuildError(this.tabPage_docker);
                         return;
                     }
-
-                    var publishPathLine =
-                        publishLog.FirstOrDefault(r => !string.IsNullOrEmpty(r) && r.EndsWith("\\publish\\"));
-
-                    if (string.IsNullOrEmpty(publishPathLine))
-                    {
-                        this.nlog_docker.Error("can not find publishPath in log");
-                        BuildError(this.tabPage_docker);
-                        return;
-                    }
-
-                    var publishPathArr = publishPathLine.Split(new string[] { " ->" }, StringSplitOptions.None);
-                    if (publishPathArr.Length != 2)
-                    {
-                        this.nlog_docker.Error("can not find publishPath in log");
-                        BuildError(this.tabPage_docker);
-                        return;
-                    }
-
-                    var publishPath = publishPathArr[1].Trim();
-
-                    if (string.IsNullOrEmpty(publishPath) || !Directory.Exists(publishPath))
-                    {
-                        this.nlog_docker.Error("can not find publishPath");
-                        BuildError(this.tabPage_docker);
-                        return;
-                    }
-
 
                     var serviceFile = Path.Combine(publishPath, ENTRYPOINT);
                     if (!File.Exists(serviceFile))

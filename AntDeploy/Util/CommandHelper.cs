@@ -18,7 +18,7 @@ namespace AntDeploy.Util
     {
         
 
-        public static bool RunMsbuild(string path,NLog.Logger logger)
+        public static bool RunMsbuild(string path,string publishPath,NLog.Logger logger)
         {
             var msBuild = GetMsBuildPath();
             if (string.IsNullOrEmpty(msBuild))
@@ -26,10 +26,9 @@ namespace AntDeploy.Util
                 return false;
             }
 
-            var outPath = Path.Combine(new FileInfo(path).Directory.FullName,"bin","Release","publish") + "\\";
             return RunDotnetExternalExe(string.Empty,msBuild+"\\MsBuild.exe",
-                path + " /t:Rebuild /v:m /p:OutDir="+ outPath.Replace("\\\\","\\") +";Configuration=Release",
-                 logger,null);
+                path + " /t:Rebuild /v:m /p:OutDir=\""+ publishPath.Replace("\\\\","\\") +"\";Configuration=Release",
+                 logger);
         }
 
 
@@ -87,9 +86,8 @@ namespace AntDeploy.Util
         /// <param name="projectPath"></param>
         /// <param name="arguments"></param>
         /// <param name="logger"></param>
-        /// <param name="refList"></param>
         /// <returns></returns>
-        public static bool RunDotnetExternalExe(string projectPath,string fileName,string arguments, NLog.Logger logger, List<string> refList)
+        public static bool RunDotnetExternalExe(string projectPath,string fileName,string arguments, NLog.Logger logger)
         {
             Process process = null;
             try
@@ -125,7 +123,6 @@ namespace AntDeploy.Util
                 {
                     if (!string.IsNullOrWhiteSpace(args.Data))
                     {
-                        refList?.Add(args.Data);
                         if (!args.Data.StartsWith(" ")&&args.Data.Contains(": error"))
                         {
                             logger?.Warn(args.Data);
