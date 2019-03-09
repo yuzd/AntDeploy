@@ -385,6 +385,16 @@ namespace AntDeploy.Winform
                 return;
             }
 
+            //检查特殊字符
+             foreach (char c in Path.GetInvalidFileNameChars())
+            {
+                if (env_name.Contains(c))
+                {
+                    MessageBox.Show("env name contains invalid char：" + c);
+                    return;
+                }
+            }
+
             if (this.combo_env_list.Items.Cast<string>().Contains(env_name))
             {
                 this.combo_env_list.SelectedItem = env_name;
@@ -1156,13 +1166,13 @@ namespace AntDeploy.Winform
                 try
                 {
                     var isNetcore = false;
-                    var publishPath =  Path.Combine(ProjectFolderPath, "bin", "Release", "publish",envName);
+                    var publishPath =  Path.Combine(ProjectFolderPath, "bin", "Release", "deploy",envName);
                     var path = publishPath + "\\";
                     if (DeployConfig.IIsConfig.SdkType.Equals("netcore"))
                     {
                         //执行 publish
                         var isSuccess = CommandHelper.RunDotnetExternalExe(ProjectFolderPath, "dotnet",
-                            "publish -c Release -o " + path.Replace("\\\\","\\"), this.nlog_iis);
+                            "publish -c Release -o \"" + path.Replace("\\\\","\\") +"\"", this.nlog_iis);
 
                         if (!isSuccess)
                         {
@@ -2238,7 +2248,7 @@ namespace AntDeploy.Winform
                        
                         //执行 publish
                         var isSuccess = CommandHelper.RunDotnetExternalExe(ProjectFolderPath, "dotnet",
-                            "publish -c Release --runtime win-x64 -o " + path.Replace("\\\\","\\"), nlog_windowservice);
+                            "publish -c Release --runtime win-x64 -o \"" + path.Replace("\\\\","\\")+"\"", nlog_windowservice);
 
                         if (!isSuccess)
                         {
@@ -3222,11 +3232,11 @@ namespace AntDeploy.Winform
 
                 try
                 {
-                    var publishPath =  Path.Combine(ProjectFolderPath, "bin", "Release", "publish",envName);
+                    var publishPath =  Path.Combine(ProjectFolderPath, "bin", "Release", "deploy",envName);
                     var path =publishPath+"\\";
                     //执行 publish
                     var isSuccess = CommandHelper.RunDotnetExternalExe(ProjectFolderPath, "dotnet",
-                        "publish -c Release -o " + path.Replace("\\\\","\\"), nlog_docker);
+                        "publish -c Release -o \"" + path.Replace("\\\\","\\") +"\"", nlog_docker);
 
                     if (!isSuccess)
                     {
