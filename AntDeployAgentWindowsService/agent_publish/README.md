@@ -4,7 +4,7 @@ https://marketplace.visualstudio.com/items?itemName=nainaigu.AntDeploy
 
 # 功能
 * 支持docker一键部署(支持netcore)
-* 支持iis一键部署(支持netcore和framework)(支持增量发布)
+* 支持iis一键部署(支持netcore和framework)(支持增量发布)(支持点火)
 * 支持windows服务一键部署(支持netcore和framework)(支持增量发布)
 * 支持一键回滚(windows服务器需要装>=2.7版本的agent)
 
@@ -12,11 +12,17 @@ https://marketplace.visualstudio.com/items?itemName=nainaigu.AntDeploy
 
 https://github.com/yuzd/AntDeployAgent/issues/1
 
+# 为什么发布到windows服务器要装agent?
+
+https://github.com/yuzd/AntDeployAgent/issues/7
+
 # 脑图
 
  ![image](https://images4.c-ctrip.com/target/zb0r11000000ra2dzE339.jpg)
  
  ![image](https://images4.c-ctrip.com/target/zb0u12000000rklqgBFDD.jpg)
+ 
+ ![image](https://images4.c-ctrip.com/target/zb0n12000000rpzbfB29A.jpg)
 
 # DEMO
 
