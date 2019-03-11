@@ -25,9 +25,13 @@ namespace AntDeploy.Util
             {
                 return false;
             }
-
+            var path2 = publishPath.Replace("\\\\","\\");
+            if (path2.EndsWith("\\"))
+            {
+                path2 =path2.Substring(0,path2.Length-1);
+            }
             return RunDotnetExternalExe(string.Empty,msBuild+"\\MsBuild.exe",
-                path + " /t:Rebuild /v:m /p:OutDir=\""+ publishPath.Replace("\\\\","\\") +"\";Configuration=Release",
+                "\""+path.Replace("\\\\","\\") + "\" /t:Rebuild /v:m /p:Configuration=Release;OutDir=\""+ path2 + "\"",
                  logger);
         }
 
@@ -97,10 +101,7 @@ namespace AntDeploy.Util
                     throw new ArgumentException(nameof(arguments));
                 }
 
-                //if (!arguments.StartsWith(" "))
-                //{
-                //    arguments = " " + arguments;
-                //}
+                //执行dotnet命令如果 projectdir路径含有空格 或者 outDir 路径含有空格 都是没有问题的
 
                 process = new Process();
 

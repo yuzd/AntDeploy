@@ -1166,7 +1166,7 @@ namespace AntDeploy.Winform
                 try
                 {
                     var isNetcore = false;
-                    var publishPath =  Path.Combine(ProjectFolderPath, "bin", "Release", "deploy",envName);
+                    var publishPath =  Path.Combine(ProjectFolderPath, "bin", "Release", "deploy_iis",envName);
                     var path = publishPath + "\\";
                     if (DeployConfig.IIsConfig.SdkType.Equals("netcore"))
                     {
@@ -2240,7 +2240,7 @@ namespace AntDeploy.Winform
                 try
                 {
                     var isNetcore = false;
-                    var publishPath = Path.Combine(ProjectFolderPath, "bin", "Release", "deploy",envName); 
+                    var publishPath = Path.Combine(ProjectFolderPath, "bin", "Release","deploy_winservice",envName); 
                     var path =publishPath+"\\";
                     if (DeployConfig.WindowsServiveConfig.SdkType.Equals("netcore"))
                     {
@@ -3232,7 +3232,7 @@ namespace AntDeploy.Winform
 
                 try
                 {
-                    var publishPath =  Path.Combine(ProjectFolderPath, "bin", "Release", "deploy",envName);
+                    var publishPath =  Path.Combine(ProjectFolderPath, "bin", "Release","deploy_docker",envName);
                     var path =publishPath+"\\";
                     //执行 publish
                     var isSuccess = CommandHelper.RunDotnetExternalExe(ProjectFolderPath, "dotnet",
