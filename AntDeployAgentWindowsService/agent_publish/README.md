@@ -50,4 +50,4 @@ https://github.com/yuzd/AntDeployAgent/issues/5
  ![image](https://images4.c-ctrip.com/target/zb0711000000rv06a5645.jpg)
 
 # 关于源码
-该visual studio插件install超过200+ 所有源代码会全部开源!
+所有源代码全部开源 https://github.com/yuzd/AntDeploy

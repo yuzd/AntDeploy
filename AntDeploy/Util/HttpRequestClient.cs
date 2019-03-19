@@ -73,6 +73,7 @@ namespace AntDeploy.Util
         {
             WebClient webClient = new WebClient();
             webClient.Headers.Add("Content-Type", "multipart/form-data; boundary=" + boundary);
+            webClient.Headers.Add("User-Agent", "antdeploy");
             config?.Invoke(webClient);
             byte[] responseBytes;
             byte[] bytes = MergeContent();

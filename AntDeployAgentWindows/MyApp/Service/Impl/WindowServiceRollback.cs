@@ -34,6 +34,20 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 Log("agent version ==>" + AntDeployAgentWindows.Version.VERSION);
                 var deployFolder = Path.Combine(_projectPublishFolder, "publish");
 
+                if (!Directory.Exists(deployFolder))
+                {
+
+                    if (Directory.Exists(_projectPublishFolder))
+                    {
+                        var temp = new DirectoryInfo(_projectPublishFolder);
+                        var tempFolderList = temp.GetDirectories();
+                        if (tempFolderList.Length == 1)
+                        {
+                            deployFolder = tempFolderList.First().FullName;
+                        }
+                    }
+                }
+
                 var incrementFolder = Path.Combine(_projectPublishFolder, "increment");
                 if (Directory.Exists(incrementFolder))
                 {

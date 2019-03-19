@@ -260,7 +260,7 @@ namespace AntDeploy.Winform
             this.txt_linux_username.Text = string.Empty;
             this.txt_linux_pwd.Text = string.Empty;
 
-
+            WebUtil.SetAllowUnsafeHeaderParsing20();
         }
 
 

@@ -64,6 +64,20 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
                 if (!Directory.Exists(deployFolder))
                 {
+
+                    if (Directory.Exists(_projectPublishFolder))
+                    {
+                        var temp = new DirectoryInfo(_projectPublishFolder);
+                        var tempFolderList = temp.GetDirectories();
+                        if (tempFolderList.Length == 1)
+                        {
+                            deployFolder = tempFolderList.First().FullName;
+                        }
+                    }
+                }
+
+                if (!Directory.Exists(deployFolder))
+                {
                     return "unzip publish file error,Path not found:" + deployFolder;
                 }
 

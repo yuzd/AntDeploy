@@ -275,6 +275,7 @@ namespace AntDeploy.Models
             if (value)
             {
                 this.progress_iis_deploy.SuperscriptText = "Success";
+                this.progress_iis_deploy.SuperscriptMargin = new System.Windows.Forms.Padding(-25, 0, 0, 0);
             }
             else
             {
