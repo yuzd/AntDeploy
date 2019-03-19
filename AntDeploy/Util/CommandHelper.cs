@@ -31,7 +31,7 @@ namespace AntDeploy.Util
                 path2 =path2.Substring(0,path2.Length-1);
             }
             return RunDotnetExternalExe(string.Empty,msBuild+"\\MsBuild.exe",
-                "\""+path.Replace("\\\\","\\") + "\" /t:Rebuild /v:m /p:Configuration=Release;OutDir=\""+ path2 + "\"",
+                "\""+path.Replace("\\\\","\\") + "\" /t:Build /v:m /p:Configuration=Release;OutDir=\""+ path2 + "\"",
                  logger);
         }
 

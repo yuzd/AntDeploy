@@ -13,6 +13,12 @@ namespace AntDeploy.Util
 {
     public class WebUtil
     {
+        /// <summary>
+        /// http://geekswithblogs.net/THines01/archive/2010/12/03/responsestatusline.aspx
+        /// https://stackoverflow.com/questions/2482715/the-server-committed-a-protocol-violation-section-responsestatusline-error/3977369
+        /// https://o2platform.wordpress.com/2010/10/20/dealing-with-the-server-committed-a-protocol-violation-sectionresponsestatusline/
+        /// </summary>
+        /// <returns></returns>
         public static bool SetAllowUnsafeHeaderParsing20()
         {
             try
