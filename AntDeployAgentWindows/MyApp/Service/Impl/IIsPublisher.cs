@@ -24,6 +24,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
         private string _projectPublishFolder;
         private bool _isIncrement;//是否增量
+        private string _physicalPath;//指定的创建的时候用的服务器路径
         private FormHandler _formHandler;
 
         public override string ProviderName => "iis";
@@ -122,9 +123,16 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     Log($"website : {_webSiteName} not found,start to create!");
 
                     //创建发布目录
-                    var firstDeployFolder = Path.Combine(projectPath, "deploy");
+                    var firstDeployFolder = string.IsNullOrEmpty(_physicalPath)? Path.Combine(projectPath, "deploy"):_physicalPath;
                     EnsureProjectFolder(firstDeployFolder);
-                    Log($"deploy folder create success : {firstDeployFolder} ");
+                    if (Directory.Exists(firstDeployFolder))
+                    {
+                        Log($"deploy folder create success : {firstDeployFolder} ");
+                    }
+                    else
+                    {
+                        return $"DeployFolder : {firstDeployFolder} create error!";
+                    }
 
 
                     var rt = IISHelper.InstallSite(level1, firstDeployFolder, _port, (string.IsNullOrEmpty(_poolName) ? _projectName : _poolName), isNetcore);
@@ -357,6 +365,12 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
             if (isIncrement != null && !string.IsNullOrEmpty(isIncrement.TextValue) && isIncrement.TextValue.ToLower().Equals("true"))
             {
                 _isIncrement = true;
+            }
+
+            var physicalPath = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("physicalPath"));
+            if (physicalPath != null && !string.IsNullOrEmpty(physicalPath.TextValue))
+            {
+                _physicalPath = physicalPath.TextValue;
             }
 
             var backUpIgnoreList = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("backUpIgnore"));

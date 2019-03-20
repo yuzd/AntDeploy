@@ -30,6 +30,9 @@
         {
             this.tabcontrol = new System.Windows.Forms.TabControl();
             this.page_web_iis = new System.Windows.Forms.TabPage();
+            this.txt_iis_website_url = new System.Windows.Forms.TextBox();
+            this.label29 = new System.Windows.Forms.Label();
+            this.b_iis_rollback = new AltoControls.AltoButton();
             this.checkBox_Increment_iis = new System.Windows.Forms.CheckBox();
             this.label25 = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
@@ -50,6 +53,7 @@
             this.tabPage_progress = new System.Windows.Forms.TabPage();
             this.progress_iis_tip = new System.Windows.Forms.Label();
             this.tabPage_iis_log = new System.Windows.Forms.TabPage();
+            this.rich_iis_log = new AntDeploy.ExRichTextBox();
             this.page_docker = new System.Windows.Forms.TabPage();
             this.label13 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
@@ -57,6 +61,7 @@
             this.label24 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.label28 = new System.Windows.Forms.Label();
+            this.txt_docker_volume = new AltoControls.AltoTextBox();
             this.label27 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
             this.txt_docker_envname = new System.Windows.Forms.TextBox();
@@ -70,7 +75,10 @@
             this.tabPage_docker = new System.Windows.Forms.TabPage();
             this.progress_docker_tip = new System.Windows.Forms.Label();
             this.tabPage_docker_log = new System.Windows.Forms.TabPage();
+            this.rich_docker_log = new AntDeploy.ExRichTextBox();
+            this.b_docker_rollback = new AltoControls.AltoButton();
             this.page_window_service = new System.Windows.Forms.TabPage();
+            this.b_windows_service_rollback = new AltoControls.AltoButton();
             this.checkBox_Increment_window_service = new System.Windows.Forms.CheckBox();
             this.label_windows_serivce_demo = new System.Windows.Forms.Label();
             this.label26 = new System.Windows.Forms.Label();
@@ -85,6 +93,7 @@
             this.tabPage_windows_service = new System.Windows.Forms.TabPage();
             this.progress_window_service_tip = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.rich_windowservice_log = new AntDeploy.ExRichTextBox();
             this.page_set = new System.Windows.Forms.TabPage();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.b_copy_backup_ignore = new System.Windows.Forms.Button();
@@ -102,6 +111,7 @@
             this.environment = new System.Windows.Forms.GroupBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.page_winserver = new System.Windows.Forms.TabPage();
+            this.loading_win_server_test = new AltoControls.SpinningCircles();
             this.label5 = new System.Windows.Forms.Label();
             this.b_env_server_test = new System.Windows.Forms.Button();
             this.combo_env_server_list = new System.Windows.Forms.ComboBox();
@@ -112,6 +122,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.txt_env_server_token = new System.Windows.Forms.TextBox();
             this.page_linux_server = new System.Windows.Forms.TabPage();
+            this.loading_linux_server_test = new AltoControls.SpinningCircles();
             this.label20 = new System.Windows.Forms.Label();
             this.combo_linux_server_list = new System.Windows.Forms.ComboBox();
             this.txt_linux_pwd = new System.Windows.Forms.TextBox();
@@ -129,17 +140,11 @@
             this.txt_env_name = new System.Windows.Forms.TextBox();
             this.b_env_add_by_name = new System.Windows.Forms.Button();
             this.combo_env_list = new System.Windows.Forms.ComboBox();
-            this.label29 = new System.Windows.Forms.Label();
-            this.txt_iis_website_url = new System.Windows.Forms.TextBox();
-            this.b_iis_rollback = new AltoControls.AltoButton();
-            this.rich_iis_log = new AntDeploy.ExRichTextBox();
-            this.txt_docker_volume = new AltoControls.AltoTextBox();
-            this.b_docker_rollback = new AltoControls.AltoButton();
-            this.rich_docker_log = new AntDeploy.ExRichTextBox();
-            this.b_windows_service_rollback = new AltoControls.AltoButton();
-            this.rich_windowservice_log = new AntDeploy.ExRichTextBox();
-            this.loading_win_server_test = new AltoControls.SpinningCircles();
-            this.loading_linux_server_test = new AltoControls.SpinningCircles();
+            this.txt_iis_PhysicalPath = new System.Windows.Forms.TextBox();
+            this.label30 = new System.Windows.Forms.Label();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.txt_windows_service_PhysicalPath = new System.Windows.Forms.TextBox();
+            this.label31 = new System.Windows.Forms.Label();
             this.tabcontrol.SuspendLayout();
             this.page_web_iis.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -162,6 +167,7 @@
             this.tabControl1.SuspendLayout();
             this.page_winserver.SuspendLayout();
             this.page_linux_server.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabcontrol
@@ -204,10 +210,47 @@
             this.page_web_iis.Text = "IIS_Web";
             this.page_web_iis.UseVisualStyleBackColor = true;
             // 
+            // txt_iis_website_url
+            // 
+            this.txt_iis_website_url.Location = new System.Drawing.Point(121, 138);
+            this.txt_iis_website_url.Name = "txt_iis_website_url";
+            this.txt_iis_website_url.Size = new System.Drawing.Size(322, 21);
+            this.txt_iis_website_url.TabIndex = 35;
+            // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.Location = new System.Drawing.Point(8, 141);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(107, 12);
+            this.label29.TabIndex = 34;
+            this.label29.Text = "Fire WebSite Url:";
+            // 
+            // b_iis_rollback
+            // 
+            this.b_iis_rollback.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
+            this.b_iis_rollback.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
+            this.b_iis_rollback.BackColor = System.Drawing.Color.Transparent;
+            this.b_iis_rollback.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.b_iis_rollback.Font = new System.Drawing.Font("Comic Sans MS", 10F, System.Drawing.FontStyle.Bold);
+            this.b_iis_rollback.ForeColor = System.Drawing.Color.Black;
+            this.b_iis_rollback.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.b_iis_rollback.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.b_iis_rollback.Location = new System.Drawing.Point(554, 3);
+            this.b_iis_rollback.Name = "b_iis_rollback";
+            this.b_iis_rollback.Radius = 10;
+            this.b_iis_rollback.Size = new System.Drawing.Size(62, 29);
+            this.b_iis_rollback.Stroke = false;
+            this.b_iis_rollback.StrokeColor = System.Drawing.Color.Gray;
+            this.b_iis_rollback.TabIndex = 33;
+            this.b_iis_rollback.Text = "RollBack";
+            this.b_iis_rollback.Transparency = false;
+            this.b_iis_rollback.Click += new System.EventHandler(this.b_iis_rollback_Click);
+            // 
             // checkBox_Increment_iis
             // 
             this.checkBox_Increment_iis.AutoSize = true;
-            this.checkBox_Increment_iis.Location = new System.Drawing.Point(299, 93);
+            this.checkBox_Increment_iis.Location = new System.Drawing.Point(272, 99);
             this.checkBox_Increment_iis.Name = "checkBox_Increment_iis";
             this.checkBox_Increment_iis.Size = new System.Drawing.Size(120, 16);
             this.checkBox_Increment_iis.TabIndex = 29;
@@ -218,7 +261,7 @@
             // label25
             // 
             this.label25.AutoSize = true;
-            this.label25.Location = new System.Drawing.Point(119, 67);
+            this.label25.Location = new System.Drawing.Point(92, 73);
             this.label25.Name = "label25";
             this.label25.Size = new System.Drawing.Size(137, 12);
             this.label25.TabIndex = 17;
@@ -226,21 +269,23 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.txt_iis_PhysicalPath);
+            this.groupBox4.Controls.Add(this.label30);
             this.groupBox4.Controls.Add(this.label15);
             this.groupBox4.Controls.Add(this.txt_pool_name);
             this.groupBox4.Controls.Add(this.label16);
             this.groupBox4.Controls.Add(this.txt_iis_port);
-            this.groupBox4.Location = new System.Drawing.Point(299, 9);
+            this.groupBox4.Location = new System.Drawing.Point(261, 6);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(244, 81);
+            this.groupBox4.Size = new System.Drawing.Size(288, 87);
             this.groupBox4.TabIndex = 15;
             this.groupBox4.TabStop = false;
-            this.groupBox4.Text = " (create site required)";
+            this.groupBox4.Text = " (create site parameter)";
             // 
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(27, 25);
+            this.label15.Location = new System.Drawing.Point(6, 22);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(35, 12);
             this.label15.TabIndex = 12;
@@ -248,15 +293,15 @@
             // 
             // txt_pool_name
             // 
-            this.txt_pool_name.Location = new System.Drawing.Point(68, 51);
+            this.txt_pool_name.Location = new System.Drawing.Point(160, 19);
             this.txt_pool_name.Name = "txt_pool_name";
-            this.txt_pool_name.Size = new System.Drawing.Size(170, 21);
+            this.txt_pool_name.Size = new System.Drawing.Size(122, 21);
             this.txt_pool_name.TabIndex = 5;
             // 
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(6, 57);
+            this.label16.Location = new System.Drawing.Point(106, 22);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(59, 12);
             this.label16.TabIndex = 14;
@@ -264,7 +309,7 @@
             // 
             // txt_iis_port
             // 
-            this.txt_iis_port.Location = new System.Drawing.Point(68, 22);
+            this.txt_iis_port.Location = new System.Drawing.Point(38, 19);
             this.txt_iis_port.Name = "txt_iis_port";
             this.txt_iis_port.Size = new System.Drawing.Size(62, 21);
             this.txt_iis_port.TabIndex = 4;
@@ -272,7 +317,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(119, 114);
+            this.label9.Location = new System.Drawing.Point(92, 120);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(185, 12);
             this.label9.TabIndex = 10;
@@ -293,7 +338,7 @@
             this.combo_iis_env.BackColor = System.Drawing.SystemColors.Window;
             this.combo_iis_env.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_iis_env.FormattingEnabled = true;
-            this.combo_iis_env.Location = new System.Drawing.Point(121, 44);
+            this.combo_iis_env.Location = new System.Drawing.Point(94, 50);
             this.combo_iis_env.Name = "combo_iis_env";
             this.combo_iis_env.Size = new System.Drawing.Size(161, 20);
             this.combo_iis_env.TabIndex = 8;
@@ -302,7 +347,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(56, 47);
+            this.label8.Location = new System.Drawing.Point(29, 53);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(59, 12);
             this.label8.TabIndex = 7;
@@ -310,7 +355,7 @@
             // 
             // txt_iis_web_site_name
             // 
-            this.txt_iis_web_site_name.Location = new System.Drawing.Point(121, 90);
+            this.txt_iis_web_site_name.Location = new System.Drawing.Point(94, 96);
             this.txt_iis_web_site_name.Name = "txt_iis_web_site_name";
             this.txt_iis_web_site_name.Size = new System.Drawing.Size(161, 21);
             this.txt_iis_web_site_name.TabIndex = 3;
@@ -318,7 +363,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(32, 97);
+            this.label7.Location = new System.Drawing.Point(5, 103);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(83, 12);
             this.label7.TabIndex = 2;
@@ -332,7 +377,7 @@
             this.combo_iis_sdk_type.Items.AddRange(new object[] {
             "netframework",
             "netcore"});
-            this.combo_iis_sdk_type.Location = new System.Drawing.Point(121, 6);
+            this.combo_iis_sdk_type.Location = new System.Drawing.Point(94, 12);
             this.combo_iis_sdk_type.Name = "combo_iis_sdk_type";
             this.combo_iis_sdk_type.Size = new System.Drawing.Size(161, 20);
             this.combo_iis_sdk_type.TabIndex = 1;
@@ -341,7 +386,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(56, 14);
+            this.label6.Location = new System.Drawing.Point(29, 20);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(59, 12);
             this.label6.TabIndex = 0;
@@ -401,6 +446,18 @@
             this.tabPage_iis_log.TabIndex = 1;
             this.tabPage_iis_log.Text = "LOG";
             this.tabPage_iis_log.UseVisualStyleBackColor = true;
+            // 
+            // rich_iis_log
+            // 
+            this.rich_iis_log.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rich_iis_log.HiglightColor = AntDeploy.RtfColor.White;
+            this.rich_iis_log.Location = new System.Drawing.Point(3, 3);
+            this.rich_iis_log.Name = "rich_iis_log";
+            this.rich_iis_log.ReadOnly = true;
+            this.rich_iis_log.Size = new System.Drawing.Size(602, 253);
+            this.rich_iis_log.TabIndex = 0;
+            this.rich_iis_log.Text = "";
+            this.rich_iis_log.TextColor = AntDeploy.RtfColor.Black;
             // 
             // page_docker
             // 
@@ -481,6 +538,17 @@
             this.label28.Size = new System.Drawing.Size(299, 12);
             this.label28.TabIndex = 18;
             this.label28.Text = "example:/log:/publish/logs  Multiple split with ;";
+            // 
+            // txt_docker_volume
+            // 
+            this.txt_docker_volume.BackColor = System.Drawing.Color.Transparent;
+            this.txt_docker_volume.Br = System.Drawing.Color.White;
+            this.txt_docker_volume.Font = new System.Drawing.Font("Comic Sans MS", 11F);
+            this.txt_docker_volume.ForeColor = System.Drawing.Color.DimGray;
+            this.txt_docker_volume.Location = new System.Drawing.Point(69, 49);
+            this.txt_docker_volume.Name = "txt_docker_volume";
+            this.txt_docker_volume.Size = new System.Drawing.Size(405, 25);
+            this.txt_docker_volume.TabIndex = 13;
             // 
             // label27
             // 
@@ -607,8 +675,42 @@
             this.tabPage_docker_log.Text = "LOG";
             this.tabPage_docker_log.UseVisualStyleBackColor = true;
             // 
+            // rich_docker_log
+            // 
+            this.rich_docker_log.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rich_docker_log.HiglightColor = AntDeploy.RtfColor.White;
+            this.rich_docker_log.Location = new System.Drawing.Point(3, 3);
+            this.rich_docker_log.Name = "rich_docker_log";
+            this.rich_docker_log.ReadOnly = true;
+            this.rich_docker_log.Size = new System.Drawing.Size(608, 236);
+            this.rich_docker_log.TabIndex = 1;
+            this.rich_docker_log.Text = "";
+            this.rich_docker_log.TextColor = AntDeploy.RtfColor.Black;
+            // 
+            // b_docker_rollback
+            // 
+            this.b_docker_rollback.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
+            this.b_docker_rollback.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
+            this.b_docker_rollback.BackColor = System.Drawing.Color.Transparent;
+            this.b_docker_rollback.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.b_docker_rollback.Font = new System.Drawing.Font("Comic Sans MS", 10F, System.Drawing.FontStyle.Bold);
+            this.b_docker_rollback.ForeColor = System.Drawing.Color.Black;
+            this.b_docker_rollback.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.b_docker_rollback.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.b_docker_rollback.Location = new System.Drawing.Point(556, 3);
+            this.b_docker_rollback.Name = "b_docker_rollback";
+            this.b_docker_rollback.Radius = 10;
+            this.b_docker_rollback.Size = new System.Drawing.Size(60, 30);
+            this.b_docker_rollback.Stroke = false;
+            this.b_docker_rollback.StrokeColor = System.Drawing.Color.Gray;
+            this.b_docker_rollback.TabIndex = 34;
+            this.b_docker_rollback.Text = "RollBack";
+            this.b_docker_rollback.Transparency = false;
+            this.b_docker_rollback.Click += new System.EventHandler(this.btn_docker_rollback_Click);
+            // 
             // page_window_service
             // 
+            this.page_window_service.Controls.Add(this.groupBox2);
             this.page_window_service.Controls.Add(this.b_windows_service_rollback);
             this.page_window_service.Controls.Add(this.checkBox_Increment_window_service);
             this.page_window_service.Controls.Add(this.label_windows_serivce_demo);
@@ -628,10 +730,31 @@
             this.page_window_service.Text = "WindowsService";
             this.page_window_service.UseVisualStyleBackColor = true;
             // 
+            // b_windows_service_rollback
+            // 
+            this.b_windows_service_rollback.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
+            this.b_windows_service_rollback.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
+            this.b_windows_service_rollback.BackColor = System.Drawing.Color.Transparent;
+            this.b_windows_service_rollback.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.b_windows_service_rollback.Font = new System.Drawing.Font("Comic Sans MS", 10F, System.Drawing.FontStyle.Bold);
+            this.b_windows_service_rollback.ForeColor = System.Drawing.Color.Black;
+            this.b_windows_service_rollback.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.b_windows_service_rollback.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.b_windows_service_rollback.Location = new System.Drawing.Point(554, 5);
+            this.b_windows_service_rollback.Name = "b_windows_service_rollback";
+            this.b_windows_service_rollback.Radius = 10;
+            this.b_windows_service_rollback.Size = new System.Drawing.Size(60, 30);
+            this.b_windows_service_rollback.Stroke = false;
+            this.b_windows_service_rollback.StrokeColor = System.Drawing.Color.Gray;
+            this.b_windows_service_rollback.TabIndex = 35;
+            this.b_windows_service_rollback.Text = "RollBack";
+            this.b_windows_service_rollback.Transparency = false;
+            this.b_windows_service_rollback.Click += new System.EventHandler(this.b_windows_service_rollback_Click);
+            // 
             // checkBox_Increment_window_service
             // 
             this.checkBox_Increment_window_service.AutoSize = true;
-            this.checkBox_Increment_window_service.Location = new System.Drawing.Point(361, 78);
+            this.checkBox_Increment_window_service.Location = new System.Drawing.Point(304, 84);
             this.checkBox_Increment_window_service.Name = "checkBox_Increment_window_service";
             this.checkBox_Increment_window_service.Size = new System.Drawing.Size(120, 16);
             this.checkBox_Increment_window_service.TabIndex = 30;
@@ -654,7 +777,7 @@
             // label26
             // 
             this.label26.AutoSize = true;
-            this.label26.Location = new System.Drawing.Point(136, 98);
+            this.label26.Location = new System.Drawing.Point(88, 103);
             this.label26.Name = "label26";
             this.label26.Size = new System.Drawing.Size(137, 12);
             this.label26.TabIndex = 25;
@@ -662,7 +785,7 @@
             // 
             // txt_windowservice_name
             // 
-            this.txt_windowservice_name.Location = new System.Drawing.Point(138, 48);
+            this.txt_windowservice_name.Location = new System.Drawing.Point(90, 53);
             this.txt_windowservice_name.Name = "txt_windowservice_name";
             this.txt_windowservice_name.Size = new System.Drawing.Size(167, 21);
             this.txt_windowservice_name.TabIndex = 22;
@@ -670,7 +793,7 @@
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(54, 51);
+            this.label14.Location = new System.Drawing.Point(6, 56);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(83, 12);
             this.label14.TabIndex = 21;
@@ -684,7 +807,7 @@
             this.combo_windowservice_sdk_type.Items.AddRange(new object[] {
             "netframework",
             "netcore"});
-            this.combo_windowservice_sdk_type.Location = new System.Drawing.Point(138, 20);
+            this.combo_windowservice_sdk_type.Location = new System.Drawing.Point(90, 25);
             this.combo_windowservice_sdk_type.Name = "combo_windowservice_sdk_type";
             this.combo_windowservice_sdk_type.Size = new System.Drawing.Size(167, 20);
             this.combo_windowservice_sdk_type.TabIndex = 20;
@@ -693,7 +816,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(78, 23);
+            this.label11.Location = new System.Drawing.Point(30, 28);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(59, 12);
             this.label11.TabIndex = 19;
@@ -714,7 +837,7 @@
             this.combo_windowservice_env.BackColor = System.Drawing.SystemColors.Window;
             this.combo_windowservice_env.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_windowservice_env.FormattingEnabled = true;
-            this.combo_windowservice_env.Location = new System.Drawing.Point(138, 75);
+            this.combo_windowservice_env.Location = new System.Drawing.Point(90, 80);
             this.combo_windowservice_env.Name = "combo_windowservice_env";
             this.combo_windowservice_env.Size = new System.Drawing.Size(193, 20);
             this.combo_windowservice_env.TabIndex = 13;
@@ -723,7 +846,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(72, 78);
+            this.label10.Location = new System.Drawing.Point(24, 83);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(59, 12);
             this.label10.TabIndex = 12;
@@ -770,6 +893,18 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "LOG";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // rich_windowservice_log
+            // 
+            this.rich_windowservice_log.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rich_windowservice_log.HiglightColor = AntDeploy.RtfColor.White;
+            this.rich_windowservice_log.Location = new System.Drawing.Point(3, 3);
+            this.rich_windowservice_log.Name = "rich_windowservice_log";
+            this.rich_windowservice_log.ReadOnly = true;
+            this.rich_windowservice_log.Size = new System.Drawing.Size(608, 274);
+            this.rich_windowservice_log.TabIndex = 1;
+            this.rich_windowservice_log.Text = "";
+            this.rich_windowservice_log.TextColor = AntDeploy.RtfColor.Black;
             // 
             // page_set
             // 
@@ -972,6 +1107,20 @@
             this.page_winserver.Text = "win_server";
             this.page_winserver.UseVisualStyleBackColor = true;
             // 
+            // loading_win_server_test
+            // 
+            this.loading_win_server_test.BackColor = System.Drawing.Color.Transparent;
+            this.loading_win_server_test.FullTransparent = true;
+            this.loading_win_server_test.Increment = 1F;
+            this.loading_win_server_test.Location = new System.Drawing.Point(222, 6);
+            this.loading_win_server_test.N = 8;
+            this.loading_win_server_test.Name = "loading_win_server_test";
+            this.loading_win_server_test.Radius = 2.5F;
+            this.loading_win_server_test.Size = new System.Drawing.Size(90, 100);
+            this.loading_win_server_test.TabIndex = 12;
+            this.loading_win_server_test.Text = "spinningCircles1";
+            this.loading_win_server_test.Visible = false;
+            // 
             // label5
             // 
             this.label5.AutoSize = true;
@@ -1078,6 +1227,20 @@
             this.page_linux_server.TabIndex = 1;
             this.page_linux_server.Text = "linux_server";
             this.page_linux_server.UseVisualStyleBackColor = true;
+            // 
+            // loading_linux_server_test
+            // 
+            this.loading_linux_server_test.BackColor = System.Drawing.Color.Transparent;
+            this.loading_linux_server_test.FullTransparent = true;
+            this.loading_linux_server_test.Increment = 1F;
+            this.loading_linux_server_test.Location = new System.Drawing.Point(222, 11);
+            this.loading_linux_server_test.N = 8;
+            this.loading_linux_server_test.Name = "loading_linux_server_test";
+            this.loading_linux_server_test.Radius = 2.5F;
+            this.loading_linux_server_test.Size = new System.Drawing.Size(90, 100);
+            this.loading_linux_server_test.TabIndex = 21;
+            this.loading_linux_server_test.Text = "spinningCircles1";
+            this.loading_linux_server_test.Visible = false;
             // 
             // label20
             // 
@@ -1237,159 +1400,48 @@
             this.combo_env_list.TabIndex = 0;
             this.combo_env_list.SelectedIndexChanged += new System.EventHandler(this.combo_env_list_SelectedIndexChanged);
             // 
-            // label29
+            // txt_iis_PhysicalPath
             // 
-            this.label29.AutoSize = true;
-            this.label29.Location = new System.Drawing.Point(8, 141);
-            this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(107, 12);
-            this.label29.TabIndex = 34;
-            this.label29.Text = "Fire WebSite Url:";
+            this.txt_iis_PhysicalPath.Location = new System.Drawing.Point(6, 61);
+            this.txt_iis_PhysicalPath.Name = "txt_iis_PhysicalPath";
+            this.txt_iis_PhysicalPath.Size = new System.Drawing.Size(276, 21);
+            this.txt_iis_PhysicalPath.TabIndex = 15;
             // 
-            // txt_iis_website_url
+            // label30
             // 
-            this.txt_iis_website_url.Location = new System.Drawing.Point(121, 138);
-            this.txt_iis_website_url.Name = "txt_iis_website_url";
-            this.txt_iis_website_url.Size = new System.Drawing.Size(322, 21);
-            this.txt_iis_website_url.TabIndex = 35;
+            this.label30.AutoSize = true;
+            this.label30.Location = new System.Drawing.Point(6, 46);
+            this.label30.Name = "label30";
+            this.label30.Size = new System.Drawing.Size(143, 12);
+            this.label30.TabIndex = 16;
+            this.label30.Text = "PhysicalPath In Server:";
             // 
-            // b_iis_rollback
+            // groupBox2
             // 
-            this.b_iis_rollback.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
-            this.b_iis_rollback.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
-            this.b_iis_rollback.BackColor = System.Drawing.Color.Transparent;
-            this.b_iis_rollback.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.b_iis_rollback.Font = new System.Drawing.Font("Comic Sans MS", 10F, System.Drawing.FontStyle.Bold);
-            this.b_iis_rollback.ForeColor = System.Drawing.Color.Black;
-            this.b_iis_rollback.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.b_iis_rollback.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.b_iis_rollback.Location = new System.Drawing.Point(554, 3);
-            this.b_iis_rollback.Name = "b_iis_rollback";
-            this.b_iis_rollback.Radius = 10;
-            this.b_iis_rollback.Size = new System.Drawing.Size(62, 29);
-            this.b_iis_rollback.Stroke = false;
-            this.b_iis_rollback.StrokeColor = System.Drawing.Color.Gray;
-            this.b_iis_rollback.TabIndex = 33;
-            this.b_iis_rollback.Text = "RollBack";
-            this.b_iis_rollback.Transparency = false;
-            this.b_iis_rollback.Click += new System.EventHandler(this.b_iis_rollback_Click);
+            this.groupBox2.Controls.Add(this.txt_windows_service_PhysicalPath);
+            this.groupBox2.Controls.Add(this.label31);
+            this.groupBox2.Location = new System.Drawing.Point(275, 8);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(273, 66);
+            this.groupBox2.TabIndex = 36;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = " (create service parameter)";
             // 
-            // rich_iis_log
+            // txt_windows_service_PhysicalPath
             // 
-            this.rich_iis_log.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rich_iis_log.HiglightColor = AntDeploy.RtfColor.White;
-            this.rich_iis_log.Location = new System.Drawing.Point(3, 3);
-            this.rich_iis_log.Name = "rich_iis_log";
-            this.rich_iis_log.ReadOnly = true;
-            this.rich_iis_log.Size = new System.Drawing.Size(602, 253);
-            this.rich_iis_log.TabIndex = 0;
-            this.rich_iis_log.Text = "";
-            this.rich_iis_log.TextColor = AntDeploy.RtfColor.Black;
+            this.txt_windows_service_PhysicalPath.Location = new System.Drawing.Point(6, 35);
+            this.txt_windows_service_PhysicalPath.Name = "txt_windows_service_PhysicalPath";
+            this.txt_windows_service_PhysicalPath.Size = new System.Drawing.Size(249, 21);
+            this.txt_windows_service_PhysicalPath.TabIndex = 15;
             // 
-            // txt_docker_volume
+            // label31
             // 
-            this.txt_docker_volume.BackColor = System.Drawing.Color.Transparent;
-            this.txt_docker_volume.Br = System.Drawing.Color.White;
-            this.txt_docker_volume.Font = new System.Drawing.Font("Comic Sans MS", 11F);
-            this.txt_docker_volume.ForeColor = System.Drawing.Color.DimGray;
-            this.txt_docker_volume.Location = new System.Drawing.Point(69, 49);
-            this.txt_docker_volume.Name = "txt_docker_volume";
-            this.txt_docker_volume.Size = new System.Drawing.Size(405, 25);
-            this.txt_docker_volume.TabIndex = 13;
-            // 
-            // b_docker_rollback
-            // 
-            this.b_docker_rollback.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
-            this.b_docker_rollback.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
-            this.b_docker_rollback.BackColor = System.Drawing.Color.Transparent;
-            this.b_docker_rollback.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.b_docker_rollback.Font = new System.Drawing.Font("Comic Sans MS", 10F, System.Drawing.FontStyle.Bold);
-            this.b_docker_rollback.ForeColor = System.Drawing.Color.Black;
-            this.b_docker_rollback.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.b_docker_rollback.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.b_docker_rollback.Location = new System.Drawing.Point(556, 3);
-            this.b_docker_rollback.Name = "b_docker_rollback";
-            this.b_docker_rollback.Radius = 10;
-            this.b_docker_rollback.Size = new System.Drawing.Size(60, 30);
-            this.b_docker_rollback.Stroke = false;
-            this.b_docker_rollback.StrokeColor = System.Drawing.Color.Gray;
-            this.b_docker_rollback.TabIndex = 34;
-            this.b_docker_rollback.Text = "RollBack";
-            this.b_docker_rollback.Transparency = false;
-            this.b_docker_rollback.Click += new System.EventHandler(this.btn_docker_rollback_Click);
-            // 
-            // rich_docker_log
-            // 
-            this.rich_docker_log.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rich_docker_log.HiglightColor = AntDeploy.RtfColor.White;
-            this.rich_docker_log.Location = new System.Drawing.Point(3, 3);
-            this.rich_docker_log.Name = "rich_docker_log";
-            this.rich_docker_log.ReadOnly = true;
-            this.rich_docker_log.Size = new System.Drawing.Size(608, 236);
-            this.rich_docker_log.TabIndex = 1;
-            this.rich_docker_log.Text = "";
-            this.rich_docker_log.TextColor = AntDeploy.RtfColor.Black;
-            // 
-            // b_windows_service_rollback
-            // 
-            this.b_windows_service_rollback.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
-            this.b_windows_service_rollback.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
-            this.b_windows_service_rollback.BackColor = System.Drawing.Color.Transparent;
-            this.b_windows_service_rollback.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.b_windows_service_rollback.Font = new System.Drawing.Font("Comic Sans MS", 10F, System.Drawing.FontStyle.Bold);
-            this.b_windows_service_rollback.ForeColor = System.Drawing.Color.Black;
-            this.b_windows_service_rollback.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.b_windows_service_rollback.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.b_windows_service_rollback.Location = new System.Drawing.Point(554, 5);
-            this.b_windows_service_rollback.Name = "b_windows_service_rollback";
-            this.b_windows_service_rollback.Radius = 10;
-            this.b_windows_service_rollback.Size = new System.Drawing.Size(60, 30);
-            this.b_windows_service_rollback.Stroke = false;
-            this.b_windows_service_rollback.StrokeColor = System.Drawing.Color.Gray;
-            this.b_windows_service_rollback.TabIndex = 35;
-            this.b_windows_service_rollback.Text = "RollBack";
-            this.b_windows_service_rollback.Transparency = false;
-            this.b_windows_service_rollback.Click += new System.EventHandler(this.b_windows_service_rollback_Click);
-            // 
-            // rich_windowservice_log
-            // 
-            this.rich_windowservice_log.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rich_windowservice_log.HiglightColor = AntDeploy.RtfColor.White;
-            this.rich_windowservice_log.Location = new System.Drawing.Point(3, 3);
-            this.rich_windowservice_log.Name = "rich_windowservice_log";
-            this.rich_windowservice_log.ReadOnly = true;
-            this.rich_windowservice_log.Size = new System.Drawing.Size(608, 274);
-            this.rich_windowservice_log.TabIndex = 1;
-            this.rich_windowservice_log.Text = "";
-            this.rich_windowservice_log.TextColor = AntDeploy.RtfColor.Black;
-            // 
-            // loading_win_server_test
-            // 
-            this.loading_win_server_test.BackColor = System.Drawing.Color.Transparent;
-            this.loading_win_server_test.FullTransparent = true;
-            this.loading_win_server_test.Increment = 1F;
-            this.loading_win_server_test.Location = new System.Drawing.Point(222, 6);
-            this.loading_win_server_test.N = 8;
-            this.loading_win_server_test.Name = "loading_win_server_test";
-            this.loading_win_server_test.Radius = 2.5F;
-            this.loading_win_server_test.Size = new System.Drawing.Size(90, 100);
-            this.loading_win_server_test.TabIndex = 12;
-            this.loading_win_server_test.Text = "spinningCircles1";
-            this.loading_win_server_test.Visible = false;
-            // 
-            // loading_linux_server_test
-            // 
-            this.loading_linux_server_test.BackColor = System.Drawing.Color.Transparent;
-            this.loading_linux_server_test.FullTransparent = true;
-            this.loading_linux_server_test.Increment = 1F;
-            this.loading_linux_server_test.Location = new System.Drawing.Point(222, 11);
-            this.loading_linux_server_test.N = 8;
-            this.loading_linux_server_test.Name = "loading_linux_server_test";
-            this.loading_linux_server_test.Radius = 2.5F;
-            this.loading_linux_server_test.Size = new System.Drawing.Size(90, 100);
-            this.loading_linux_server_test.TabIndex = 21;
-            this.loading_linux_server_test.Text = "spinningCircles1";
-            this.loading_linux_server_test.Visible = false;
+            this.label31.AutoSize = true;
+            this.label31.Location = new System.Drawing.Point(6, 20);
+            this.label31.Name = "label31";
+            this.label31.Size = new System.Drawing.Size(143, 12);
+            this.label31.TabIndex = 16;
+            this.label31.Text = "PhysicalPath In Server:";
             // 
             // Deploy
             // 
@@ -1440,6 +1492,8 @@
             this.page_winserver.PerformLayout();
             this.page_linux_server.ResumeLayout(false);
             this.page_linux_server.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1558,5 +1612,10 @@
         private System.Windows.Forms.Button b_copy_pack_ignore;
         private System.Windows.Forms.Label label29;
         private System.Windows.Forms.TextBox txt_iis_website_url;
+        private System.Windows.Forms.TextBox txt_iis_PhysicalPath;
+        private System.Windows.Forms.Label label30;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.TextBox txt_windows_service_PhysicalPath;
+        private System.Windows.Forms.Label label31;
     }
 }

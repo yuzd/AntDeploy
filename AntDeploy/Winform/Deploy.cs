@@ -1130,6 +1130,7 @@ namespace AntDeploy.Winform
 
             var Port = this.txt_iis_port.Text.Trim();
             var PoolName = this.txt_pool_name.Text.Trim();
+            var PhysicalPath = this.txt_iis_PhysicalPath.Text.Trim();
 
             var serverList = DeployConfig.Env.Where(r => r.Name.Equals(envName)).Select(r => r.ServerList)
                 .FirstOrDefault();
@@ -1360,6 +1361,7 @@ namespace AntDeploy.Winform
                         httpRequestClient.SetFieldValue("port", Port);
                         httpRequestClient.SetFieldValue("id", loggerId);
                         httpRequestClient.SetFieldValue("poolName", PoolName);
+                        httpRequestClient.SetFieldValue("physicalPath", PhysicalPath);
                         httpRequestClient.SetFieldValue("webSiteName", DeployConfig.IIsConfig.WebSiteName);
                         httpRequestClient.SetFieldValue("deployFolderName", dateTimeFolderName);
                         httpRequestClient.SetFieldValue("Token", server.Token);
@@ -2173,7 +2175,7 @@ namespace AntDeploy.Winform
 
             DeployConfig.WindowsServiveConfig.ServiceName = serviceName;
 
-
+            var PhysicalPath = this.txt_windows_service_PhysicalPath.Text.Trim();
 
             var envName = this.combo_windowservice_env.SelectedItem as string;
             if (string.IsNullOrEmpty(envName))
@@ -2452,6 +2454,7 @@ namespace AntDeploy.Winform
                             isProjectInstallService ? "yes" : "no");
                         httpRequestClient.SetFieldValue("execFilePath", execFilePath);
                         httpRequestClient.SetFieldValue("deployFolderName", dateTimeFolderName);
+                        httpRequestClient.SetFieldValue("physicalPath", PhysicalPath);
                         httpRequestClient.SetFieldValue("Token", server.Token);
                         httpRequestClient.SetFieldValue("backUpIgnore", (backUpIgnoreList != null && backUpIgnoreList.Any()) ? string.Join("@_@", backUpIgnoreList) : "");
                         httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream", zipBytes);
