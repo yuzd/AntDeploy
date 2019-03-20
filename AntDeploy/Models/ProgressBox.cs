@@ -2,7 +2,13 @@
 
 namespace AntDeploy.Models
 {
-    public class ProgressBox: GroupBox
+    public enum ServerType
+    {
+        IIS,
+        DOCKER,
+        WINSERVICE
+    }
+    public class ProgressBox : GroupBox
     {
         public CircularProgressBar.CircularProgressBar progress_iis_build;
         public CircularProgressBar.CircularProgressBar progress_iis_package;
@@ -11,18 +17,24 @@ namespace AntDeploy.Models
         private System.Windows.Forms.Button b_build_end;
         private System.Windows.Forms.Button b_package_end;
         private System.Windows.Forms.Button b_upload_end;
+        private System.Windows.Forms.Label label29;
+        private System.Windows.Forms.TextBox FireUrlText;
 
-        public ProgressBox(System.Drawing.Point location)
+        public ServerType ServerType { get; set; }
+        public BaseServer Server { get; set; }
+        public ProgressBox(System.Drawing.Point location, BaseServer server, ServerType serverType)
         {
 
-            
+            this.ServerType = serverType;
+            this.Server = server;
             this.Location = location;
-
-            this.Size = new System.Drawing.Size(546, 100);
+            var Progressheight = 36;
+            var buttonHeight = Progressheight + 31;
+            this.Size = new System.Drawing.Size(546, 130);
             this.TabStop = false;
             this.SuspendLayout();
 
-
+            this.label29 = new System.Windows.Forms.Label();
             this.progress_iis_build = new CircularProgressBar.CircularProgressBar();
             this.progress_iis_package = new CircularProgressBar.CircularProgressBar();
             this.progress_iis_upload = new CircularProgressBar.CircularProgressBar();
@@ -30,7 +42,33 @@ namespace AntDeploy.Models
             this.b_build_end = new System.Windows.Forms.Button();
             this.b_package_end = new System.Windows.Forms.Button();
             this.b_upload_end = new System.Windows.Forms.Button();
+            this.FireUrlText = new System.Windows.Forms.TextBox();
+            // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.Location = new System.Drawing.Point(42, Progressheight - 15);
+            this.label29.Size = new System.Drawing.Size(107, 12);
+            this.label29.Text = "Fire Url:";
 
+            // 
+            // txt_iis_website_url
+            // 
+            this.FireUrlText.Location = new System.Drawing.Point(120, Progressheight - 20);
+            this.FireUrlText.Size = new System.Drawing.Size(322, 21);
+
+            if (serverType.Equals(ServerType.IIS))
+            {
+                this.FireUrlText.Text = server.IIsFireUrl;
+            }
+            if (serverType.Equals(ServerType.DOCKER))
+            {
+                this.FireUrlText.Text = server.DockerFireUrl;
+            }
+            if (serverType.Equals(ServerType.WINSERVICE))
+            {
+                this.FireUrlText.Text = server.WindowsServiceFireUrl;
+            }
             // 
             // progress_iis_build
             // 
@@ -43,7 +81,7 @@ namespace AntDeploy.Models
             this.progress_iis_build.InnerColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.progress_iis_build.InnerMargin = 0;
             this.progress_iis_build.InnerWidth = -1;
-            this.progress_iis_build.Location = new System.Drawing.Point(42, 16);
+            this.progress_iis_build.Location = new System.Drawing.Point(42, Progressheight);
             this.progress_iis_build.MarqueeAnimationSpeed = 2000;
             this.progress_iis_build.OuterColor = System.Drawing.Color.Gray;
             this.progress_iis_build.OuterMargin = -25;
@@ -76,7 +114,7 @@ namespace AntDeploy.Models
             this.progress_iis_package.InnerColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.progress_iis_package.InnerMargin = 0;
             this.progress_iis_package.InnerWidth = -1;
-            this.progress_iis_package.Location = new System.Drawing.Point(162, 16);
+            this.progress_iis_package.Location = new System.Drawing.Point(162, Progressheight);
             this.progress_iis_package.MarqueeAnimationSpeed = 2000;
             this.progress_iis_package.OuterColor = System.Drawing.Color.Gray;
             this.progress_iis_package.OuterMargin = -25;
@@ -109,7 +147,7 @@ namespace AntDeploy.Models
             this.progress_iis_upload.InnerColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.progress_iis_upload.InnerMargin = 0;
             this.progress_iis_upload.InnerWidth = -1;
-            this.progress_iis_upload.Location = new System.Drawing.Point(282, 16);
+            this.progress_iis_upload.Location = new System.Drawing.Point(282, Progressheight);
             this.progress_iis_upload.MarqueeAnimationSpeed = 2000;
             this.progress_iis_upload.OuterColor = System.Drawing.Color.Gray;
             this.progress_iis_upload.OuterMargin = -25;
@@ -142,7 +180,7 @@ namespace AntDeploy.Models
             this.progress_iis_deploy.InnerColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.progress_iis_deploy.InnerMargin = 0;
             this.progress_iis_deploy.InnerWidth = -1;
-            this.progress_iis_deploy.Location = new System.Drawing.Point(402, 16);
+            this.progress_iis_deploy.Location = new System.Drawing.Point(402, Progressheight);
             this.progress_iis_deploy.MarqueeAnimationSpeed = 2000;
             this.progress_iis_deploy.OuterColor = System.Drawing.Color.Gray;
             this.progress_iis_deploy.OuterMargin = -25;
@@ -166,16 +204,16 @@ namespace AntDeploy.Models
             // 
             // b_build_end
             // 
-            this.b_build_end.Location = new System.Drawing.Point(113, 47);
+            this.b_build_end.Location = new System.Drawing.Point(113, buttonHeight);
             this.b_build_end.BackColor = System.Drawing.Color.LightGray;
             this.b_build_end.Size = new System.Drawing.Size(76, 19);
             this.b_build_end.TabIndex = 17;
             this.b_build_end.UseVisualStyleBackColor = true;
-            
+
             // 
             // b_package_end
             // 
-            this.b_package_end.Location = new System.Drawing.Point(234, 47);
+            this.b_package_end.Location = new System.Drawing.Point(234, buttonHeight);
             this.b_package_end.BackColor = System.Drawing.Color.LightGray;
             this.b_package_end.Size = new System.Drawing.Size(76, 19);
             this.b_package_end.TabIndex = 18;
@@ -183,7 +221,7 @@ namespace AntDeploy.Models
             // 
             // b_upload_end
             // 
-            this.b_upload_end.Location = new System.Drawing.Point(358, 47);
+            this.b_upload_end.Location = new System.Drawing.Point(358, buttonHeight);
             this.b_upload_end.BackColor = System.Drawing.Color.LightGray;
             this.b_upload_end.Size = new System.Drawing.Size(76, 19);
             this.b_upload_end.TabIndex = 19;
@@ -193,6 +231,8 @@ namespace AntDeploy.Models
             // 
             // groupBox_iis_progress
             // 
+            this.Controls.Add(this.label29);
+            this.Controls.Add(this.FireUrlText);
             this.Controls.Add(this.progress_iis_build);
             this.Controls.Add(this.b_build_end);
 
@@ -212,6 +252,19 @@ namespace AntDeploy.Models
 
         protected override void Dispose(bool disposing)
         {
+            if (ServerType.Equals(ServerType.IIS))
+            {
+                Server.IIsFireUrl = this.FireUrlText.Text;
+            }
+            if (ServerType.Equals(ServerType.DOCKER))
+            {
+                Server.DockerFireUrl = this.FireUrlText.Text;
+            }
+            if (ServerType.Equals(ServerType.WINSERVICE))
+            {
+                Server.WindowsServiceFireUrl = this.FireUrlText.Text;
+            }
+
             progress_iis_build.Dispose();
             progress_iis_package.Dispose();
             progress_iis_upload.Dispose();
@@ -230,7 +283,7 @@ namespace AntDeploy.Models
             {
                 progress_iis_build.Value = 20;
             }
-         
+
             if (value >= 100)
             {
                 progress_iis_build.Value = 100;
@@ -258,7 +311,7 @@ namespace AntDeploy.Models
             {
                 progress_iis_upload.Value = 20;
             }
-            this.progress_iis_upload.SuperscriptText = value+"%";
+            this.progress_iis_upload.SuperscriptText = value + "%";
             if (value >= 100)
             {
                 progress_iis_upload.Value = 100;
@@ -321,6 +374,36 @@ namespace AntDeploy.Models
         public void UploadEnd()
         {
             b_upload_end.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(99)))), ((int)(((byte)(180)))));
+        }
+
+
+        public void Enable(bool flag)
+        {
+            this.FireUrlText.Enabled = flag;
+        }
+
+        public bool CheckFireUrl()
+        {
+            var url =this.FireUrlText.Text.ToLower();
+            if (!string.IsNullOrEmpty(url) && !url.StartsWith("http"))
+            {
+                return false;
+            }
+
+            if (ServerType.Equals(ServerType.IIS))
+            {
+                Server.IIsFireUrl = this.FireUrlText.Text;
+            }
+            if (ServerType.Equals(ServerType.DOCKER))
+            {
+                Server.DockerFireUrl = this.FireUrlText.Text;
+            }
+            if (ServerType.Equals(ServerType.WINSERVICE))
+            {
+                Server.WindowsServiceFireUrl = this.FireUrlText.Text;
+            }
+
+            return true;
         }
     }
 }

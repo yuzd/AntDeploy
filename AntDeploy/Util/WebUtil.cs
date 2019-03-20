@@ -65,8 +65,13 @@ namespace AntDeploy.Util
 
         public static bool IsHttpGetOk(string url, Logger logger)
         {
+            var retyrTimes = 0;
+          
+            RETRY:
+            var needRetry = false;
             try
             {
+               
                 HttpWebRequest WReq = (HttpWebRequest)WebRequest.Create(url);
 
                 if (url.StartsWith("https"))
@@ -76,22 +81,34 @@ namespace AntDeploy.Util
 
                 WReq.Method = "GET";
                 WReq.Timeout = 10000;
+                WReq.ReadWriteTimeout = 10000;
+                WReq.KeepAlive = false;
                 HttpWebResponse WResp = (HttpWebResponse)WReq.GetResponse();
-                if (WResp != null)
+                logger.Info($"Response StatusCode:{(int)WResp.StatusCode}");
+                if (((int)WResp.StatusCode)<400)
                 {
-                    logger.Info($"Response StatusCode:{(int)WResp.StatusCode}");
-                    if (((int)WResp.StatusCode)<400)
-                    {
-                        WResp.Close();
-                        return true;
-                    }
                     WResp.Close();
+                    return true;
                 }
+                WResp.Close();
             }
             catch (Exception ex1)
             {
-                logger.Warn(ex1.Message);
+                retyrTimes++;
+                if (retyrTimes > 3)
+                {
+                    logger.Warn($"Fire WebSite Url Fail:{ex1.Message}");
+                }
+                else
+                {
+                    logger.Warn($"Fire WebSite Url Fail:{ex1.Message}，Retry:{retyrTimes}");
+                    needRetry = true;
+                }
                 //ignore
+            }
+            if (needRetry)
+            {
+                goto RETRY;
             }
             return false;
         }

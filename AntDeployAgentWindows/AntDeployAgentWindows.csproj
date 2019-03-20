@@ -62,8 +62,8 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="TinyFox">
-      <HintPath>..\DLL\TinyFox.dll</HintPath>
+    <Reference Include="TinyFox, Version=4.0.1.18, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TinyFox.4.0.1.18\lib\net451\TinyFox.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -112,7 +112,9 @@
     <Compile Include="WebSocketApp\WebSocketMiddleware.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

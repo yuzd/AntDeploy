@@ -30,16 +30,17 @@
         {
             this.tabcontrol = new System.Windows.Forms.TabControl();
             this.page_web_iis = new System.Windows.Forms.TabPage();
-            this.txt_iis_website_url = new System.Windows.Forms.TextBox();
-            this.label29 = new System.Windows.Forms.Label();
             this.b_iis_rollback = new AltoControls.AltoButton();
             this.checkBox_Increment_iis = new System.Windows.Forms.CheckBox();
             this.label25 = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.label33 = new System.Windows.Forms.Label();
+            this.txt_iis_port = new System.Windows.Forms.TextBox();
+            this.txt_iis_PhysicalPath = new System.Windows.Forms.TextBox();
+            this.label30 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.txt_pool_name = new System.Windows.Forms.TextBox();
             this.label16 = new System.Windows.Forms.Label();
-            this.txt_iis_port = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.b_iis_deploy = new System.Windows.Forms.Button();
             this.combo_iis_env = new System.Windows.Forms.ComboBox();
@@ -78,6 +79,10 @@
             this.rich_docker_log = new AntDeploy.ExRichTextBox();
             this.b_docker_rollback = new AltoControls.AltoButton();
             this.page_window_service = new System.Windows.Forms.TabPage();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label34 = new System.Windows.Forms.Label();
+            this.txt_windows_service_PhysicalPath = new System.Windows.Forms.TextBox();
+            this.label31 = new System.Windows.Forms.Label();
             this.b_windows_service_rollback = new AltoControls.AltoButton();
             this.checkBox_Increment_window_service = new System.Windows.Forms.CheckBox();
             this.label_windows_serivce_demo = new System.Windows.Forms.Label();
@@ -95,6 +100,7 @@
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.rich_windowservice_log = new AntDeploy.ExRichTextBox();
             this.page_set = new System.Windows.Forms.TabPage();
+            this.label_how_to_set = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.b_copy_backup_ignore = new System.Windows.Forms.Button();
             this.b_backUp_ignore_remove = new System.Windows.Forms.Button();
@@ -111,6 +117,7 @@
             this.environment = new System.Windows.Forms.GroupBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.page_winserver = new System.Windows.Forms.TabPage();
+            this.label32 = new System.Windows.Forms.Label();
             this.loading_win_server_test = new AltoControls.SpinningCircles();
             this.label5 = new System.Windows.Forms.Label();
             this.b_env_server_test = new System.Windows.Forms.Button();
@@ -140,11 +147,6 @@
             this.txt_env_name = new System.Windows.Forms.TextBox();
             this.b_env_add_by_name = new System.Windows.Forms.Button();
             this.combo_env_list = new System.Windows.Forms.ComboBox();
-            this.txt_iis_PhysicalPath = new System.Windows.Forms.TextBox();
-            this.label30 = new System.Windows.Forms.Label();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.txt_windows_service_PhysicalPath = new System.Windows.Forms.TextBox();
-            this.label31 = new System.Windows.Forms.Label();
             this.tabcontrol.SuspendLayout();
             this.page_web_iis.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -157,6 +159,7 @@
             this.tabPage_docker.SuspendLayout();
             this.tabPage_docker_log.SuspendLayout();
             this.page_window_service.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.tabControl_window_service.SuspendLayout();
             this.tabPage_windows_service.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -167,7 +170,6 @@
             this.tabControl1.SuspendLayout();
             this.page_winserver.SuspendLayout();
             this.page_linux_server.SuspendLayout();
-            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabcontrol
@@ -186,8 +188,6 @@
             // 
             // page_web_iis
             // 
-            this.page_web_iis.Controls.Add(this.txt_iis_website_url);
-            this.page_web_iis.Controls.Add(this.label29);
             this.page_web_iis.Controls.Add(this.b_iis_rollback);
             this.page_web_iis.Controls.Add(this.checkBox_Increment_iis);
             this.page_web_iis.Controls.Add(this.label25);
@@ -209,22 +209,6 @@
             this.page_web_iis.TabIndex = 0;
             this.page_web_iis.Text = "IIS_Web";
             this.page_web_iis.UseVisualStyleBackColor = true;
-            // 
-            // txt_iis_website_url
-            // 
-            this.txt_iis_website_url.Location = new System.Drawing.Point(121, 138);
-            this.txt_iis_website_url.Name = "txt_iis_website_url";
-            this.txt_iis_website_url.Size = new System.Drawing.Size(322, 21);
-            this.txt_iis_website_url.TabIndex = 35;
-            // 
-            // label29
-            // 
-            this.label29.AutoSize = true;
-            this.label29.Location = new System.Drawing.Point(8, 141);
-            this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(107, 12);
-            this.label29.TabIndex = 34;
-            this.label29.Text = "Fire WebSite Url:";
             // 
             // b_iis_rollback
             // 
@@ -269,18 +253,52 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.label33);
+            this.groupBox4.Controls.Add(this.txt_iis_port);
             this.groupBox4.Controls.Add(this.txt_iis_PhysicalPath);
             this.groupBox4.Controls.Add(this.label30);
             this.groupBox4.Controls.Add(this.label15);
             this.groupBox4.Controls.Add(this.txt_pool_name);
             this.groupBox4.Controls.Add(this.label16);
-            this.groupBox4.Controls.Add(this.txt_iis_port);
             this.groupBox4.Location = new System.Drawing.Point(261, 6);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(288, 87);
             this.groupBox4.TabIndex = 15;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = " (create site parameter)";
+            // 
+            // label33
+            // 
+            this.label33.AutoSize = true;
+            this.label33.Font = new System.Drawing.Font("宋体", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label33.Location = new System.Drawing.Point(158, 47);
+            this.label33.Name = "label33";
+            this.label33.Size = new System.Drawing.Size(105, 10);
+            this.label33.TabIndex = 17;
+            this.label33.Text = "Example: D:\\www\\test";
+            // 
+            // txt_iis_port
+            // 
+            this.txt_iis_port.Location = new System.Drawing.Point(38, 19);
+            this.txt_iis_port.Name = "txt_iis_port";
+            this.txt_iis_port.Size = new System.Drawing.Size(62, 21);
+            this.txt_iis_port.TabIndex = 4;
+            // 
+            // txt_iis_PhysicalPath
+            // 
+            this.txt_iis_PhysicalPath.Location = new System.Drawing.Point(6, 61);
+            this.txt_iis_PhysicalPath.Name = "txt_iis_PhysicalPath";
+            this.txt_iis_PhysicalPath.Size = new System.Drawing.Size(276, 21);
+            this.txt_iis_PhysicalPath.TabIndex = 15;
+            // 
+            // label30
+            // 
+            this.label30.AutoSize = true;
+            this.label30.Location = new System.Drawing.Point(6, 46);
+            this.label30.Name = "label30";
+            this.label30.Size = new System.Drawing.Size(143, 12);
+            this.label30.TabIndex = 16;
+            this.label30.Text = "PhysicalPath In Server:";
             // 
             // label15
             // 
@@ -307,13 +325,6 @@
             this.label16.TabIndex = 14;
             this.label16.Text = "PoolName:";
             // 
-            // txt_iis_port
-            // 
-            this.txt_iis_port.Location = new System.Drawing.Point(38, 19);
-            this.txt_iis_port.Name = "txt_iis_port";
-            this.txt_iis_port.Size = new System.Drawing.Size(62, 21);
-            this.txt_iis_port.TabIndex = 4;
-            // 
             // label9
             // 
             this.label9.AutoSize = true;
@@ -325,7 +336,7 @@
             // 
             // b_iis_deploy
             // 
-            this.b_iis_deploy.Location = new System.Drawing.Point(509, 131);
+            this.b_iis_deploy.Location = new System.Drawing.Point(509, 103);
             this.b_iis_deploy.Name = "b_iis_deploy";
             this.b_iis_deploy.Size = new System.Drawing.Size(107, 43);
             this.b_iis_deploy.TabIndex = 9;
@@ -409,10 +420,10 @@
             this.tab_iis.Controls.Add(this.tabPage_progress);
             this.tab_iis.Controls.Add(this.tabPage_iis_log);
             this.tab_iis.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.tab_iis.Location = new System.Drawing.Point(3, 168);
+            this.tab_iis.Location = new System.Drawing.Point(3, 135);
             this.tab_iis.Name = "tab_iis";
             this.tab_iis.SelectedIndex = 0;
-            this.tab_iis.Size = new System.Drawing.Size(616, 285);
+            this.tab_iis.Size = new System.Drawing.Size(616, 318);
             this.tab_iis.TabIndex = 16;
             // 
             // tabPage_progress
@@ -422,7 +433,7 @@
             this.tabPage_progress.Location = new System.Drawing.Point(4, 22);
             this.tabPage_progress.Name = "tabPage_progress";
             this.tabPage_progress.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_progress.Size = new System.Drawing.Size(608, 259);
+            this.tabPage_progress.Size = new System.Drawing.Size(608, 292);
             this.tabPage_progress.TabIndex = 0;
             this.tabPage_progress.Text = "Progress";
             this.tabPage_progress.UseVisualStyleBackColor = true;
@@ -730,6 +741,44 @@
             this.page_window_service.Text = "WindowsService";
             this.page_window_service.UseVisualStyleBackColor = true;
             // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.label34);
+            this.groupBox2.Controls.Add(this.txt_windows_service_PhysicalPath);
+            this.groupBox2.Controls.Add(this.label31);
+            this.groupBox2.Location = new System.Drawing.Point(275, 11);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(273, 66);
+            this.groupBox2.TabIndex = 36;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = " (create service parameter)";
+            // 
+            // label34
+            // 
+            this.label34.AutoSize = true;
+            this.label34.Font = new System.Drawing.Font("宋体", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label34.Location = new System.Drawing.Point(150, 21);
+            this.label34.Name = "label34";
+            this.label34.Size = new System.Drawing.Size(105, 10);
+            this.label34.TabIndex = 18;
+            this.label34.Text = "Example: D:\\www\\test";
+            // 
+            // txt_windows_service_PhysicalPath
+            // 
+            this.txt_windows_service_PhysicalPath.Location = new System.Drawing.Point(6, 35);
+            this.txt_windows_service_PhysicalPath.Name = "txt_windows_service_PhysicalPath";
+            this.txt_windows_service_PhysicalPath.Size = new System.Drawing.Size(249, 21);
+            this.txt_windows_service_PhysicalPath.TabIndex = 15;
+            // 
+            // label31
+            // 
+            this.label31.AutoSize = true;
+            this.label31.Location = new System.Drawing.Point(6, 20);
+            this.label31.Name = "label31";
+            this.label31.Size = new System.Drawing.Size(143, 12);
+            this.label31.TabIndex = 16;
+            this.label31.Text = "PhysicalPath In Server:";
+            // 
             // b_windows_service_rollback
             // 
             this.b_windows_service_rollback.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
@@ -754,7 +803,7 @@
             // checkBox_Increment_window_service
             // 
             this.checkBox_Increment_window_service.AutoSize = true;
-            this.checkBox_Increment_window_service.Location = new System.Drawing.Point(304, 84);
+            this.checkBox_Increment_window_service.Location = new System.Drawing.Point(275, 99);
             this.checkBox_Increment_window_service.Name = "checkBox_Increment_window_service";
             this.checkBox_Increment_window_service.Size = new System.Drawing.Size(120, 16);
             this.checkBox_Increment_window_service.TabIndex = 30;
@@ -777,7 +826,7 @@
             // label26
             // 
             this.label26.AutoSize = true;
-            this.label26.Location = new System.Drawing.Point(88, 103);
+            this.label26.Location = new System.Drawing.Point(88, 80);
             this.label26.Name = "label26";
             this.label26.Size = new System.Drawing.Size(137, 12);
             this.label26.TabIndex = 25;
@@ -785,7 +834,7 @@
             // 
             // txt_windowservice_name
             // 
-            this.txt_windowservice_name.Location = new System.Drawing.Point(90, 53);
+            this.txt_windowservice_name.Location = new System.Drawing.Point(90, 100);
             this.txt_windowservice_name.Name = "txt_windowservice_name";
             this.txt_windowservice_name.Size = new System.Drawing.Size(167, 21);
             this.txt_windowservice_name.TabIndex = 22;
@@ -793,7 +842,7 @@
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(6, 56);
+            this.label14.Location = new System.Drawing.Point(6, 103);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(83, 12);
             this.label14.TabIndex = 21;
@@ -824,7 +873,7 @@
             // 
             // b_windowservice_deploy
             // 
-            this.b_windowservice_deploy.Location = new System.Drawing.Point(511, 114);
+            this.b_windowservice_deploy.Location = new System.Drawing.Point(512, 85);
             this.b_windowservice_deploy.Name = "b_windowservice_deploy";
             this.b_windowservice_deploy.Size = new System.Drawing.Size(107, 43);
             this.b_windowservice_deploy.TabIndex = 14;
@@ -837,16 +886,16 @@
             this.combo_windowservice_env.BackColor = System.Drawing.SystemColors.Window;
             this.combo_windowservice_env.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_windowservice_env.FormattingEnabled = true;
-            this.combo_windowservice_env.Location = new System.Drawing.Point(90, 80);
+            this.combo_windowservice_env.Location = new System.Drawing.Point(90, 57);
             this.combo_windowservice_env.Name = "combo_windowservice_env";
-            this.combo_windowservice_env.Size = new System.Drawing.Size(193, 20);
+            this.combo_windowservice_env.Size = new System.Drawing.Size(167, 20);
             this.combo_windowservice_env.TabIndex = 13;
             this.combo_windowservice_env.SelectedIndexChanged += new System.EventHandler(this.combo_windowservice_env_SelectedIndexChanged);
             // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(24, 83);
+            this.label10.Location = new System.Drawing.Point(24, 60);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(59, 12);
             this.label10.TabIndex = 12;
@@ -857,10 +906,10 @@
             this.tabControl_window_service.Controls.Add(this.tabPage_windows_service);
             this.tabControl_window_service.Controls.Add(this.tabPage2);
             this.tabControl_window_service.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.tabControl_window_service.Location = new System.Drawing.Point(0, 150);
+            this.tabControl_window_service.Location = new System.Drawing.Point(0, 127);
             this.tabControl_window_service.Name = "tabControl_window_service";
             this.tabControl_window_service.SelectedIndex = 0;
-            this.tabControl_window_service.Size = new System.Drawing.Size(622, 306);
+            this.tabControl_window_service.Size = new System.Drawing.Size(622, 329);
             this.tabControl_window_service.TabIndex = 24;
             // 
             // tabPage_windows_service
@@ -869,7 +918,7 @@
             this.tabPage_windows_service.Location = new System.Drawing.Point(4, 22);
             this.tabPage_windows_service.Name = "tabPage_windows_service";
             this.tabPage_windows_service.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_windows_service.Size = new System.Drawing.Size(614, 280);
+            this.tabPage_windows_service.Size = new System.Drawing.Size(614, 303);
             this.tabPage_windows_service.TabIndex = 0;
             this.tabPage_windows_service.Text = "Progress";
             this.tabPage_windows_service.UseVisualStyleBackColor = true;
@@ -908,6 +957,7 @@
             // 
             // page_set
             // 
+            this.page_set.Controls.Add(this.label_how_to_set);
             this.page_set.Controls.Add(this.groupBox1);
             this.page_set.Controls.Add(this.label_check_update);
             this.page_set.Controls.Add(this.groupBoxIgnore);
@@ -919,6 +969,18 @@
             this.page_set.TabIndex = 1;
             this.page_set.Text = "Setting";
             this.page_set.UseVisualStyleBackColor = true;
+            // 
+            // label_how_to_set
+            // 
+            this.label_how_to_set.AutoSize = true;
+            this.label_how_to_set.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.label_how_to_set.ForeColor = System.Drawing.Color.RoyalBlue;
+            this.label_how_to_set.Location = new System.Drawing.Point(6, 3);
+            this.label_how_to_set.Name = "label_how_to_set";
+            this.label_how_to_set.Size = new System.Drawing.Size(71, 12);
+            this.label_how_to_set.TabIndex = 29;
+            this.label_how_to_set.Text = "How to set?";
+            this.label_how_to_set.Click += new System.EventHandler(this.label_how_to_set_Click);
             // 
             // groupBox1
             // 
@@ -1089,6 +1151,7 @@
             // 
             // page_winserver
             // 
+            this.page_winserver.Controls.Add(this.label32);
             this.page_winserver.Controls.Add(this.loading_win_server_test);
             this.page_winserver.Controls.Add(this.label5);
             this.page_winserver.Controls.Add(this.b_env_server_test);
@@ -1106,6 +1169,18 @@
             this.page_winserver.TabIndex = 0;
             this.page_winserver.Text = "win_server";
             this.page_winserver.UseVisualStyleBackColor = true;
+            // 
+            // label32
+            // 
+            this.label32.AutoSize = true;
+            this.label32.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.label32.ForeColor = System.Drawing.Color.RoyalBlue;
+            this.label32.Location = new System.Drawing.Point(220, 79);
+            this.label32.Name = "label32";
+            this.label32.Size = new System.Drawing.Size(107, 12);
+            this.label32.TabIndex = 30;
+            this.label32.Text = "Why connect Fail?";
+            this.label32.Click += new System.EventHandler(this.label32_Click);
             // 
             // loading_win_server_test
             // 
@@ -1400,49 +1475,6 @@
             this.combo_env_list.TabIndex = 0;
             this.combo_env_list.SelectedIndexChanged += new System.EventHandler(this.combo_env_list_SelectedIndexChanged);
             // 
-            // txt_iis_PhysicalPath
-            // 
-            this.txt_iis_PhysicalPath.Location = new System.Drawing.Point(6, 61);
-            this.txt_iis_PhysicalPath.Name = "txt_iis_PhysicalPath";
-            this.txt_iis_PhysicalPath.Size = new System.Drawing.Size(276, 21);
-            this.txt_iis_PhysicalPath.TabIndex = 15;
-            // 
-            // label30
-            // 
-            this.label30.AutoSize = true;
-            this.label30.Location = new System.Drawing.Point(6, 46);
-            this.label30.Name = "label30";
-            this.label30.Size = new System.Drawing.Size(143, 12);
-            this.label30.TabIndex = 16;
-            this.label30.Text = "PhysicalPath In Server:";
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.txt_windows_service_PhysicalPath);
-            this.groupBox2.Controls.Add(this.label31);
-            this.groupBox2.Location = new System.Drawing.Point(275, 8);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(273, 66);
-            this.groupBox2.TabIndex = 36;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = " (create service parameter)";
-            // 
-            // txt_windows_service_PhysicalPath
-            // 
-            this.txt_windows_service_PhysicalPath.Location = new System.Drawing.Point(6, 35);
-            this.txt_windows_service_PhysicalPath.Name = "txt_windows_service_PhysicalPath";
-            this.txt_windows_service_PhysicalPath.Size = new System.Drawing.Size(249, 21);
-            this.txt_windows_service_PhysicalPath.TabIndex = 15;
-            // 
-            // label31
-            // 
-            this.label31.AutoSize = true;
-            this.label31.Location = new System.Drawing.Point(6, 20);
-            this.label31.Name = "label31";
-            this.label31.Size = new System.Drawing.Size(143, 12);
-            this.label31.TabIndex = 16;
-            this.label31.Text = "PhysicalPath In Server:";
-            // 
             // Deploy
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -1476,6 +1508,8 @@
             this.tabPage_docker_log.ResumeLayout(false);
             this.page_window_service.ResumeLayout(false);
             this.page_window_service.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.tabControl_window_service.ResumeLayout(false);
             this.tabPage_windows_service.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
@@ -1492,8 +1526,6 @@
             this.page_winserver.PerformLayout();
             this.page_linux_server.ResumeLayout(false);
             this.page_linux_server.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1610,12 +1642,14 @@
         private System.Windows.Forms.Label label28;
         private System.Windows.Forms.Button b_copy_backup_ignore;
         private System.Windows.Forms.Button b_copy_pack_ignore;
-        private System.Windows.Forms.Label label29;
-        private System.Windows.Forms.TextBox txt_iis_website_url;
         private System.Windows.Forms.TextBox txt_iis_PhysicalPath;
         private System.Windows.Forms.Label label30;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.TextBox txt_windows_service_PhysicalPath;
         private System.Windows.Forms.Label label31;
+        private System.Windows.Forms.Label label_how_to_set;
+        private System.Windows.Forms.Label label32;
+        private System.Windows.Forms.Label label33;
+        private System.Windows.Forms.Label label34;
     }
 }

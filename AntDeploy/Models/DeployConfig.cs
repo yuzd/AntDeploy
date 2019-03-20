@@ -52,7 +52,7 @@ namespace AntDeploy.Models
         public string WebSiteName { get; set; }
 
         public string LastEnvName { get; set; }
-        public string FireWebSiteUrl { get; set; }
+
     }
 
 
@@ -87,20 +87,30 @@ namespace AntDeploy.Models
     {
         public string Name { get; set; }
         public List<Server> ServerList { get; set; } = new List<Server>();
-        public List<LinuxServr> LinuxServerList { get; set; } = new List<LinuxServr>();
+        public List<LinuxServer> LinuxServerList { get; set; } = new List<LinuxServer>();
 
         public List<string> IgnoreList { get; set; } = new List<string>();
         public List<string> WindowsBackUpIgnoreList { get; set; } = new List<string>();
     }
 
 
-    public class Server
+    public class BaseServer
+    {
+        public string IIsFireUrl { get; set; }
+        public string DockerFireUrl { get; set; }
+        public string WindowsServiceFireUrl { get; set; }
+    }
+
+
+    public class Server:BaseServer
     {
         public string Host { get; set; }
         public string Token { get; set; }
+
+
     }
 
-    public class LinuxServr
+    public class LinuxServer:BaseServer
     {
         public string Host { get; set; }
         public string UserName { get; set; }

@@ -189,7 +189,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
                     Log($"website : {_webSiteName} not found,start to create!");
                     //创建发布目录
-                    var firstDeployFolder = Path.Combine(projectPath, "deploy");
+                    var firstDeployFolder = string.IsNullOrEmpty(_physicalPath)? Path.Combine(projectPath, "deploy"):_physicalPath;
                     EnsureProjectFolder(firstDeployFolder);
                     Log($"deploy folder create success : {firstDeployFolder} ");
 

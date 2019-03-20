@@ -62,13 +62,29 @@ namespace AntDeployAgentWindows.Util
                 throw new DirectoryNotFoundException("Source directory does not exist or could not be found: " + srcDir);
 
             if (!Directory.Exists(dstDir))
-                Directory.CreateDirectory(dstDir);
+            {
+                try
+                {
+                    Directory.CreateDirectory(dstDir);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"CreateDirectory:{dstDir} Fail:{ex.Message}");
+                }
+            }
 
             FileInfo[] files = dir.GetFiles();
             foreach (FileInfo file in files)
             {
                 string dstFile = Path.Combine(dstDir, file.Name);
-                file.CopyTo(dstFile, true);
+                try
+                {
+                    file.CopyTo(dstFile, true);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"from:{file.FullName} copy to {dstFile} Fail:{ex.Message}");
+                }
             }
 
             if (copySubDirs)
@@ -104,7 +120,14 @@ namespace AntDeployAgentWindows.Util
 
             if (!Directory.Exists(dstDir))
             {
-                Directory.CreateDirectory(dstDir);
+                try
+                {
+                    Directory.CreateDirectory(dstDir);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"CreateDirectory:{dstDir} Fail:{ex.Message}");
+                }
             }
 
 
@@ -115,7 +138,14 @@ namespace AntDeployAgentWindows.Util
                 string entryName = EntryFromPath(file.FullName,parentDir.Length,length);
                 if (IsMacthIgnore(entryName, backignoreUpList)) continue;
                 string dstFile = Path.Combine(dstDir, file.Name);
-                file.CopyTo(dstFile, true);
+                try
+                {
+                    file.CopyTo(dstFile, true);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"from:{file.FullName} copy to {dstFile} Fail:{ex.Message}");
+                }
             }
 
             if (copySubDirs)
