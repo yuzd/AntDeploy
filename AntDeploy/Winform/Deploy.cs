@@ -1301,23 +1301,23 @@ namespace AntDeploy.Winform
 
 
 
-                        if (Directory.Exists(publishPath))
-                        {
-                            var webPublishPath = Path.Combine(publishPath, "_PublishedWebsites");
-                            if (Directory.Exists(webPublishPath))
-                            {
-                                gitPath = webPublishPath;
-                                var webPublishFolder = new DirectoryInfo(webPublishPath);
-                                var targetFolder = webPublishFolder.GetDirectories()
-                                    .FirstOrDefault(r => !r.Name.Equals(".git"));
-                                if (targetFolder != null)
-                                {
-                                    //targetFolder.MoveTo(Path.Combine(targetFolder.Parent.FullName, "publish"));
-                                    publishPath = targetFolder.FullName;
-                                    webFolderName = targetFolder.Name;
-                                }
-                            }
-                        }
+                        //if (Directory.Exists(publishPath))
+                        //{
+                        //    var webPublishPath = Path.Combine(publishPath, "_PublishedWebsites");
+                        //    if (Directory.Exists(webPublishPath))
+                        //    {
+                        //        gitPath = webPublishPath;
+                        //        var webPublishFolder = new DirectoryInfo(webPublishPath);
+                        //        var targetFolder = webPublishFolder.GetDirectories()
+                        //            .FirstOrDefault(r => !r.Name.Equals(".git"));
+                        //        if (targetFolder != null)
+                        //        {
+                        //            //targetFolder.MoveTo(Path.Combine(targetFolder.Parent.FullName, "publish"));
+                        //            publishPath = targetFolder.FullName;
+                        //            webFolderName = targetFolder.Name;
+                        //        }
+                        //    }
+                        //}
                     }
 
                     BuildEnd(this.tabPage_progress); //第一台结束编译
@@ -1429,8 +1429,8 @@ namespace AntDeploy.Winform
                         PackageError(this.tabPage_progress);
                         return;
                     }
-
-                    this.nlog_iis.Info($"package success,package size:{(zipBytes.Length / 1024 / 1024)}M");
+                    var packageSize =(zipBytes.Length / 1024 / 1024);
+                    this.nlog_iis.Info($"package success,package size:{(packageSize>0?(packageSize+""):"<1")}M");
                     var loggerId = Guid.NewGuid().ToString("N");
                     var dateTimeFolderName = DateTime.Now.ToString("yyyyMMddHHmmss");
                     //执行 上传
@@ -2553,8 +2553,8 @@ namespace AntDeploy.Winform
                         PackageError(this.tabPage_windows_service);
                         return;
                     }
-
-                    this.nlog_windowservice.Info($"package success,package size:{(zipBytes.Length / 1024 / 1024)}M");
+                    var packageSize =(zipBytes.Length / 1024 / 1024);
+                    this.nlog_windowservice.Info($"package success,package size:{(packageSize>0?(packageSize+""):"<1")}M");
                     var loggerId = Guid.NewGuid().ToString("N");
                     //执行 上传
                     this.nlog_windowservice.Info("-----------------Deploy Start-----------------");

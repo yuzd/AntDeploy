@@ -59,6 +59,14 @@ namespace AntDeploy.Util
             Process process = null;
             try
             {
+                try
+                {
+                    logger.Info(fileName + " " + arguments);
+                }
+                catch (Exception)
+                {
+
+                }
                 if (string.IsNullOrEmpty(arguments))
                 {
                     throw new ArgumentException(nameof(arguments));
