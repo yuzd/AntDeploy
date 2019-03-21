@@ -116,7 +116,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <Content Include="app.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <None Include="Key.snk" />
     <Content Include="lib\win32\x64\git2-572e4d8.dll">
       <IncludeInVSIX>true</IncludeInVSIX>

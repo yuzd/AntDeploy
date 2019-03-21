@@ -23,8 +23,8 @@ namespace AntDeploy.Util
         {
             try
             {
-                ServicePointManager.Expect100Continue = false; 
-                ServicePointManager.MaxServicePointIdleTime = 2000; 
+                ServicePointManager.Expect100Continue = false;
+                ServicePointManager.MaxServicePointIdleTime = 2000;
 
                 //Get the assembly that contains the internal class
                 Assembly aNetAssembly = Assembly.GetAssembly(typeof(System.Net.Configuration.SettingsSection));
@@ -66,12 +66,12 @@ namespace AntDeploy.Util
         public static bool IsHttpGetOk(string url, Logger logger)
         {
             var retyrTimes = 0;
-          
+
             RETRY:
             var needRetry = false;
             try
             {
-               
+
                 HttpWebRequest WReq = (HttpWebRequest)WebRequest.Create(url);
 
                 if (url.StartsWith("https"))
@@ -80,12 +80,18 @@ namespace AntDeploy.Util
                 }
 
                 WReq.Method = "GET";
-                WReq.Timeout = 10000;
-                WReq.ReadWriteTimeout = 10000;
+                WReq.Timeout = 20000;
+                WReq.ReadWriteTimeout = 20000;
                 WReq.KeepAlive = false;
+                WReq.AllowAutoRedirect = false;
                 HttpWebResponse WResp = (HttpWebResponse)WReq.GetResponse();
-                logger.Info($"Response StatusCode:{(int)WResp.StatusCode}");
-                if (((int)WResp.StatusCode)<400)
+                //if (WResp.StatusCode == HttpStatusCode.Redirect || WResp.StatusCode == HttpStatusCode.MovedPermanently)
+                //{
+                //    logger.Warn($"Fire WebSite Url Fail: the page was redirected!");
+                //}
+
+                logger.Info($"Fire WebSite Url Response StatusCode:{(int)WResp.StatusCode}");
+                if (((int)WResp.StatusCode) < 400)
                 {
                     WResp.Close();
                     return true;
@@ -95,7 +101,7 @@ namespace AntDeploy.Util
             catch (Exception ex1)
             {
                 retyrTimes++;
-                if (retyrTimes > 3)
+                if (retyrTimes > 6)
                 {
                     logger.Warn($"Fire WebSite Url Fail:{ex1.Message}");
                 }
