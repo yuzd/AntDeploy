@@ -117,40 +117,40 @@
             this.environment = new System.Windows.Forms.GroupBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.page_winserver = new System.Windows.Forms.TabPage();
+            this.txt_winserver_nickname = new System.Windows.Forms.TextBox();
             this.label32 = new System.Windows.Forms.Label();
+            this.label29 = new System.Windows.Forms.Label();
             this.loading_win_server_test = new AltoControls.SpinningCircles();
             this.label5 = new System.Windows.Forms.Label();
             this.b_env_server_test = new System.Windows.Forms.Button();
             this.combo_env_server_list = new System.Windows.Forms.ComboBox();
-            this.label4 = new System.Windows.Forms.Label();
             this.b_env_server_add = new System.Windows.Forms.Button();
             this.txt_env_server_host = new System.Windows.Forms.TextBox();
             this.b_env_server_remove = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.txt_env_server_token = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.page_linux_server = new System.Windows.Forms.TabPage();
+            this.txt_linux_server_nickname = new System.Windows.Forms.TextBox();
             this.loading_linux_server_test = new AltoControls.SpinningCircles();
             this.label20 = new System.Windows.Forms.Label();
             this.combo_linux_server_list = new System.Windows.Forms.ComboBox();
             this.txt_linux_pwd = new System.Windows.Forms.TextBox();
-            this.label19 = new System.Windows.Forms.Label();
             this.txt_linux_username = new System.Windows.Forms.TextBox();
-            this.label18 = new System.Windows.Forms.Label();
             this.b_linux_server_test = new System.Windows.Forms.Button();
             this.b_add_linux_server = new System.Windows.Forms.Button();
             this.b_linux_server_remove = new System.Windows.Forms.Button();
             this.txt_linux_host = new System.Windows.Forms.TextBox();
             this.label17 = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
+            this.label19 = new System.Windows.Forms.Label();
+            this.label35 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.b_env_remove = new System.Windows.Forms.Button();
             this.txt_env_name = new System.Windows.Forms.TextBox();
             this.b_env_add_by_name = new System.Windows.Forms.Button();
             this.combo_env_list = new System.Windows.Forms.ComboBox();
-            this.txt_winserver_nickname = new System.Windows.Forms.TextBox();
-            this.label29 = new System.Windows.Forms.Label();
-            this.txt_linux_server_nickname = new System.Windows.Forms.TextBox();
-            this.label35 = new System.Windows.Forms.Label();
             this.tabcontrol.SuspendLayout();
             this.page_web_iis.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -661,6 +661,7 @@
             // 
             // tabPage_docker
             // 
+            this.tabPage_docker.AutoScroll = true;
             this.tabPage_docker.Controls.Add(this.progress_docker_tip);
             this.tabPage_docker.Location = new System.Drawing.Point(4, 22);
             this.tabPage_docker.Name = "tabPage_docker";
@@ -918,6 +919,7 @@
             // 
             // tabPage_windows_service
             // 
+            this.tabPage_windows_service.AutoScroll = true;
             this.tabPage_windows_service.Controls.Add(this.progress_window_service_tip);
             this.tabPage_windows_service.Location = new System.Drawing.Point(4, 22);
             this.tabPage_windows_service.Name = "tabPage_windows_service";
@@ -1176,6 +1178,13 @@
             this.page_winserver.Text = "win_server";
             this.page_winserver.UseVisualStyleBackColor = true;
             // 
+            // txt_winserver_nickname
+            // 
+            this.txt_winserver_nickname.Location = new System.Drawing.Point(438, 15);
+            this.txt_winserver_nickname.Name = "txt_winserver_nickname";
+            this.txt_winserver_nickname.Size = new System.Drawing.Size(132, 21);
+            this.txt_winserver_nickname.TabIndex = 4;
+            // 
             // label32
             // 
             this.label32.AutoSize = true;
@@ -1187,6 +1196,15 @@
             this.label32.TabIndex = 30;
             this.label32.Text = "Why connect Fail?";
             this.label32.Click += new System.EventHandler(this.label32_Click);
+            // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.Location = new System.Drawing.Point(378, 22);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(65, 12);
+            this.label29.TabIndex = 32;
+            this.label29.Text = "NickName：";
             // 
             // loading_win_server_test
             // 
@@ -1231,15 +1249,6 @@
             this.combo_env_server_list.Size = new System.Drawing.Size(464, 20);
             this.combo_env_server_list.TabIndex = 7;
             this.combo_env_server_list.SelectedIndexChanged += new System.EventHandler(this.combo_env_server_list_SelectedIndexChanged);
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(179, 22);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(47, 12);
-            this.label4.TabIndex = 9;
-            this.label4.Text = "Token：";
             // 
             // b_env_server_add
             // 
@@ -1287,6 +1296,15 @@
             this.txt_env_server_token.Size = new System.Drawing.Size(152, 21);
             this.txt_env_server_token.TabIndex = 3;
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(179, 22);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(47, 12);
+            this.label4.TabIndex = 9;
+            this.label4.Text = "Token：";
+            // 
             // page_linux_server
             // 
             this.page_linux_server.Controls.Add(this.txt_linux_server_nickname);
@@ -1310,6 +1328,13 @@
             this.page_linux_server.TabIndex = 1;
             this.page_linux_server.Text = "linux_server";
             this.page_linux_server.UseVisualStyleBackColor = true;
+            // 
+            // txt_linux_server_nickname
+            // 
+            this.txt_linux_server_nickname.Location = new System.Drawing.Point(479, 8);
+            this.txt_linux_server_nickname.Name = "txt_linux_server_nickname";
+            this.txt_linux_server_nickname.Size = new System.Drawing.Size(94, 21);
+            this.txt_linux_server_nickname.TabIndex = 12;
             // 
             // loading_linux_server_test
             // 
@@ -1352,30 +1377,12 @@
             this.txt_linux_pwd.Size = new System.Drawing.Size(93, 21);
             this.txt_linux_pwd.TabIndex = 11;
             // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(296, 17);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(35, 12);
-            this.label19.TabIndex = 18;
-            this.label19.Text = "Pwd：";
-            // 
             // txt_linux_username
             // 
             this.txt_linux_username.Location = new System.Drawing.Point(194, 11);
             this.txt_linux_username.Name = "txt_linux_username";
             this.txt_linux_username.Size = new System.Drawing.Size(99, 21);
             this.txt_linux_username.TabIndex = 10;
-            // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(137, 17);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(65, 12);
-            this.label18.TabIndex = 16;
-            this.label18.Text = "UserName：";
             // 
             // b_linux_server_test
             // 
@@ -1426,6 +1433,33 @@
             this.label17.Size = new System.Drawing.Size(41, 12);
             this.label17.TabIndex = 10;
             this.label17.Text = "Host：";
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(137, 17);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(65, 12);
+            this.label18.TabIndex = 16;
+            this.label18.Text = "UserName：";
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(296, 17);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(35, 12);
+            this.label19.TabIndex = 18;
+            this.label19.Text = "Pwd：";
+            // 
+            // label35
+            // 
+            this.label35.AutoSize = true;
+            this.label35.Location = new System.Drawing.Point(421, 17);
+            this.label35.Name = "label35";
+            this.label35.Size = new System.Drawing.Size(65, 12);
+            this.label35.TabIndex = 34;
+            this.label35.Text = "NickName：";
             // 
             // label2
             // 
@@ -1482,38 +1516,6 @@
             this.combo_env_list.Size = new System.Drawing.Size(248, 20);
             this.combo_env_list.TabIndex = 0;
             this.combo_env_list.SelectedIndexChanged += new System.EventHandler(this.combo_env_list_SelectedIndexChanged);
-            // 
-            // txt_winserver_nickname
-            // 
-            this.txt_winserver_nickname.Location = new System.Drawing.Point(438, 15);
-            this.txt_winserver_nickname.Name = "txt_winserver_nickname";
-            this.txt_winserver_nickname.Size = new System.Drawing.Size(132, 21);
-            this.txt_winserver_nickname.TabIndex = 4;
-            // 
-            // label29
-            // 
-            this.label29.AutoSize = true;
-            this.label29.Location = new System.Drawing.Point(378, 22);
-            this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(65, 12);
-            this.label29.TabIndex = 32;
-            this.label29.Text = "NickName：";
-            // 
-            // txt_linux_server_nickname
-            // 
-            this.txt_linux_server_nickname.Location = new System.Drawing.Point(479, 8);
-            this.txt_linux_server_nickname.Name = "txt_linux_server_nickname";
-            this.txt_linux_server_nickname.Size = new System.Drawing.Size(94, 21);
-            this.txt_linux_server_nickname.TabIndex = 12;
-            // 
-            // label35
-            // 
-            this.label35.AutoSize = true;
-            this.label35.Location = new System.Drawing.Point(421, 17);
-            this.label35.Name = "label35";
-            this.label35.Size = new System.Drawing.Size(65, 12);
-            this.label35.TabIndex = 34;
-            this.label35.Text = "NickName：";
             // 
             // Deploy
             // 
