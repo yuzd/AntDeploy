@@ -170,7 +170,7 @@ namespace AntDeploy.Util
         /// <summary>
         /// 提交所有变动
         /// </summary>
-        public void SubmitChanges()
+        public void SubmitChanges(int count)
         {
             _logger?.Info("【git】commit start");
             try
@@ -185,7 +185,7 @@ namespace AntDeploy.Util
             }
 
             CommitChanges(DateTime.Now.ToString("yyyyMMddHHmms"));
-            _logger?.Info("【git】commit success");
+            _logger?.Info($"【git】commit success,file count:{count}");
         }
 
         /// <summary>

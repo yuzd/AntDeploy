@@ -504,13 +504,16 @@ namespace AntDeploy.Winform
 
             if (env != null)
             {
-                // ReSharper disable once CoVariantArrayConversion
-                this.combo_env_server_list.Items.AddRange(items: env.ServerList.Select(r => r.Host + "@_@" + r.Token)
-                    .ToArray());
+                env.ServerList.ForEach(r=>
+                {
+                    this.combo_env_server_list.Items.Add(r.Host + "@_@" + r.Token+(!string.IsNullOrWhiteSpace(r.NickName)?"@_@"+r.NickName:""));
+                });
 
-                // ReSharper disable once CoVariantArrayConversion
-                this.combo_linux_server_list.Items.AddRange(items: env.LinuxServerList
-                    .Select(r => r.Host + "@_@" + r.UserName).ToArray());
+
+                env.LinuxServerList.ForEach(r=>
+                {
+                    this.combo_linux_server_list.Items.Add(r.Host + "@_@" + r.UserName+(!string.IsNullOrWhiteSpace(r.NickName)?"@_@"+r.NickName:""));
+                });
 
                 foreach (var item in env.IgnoreList)
                 {
@@ -573,10 +576,14 @@ namespace AntDeploy.Winform
             }
 
             var arr = seletedServer.Split(new string[] { "@_@" }, StringSplitOptions.None);
-            if (arr.Length == 2)
+            if (arr.Length >= 2)
             {
                 this.txt_env_server_host.Text = arr[0];
                 this.txt_env_server_token.Text = arr[1];
+                if(arr.Length == 3)
+                {
+                    this.txt_winserver_nickname.Text = arr[2];
+                }
             }
 
         }
@@ -608,6 +615,14 @@ namespace AntDeploy.Winform
         /// <param name="e"></param>
         private void b_env_server_add_Click(object sender, EventArgs e)
         {
+            var nickName = this.txt_winserver_nickname.Text.Trim();
+            
+            if (!string.IsNullOrWhiteSpace(nickName) && nickName.Contains("@_@"))
+            {
+                MessageBox.Show("nickName can not Contains @_@");
+                return;
+            }
+
             var serverHost = this.txt_env_server_host.Text.Trim();
             if (serverHost.Length < 1)
             {
@@ -615,10 +630,22 @@ namespace AntDeploy.Winform
                 return;
             }
 
+            if (serverHost.Contains("@_@"))
+            {
+                MessageBox.Show("server host can not Contains @_@");
+                return;
+            }
+
             var serverTolen = this.txt_env_server_token.Text.Trim();
             if (serverTolen.Length < 1)
             {
                 MessageBox.Show("please input server Token");
+                return;
+            }
+
+            if (serverTolen.Contains("@_@"))
+            {
+                MessageBox.Show("server Token can not Contains @_@");
                 return;
             }
 
@@ -633,12 +660,13 @@ namespace AntDeploy.Winform
                 return;
             }
 
-            var newServer = serverHost + "@_@" + serverTolen;
+            var newServer = serverHost + "@_@" + serverTolen + (!string.IsNullOrWhiteSpace(nickName)?"@_@"+nickName:"");
             this.combo_env_server_list.Items.Add(newServer);
             DeployConfig.Env[this.combo_env_list.SelectedIndex].ServerList.Add(new Server
             {
                 Host = serverHost,
-                Token = serverTolen
+                Token = serverTolen,
+                NickName =nickName
             });
 
             DeployConfig.EnvServerChange(DeployConfig.Env[this.combo_env_list.SelectedIndex]);
@@ -646,6 +674,7 @@ namespace AntDeploy.Winform
             this.combo_env_server_list.SelectedItem = newServer;
             this.txt_env_server_host.Text = string.Empty;
             this.txt_env_server_token.Text = string.Empty;
+            this.txt_winserver_nickname.Text = string.Empty;
         }
 
         /// <summary>
@@ -717,6 +746,7 @@ namespace AntDeploy.Winform
                 this.b_env_server_test.Enabled = flag;
                 this.b_env_server_remove.Enabled = flag;
                 this.combo_env_server_list.Enabled = flag;
+                this.txt_winserver_nickname.Enabled = flag;
                 if (flag)
                 {
                     this.loading_win_server_test.Visible = false;
@@ -806,10 +836,22 @@ namespace AntDeploy.Winform
         /// <param name="e"></param>
         private void b_add_linux_server_Click(object sender, EventArgs e)
         {
+            var nickName = this.txt_linux_server_nickname.Text.Trim();
+            if (!string.IsNullOrWhiteSpace(nickName) && nickName.Contains("@_@"))
+            {
+                MessageBox.Show("nickName can not Contains @_@");
+                return;
+            }
             var serverHost = this.txt_linux_host.Text.Trim();
             if (serverHost.Length < 1)
             {
                 MessageBox.Show("please input server host");
+                return;
+            }
+
+            if (serverHost.Contains("@_@"))
+            {
+                MessageBox.Show("server host can not Contains @_@");
                 return;
             }
 
@@ -820,10 +862,22 @@ namespace AntDeploy.Winform
                 return;
             }
 
+            if (userName.Contains("@_@"))
+            {
+                MessageBox.Show("userName can not Contains @_@");
+                return;
+            }
+
             var pwd = this.txt_linux_pwd.Text.Trim();
             if (pwd.Length < 1)
             {
                 MessageBox.Show("please input server pwd");
+                return;
+            }
+
+            if (pwd.Contains("@_@"))
+            {
+                MessageBox.Show("pwd can not Contains @_@");
                 return;
             }
 
@@ -839,19 +893,21 @@ namespace AntDeploy.Winform
                 return;
             }
 
-            var newServer = serverHost + "@_@" + userName;
+            var newServer = serverHost + "@_@" + userName + (!string.IsNullOrWhiteSpace(nickName)?"@_@"+nickName:"");
             this.combo_linux_server_list.Items.Add(newServer);
             DeployConfig.Env[this.combo_env_list.SelectedIndex].LinuxServerList.Add(new LinuxServer
             {
                 Host = serverHost,
                 UserName = userName,
-                Pwd = pwd2
+                Pwd = pwd2,
+                NickName = nickName
             });
             DeployConfig.EnvServerChange(DeployConfig.Env[this.combo_env_list.SelectedIndex]);
             this.combo_linux_server_list.SelectedItem = newServer;
             this.txt_linux_host.Text = string.Empty;
             this.txt_linux_username.Text = string.Empty;
             this.txt_linux_pwd.Text = string.Empty;
+            this.txt_linux_server_nickname.Text = string.Empty;
         }
 
         /// <summary>
@@ -950,6 +1006,7 @@ namespace AntDeploy.Winform
                 this.b_linux_server_test.Enabled = flag;
                 this.b_linux_server_remove.Enabled = flag;
                 this.combo_linux_server_list.Enabled = flag;
+                txt_linux_server_nickname.Enabled = flag;
                 if (flag)
                 {
                     this.loading_linux_server_test.Visible = false;
@@ -986,6 +1043,10 @@ namespace AntDeploy.Winform
             {
                 this.txt_linux_host.Text = arr[0];
                 this.txt_linux_username.Text = arr[1];
+                if(arr.Length == 3)
+                {
+                    this.txt_linux_server_nickname.Text = arr[2];
+                }
                 //this.txt_linux_pwd.Text = CodingHelper.AESDecrypt(arr[2]);
 
             }
@@ -1085,10 +1146,11 @@ namespace AntDeploy.Winform
                 for (int i = 0; i < serverHostList.Count; i++)
                 {
                     var serverHost = serverHostList[i];
+                    var nickName = serverList[i].NickName;
                     ProgressBox newBox =
                         new ProgressBox(new System.Drawing.Point(ProgressBoxLocationLeft, 15 + (i * 140)), serverList[i], ServerType.IIS)
                         {
-                            Text = serverHost,
+                            Text = serverHost + (!string.IsNullOrWhiteSpace(nickName)?$"【{nickName}】":""),
                         };
 
                     newBoxList.Add(serverHost, newBox);
@@ -1306,7 +1368,7 @@ namespace AntDeploy.Winform
                     }
 
                     byte[] zipBytes = null;
-
+                    var gitChangeFileCount = 0;
                     if (gitModel != null)
                     {
                         var fileList = gitModel.GetChanges();
@@ -1322,8 +1384,8 @@ namespace AntDeploy.Winform
                             PackageError(this.tabPage_progress);
                             return;
                         }
-
-                        this.nlog_iis.Info("【git】Increment package file count:" + fileList.Count);
+                        gitChangeFileCount =fileList.Count;
+                        this.nlog_iis.Info("【git】Increment package file count:" + gitChangeFileCount);
                         try
                         {
                             zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, fileList, CompressionLevel.Optimal,
@@ -1394,7 +1456,7 @@ namespace AntDeploy.Winform
 
                         ProgressPercentage = 0;
                         ProgressCurrentHost = server.Host;
-                        this.nlog_iis.Info($"Start Uppload,Host:{server.Host}");
+                        this.nlog_iis.Info($"Start Uppload,Host:{getHostDisplayName(server)}");
                         HttpRequestClient httpRequestClient = new HttpRequestClient();
                         httpRequestClient.SetFieldValue("publishType", "iis");
                         httpRequestClient.SetFieldValue("isIncrement",
@@ -1456,19 +1518,19 @@ namespace AntDeploy.Winform
                             if (haveError)
                             {
                                 allSuccess = false;
-                                this.nlog_iis.Error($"Host:{server.Host},Deploy Fail,Skip to Next");
+                                this.nlog_iis.Error($"Host:{getHostDisplayName(server)},Deploy Fail,Skip to Next");
                                 UpdateDeployProgress(this.tabPage_progress, server.Host, false);
                             }
                             else
                             {
                                 if (uploadResult.Item1)
                                 {
-                                    this.nlog_iis.Info($"Host:{server.Host},Response:{uploadResult.Item2}");
+                                    this.nlog_iis.Info($"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2}");
 
                                     //fire the website
                                     if (!string.IsNullOrEmpty(server.IIsFireUrl))
                                     {
-                                        LogEventInfo publisEvent22 = new LogEventInfo(LogLevel.Info, "", "Start to Fire Url,TimeOut：10senconds  ==> ");
+                                        LogEventInfo publisEvent22 = new LogEventInfo(LogLevel.Info, "", $"Host:{getHostDisplayName(server)} Start to Fire Url,TimeOut：10senconds  ==> ");
                                         publisEvent22.Properties["ShowLink"] = server.IIsFireUrl;
                                         this.nlog_iis.Log(publisEvent22);
 
@@ -1476,7 +1538,7 @@ namespace AntDeploy.Winform
                                         if (fireRt)
                                         {
                                             UpdateDeployProgress(this.tabPage_progress, server.Host, true);
-                                            this.nlog_iis.Info($"Host:{server.Host},Success Fire Url");
+                                            this.nlog_iis.Info($"Host:{getHostDisplayName(server)},Success Fire Url");
                                         }
                                         else
                                         {
@@ -1491,8 +1553,7 @@ namespace AntDeploy.Winform
                                 else
                                 {
                                     allSuccess = false;
-                                    this.nlog_iis.Error(
-                                        $"Host:{server.Host},Response:{uploadResult.Item2},Skip to Next");
+                                    this.nlog_iis.Error($"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2},Skip to Next");
                                     UpdateDeployProgress(this.tabPage_progress, server.Host, false);
                                 }
                             }
@@ -1500,7 +1561,7 @@ namespace AntDeploy.Winform
                         }
                         catch (Exception ex)
                         {
-                            this.nlog_iis.Error($"Fail Deploy,Host:{server.Host},Response:{ex.Message},Skip to Next");
+                            this.nlog_iis.Error($"Fail Deploy,Host:{getHostDisplayName(server)},Response:{ex.Message},Skip to Next");
                             UpdateDeployProgress(this.tabPage_progress, server.Host, false);
                         }
                         finally
@@ -1518,7 +1579,7 @@ namespace AntDeploy.Winform
                     if (allSuccess)
                     {
                         this.nlog_iis.Info("Deploy Version：" + dateTimeFolderName);
-                        if (gitModel != null) gitModel.SubmitChanges();
+                        if (gitModel != null) gitModel.SubmitChanges(gitChangeFileCount);
                     }
 
                     LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local publish folder  ==> ");
@@ -1542,6 +1603,11 @@ namespace AntDeploy.Winform
 
             }).Start();
 
+        }
+
+        private string getHostDisplayName(BaseServer server)
+        {
+            return $"{server.Host}{(!string.IsNullOrWhiteSpace(server.NickName)?$"【{server.NickName}】":"")}";
         }
 
         private void b_iis_rollback_Click(object sender, EventArgs e)
@@ -1769,21 +1835,21 @@ namespace AntDeploy.Winform
                             if (haveError)
                             {
                                 allSuccess = false;
-                                this.nlog_iis.Error($"Host:{server.Host},Rollback Fail,Skip to Next");
+                                this.nlog_iis.Error($"Host:{getHostDisplayName(server)},Rollback Fail,Skip to Next");
                                 UpdateDeployProgress(this.tabPage_progress, server.Host, false);
                             }
                             else
                             {
                                 if (uploadResult.Item1)
                                 {
-                                    this.nlog_iis.Info($"Host:{server.Host},Response:{uploadResult.Item2}");
+                                    this.nlog_iis.Info($"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2}");
                                     UpdateDeployProgress(this.tabPage_progress, server.Host, true);
                                 }
                                 else
                                 {
                                     allSuccess = false;
                                     this.nlog_iis.Error(
-                                        $"Host:{server.Host},Response:{uploadResult.Item2},Skip to Next");
+                                        $"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2},Skip to Next");
                                     UpdateDeployProgress(this.tabPage_progress, server.Host, false);
                                 }
                             }
@@ -1791,7 +1857,7 @@ namespace AntDeploy.Winform
                         }
                         catch (Exception ex)
                         {
-                            this.nlog_iis.Error($"Fail Rollback,Host:{server.Host},Response:{ex.Message},Skip to Next");
+                            this.nlog_iis.Error($"Fail Rollback,Host:{getHostDisplayName(server)},Response:{ex.Message},Skip to Next");
                             UpdateDeployProgress(this.tabPage_progress, server.Host, false);
                             allSuccess = false;
                         }
@@ -2103,10 +2169,11 @@ namespace AntDeploy.Winform
                 for (int i = 0; i < serverHostList.Count; i++)
                 {
                     var serverHost = serverHostList[i];
+                    var nickName = serverList[i].NickName; 
                     ProgressBox newBox =
                         new ProgressBox(new System.Drawing.Point(ProgressBoxLocationLeft, 15 + (i * 140)), serverList[i], ServerType.WINSERVICE)
                         {
-                            Text = serverHost,
+                            Text = serverHost + (!string.IsNullOrWhiteSpace(nickName)?$"【{nickName}】":""),
                         };
 
                     newBoxList.Add(serverHost, newBox);
@@ -2431,7 +2498,7 @@ namespace AntDeploy.Winform
                             return;
                         }
                     }
-
+                    var gitChangeFileCount = 0; 
                     byte[] zipBytes = null;
                     if (gitModel != null)
                     {
@@ -2441,8 +2508,8 @@ namespace AntDeploy.Winform
                             PackageError(this.tabPage_windows_service);
                             return;
                         }
-
-                        this.nlog_windowservice.Info("【git】Increment package file count:" + fileList.Count);
+                         gitChangeFileCount =fileList.Count;
+                        this.nlog_windowservice.Info("【git】Increment package file count:" + gitChangeFileCount);
                         try
                         {
                             zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, fileList, CompressionLevel.Optimal,
@@ -2513,7 +2580,7 @@ namespace AntDeploy.Winform
 
                         ProgressPercentageForWindowsService = 0;
                         ProgressCurrentHostForWindowsService = server.Host;
-                        this.nlog_windowservice.Info($"Start Uppload,Host:{server.Host}");
+                        this.nlog_windowservice.Info($"Start Uppload,Host:{getHostDisplayName(server)}");
                         HttpRequestClient httpRequestClient = new HttpRequestClient();
                         httpRequestClient.SetFieldValue("publishType", "windowservice");
                         httpRequestClient.SetFieldValue("isIncrement",
@@ -2577,14 +2644,14 @@ namespace AntDeploy.Winform
                             if (haveError)
                             {
                                 allSuccess = false;
-                                this.nlog_windowservice.Error($"Host:{server.Host},Deploy Fail,Skip to Next");
+                                this.nlog_windowservice.Error($"Host:{getHostDisplayName(server)},Deploy Fail,Skip to Next");
                                 UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
                             }
                             else
                             {
                                 if (uploadResult.Item1)
                                 {
-                                    this.nlog_windowservice.Info($"Host:{server.Host},Response:{uploadResult.Item2}");
+                                    this.nlog_windowservice.Info($"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2}");
 
                                     //fire the website
                                     if (!string.IsNullOrEmpty(server.WindowsServiceFireUrl))
@@ -2597,7 +2664,7 @@ namespace AntDeploy.Winform
                                         if (fireRt)
                                         {
                                             UpdateDeployProgress(this.tabPage_windows_service, server.Host, true);
-                                            this.nlog_windowservice.Info($"Host:{server.Host},Success Fire Url");
+                                            this.nlog_windowservice.Info($"Host:{getHostDisplayName(server)},Success Fire Url");
                                         }
                                         else
                                         {
@@ -2613,7 +2680,7 @@ namespace AntDeploy.Winform
                                 {
                                     allSuccess = false;
                                     this.nlog_windowservice.Error(
-                                        $"Host:{server.Host},Response:{uploadResult.Item2},Skip to Next");
+                                        $"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2},Skip to Next");
                                     UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
                                 }
                             }
@@ -2622,7 +2689,7 @@ namespace AntDeploy.Winform
                         catch (Exception ex)
                         {
                             this.nlog_windowservice.Error(
-                                $"Fail Deploy,Host:{server.Host},Response:{ex.Message},Skip to Next");
+                                $"Fail Deploy,Host:{getHostDisplayName(server)},Response:{ex.Message},Skip to Next");
                             UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
                         }
                         finally
@@ -2639,7 +2706,7 @@ namespace AntDeploy.Winform
                     if (allSuccess)
                     {
                         this.nlog_windowservice.Info("Deploy Version：" + dateTimeFolderName);
-                        if (gitModel != null) gitModel.SubmitChanges();
+                        if (gitModel != null) gitModel.SubmitChanges(gitChangeFileCount);
                     }
 
                     LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local publish folder  ==> ");
@@ -2908,21 +2975,21 @@ namespace AntDeploy.Winform
                             if (haveError)
                             {
                                 allSuccess = false;
-                                this.nlog_windowservice.Error($"Host:{server.Host},Rollback Fail,Skip to Next");
+                                this.nlog_windowservice.Error($"Host:{getHostDisplayName(server)},Rollback Fail,Skip to Next");
                                 UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
                             }
                             else
                             {
                                 if (uploadResult.Item1)
                                 {
-                                    this.nlog_windowservice.Info($"Host:{server.Host},Response:{uploadResult.Item2}");
+                                    this.nlog_windowservice.Info($"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2}");
                                     UpdateDeployProgress(this.tabPage_windows_service, server.Host, true);
                                 }
                                 else
                                 {
                                     allSuccess = false;
                                     this.nlog_windowservice.Error(
-                                        $"Host:{server.Host},Response:{uploadResult.Item2},Skip to Next");
+                                        $"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2},Skip to Next");
                                     UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
                                 }
                             }
@@ -2932,7 +2999,7 @@ namespace AntDeploy.Winform
                         {
                             allSuccess = false;
                             this.nlog_windowservice.Error(
-                                $"Fail Rollback,Host:{server.Host},Response:{ex.Message},Skip to Next");
+                                $"Fail Rollback,Host:{getHostDisplayName(server)},Response:{ex.Message},Skip to Next");
                             UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
                         }
                         finally
@@ -3484,7 +3551,7 @@ namespace AntDeploy.Winform
                             var connectResult = sshClient.Connect();
                             if (!connectResult)
                             {
-                                this.nlog_docker.Error($"Deploy Host:{server.Host} Fail: connect fail");
+                                this.nlog_docker.Error($"Deploy Host:{getHostDisplayName(server)} Fail: connect fail");
                                 UploadError(this.tabPage_docker);
                                 allSuccess = false;
                                 continue;
@@ -3514,7 +3581,7 @@ namespace AntDeploy.Winform
                                         if (fireRt)
                                         {
                                             UpdateDeployProgress(this.tabPage_docker, server.Host, true);
-                                            this.nlog_docker.Info($"Host:{server.Host},Success Fire Url");
+                                            this.nlog_docker.Info($"Host:{getHostDisplayName(server)},Success Fire Url");
                                         }
                                         else
                                         {
@@ -3528,12 +3595,12 @@ namespace AntDeploy.Winform
 
                                 }
 
-                                this.nlog_docker.Info($"publish Host: {server.Host} End");
+                                this.nlog_docker.Info($"publish Host: {getHostDisplayName(server)} End");
                             }
                             catch (Exception ex)
                             {
                                 allSuccess = false;
-                                this.nlog_docker.Error($"Deploy Host:{server.Host} Fail:" + ex.Message);
+                                this.nlog_docker.Error($"Deploy Host:{getHostDisplayName(server)} Fail:" + ex.Message);
                                 UpdateDeployProgress(this.tabPage_docker, server.Host, false);
                             }
                         }
@@ -3695,7 +3762,7 @@ namespace AntDeploy.Winform
                         var connectResult = sshClient.Connect();
                         if (!connectResult)
                         {
-                            this.nlog_docker.Error($"connect rollBack Host:{firstServer.Host} Fail");
+                            this.nlog_docker.Error($"connect rollBack Host:{getHostDisplayName(firstServer)} Fail");
                             return;
                         }
 
@@ -3829,7 +3896,7 @@ namespace AntDeploy.Winform
                             var connectResult = sshClient.Connect();
                             if (!connectResult)
                             {
-                                this.nlog_docker.Error($"RollBack Host:{server.Host} Fail: connect fail");
+                                this.nlog_docker.Error($"RollBack Host:{getHostDisplayName(server)} Fail: connect fail");
                                 UploadError(this.tabPage_docker);
                                 allSuccess = false;
                                 continue;
@@ -3839,11 +3906,11 @@ namespace AntDeploy.Winform
                             {
                                 sshClient.RollBack(rollbackVersion);
                                 UpdateDeployProgress(this.tabPage_docker, server.Host, !hasError);
-                                this.nlog_docker.Info($"RollBack Host: {server.Host} End");
+                                this.nlog_docker.Info($"RollBack Host: {getHostDisplayName(server)} End");
                             }
                             catch (Exception ex)
                             {
-                                this.nlog_docker.Error($"RollBack Host:{server.Host} Fail:" + ex.Message);
+                                this.nlog_docker.Error($"RollBack Host:{getHostDisplayName(server)} Fail:" + ex.Message);
                                 UpdateDeployProgress(this.tabPage_docker, server.Host, false);
                             }
                         }
@@ -3955,10 +4022,11 @@ namespace AntDeploy.Winform
                 for (int i = 0; i < serverHostList.Count; i++)
                 {
                     var serverHost = serverHostList[i];
+                    var nickName = serverList[i].NickName;
                     ProgressBox newBox =
                         new ProgressBox(new System.Drawing.Point(ProgressBoxLocationLeft, 15 + (i * 140)), serverList[i], ServerType.DOCKER)
                         {
-                            Text = serverHost,
+                            Text = serverHost + (!string.IsNullOrWhiteSpace(nickName)?$"【{nickName}】":""),
                         };
 
                     newBoxList.Add(serverHost, newBox);

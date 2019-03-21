@@ -96,6 +96,8 @@ namespace AntDeploy.Models
 
     public class BaseServer
     {
+        public string Host { get; set; }
+        public string NickName { get; set; }
         public string IIsFireUrl { get; set; }
         public string DockerFireUrl { get; set; }
         public string WindowsServiceFireUrl { get; set; }
@@ -104,7 +106,7 @@ namespace AntDeploy.Models
 
     public class Server:BaseServer
     {
-        public string Host { get; set; }
+        
         public string Token { get; set; }
 
 
@@ -112,7 +114,6 @@ namespace AntDeploy.Models
 
     public class LinuxServer:BaseServer
     {
-        public string Host { get; set; }
         public string UserName { get; set; }
         public string Pwd { get; set; }
     }

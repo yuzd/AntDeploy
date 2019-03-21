@@ -147,6 +147,10 @@
             this.txt_env_name = new System.Windows.Forms.TextBox();
             this.b_env_add_by_name = new System.Windows.Forms.Button();
             this.combo_env_list = new System.Windows.Forms.ComboBox();
+            this.txt_winserver_nickname = new System.Windows.Forms.TextBox();
+            this.label29 = new System.Windows.Forms.Label();
+            this.txt_linux_server_nickname = new System.Windows.Forms.TextBox();
+            this.label35 = new System.Windows.Forms.Label();
             this.tabcontrol.SuspendLayout();
             this.page_web_iis.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -453,7 +457,7 @@
             this.tabPage_iis_log.Location = new System.Drawing.Point(4, 22);
             this.tabPage_iis_log.Name = "tabPage_iis_log";
             this.tabPage_iis_log.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_iis_log.Size = new System.Drawing.Size(608, 259);
+            this.tabPage_iis_log.Size = new System.Drawing.Size(608, 292);
             this.tabPage_iis_log.TabIndex = 1;
             this.tabPage_iis_log.Text = "LOG";
             this.tabPage_iis_log.UseVisualStyleBackColor = true;
@@ -465,7 +469,7 @@
             this.rich_iis_log.Location = new System.Drawing.Point(3, 3);
             this.rich_iis_log.Name = "rich_iis_log";
             this.rich_iis_log.ReadOnly = true;
-            this.rich_iis_log.Size = new System.Drawing.Size(602, 253);
+            this.rich_iis_log.Size = new System.Drawing.Size(602, 286);
             this.rich_iis_log.TabIndex = 0;
             this.rich_iis_log.Text = "";
             this.rich_iis_log.TextColor = AntDeploy.RtfColor.Black;
@@ -938,7 +942,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(614, 280);
+            this.tabPage2.Size = new System.Drawing.Size(614, 303);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "LOG";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -950,7 +954,7 @@
             this.rich_windowservice_log.Location = new System.Drawing.Point(3, 3);
             this.rich_windowservice_log.Name = "rich_windowservice_log";
             this.rich_windowservice_log.ReadOnly = true;
-            this.rich_windowservice_log.Size = new System.Drawing.Size(608, 274);
+            this.rich_windowservice_log.Size = new System.Drawing.Size(608, 297);
             this.rich_windowservice_log.TabIndex = 1;
             this.rich_windowservice_log.Text = "";
             this.rich_windowservice_log.TextColor = AntDeploy.RtfColor.Black;
@@ -1036,7 +1040,7 @@
             this.txt_backUp_ignore.Location = new System.Drawing.Point(18, 43);
             this.txt_backUp_ignore.Name = "txt_backUp_ignore";
             this.txt_backUp_ignore.Size = new System.Drawing.Size(115, 21);
-            this.txt_backUp_ignore.TabIndex = 4;
+            this.txt_backUp_ignore.TabIndex = 6;
             // 
             // list_backUp_ignore
             // 
@@ -1112,7 +1116,7 @@
             this.txt_env_ignore.Location = new System.Drawing.Point(6, 43);
             this.txt_env_ignore.Name = "txt_env_ignore";
             this.txt_env_ignore.Size = new System.Drawing.Size(122, 21);
-            this.txt_env_ignore.TabIndex = 4;
+            this.txt_env_ignore.TabIndex = 5;
             // 
             // list_env_ignore
             // 
@@ -1151,17 +1155,19 @@
             // 
             // page_winserver
             // 
+            this.page_winserver.Controls.Add(this.txt_winserver_nickname);
             this.page_winserver.Controls.Add(this.label32);
+            this.page_winserver.Controls.Add(this.label29);
             this.page_winserver.Controls.Add(this.loading_win_server_test);
             this.page_winserver.Controls.Add(this.label5);
             this.page_winserver.Controls.Add(this.b_env_server_test);
             this.page_winserver.Controls.Add(this.combo_env_server_list);
-            this.page_winserver.Controls.Add(this.label4);
             this.page_winserver.Controls.Add(this.b_env_server_add);
             this.page_winserver.Controls.Add(this.txt_env_server_host);
             this.page_winserver.Controls.Add(this.b_env_server_remove);
             this.page_winserver.Controls.Add(this.label3);
             this.page_winserver.Controls.Add(this.txt_env_server_token);
+            this.page_winserver.Controls.Add(this.label4);
             this.page_winserver.Location = new System.Drawing.Point(4, 22);
             this.page_winserver.Name = "page_winserver";
             this.page_winserver.Padding = new System.Windows.Forms.Padding(3);
@@ -1229,7 +1235,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(209, 25);
+            this.label4.Location = new System.Drawing.Point(179, 22);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(47, 12);
             this.label4.TabIndex = 9;
@@ -1248,7 +1254,7 @@
             // 
             // txt_env_server_host
             // 
-            this.txt_env_server_host.Location = new System.Drawing.Point(59, 16);
+            this.txt_env_server_host.Location = new System.Drawing.Point(46, 16);
             this.txt_env_server_host.Name = "txt_env_server_host";
             this.txt_env_server_host.Size = new System.Drawing.Size(125, 21);
             this.txt_env_server_host.TabIndex = 2;
@@ -1276,25 +1282,27 @@
             // 
             // txt_env_server_token
             // 
-            this.txt_env_server_token.Location = new System.Drawing.Point(262, 16);
+            this.txt_env_server_token.Location = new System.Drawing.Point(220, 16);
             this.txt_env_server_token.Name = "txt_env_server_token";
-            this.txt_env_server_token.Size = new System.Drawing.Size(303, 21);
+            this.txt_env_server_token.Size = new System.Drawing.Size(152, 21);
             this.txt_env_server_token.TabIndex = 3;
             // 
             // page_linux_server
             // 
+            this.page_linux_server.Controls.Add(this.txt_linux_server_nickname);
             this.page_linux_server.Controls.Add(this.loading_linux_server_test);
             this.page_linux_server.Controls.Add(this.label20);
             this.page_linux_server.Controls.Add(this.combo_linux_server_list);
             this.page_linux_server.Controls.Add(this.txt_linux_pwd);
-            this.page_linux_server.Controls.Add(this.label19);
             this.page_linux_server.Controls.Add(this.txt_linux_username);
-            this.page_linux_server.Controls.Add(this.label18);
             this.page_linux_server.Controls.Add(this.b_linux_server_test);
             this.page_linux_server.Controls.Add(this.b_add_linux_server);
             this.page_linux_server.Controls.Add(this.b_linux_server_remove);
             this.page_linux_server.Controls.Add(this.txt_linux_host);
             this.page_linux_server.Controls.Add(this.label17);
+            this.page_linux_server.Controls.Add(this.label18);
+            this.page_linux_server.Controls.Add(this.label19);
+            this.page_linux_server.Controls.Add(this.label35);
             this.page_linux_server.Location = new System.Drawing.Point(4, 22);
             this.page_linux_server.Name = "page_linux_server";
             this.page_linux_server.Padding = new System.Windows.Forms.Padding(3);
@@ -1338,16 +1346,16 @@
             // 
             // txt_linux_pwd
             // 
-            this.txt_linux_pwd.Location = new System.Drawing.Point(437, 11);
+            this.txt_linux_pwd.Location = new System.Drawing.Point(323, 10);
             this.txt_linux_pwd.Name = "txt_linux_pwd";
             this.txt_linux_pwd.PasswordChar = '*';
-            this.txt_linux_pwd.Size = new System.Drawing.Size(125, 21);
+            this.txt_linux_pwd.Size = new System.Drawing.Size(93, 21);
             this.txt_linux_pwd.TabIndex = 11;
             // 
             // label19
             // 
             this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(398, 20);
+            this.label19.Location = new System.Drawing.Point(296, 17);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(35, 12);
             this.label19.TabIndex = 18;
@@ -1355,15 +1363,15 @@
             // 
             // txt_linux_username
             // 
-            this.txt_linux_username.Location = new System.Drawing.Point(264, 11);
+            this.txt_linux_username.Location = new System.Drawing.Point(194, 11);
             this.txt_linux_username.Name = "txt_linux_username";
-            this.txt_linux_username.Size = new System.Drawing.Size(115, 21);
+            this.txt_linux_username.Size = new System.Drawing.Size(99, 21);
             this.txt_linux_username.TabIndex = 10;
             // 
             // label18
             // 
             this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(196, 20);
+            this.label18.Location = new System.Drawing.Point(137, 17);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(65, 12);
             this.label18.TabIndex = 16;
@@ -1405,15 +1413,15 @@
             // 
             // txt_linux_host
             // 
-            this.txt_linux_host.Location = new System.Drawing.Point(57, 11);
+            this.txt_linux_host.Location = new System.Drawing.Point(41, 12);
             this.txt_linux_host.Name = "txt_linux_host";
-            this.txt_linux_host.Size = new System.Drawing.Size(128, 21);
+            this.txt_linux_host.Size = new System.Drawing.Size(90, 21);
             this.txt_linux_host.TabIndex = 9;
             // 
             // label17
             // 
             this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(10, 20);
+            this.label17.Location = new System.Drawing.Point(6, 19);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(41, 12);
             this.label17.TabIndex = 10;
@@ -1474,6 +1482,38 @@
             this.combo_env_list.Size = new System.Drawing.Size(248, 20);
             this.combo_env_list.TabIndex = 0;
             this.combo_env_list.SelectedIndexChanged += new System.EventHandler(this.combo_env_list_SelectedIndexChanged);
+            // 
+            // txt_winserver_nickname
+            // 
+            this.txt_winserver_nickname.Location = new System.Drawing.Point(438, 15);
+            this.txt_winserver_nickname.Name = "txt_winserver_nickname";
+            this.txt_winserver_nickname.Size = new System.Drawing.Size(132, 21);
+            this.txt_winserver_nickname.TabIndex = 4;
+            // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.Location = new System.Drawing.Point(378, 22);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(65, 12);
+            this.label29.TabIndex = 32;
+            this.label29.Text = "NickName：";
+            // 
+            // txt_linux_server_nickname
+            // 
+            this.txt_linux_server_nickname.Location = new System.Drawing.Point(479, 8);
+            this.txt_linux_server_nickname.Name = "txt_linux_server_nickname";
+            this.txt_linux_server_nickname.Size = new System.Drawing.Size(94, 21);
+            this.txt_linux_server_nickname.TabIndex = 12;
+            // 
+            // label35
+            // 
+            this.label35.AutoSize = true;
+            this.label35.Location = new System.Drawing.Point(421, 17);
+            this.label35.Name = "label35";
+            this.label35.Size = new System.Drawing.Size(65, 12);
+            this.label35.TabIndex = 34;
+            this.label35.Text = "NickName：";
             // 
             // Deploy
             // 
@@ -1651,5 +1691,9 @@
         private System.Windows.Forms.Label label32;
         private System.Windows.Forms.Label label33;
         private System.Windows.Forms.Label label34;
+        private System.Windows.Forms.TextBox txt_winserver_nickname;
+        private System.Windows.Forms.Label label29;
+        private System.Windows.Forms.TextBox txt_linux_server_nickname;
+        private System.Windows.Forms.Label label35;
     }
 }
