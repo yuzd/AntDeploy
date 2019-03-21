@@ -38,7 +38,7 @@ namespace AntDeployAgentWindows.Model
         public static string PublishWindowServicePathFolder = "";
         public static string BackUpWindowServicePathFolder = "";
 
-        public static void InitWebRoot(string rootPath)
+        public static void InitWebRoot(string rootPath,bool useCustomer = false)
         {
 
             if (string.IsNullOrEmpty(rootPath))
@@ -48,7 +48,7 @@ namespace AntDeployAgentWindows.Model
 
             WebRootPath = rootPath;
 
-            PublishPathFolder = Path.Combine(WebRootPath, "antdeploy");
+            PublishPathFolder = (useCustomer)? rootPath: Path.Combine(WebRootPath, "antdeploy");
 
             if (!Directory.Exists(PublishPathFolder))
             {

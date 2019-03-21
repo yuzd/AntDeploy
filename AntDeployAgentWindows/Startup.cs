@@ -29,7 +29,16 @@ namespace AntDeployAgentWindows
             var builder = new AppBuilder();
             Configuration(builder);
             _owinAppFunc = builder.Build();
-            Setting.InitWebRoot(AppDomain.CurrentDomain.BaseDirectory);
+            var deployDir = System.Configuration.ConfigurationManager.AppSettings["DeployDir"];
+            if (!string.IsNullOrEmpty(deployDir))
+            {
+                Setting.InitWebRoot(deployDir,true);
+            }
+            else
+            {
+                Setting.InitWebRoot(AppDomain.CurrentDomain.BaseDirectory);
+            }
+            
         }
 
 
