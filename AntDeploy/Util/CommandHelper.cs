@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.Build.Utilities;
+using System;
 using System.Diagnostics;
-using System.IO;
-using Microsoft.Build.Evaluation;
-using Microsoft.Build.Execution;
-using Microsoft.Build.Framework;
-using Microsoft.Build.Logging;
-using Microsoft.Build.Utilities;
 
 namespace AntDeploy.Util
 {
@@ -16,72 +10,41 @@ namespace AntDeploy.Util
     /// </summary>
     public class CommandHelper
     {
-        
 
-        public static bool RunMsbuild(string path,string publishPath,NLog.Logger logger)
+        /// <summary>
+        /// 启用msbuild
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="publishPath"></param>
+        /// <param name="logger"></param>
+        /// <param name="isWeb"></param>
+        /// <returns></returns>
+        public static bool RunMsbuild(string path, string publishPath, NLog.Logger logger, bool isWeb = false)
         {
             var msBuild = GetMsBuildPath();
             if (string.IsNullOrEmpty(msBuild))
             {
                 return false;
             }
-            var path2 = publishPath.Replace("\\\\","\\");
+            var path2 = publishPath.Replace("\\\\", "\\");
             if (path2.EndsWith("\\"))
             {
-                path2 =path2.Substring(0,path2.Length-1);
+                path2 = path2.Substring(0, path2.Length - 1);
             }
-            return RunDotnetExternalExe(string.Empty,msBuild+"\\MsBuild.exe",
-                "\""+path.Replace("\\\\","\\") + "\" /t:Rebuild /v:m /p:Configuration=Release;OutDir=\""+ path2 + "\"",
-                 logger);
+            var msbuildPath = msBuild + "\\MsBuild.exe";
+            var buildArg = "\"" + path.Replace("\\\\", "\\") + "\"";
+            if (isWeb)
+            {
+                buildArg += " /verbosity:minimal /p:Configuration=Release /p:Platform=AnyCPU /t:WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:publishUrl=\"" + path2 + "\"";
+            }
+            else
+            {
+                buildArg += " /t:Rebuild /v:m /p:Configuration=Release;OutDir=\"" + path2 + "\"";
+
+            }
+            return RunDotnetExternalExe(string.Empty, msbuildPath, buildArg, logger);
         }
 
-
-        public static string GetMsBuildPath()
-        {
-            var getmS = ToolLocationHelper.GetPathToBuildTools(ToolLocationHelper.CurrentToolsVersion);
-            return getmS;
-
-
-            //try
-            //{
-               
-                
-
-              
-           
-            //    //var parms = new BuildParameters
-            //    //{
-            //    //    DetailedSummary = true,
-                    
-            //    //};
-
-            //    //var projectInstance = new ProjectInstance(path);
-            //    //projectInstance.SetProperty("Configuration", "Release");
-            //    //projectInstance.SetProperty("Platform", "Any CPU");
-            //    //var request = new BuildRequestData(projectInstance,  new string[] { "Rebuild" });
-                
-            //    //parms.Loggers = new List<Microsoft.Build.Framework.ILogger>
-            //    //{
-            //    //    new ConsoleLogger(LoggerVerbosity.Normal,
-            //    //        message => { log(message); }, color => { }, () => { })
-            //    //    {
-            //    //        ShowSummary = true
-            //    //    }
-            //    //};
-
-            //    //var result = BuildManager.DefaultBuildManager.Build(parms, request);
-            //    //if (result.OverallResult == BuildResultCode.Success)
-            //    //{
-            //    //    return string.Empty;
-            //    //}
-
-            //    return getmS;
-            //}
-            //catch (Exception e)
-            //{
-            //    return e.Message;
-            //}
-        }
 
 
         /// <summary>
@@ -91,7 +54,7 @@ namespace AntDeploy.Util
         /// <param name="arguments"></param>
         /// <param name="logger"></param>
         /// <returns></returns>
-        public static bool RunDotnetExternalExe(string projectPath,string fileName,string arguments, NLog.Logger logger)
+        public static bool RunDotnetExternalExe(string projectPath, string fileName, string arguments, NLog.Logger logger)
         {
             Process process = null;
             try
@@ -124,7 +87,7 @@ namespace AntDeploy.Util
                 {
                     if (!string.IsNullOrWhiteSpace(args.Data))
                     {
-                        if (!args.Data.StartsWith(" ")&&args.Data.Contains(": error"))
+                        if (!args.Data.StartsWith(" ") && args.Data.Contains(": error"))
                         {
                             logger?.Warn(args.Data);
                         }
@@ -169,6 +132,16 @@ namespace AntDeploy.Util
             }
         }
 
-        
+
+        /// <summary>
+        /// 获取Msbuild的路径
+        /// </summary>
+        /// <returns></returns>
+        private static string GetMsBuildPath()
+        {
+            var getmS = ToolLocationHelper.GetPathToBuildTools(ToolLocationHelper.CurrentToolsVersion);
+            return getmS;
+        }
+
     }
 }

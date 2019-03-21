@@ -1228,7 +1228,7 @@ namespace AntDeploy.Winform
                     }
                     else
                     {
-                        var isSuccess = CommandHelper.RunMsbuild(ProjectPath, path, this.nlog_iis);
+                        var isSuccess = CommandHelper.RunMsbuild(ProjectPath, path, this.nlog_iis,true);
 
                         if (!isSuccess)
                         {
