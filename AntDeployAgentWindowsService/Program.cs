@@ -12,22 +12,19 @@ namespace AntDeployAgentWindowsService
         /// <summary>
         /// 应用程序的主入口点。
         /// </summary>
-        static void Main()
+        static void Main(string[] args)
         {
+            AntDeployAgentWindowsService s = new AntDeployAgentWindowsService();
             if (Environment.UserInteractive)
             {
-
-                AntDeployAgentWindowsService s = new AntDeployAgentWindowsService();
-                string[] args = { "a", "b" };
-                s.start(args);
+                s.RunAsConsole(args);
             }
-
             else
             {
                 ServiceBase[] ServicesToRun;
                 ServicesToRun = new ServiceBase[]
                 {
-                    new AntDeployAgentWindowsService()
+                    s
                 };
                 ServiceBase.Run(ServicesToRun);
             }
