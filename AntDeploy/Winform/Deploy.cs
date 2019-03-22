@@ -1437,6 +1437,7 @@ namespace AntDeploy.Winform
                     this.nlog_iis.Info("-----------------Deploy Start-----------------");
                     var index = 0;
                     var allSuccess = true;
+                    var failCount = 0;
                     foreach (var server in serverList)
                     {
                         if (index != 0) //因为编译和打包只会占用第一台服务器的时间
@@ -1450,6 +1451,7 @@ namespace AntDeploy.Winform
                             this.nlog_iis.Warn($"{server.Host} Deploy skip,Token is null or empty!");
                             UploadError(this.tabPage_progress, server.Host);
                             allSuccess = false;
+                            failCount++;
                             continue;
                         }
 
@@ -1518,6 +1520,7 @@ namespace AntDeploy.Winform
                             if (haveError)
                             {
                                 allSuccess = false;
+                                failCount++;
                                 this.nlog_iis.Error($"Host:{getHostDisplayName(server)},Deploy Fail,Skip to Next");
                                 UpdateDeployProgress(this.tabPage_progress, server.Host, false);
                             }
@@ -1542,6 +1545,8 @@ namespace AntDeploy.Winform
                                         }
                                         else
                                         {
+                                            allSuccess = false;
+                                            failCount++;
                                             UpdateDeployProgress(this.tabPage_progress, server.Host, false);
                                         }
                                     }
@@ -1553,6 +1558,7 @@ namespace AntDeploy.Winform
                                 else
                                 {
                                     allSuccess = false;
+                                    failCount++;
                                     this.nlog_iis.Error($"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2},Skip to Next");
                                     UpdateDeployProgress(this.tabPage_progress, server.Host, false);
                                 }
@@ -1561,6 +1567,8 @@ namespace AntDeploy.Winform
                         }
                         catch (Exception ex)
                         {
+                            allSuccess = false;
+                            failCount++;
                             this.nlog_iis.Error($"Fail Deploy,Host:{getHostDisplayName(server)},Response:{ex.Message},Skip to Next");
                             UpdateDeployProgress(this.tabPage_progress, server.Host, false);
                         }
@@ -1585,7 +1593,7 @@ namespace AntDeploy.Winform
                     LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local publish folder  ==> ");
                     publisEvent2.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
                     this.nlog_iis.Log(publisEvent2);
-                    this.nlog_iis.Info("-----------------Deploy End-----------------");
+                    this.nlog_iis.Info($"-----------------Deploy End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
 
                 }
                 catch (Exception ex1)
@@ -2560,6 +2568,7 @@ namespace AntDeploy.Winform
                     this.nlog_windowservice.Info("-----------------Deploy Start-----------------");
                     var index = 0;
                     var allSuccess = true;
+                    var failCount = 0;
                     var dateTimeFolderName = DateTime.Now.ToString("yyyyMMddHHmmss");
                     foreach (var server in serverList)
                     {
@@ -2574,6 +2583,7 @@ namespace AntDeploy.Winform
                             this.nlog_windowservice.Warn($"{server.Host} Deploy skip,Token is null or empty!");
                             UploadError(this.tabPage_windows_service, server.Host);
                             allSuccess = false;
+                            failCount++;
                             continue;
                         }
 
@@ -2644,6 +2654,7 @@ namespace AntDeploy.Winform
                             if (haveError)
                             {
                                 allSuccess = false;
+                                failCount++;
                                 this.nlog_windowservice.Error($"Host:{getHostDisplayName(server)},Deploy Fail,Skip to Next");
                                 UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
                             }
@@ -2668,6 +2679,8 @@ namespace AntDeploy.Winform
                                         }
                                         else
                                         {
+                                            failCount++;
+                                            allSuccess = false;
                                             UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
                                         }
                                     }
@@ -2679,6 +2692,7 @@ namespace AntDeploy.Winform
                                 else
                                 {
                                     allSuccess = false;
+                                    failCount++;
                                     this.nlog_windowservice.Error(
                                         $"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2},Skip to Next");
                                     UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
@@ -2688,6 +2702,8 @@ namespace AntDeploy.Winform
                         }
                         catch (Exception ex)
                         {
+                            failCount++;
+                            allSuccess = false;
                             this.nlog_windowservice.Error(
                                 $"Fail Deploy,Host:{getHostDisplayName(server)},Response:{ex.Message},Skip to Next");
                             UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
@@ -2712,7 +2728,7 @@ namespace AntDeploy.Winform
                     LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local publish folder  ==> ");
                     publisEvent2.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
                     this.nlog_windowservice.Log(publisEvent2);
-                    this.nlog_windowservice.Info("-----------------Deploy End-----------------");
+                    this.nlog_windowservice.Info($"-----------------Deploy End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
                 }
                 catch (Exception ex1)
                 {
@@ -3477,6 +3493,7 @@ namespace AntDeploy.Winform
                     this.nlog_docker.Info("-----------------Deploy Start-----------------");
                     var index = 0;
                     var allSuccess = true;
+                    var failCount = 0;
                     foreach (var server in serverList)
                     {
                         if (index != 0) //因为编译和打包只会占用第一台服务器的时间
@@ -3492,6 +3509,7 @@ namespace AntDeploy.Winform
                             this.nlog_docker.Error("Server Host is Empty");
                             UploadError(this.tabPage_docker);
                             allSuccess = false;
+                            failCount++;
                             continue;
                         }
 
@@ -3500,6 +3518,7 @@ namespace AntDeploy.Winform
                             this.nlog_docker.Error("Server UserName is Empty");
                             UploadError(this.tabPage_docker);
                             allSuccess = false;
+                            failCount++;
                             continue;
                         }
 
@@ -3508,6 +3527,7 @@ namespace AntDeploy.Winform
                             this.nlog_docker.Error("Server Pwd is Empty");
                             UploadError(this.tabPage_docker);
                             allSuccess = false;
+                            failCount++;
                             continue;
                         }
 
@@ -3517,6 +3537,7 @@ namespace AntDeploy.Winform
                             this.nlog_docker.Error("Server Pwd is Empty");
                             UploadError(this.tabPage_docker);
                             allSuccess = false;
+                            failCount++;
                             continue;
                         }
 
@@ -3554,6 +3575,7 @@ namespace AntDeploy.Winform
                                 this.nlog_docker.Error($"Deploy Host:{getHostDisplayName(server)} Fail: connect fail");
                                 UploadError(this.tabPage_docker);
                                 allSuccess = false;
+                                failCount++;
                                 continue;
                             }
 
@@ -3565,6 +3587,7 @@ namespace AntDeploy.Winform
                                 if (hasError)
                                 {
                                     allSuccess = false;
+                                    failCount++;
                                     sshClient.DeletePublishFolder("antdeploy");
                                     UpdateDeployProgress(this.tabPage_docker, server.Host, !hasError);
                                 }
@@ -3586,6 +3609,8 @@ namespace AntDeploy.Winform
                                         else
                                         {
                                             UpdateDeployProgress(this.tabPage_docker, server.Host, false);
+                                            allSuccess = false;
+                                            failCount++;
                                         }
                                     }
                                     else
@@ -3600,6 +3625,7 @@ namespace AntDeploy.Winform
                             catch (Exception ex)
                             {
                                 allSuccess = false;
+                                failCount++;
                                 this.nlog_docker.Error($"Deploy Host:{getHostDisplayName(server)} Fail:" + ex.Message);
                                 UpdateDeployProgress(this.tabPage_docker, server.Host, false);
                             }
@@ -3617,7 +3643,7 @@ namespace AntDeploy.Winform
                     LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local publish folder  ==> ");
                     publisEvent2.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
                     this.nlog_docker.Log(publisEvent2);
-                    this.nlog_docker.Info("-----------------Deploy End-----------------");
+                    this.nlog_docker.Info($"-----------------Deploy End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
                 }
                 catch (Exception ex1)
                 {

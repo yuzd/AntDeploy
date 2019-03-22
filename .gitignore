@@ -263,3 +263,4 @@ Test/
 NLog.Windows.Forms/
 WindowsFormsAppTest/
 AntDeployWinform/
+AntDeployAgentWindowsService/agent_publish/antdeploy/
