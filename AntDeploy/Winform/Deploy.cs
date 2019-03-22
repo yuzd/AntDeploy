@@ -729,8 +729,8 @@ namespace AntDeploy.Winform
                 {
 
                     WebClient client = new WebClient();
-                    var result =
-                        client.DownloadString($"http://{serverHost}/publish?Token={WebUtility.UrlEncode(serverTolen)}");
+                    client.Proxy = null;
+                    var result = client.DownloadString($"http://{serverHost}/publish?Token={WebUtility.UrlEncode(serverTolen)}");
 
                     this.BeginInvokeLambda(() =>
                     {

@@ -72,6 +72,8 @@ namespace AntDeploy.Util
             {
                 Timeout = 1000*60*30
             };//设置超时为20分钟
+
+            webClient.Proxy = null;
             webClient.Headers.Add("Content-Type", "multipart/form-data; boundary=" + boundary);
             webClient.Headers.Add("User-Agent", "antdeploy");
             config?.Invoke(webClient);
@@ -175,7 +177,9 @@ namespace AntDeploy.Util
             lWebRequest.Timeout = Timeout;
             if (lWebRequest is HttpWebRequest)
             {
-                ((HttpWebRequest)lWebRequest).KeepAlive = true;
+               
+                ((HttpWebRequest)lWebRequest).KeepAlive = false;
+                ((HttpWebRequest)lWebRequest).ServicePoint.Expect100Continue = false;
                 ((HttpWebRequest)lWebRequest).ReadWriteTimeout = Timeout;
             }
             return lWebRequest;
