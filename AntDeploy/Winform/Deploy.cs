@@ -1356,6 +1356,7 @@ namespace AntDeploy.Winform
                     BuildEnd(this.tabPage_progress); //第一台结束编译
                     LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish success  ==> ");
                     publisEvent.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
+                    publisEvent.LoggerName = "rich_iis_log";
                     this.nlog_iis.Log(publisEvent);
 
 
@@ -1369,6 +1370,7 @@ namespace AntDeploy.Winform
                         {
                             LogEventInfo theEvent = new LogEventInfo(LogLevel.Warn, "",
                                 "publish sdkType:netcore ,but web.config file missing!");
+                            theEvent.LoggerName = "rich_iis_log";
                             theEvent.Properties["ShowLink"] =
                                 "https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis";
                             this.nlog_iis.Log(theEvent);
@@ -1567,6 +1569,7 @@ namespace AntDeploy.Winform
                                     if (!string.IsNullOrEmpty(server.IIsFireUrl))
                                     {
                                         LogEventInfo publisEvent22 = new LogEventInfo(LogLevel.Info, "", $"Host:{getHostDisplayName(server)} Start to Fire Url,TimeOut：10senconds  ==> ");
+                                        publisEvent22.LoggerName = "rich_iis_log";
                                         publisEvent22.Properties["ShowLink"] = server.IIsFireUrl;
                                         this.nlog_iis.Log(publisEvent22);
 
@@ -1624,6 +1627,7 @@ namespace AntDeploy.Winform
                     }
 
                     LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local publish folder  ==> ");
+                    publisEvent2.LoggerName = "rich_iis_log";
                     publisEvent2.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
                     this.nlog_iis.Log(publisEvent2);
                     this.nlog_iis.Info($"-----------------Deploy End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
@@ -2518,6 +2522,7 @@ namespace AntDeploy.Winform
                     BuildEnd(this.tabPage_windows_service); //第一台结束编译
                     LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish success  ==> ");
                     publisEvent.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
+                    publisEvent.LoggerName = "rich_windowservice_log";
                     this.nlog_windowservice.Log(publisEvent);
 
 
@@ -2702,6 +2707,7 @@ namespace AntDeploy.Winform
                                     {
                                         LogEventInfo publisEvent22 = new LogEventInfo(LogLevel.Info, "", "Start to Fire Url,TimeOut：10senconds  ==> ");
                                         publisEvent22.Properties["ShowLink"] = server.WindowsServiceFireUrl;
+                                        publisEvent22.LoggerName = "rich_windowservice_log";
                                         this.nlog_windowservice.Log(publisEvent22);
 
                                         var fireRt = WebUtil.IsHttpGetOk(server.WindowsServiceFireUrl, this.nlog_windowservice);
@@ -2760,6 +2766,7 @@ namespace AntDeploy.Winform
 
                     LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local publish folder  ==> ");
                     publisEvent2.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
+                    publisEvent2.LoggerName = "rich_windowservice_log";
                     this.nlog_windowservice.Log(publisEvent2);
                     this.nlog_windowservice.Info($"-----------------Deploy End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
                 }
@@ -3491,6 +3498,7 @@ namespace AntDeploy.Winform
 
                     LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish success  ==> ");
                     publisEvent.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
+                    publisEvent.LoggerName = "rich_docker_log";
                     this.nlog_docker.Log(publisEvent);
 
 
@@ -3631,6 +3639,7 @@ namespace AntDeploy.Winform
                                     {
                                         LogEventInfo publisEvent22 = new LogEventInfo(LogLevel.Info, "", "Start to Fire Url,TimeOut：10senconds  ==> ");
                                         publisEvent22.Properties["ShowLink"] = server.DockerFireUrl;
+                                        publisEvent22.LoggerName = "rich_docker_log";
                                         this.nlog_docker.Log(publisEvent22);
 
                                         var fireRt = WebUtil.IsHttpGetOk(server.DockerFireUrl, this.nlog_docker);
@@ -3675,6 +3684,7 @@ namespace AntDeploy.Winform
 
                     LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local publish folder  ==> ");
                     publisEvent2.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
+                    publisEvent2.LoggerName = "rich_docker_log";
                     this.nlog_docker.Log(publisEvent2);
                     this.nlog_docker.Info($"-----------------Deploy End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
                 }

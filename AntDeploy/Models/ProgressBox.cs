@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 
 namespace AntDeploy.Models
 {
@@ -252,24 +253,38 @@ namespace AntDeploy.Models
 
         protected override void Dispose(bool disposing)
         {
-            if (ServerType.Equals(ServerType.IIS))
+            Action action = () =>
             {
-                Server.IIsFireUrl = this.FireUrlText.Text;
+                  if (ServerType.Equals(ServerType.IIS))
+                  {
+                      Server.IIsFireUrl = this.FireUrlText.Text;
+                  }
+                  if (ServerType.Equals(ServerType.DOCKER))
+                  {
+                      Server.DockerFireUrl = this.FireUrlText.Text;
+                  }
+                  if (ServerType.Equals(ServerType.WINSERVICE))
+                  {
+                      Server.WindowsServiceFireUrl = this.FireUrlText.Text;
+                  }
+
+                  progress_iis_build.Dispose();
+                  progress_iis_package.Dispose();
+                  progress_iis_upload.Dispose();
+                  progress_iis_deploy.Dispose();
+                  base.Dispose(disposing);
+              };
+
+            if (this.InvokeRequired)
+            {
+
+                this.BeginInvoke(action, null);
             }
-            if (ServerType.Equals(ServerType.DOCKER))
+            else
             {
-                Server.DockerFireUrl = this.FireUrlText.Text;
-            }
-            if (ServerType.Equals(ServerType.WINSERVICE))
-            {
-                Server.WindowsServiceFireUrl = this.FireUrlText.Text;
+                action();
             }
 
-            progress_iis_build.Dispose();
-            progress_iis_package.Dispose();
-            progress_iis_upload.Dispose();
-            progress_iis_deploy.Dispose();
-            base.Dispose(disposing);
         }
 
         public void StartBuild()
@@ -384,7 +399,7 @@ namespace AntDeploy.Models
 
         public bool CheckFireUrl()
         {
-            var url =this.FireUrlText.Text.ToLower();
+            var url = this.FireUrlText.Text.ToLower();
             if (!string.IsNullOrEmpty(url) && !url.StartsWith("http"))
             {
                 return false;

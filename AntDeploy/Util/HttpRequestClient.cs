@@ -1,13 +1,10 @@
-﻿using System;
+﻿using AntDeploy.Models;
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using AntDeploy.Models;
-using Newtonsoft.Json;
 
 namespace AntDeploy.Util
 {
@@ -69,9 +66,12 @@ namespace AntDeploy.Util
         /// </summary>
         /// <param name="requestUrl">请求url</param>
         /// <returns></returns>
-        public async Task<Tuple<bool,string>> Upload(String requestUrl,Action<WebClient> config)
+        public async Task<Tuple<bool, string>> Upload(String requestUrl, Action<WebClient> config)
         {
-            WebClient webClient = new WebClient();
+            WebClient webClient = new AntDeplopyWebClient
+            {
+                Timeout = 1000*60*30
+            };//设置超时为20分钟
             webClient.Headers.Add("Content-Type", "multipart/form-data; boundary=" + boundary);
             webClient.Headers.Add("User-Agent", "antdeploy");
             config?.Invoke(webClient);
@@ -99,7 +99,7 @@ namespace AntDeploy.Util
                         return new Tuple<bool, string>(false, responseText);
                     }
                 }
-                return new Tuple<bool, string>(true,responseText);
+                return new Tuple<bool, string>(true, responseText);
             }
             catch (WebException ex)
             {
@@ -121,7 +121,7 @@ namespace AntDeploy.Util
                 webClient.Dispose();
             }
 
-          
+
         }
 
         /// <summary>
@@ -165,16 +165,20 @@ namespace AntDeploy.Util
         #endregion
     }
 
-    //public class WebClient : System.Net.WebClient
-    //{
-    //    public int Timeout { get; set; }
+    public class AntDeplopyWebClient : System.Net.WebClient
+    {
+        public int Timeout { get; set; }
 
-    //    protected override WebRequest GetWebRequest(Uri uri)
-    //    {
-    //        WebRequest lWebRequest = base.GetWebRequest(uri);
-    //        lWebRequest.Timeout = Timeout;
-    //        ((HttpWebRequest)lWebRequest).ReadWriteTimeout = Timeout;
-    //        return lWebRequest;
-    //    }
-    //}
+        protected override WebRequest GetWebRequest(Uri uri)
+        {
+            WebRequest lWebRequest = base.GetWebRequest(uri);
+            lWebRequest.Timeout = Timeout;
+            if (lWebRequest is HttpWebRequest)
+            {
+                ((HttpWebRequest)lWebRequest).KeepAlive = true;
+                ((HttpWebRequest)lWebRequest).ReadWriteTimeout = Timeout;
+            }
+            return lWebRequest;
+        }
+    }
 }
