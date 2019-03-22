@@ -42,7 +42,8 @@ namespace AntDeploy.Winform
 
         public Deploy(string projectPath, Project project)
         {
-
+            LoadLanguage();
+        
             InitializeComponent();
 
             this.Text += $"(Version:{Vsix.VERSION})";
@@ -134,9 +135,30 @@ namespace AntDeploy.Winform
 
         #region Form
 
+        private void LoadLanguage()
+        {
+            try
+            {
+                ProjectHelper.GetCultureFromAppFile();
+                System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(ProjectHelper.CultureValue.Replace("\"", ""));
+
+            }
+            catch (Exception)
+            {
+
+            }
+        }
 
         private void Deploy_Load(object sender, EventArgs e)
         {
+            if (!string.IsNullOrEmpty(ProjectHelper.CultureValue) && ProjectHelper.CultureValue.Length == 2)
+            {
+                checkBox_Chinese.Checked = false;
+            }
+            else
+            {
+                checkBox_Chinese.Checked = true;
+            }
 
             //计算pannel的起始位置
             var size = this.ClientSize.Width - 646;
@@ -504,15 +526,15 @@ namespace AntDeploy.Winform
 
             if (env != null)
             {
-                env.ServerList.ForEach(r=>
+                env.ServerList.ForEach(r =>
                 {
-                    this.combo_env_server_list.Items.Add(r.Host + "@_@" + r.Token+(!string.IsNullOrWhiteSpace(r.NickName)?"@_@"+r.NickName:""));
+                    this.combo_env_server_list.Items.Add(r.Host + "@_@" + r.Token + (!string.IsNullOrWhiteSpace(r.NickName) ? "@_@" + r.NickName : ""));
                 });
 
 
-                env.LinuxServerList.ForEach(r=>
+                env.LinuxServerList.ForEach(r =>
                 {
-                    this.combo_linux_server_list.Items.Add(r.Host + "@_@" + r.UserName+(!string.IsNullOrWhiteSpace(r.NickName)?"@_@"+r.NickName:""));
+                    this.combo_linux_server_list.Items.Add(r.Host + "@_@" + r.UserName + (!string.IsNullOrWhiteSpace(r.NickName) ? "@_@" + r.NickName : ""));
                 });
 
                 foreach (var item in env.IgnoreList)
@@ -580,7 +602,7 @@ namespace AntDeploy.Winform
             {
                 this.txt_env_server_host.Text = arr[0];
                 this.txt_env_server_token.Text = arr[1];
-                if(arr.Length == 3)
+                if (arr.Length == 3)
                 {
                     this.txt_winserver_nickname.Text = arr[2];
                 }
@@ -616,7 +638,7 @@ namespace AntDeploy.Winform
         private void b_env_server_add_Click(object sender, EventArgs e)
         {
             var nickName = this.txt_winserver_nickname.Text.Trim();
-            
+
             if (!string.IsNullOrWhiteSpace(nickName) && nickName.Contains("@_@"))
             {
                 MessageBox.Show("nickName can not Contains @_@");
@@ -660,13 +682,13 @@ namespace AntDeploy.Winform
                 return;
             }
 
-            var newServer = serverHost + "@_@" + serverTolen + (!string.IsNullOrWhiteSpace(nickName)?"@_@"+nickName:"");
+            var newServer = serverHost + "@_@" + serverTolen + (!string.IsNullOrWhiteSpace(nickName) ? "@_@" + nickName : "");
             this.combo_env_server_list.Items.Add(newServer);
             DeployConfig.Env[this.combo_env_list.SelectedIndex].ServerList.Add(new Server
             {
                 Host = serverHost,
                 Token = serverTolen,
-                NickName =nickName
+                NickName = nickName
             });
 
             DeployConfig.EnvServerChange(DeployConfig.Env[this.combo_env_list.SelectedIndex]);
@@ -769,6 +791,12 @@ namespace AntDeploy.Winform
                 return;
             }
 
+            if (ignoreTxt.Contains("@_@"))
+            {
+                MessageBox.Show("can not contains @_@");
+                return;
+            }
+
             var existIgnore = this.list_env_ignore.Items.Cast<string>().FirstOrDefault(r => r.Equals(ignoreTxt));
             if (!string.IsNullOrEmpty(existIgnore))
             {
@@ -803,6 +831,11 @@ namespace AntDeploy.Winform
             if (ignoreTxt.Length < 1)
             {
                 MessageBox.Show("please input backUp ignore rule");
+                return;
+            }
+            if (ignoreTxt.Contains("@_@"))
+            {
+                MessageBox.Show("can not contains @_@");
                 return;
             }
 
@@ -893,7 +926,7 @@ namespace AntDeploy.Winform
                 return;
             }
 
-            var newServer = serverHost + "@_@" + userName + (!string.IsNullOrWhiteSpace(nickName)?"@_@"+nickName:"");
+            var newServer = serverHost + "@_@" + userName + (!string.IsNullOrWhiteSpace(nickName) ? "@_@" + nickName : "");
             this.combo_linux_server_list.Items.Add(newServer);
             DeployConfig.Env[this.combo_env_list.SelectedIndex].LinuxServerList.Add(new LinuxServer
             {
@@ -1043,7 +1076,7 @@ namespace AntDeploy.Winform
             {
                 this.txt_linux_host.Text = arr[0];
                 this.txt_linux_username.Text = arr[1];
-                if(arr.Length == 3)
+                if (arr.Length == 3)
                 {
                     this.txt_linux_server_nickname.Text = arr[2];
                 }
@@ -1150,7 +1183,7 @@ namespace AntDeploy.Winform
                     ProgressBox newBox =
                         new ProgressBox(new System.Drawing.Point(ProgressBoxLocationLeft, 15 + (i * 140)), serverList[i], ServerType.IIS)
                         {
-                            Text = serverHost + (!string.IsNullOrWhiteSpace(nickName)?$"【{nickName}】":""),
+                            Text = serverHost + (!string.IsNullOrWhiteSpace(nickName) ? $"【{nickName}】" : ""),
                         };
 
                     newBoxList.Add(serverHost, newBox);
@@ -1290,7 +1323,7 @@ namespace AntDeploy.Winform
                     }
                     else
                     {
-                        var isSuccess = CommandHelper.RunMsbuild(ProjectPath, path, this.nlog_iis,true);
+                        var isSuccess = CommandHelper.RunMsbuild(ProjectPath, path, this.nlog_iis, true);
 
                         if (!isSuccess)
                         {
@@ -1384,7 +1417,7 @@ namespace AntDeploy.Winform
                             PackageError(this.tabPage_progress);
                             return;
                         }
-                        gitChangeFileCount =fileList.Count;
+                        gitChangeFileCount = fileList.Count;
                         this.nlog_iis.Info("【git】Increment package file count:" + gitChangeFileCount);
                         try
                         {
@@ -1429,8 +1462,8 @@ namespace AntDeploy.Winform
                         PackageError(this.tabPage_progress);
                         return;
                     }
-                    var packageSize =(zipBytes.Length / 1024 / 1024);
-                    this.nlog_iis.Info($"package success,package size:{(packageSize>0?(packageSize+""):"<1")}M");
+                    var packageSize = (zipBytes.Length / 1024 / 1024);
+                    this.nlog_iis.Info($"package success,package size:{(packageSize > 0 ? (packageSize + "") : "<1")}M");
                     var loggerId = Guid.NewGuid().ToString("N");
                     var dateTimeFolderName = DateTime.Now.ToString("yyyyMMddHHmmss");
                     //执行 上传
@@ -1615,7 +1648,7 @@ namespace AntDeploy.Winform
 
         private string getHostDisplayName(BaseServer server)
         {
-            return $"{server.Host}{(!string.IsNullOrWhiteSpace(server.NickName)?$"【{server.NickName}】":"")}";
+            return $"{server.Host}{(!string.IsNullOrWhiteSpace(server.NickName) ? $"【{server.NickName}】" : "")}";
         }
 
         private void b_iis_rollback_Click(object sender, EventArgs e)
@@ -2177,11 +2210,11 @@ namespace AntDeploy.Winform
                 for (int i = 0; i < serverHostList.Count; i++)
                 {
                     var serverHost = serverHostList[i];
-                    var nickName = serverList[i].NickName; 
+                    var nickName = serverList[i].NickName;
                     ProgressBox newBox =
                         new ProgressBox(new System.Drawing.Point(ProgressBoxLocationLeft, 15 + (i * 140)), serverList[i], ServerType.WINSERVICE)
                         {
-                            Text = serverHost + (!string.IsNullOrWhiteSpace(nickName)?$"【{nickName}】":""),
+                            Text = serverHost + (!string.IsNullOrWhiteSpace(nickName) ? $"【{nickName}】" : ""),
                         };
 
                     newBoxList.Add(serverHost, newBox);
@@ -2506,7 +2539,7 @@ namespace AntDeploy.Winform
                             return;
                         }
                     }
-                    var gitChangeFileCount = 0; 
+                    var gitChangeFileCount = 0;
                     byte[] zipBytes = null;
                     if (gitModel != null)
                     {
@@ -2516,7 +2549,7 @@ namespace AntDeploy.Winform
                             PackageError(this.tabPage_windows_service);
                             return;
                         }
-                         gitChangeFileCount =fileList.Count;
+                        gitChangeFileCount = fileList.Count;
                         this.nlog_windowservice.Info("【git】Increment package file count:" + gitChangeFileCount);
                         try
                         {
@@ -2561,8 +2594,8 @@ namespace AntDeploy.Winform
                         PackageError(this.tabPage_windows_service);
                         return;
                     }
-                    var packageSize =(zipBytes.Length / 1024 / 1024);
-                    this.nlog_windowservice.Info($"package success,package size:{(packageSize>0?(packageSize+""):"<1")}M");
+                    var packageSize = (zipBytes.Length / 1024 / 1024);
+                    this.nlog_windowservice.Info($"package success,package size:{(packageSize > 0 ? (packageSize + "") : "<1")}M");
                     var loggerId = Guid.NewGuid().ToString("N");
                     //执行 上传
                     this.nlog_windowservice.Info("-----------------Deploy Start-----------------");
@@ -4052,7 +4085,7 @@ namespace AntDeploy.Winform
                     ProgressBox newBox =
                         new ProgressBox(new System.Drawing.Point(ProgressBoxLocationLeft, 15 + (i * 140)), serverList[i], ServerType.DOCKER)
                         {
-                            Text = serverHost + (!string.IsNullOrWhiteSpace(nickName)?$"【{nickName}】":""),
+                            Text = serverHost + (!string.IsNullOrWhiteSpace(nickName) ? $"【{nickName}】" : ""),
                         };
 
                     newBoxList.Add(serverHost, newBox);
@@ -4188,5 +4221,19 @@ namespace AntDeploy.Winform
             }
         }
 
+        private void checkBox_Chinese_Click(object sender, EventArgs e)
+        {
+            var result = ProjectHelper.SetCultureFromAppFile(checkBox_Chinese.Checked ? "zh-CN" : "");
+            if (result)
+            {
+                MessageBox.Show("change success please reload antdeploy!");
+                return;
+            }
+            else
+            {
+                MessageBox.Show("change fail！");
+                return;
+            }
+        }
     }
 }

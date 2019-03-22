@@ -24,6 +24,9 @@ namespace AntDeploy.Models
     internal static class ProjectHelper
     {
 
+        public static string Culture = string.Empty;
+        public static string CultureValue = string.Empty;
+
         /// <summary>
         /// 获取Windows服务的名称
         /// </summary>
@@ -207,7 +210,74 @@ namespace AntDeploy.Models
                 return string.Empty;
             }
         }
-        
+
+
+        public static string GetCultureFromAppFile()
+        {
+            try
+            {
+                var location = typeof(ProjectHelper).Assembly.Location;
+                var fileInfo = new FileInfo(location);
+                var appFileName = Path.Combine(fileInfo.DirectoryName, "app.config");
+                if (!File.Exists(appFileName))
+                {
+                    return string.Empty;
+                }
+
+                var text = File.ReadAllLines(appFileName);
+                var culture = string.Empty;
+                foreach (var line in text)
+                {
+                    if (line.Contains("Culture"))
+                    {
+                        var arr = line.Split(new string[] { "value=\"" }, StringSplitOptions.RemoveEmptyEntries);
+                        if (arr.Length == 2)
+                        {
+                            culture = arr[1].Split('\"')[0];
+                            CultureValue = $"\"{culture}\"";
+                            Culture = line;
+                            break;
+                        }
+                    }
+                }
+
+                return location;
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+        }
+
+
+        public static bool SetCultureFromAppFile(string culture)
+        {
+            try
+            {
+                if(string.IsNullOrEmpty(Culture)) return false;
+
+                var location = typeof(ProjectHelper).Assembly.Location;
+                var fileInfo = new FileInfo(location);
+                var appFileName = Path.Combine(fileInfo.DirectoryName, "app.config");
+                if (!File.Exists(appFileName))
+                {
+                    return false;
+                }
+
+                var text = File.ReadAllText(appFileName);
+                if(string.IsNullOrEmpty(text)) return false;
+
+                text = text.Replace(Culture,Culture.Replace(CultureValue,$"\"{culture}\""));
+
+                File.WriteAllText(appFileName,text,System.Text.Encoding.UTF8);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
 
         public const string SolutionItemsFolder = "Solution Items";
 

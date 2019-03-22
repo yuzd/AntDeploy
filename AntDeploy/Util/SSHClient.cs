@@ -400,20 +400,37 @@ namespace AntDeploy.Util
 
             //先发送退出命令
             //https://stackoverflow.com/questions/40742192/how-to-do-gracefully-shutdown-on-dotnet-with-docker
-            var r1 = _sshClient.RunCommand($"sudo docker stop -t 10 {continarName}");
-            if (r1.ExitStatus == 0)
+
+            SshCommand r1 = null;
+            try
             {
-                _logger($"sudo docker stop -t 10 {continarName}", LogLevel.Info);
+                r1 = _sshClient.RunCommand($"sudo docker stop -t 10 {continarName}");
+                if (r1.ExitStatus == 0)
+                {
+                    _logger($"sudo docker stop -t 10 {continarName}", LogLevel.Info);
+                }
+
+                Thread.Sleep(5000);
+            }
+            catch (Exception)
+            {
+
             }
 
-            Thread.Sleep(5000);
-
-            //查看容器有没有在runing 如果有就干掉它
-            r1 = _sshClient.RunCommand($"sudo docker rm -f {continarName}");
-            if (r1.ExitStatus == 0)
+            try
             {
-                _logger($"sudo docker rm -f {continarName}", LogLevel.Info);
+                //查看容器有没有在runing 如果有就干掉它
+                r1 = _sshClient.RunCommand($"sudo docker rm -f {continarName}");
+                if (r1.ExitStatus == 0)
+                {
+                    _logger($"sudo docker rm -f {continarName}", LogLevel.Info);
+                }
             }
+            catch (Exception)
+            {
+
+            }
+            
 
             string port = NetCorePort;
             if (string.IsNullOrEmpty(port))
@@ -462,7 +479,7 @@ namespace AntDeploy.Util
 
 
             //查看是否有<none>的image 把它删掉 因为我们创建image的时候每次都会覆盖所以会产生一些没有的image
-            _sshClient.RunCommand($"if sudo docker images -f \"dangling=true\" | grep ago --quiet; then sudo docker rmi -f $(sudo docker images -f \"dangling=true\" -q); fi");
+            //_sshClient.RunCommand($"if sudo docker images -f \"dangling=true\" | grep ago --quiet; then sudo docker rmi -f $(sudo docker images -f \"dangling=true\" -q); fi");
 
 
             ClearOldHistroy();

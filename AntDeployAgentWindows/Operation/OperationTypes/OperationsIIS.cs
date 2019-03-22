@@ -51,7 +51,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
 
                     if (retryStopWebSite >= 3)
                     {
-                        logger($"File to IIS WebsiteStop :{this.args.SiteName},Err:{siteResult}, Retry limit.");
+                        logger($"【Error】File to IIS WebsiteStop :{this.args.SiteName},Err:{siteResult}, Retry limit.");
                         return;
                     }
 
@@ -74,7 +74,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
                 {
                     if (retryStopPool >= 3)
                     {
-                        logger($"File to Stop IIS ApplicationPool :{this.args.ApplicationPoolName },Err:{stopPoolResult},  Retry limit.");
+                        logger($"【Error】File to Stop IIS ApplicationPool :{this.args.ApplicationPoolName },Err:{stopPoolResult},  Retry limit.");
                         return;
                     }
 
@@ -104,7 +104,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
                 Thread.Sleep(5000);
                 if (retryTimes > 3)
                 {
-                    logger("Retry Copy Limit ");
+                    logger("【Error】Retry Copy Limit ");
                     throw;
                 }
 
@@ -125,7 +125,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
             {
                 if (retryStartPool >= 3)
                 {
-                    logger($"File to Start IIS ApplicationPool :{this.args.ApplicationPoolName },Err:{poolstartReult},  Retry limit.");
+                    logger($"【Error】File to Start IIS ApplicationPool :{this.args.ApplicationPoolName },Err:{poolstartReult},  Retry limit.");
                     return;
                 }
 
@@ -150,7 +150,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
 
                 if (retryStartSite >= 3)
                 {
-                    logger($"File to Start IIS Websit :{ this.args.SiteName},Err:{websiteStartResult}, Retry limit.");
+                    logger($"【Error】File to Start IIS Websit :{ this.args.SiteName},Err:{websiteStartResult}, Retry limit.");
                     return;
                 }
 

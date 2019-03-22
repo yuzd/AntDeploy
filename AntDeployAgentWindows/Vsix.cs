@@ -1,7 +1,7 @@
 ﻿namespace AntDeployAgentWindows
 {
-    internal static class Version
+    public static class Version
     {
-        public const string VERSION = "3.3";
+        public const string VERSION = "3.4";
     }
 }

@@ -23,6 +23,7 @@ namespace AntDeployAgentWindowsService
         public void RunAsConsole(string[] args)
         {
             OnStart(args);
+            Console.WriteLine("Current Version：" + AntDeployAgentWindows.Version.VERSION);
             Console.WriteLine("Press any key to exit...");
             Console.ReadLine();
             OnStop();
