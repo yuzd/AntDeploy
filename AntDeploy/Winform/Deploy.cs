@@ -1703,6 +1703,12 @@ namespace AntDeploy.Winform
                 return;
             }
 
+            //fire url
+            if (CheckFireUri(ServerType.IIS))
+            {
+                MessageBox.Show("fire url is not correct!");
+                return;
+            }
 
             var serverHostList = string.Join(Environment.NewLine, serverList.Select(r => r.Host).ToList());
 
@@ -1815,6 +1821,7 @@ namespace AntDeploy.Winform
 
                     this.nlog_iis.Info($"-----------------Rollback Start[Ver:{Vsix.VERSION}]-----------------");
                     var allSuccess = true;
+                    var failCount = 0;
                     foreach (var server in serverList)
                     {
                         BuildEnd(this.tabPage_progress, server.Host);
@@ -1827,6 +1834,7 @@ namespace AntDeploy.Winform
                             this.nlog_iis.Warn($"{server.Host} Rollback skip,Token is null or empty!");
                             UpdateDeployProgress(this.tabPage_progress, server.Host, false);
                             allSuccess = false;
+                            failCount++;
                             continue;
                         }
 
@@ -1880,6 +1888,7 @@ namespace AntDeploy.Winform
                             if (haveError)
                             {
                                 allSuccess = false;
+                                failCount++;
                                 this.nlog_iis.Error($"Host:{getHostDisplayName(server)},Rollback Fail,Skip to Next");
                                 UpdateDeployProgress(this.tabPage_progress, server.Host, false);
                             }
@@ -1888,11 +1897,36 @@ namespace AntDeploy.Winform
                                 if (uploadResult.Item1)
                                 {
                                     this.nlog_iis.Info($"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2}");
-                                    UpdateDeployProgress(this.tabPage_progress, server.Host, true);
+                                    //fire the website
+                                    if (!string.IsNullOrEmpty(server.IIsFireUrl))
+                                    {
+                                        LogEventInfo publisEvent22 = new LogEventInfo(LogLevel.Info, "", $"Host:{getHostDisplayName(server)} Start to Fire Url,TimeOut：10senconds  ==> ");
+                                        publisEvent22.LoggerName = "rich_iis_log";
+                                        publisEvent22.Properties["ShowLink"] = server.IIsFireUrl;
+                                        this.nlog_iis.Log(publisEvent22);
+
+                                        var fireRt = WebUtil.IsHttpGetOk(server.IIsFireUrl, this.nlog_iis);
+                                        if (fireRt)
+                                        {
+                                            UpdateDeployProgress(this.tabPage_progress, server.Host, true);
+                                            this.nlog_iis.Info($"Host:{getHostDisplayName(server)},Success Fire Url");
+                                        }
+                                        else
+                                        {
+                                            allSuccess = false;
+                                            failCount++;
+                                            UpdateDeployProgress(this.tabPage_progress, server.Host, false);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        UpdateDeployProgress(this.tabPage_progress, server.Host, true);
+                                    }
                                 }
                                 else
                                 {
                                     allSuccess = false;
+                                    failCount++;
                                     this.nlog_iis.Error(
                                         $"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2},Skip to Next");
                                     UpdateDeployProgress(this.tabPage_progress, server.Host, false);
@@ -1905,6 +1939,7 @@ namespace AntDeploy.Winform
                             this.nlog_iis.Error($"Fail Rollback,Host:{getHostDisplayName(server)},Response:{ex.Message},Skip to Next");
                             UpdateDeployProgress(this.tabPage_progress, server.Host, false);
                             allSuccess = false;
+                            failCount++;
                         }
                         finally
                         {
@@ -1921,7 +1956,7 @@ namespace AntDeploy.Winform
                         this.nlog_iis.Info($"Rollback Version：" + dateTimeFolderName);
                     }
 
-                    this.nlog_iis.Info($"Rollback End");
+                    this.nlog_iis.Info($"-----------------Rollback End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
                 }
                 catch (Exception ex1)
                 {
@@ -2376,7 +2411,6 @@ namespace AntDeploy.Winform
             {
                 //MessageBox.Show("get current project property:outputfilename error");
                 execFilePath = this.ProjectName + ".exe";
-                return;
             }
 
             if (!DeployConfig.WindowsServiveConfig.SdkType.Equals("netcore") && !execFilePath.Trim().ToLower().EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
@@ -2499,7 +2533,7 @@ namespace AntDeploy.Winform
                         var serviceNameByFile = ProjectHelper.GetServiceNameByFile(newserviceFile);
                         if (!string.IsNullOrEmpty(serviceNameByFile))
                         {
-                            //this.nlog_windowservice.Error($"file: {serviceFile} is not a windows service! ");
+                            this.nlog_windowservice.Warn($"windowsService name is {serviceNameByFile} in file: {serviceFile} ,but input name is {serviceName} ! ");
                             //return;
                             isProjectInstallService = true;
                             serviceName = serviceNameByFile;
@@ -2825,14 +2859,20 @@ namespace AntDeploy.Winform
                 return;
             }
 
+            //fire url
+            if (CheckFireUri(ServerType.WINSERVICE))
+            {
+                MessageBox.Show("fire url is not correct!");
+                return;
+            }
+
 #if DEBUG
-            var execFilePath = "AntDeployAgentWindowsService.exe";
+            var execFilePath = this.ProjectName + ".exe";
 #else
             var execFilePath = _project.GetProjectProperty("OutputFileName");
             if (string.IsNullOrEmpty(execFilePath))
             {
-                MessageBox.Show("get current project property:outputfilename error");
-                return;
+                execFilePath = this.ProjectName + ".exe";// MessageBox.Show("get current project property:outputfilename error");
             }
 
             if (!DeployConfig.WindowsServiveConfig.SdkType.Equals("netcore") && !execFilePath.Trim().ToLower().EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
@@ -2966,6 +3006,7 @@ namespace AntDeploy.Winform
                     this.nlog_windowservice.Info(
                         $"-----------------Rollback Start[Ver:{Vsix.VERSION}]-----------------");
                     var allSuccess = true;
+                    var failCount = 0;
                     foreach (var server in serverList)
                     {
                         BuildEnd(this.tabPage_windows_service, server.Host);
@@ -2978,6 +3019,7 @@ namespace AntDeploy.Winform
                             this.nlog_windowservice.Warn($"{server.Host} Rollback skip,Token is null or empty!");
                             UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
                             allSuccess = false;
+                            failCount++;
                             continue;
                         }
 
@@ -3031,6 +3073,7 @@ namespace AntDeploy.Winform
                             if (haveError)
                             {
                                 allSuccess = false;
+                                failCount++;
                                 this.nlog_windowservice.Error($"Host:{getHostDisplayName(server)},Rollback Fail,Skip to Next");
                                 UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
                             }
@@ -3039,11 +3082,36 @@ namespace AntDeploy.Winform
                                 if (uploadResult.Item1)
                                 {
                                     this.nlog_windowservice.Info($"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2}");
-                                    UpdateDeployProgress(this.tabPage_windows_service, server.Host, true);
+                                    //fire the website
+                                    if (!string.IsNullOrEmpty(server.WindowsServiceFireUrl))
+                                    {
+                                        LogEventInfo publisEvent22 = new LogEventInfo(LogLevel.Info, "", "Start to Fire Url,TimeOut：10senconds  ==> ");
+                                        publisEvent22.Properties["ShowLink"] = server.WindowsServiceFireUrl;
+                                        publisEvent22.LoggerName = "rich_windowservice_log";
+                                        this.nlog_windowservice.Log(publisEvent22);
+
+                                        var fireRt = WebUtil.IsHttpGetOk(server.WindowsServiceFireUrl, this.nlog_windowservice);
+                                        if (fireRt)
+                                        {
+                                            UpdateDeployProgress(this.tabPage_windows_service, server.Host, true);
+                                            this.nlog_windowservice.Info($"Host:{getHostDisplayName(server)},Success Fire Url");
+                                        }
+                                        else
+                                        {
+                                            failCount++;
+                                            allSuccess = false;
+                                            UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        UpdateDeployProgress(this.tabPage_windows_service, server.Host, true);
+                                    }
                                 }
                                 else
                                 {
                                     allSuccess = false;
+                                    failCount++;
                                     this.nlog_windowservice.Error(
                                         $"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2},Skip to Next");
                                     UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
@@ -3054,6 +3122,7 @@ namespace AntDeploy.Winform
                         catch (Exception ex)
                         {
                             allSuccess = false;
+                            failCount++;
                             this.nlog_windowservice.Error(
                                 $"Fail Rollback,Host:{getHostDisplayName(server)},Response:{ex.Message},Skip to Next");
                             UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
@@ -3071,7 +3140,7 @@ namespace AntDeploy.Winform
                             this.nlog_windowservice.Info($"Rollback Version：" + dateTimeFolderName);
                         }
 
-                        this.nlog_windowservice.Info($"RollBack End");
+                        this.nlog_windowservice.Info($"-----------------Rollback End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
                     }
 
                 }
@@ -3412,7 +3481,6 @@ namespace AntDeploy.Winform
 
 #if DEBUG
             var ENTRYPOINT = this.ProjectName + ".dll";
-            var SDKVersion = "2.1";
 #else
             //必须是netcore应用
             var isNetcoreProject = ProjectHelper.IsDotNetCoreProject(_project);
@@ -3427,18 +3495,14 @@ namespace AntDeploy.Winform
             {
                 //MessageBox.Show("get current project property:outputfilename error");
                 ENTRYPOINT = this.ProjectName + ".dll";
-                return;
             }
-
+#endif
             var SDKVersion = ProjectHelper.GetProjectSkdInNetCoreProject(ProjectPath);
             if (string.IsNullOrEmpty(SDKVersion))
             {
                 MessageBox.Show("get current project skd version error");
                 return;
             }
-
-
-#endif
 
             var serverList = DeployConfig.Env.Where(r => r.Name.Equals(envName)).Select(r => r.LinuxServerList)
                 .FirstOrDefault();
@@ -3711,9 +3775,15 @@ namespace AntDeploy.Winform
                 return;
             }
 
+            //fire url
+            if (CheckFireUri(ServerType.DOCKER))
+            {
+                MessageBox.Show("fire url is not correct!");
+                return;
+            }
+
 #if DEBUG
-            var ENTRYPOINT = "Lito.APP.dll";
-            var SDKVersion = "2.1";
+            var ENTRYPOINT = this.ProjectName + ".dll";
 #else
             //必须是netcore应用
             var isNetcoreProject = ProjectHelper.IsDotNetCoreProject(_project);
@@ -3726,18 +3796,15 @@ namespace AntDeploy.Winform
             var ENTRYPOINT = _project.GetProjectProperty("OutputFileName");
             if (string.IsNullOrEmpty(ENTRYPOINT))
             {
-                MessageBox.Show("get current project property:outputfilename error");
-                return;
+                ENTRYPOINT = this.ProjectName + ".dll";//MessageBox.Show("get current project property:outputfilename error");
             }
-
+#endif
             var SDKVersion = ProjectHelper.GetProjectSkdInNetCoreProject(ProjectPath);
             if (string.IsNullOrEmpty(SDKVersion))
             {
                 MessageBox.Show("get current project skd version error");
                 return;
             }
-
-#endif
 
             combo_docker_env_SelectedIndexChanged(null, null);
 
@@ -3894,6 +3961,7 @@ namespace AntDeploy.Winform
                 {
                     EnableForDocker(false, true);
                     var allSuccess = true;
+                    var failCount = 0;
                     foreach (var server in serverList)
                     {
                         this.nlog_docker.Info("ignore build...");
@@ -3908,6 +3976,7 @@ namespace AntDeploy.Winform
                             this.nlog_docker.Error("Server Host is Empty");
                             UploadError(this.tabPage_docker);
                             allSuccess = false;
+                            failCount++;
                             continue;
                         }
 
@@ -3916,6 +3985,7 @@ namespace AntDeploy.Winform
                             this.nlog_docker.Error("Server UserName is Empty");
                             UploadError(this.tabPage_docker);
                             allSuccess = false;
+                            failCount++;
                             continue;
                         }
 
@@ -3924,6 +3994,7 @@ namespace AntDeploy.Winform
                             this.nlog_docker.Error("Server Pwd is Empty");
                             UploadError(this.tabPage_docker);
                             allSuccess = false;
+                            failCount++;
                             continue;
                         }
 
@@ -3933,6 +4004,7 @@ namespace AntDeploy.Winform
                             this.nlog_docker.Error("Server Pwd is Empty");
                             UploadError(this.tabPage_docker);
                             allSuccess = false;
+                            failCount++;
                             continue;
                         }
 
@@ -3968,17 +4040,55 @@ namespace AntDeploy.Winform
                                 this.nlog_docker.Error($"RollBack Host:{getHostDisplayName(server)} Fail: connect fail");
                                 UploadError(this.tabPage_docker);
                                 allSuccess = false;
+                                failCount++;
                                 continue;
                             }
 
                             try
                             {
                                 sshClient.RollBack(rollbackVersion);
-                                UpdateDeployProgress(this.tabPage_docker, server.Host, !hasError);
+                                if (hasError)
+                                {
+                                    allSuccess = false;
+                                    failCount++;
+                                    UpdateDeployProgress(this.tabPage_docker, server.Host, false);
+                                }
+                                else
+                                {
+                                    //fire the website
+                                    if (!string.IsNullOrEmpty(server.DockerFireUrl))
+                                    {
+                                        LogEventInfo publisEvent22 = new LogEventInfo(LogLevel.Info, "", "Start to Fire Url,TimeOut：10senconds  ==> ");
+                                        publisEvent22.Properties["ShowLink"] = server.DockerFireUrl;
+                                        publisEvent22.LoggerName = "rich_docker_log";
+                                        this.nlog_docker.Log(publisEvent22);
+
+                                        var fireRt = WebUtil.IsHttpGetOk(server.DockerFireUrl, this.nlog_docker);
+                                        if (fireRt)
+                                        {
+                                            UpdateDeployProgress(this.tabPage_docker, server.Host, true);
+                                            this.nlog_docker.Info($"Host:{getHostDisplayName(server)},Success Fire Url");
+                                        }
+                                        else
+                                        {
+                                            UpdateDeployProgress(this.tabPage_docker, server.Host, false);
+                                            allSuccess = false;
+                                            failCount++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        UpdateDeployProgress(this.tabPage_docker, server.Host, true);
+                                    }
+                                }
+                               
+                               
                                 this.nlog_docker.Info($"RollBack Host: {getHostDisplayName(server)} End");
                             }
                             catch (Exception ex)
                             {
+                                allSuccess = false;
+                                failCount++;
                                 this.nlog_docker.Error($"RollBack Host:{getHostDisplayName(server)} Fail:" + ex.Message);
                                 UpdateDeployProgress(this.tabPage_docker, server.Host, false);
                             }
@@ -3991,7 +4101,7 @@ namespace AntDeploy.Winform
                         this.nlog_docker.Info("RollBack Version：" + rollbackVersion);
                     }
 
-                    this.nlog_docker.Info("RollBack End");
+                    this.nlog_docker.Info($"-----------------Rollback End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------"); ;
                 }
                 catch (Exception ex1)
                 {
