@@ -2533,7 +2533,11 @@ namespace AntDeploy.Winform
                         var serviceNameByFile = ProjectHelper.GetServiceNameByFile(newserviceFile);
                         if (!string.IsNullOrEmpty(serviceNameByFile))
                         {
-                            this.nlog_windowservice.Warn($"windowsService name is {serviceNameByFile} in file: {serviceFile} ,but input name is {serviceName} ! ");
+                            if (!serviceNameByFile.Equals(serviceName))
+                            {
+                                 this.nlog_windowservice.Warn($"windowsService name is {serviceNameByFile} in file: {serviceFile} ,but input name is {serviceName} ,will install service by [{serviceNameByFile}] ! ");
+                            }
+                           
                             //return;
                             isProjectInstallService = true;
                             serviceName = serviceNameByFile;
