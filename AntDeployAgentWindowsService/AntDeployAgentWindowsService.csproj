@@ -72,12 +72,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AntDeployAgentWindows\AntDeployAgentWindows.csproj">
-      <Project>{821ceb3f-4e45-48d7-b5f8-a347d5284af5}</Project>
-      <Name>AntDeployAgentWindows</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="ProjectInstaller.resx">
       <DependentUpon>ProjectInstaller.cs</DependentUpon>
     </EmbeddedResource>
@@ -86,6 +80,12 @@
     <Content Include="WindowsServiceTool.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AntDeployAgent\AntDeployAgent.csproj">
+      <Project>{7e116ac1-dcfa-4a76-959e-cfdee3e1e836}</Project>
+      <Name>AntDeployAgent</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
