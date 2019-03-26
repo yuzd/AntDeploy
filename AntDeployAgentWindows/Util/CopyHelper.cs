@@ -98,7 +98,7 @@ namespace AntDeployAgentWindows.Util
             }
         }
 
-        public static void DirectoryCopy(string srcDir, string dstDir, bool copySubDirs, string parentDir, List<string> backignoreUpList)
+        public static void DirectoryCopy(string srcDir, string dstDir, bool copySubDirs, string parentDir,string parentName, List<string> backignoreUpList)
         {
             if (backignoreUpList == null || !backignoreUpList.Any())
             {
@@ -136,6 +136,7 @@ namespace AntDeployAgentWindows.Util
             {
                 int length = file.FullName.Length -parentDir.Length ;
                 string entryName = EntryFromPath(file.FullName,parentDir.Length,length);
+                string matchEntryName = entryName.Substring(parentName.Length);
                 if (IsMacthIgnore(entryName, backignoreUpList)) continue;
                 string dstFile = Path.Combine(dstDir, file.Name);
                 try
@@ -157,7 +158,7 @@ namespace AntDeployAgentWindows.Util
                     int length = subDir.FullName.Length - parentDir.Length;
                     string entryName = EntryFromPath(subDir.FullName,parentDir.Length, length);
                     if (IsMacthIgnore(entryName, backignoreUpList)) continue;
-                    DirectoryCopy(subDir.FullName, dstDirSub, copySubDirs, parentDir, backignoreUpList);
+                    DirectoryCopy(subDir.FullName, dstDirSub, copySubDirs, parentDir,parentName, backignoreUpList);
                 }
             }
         }

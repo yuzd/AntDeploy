@@ -55,7 +55,7 @@ namespace AntDeployAgentWindows.Operation
             string fullName = directoryInfo.FullName;
             if (directoryInfo.Parent != null)
                 fullName = directoryInfo.Parent.FullName;
-            CopyHelper.DirectoryCopy(this.args.AppFolder, destDir, true, fullName, this.args.BackUpIgnoreList);
+            CopyHelper.DirectoryCopy(this.args.AppFolder, destDir, true, fullName,directoryInfo.Name, this.args.BackUpIgnoreList);
             logger("Success Backup to folder:" + destDir);
         }
 

@@ -212,7 +212,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                             string fullName = directoryInfo.FullName;
                             if (directoryInfo.Parent != null)
                                 fullName = directoryInfo.Parent.FullName;
-                            CopyHelper.DirectoryCopy(projectLocationFolder, incrementFolder, true,fullName,this._backUpIgnoreList);
+                            CopyHelper.DirectoryCopy(projectLocationFolder, incrementFolder, true,fullName,directoryInfo.Name,this._backUpIgnoreList);
                             Log("Increment deploy backup success...");
                         }
                     }

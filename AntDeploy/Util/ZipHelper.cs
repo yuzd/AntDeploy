@@ -136,6 +136,7 @@ namespace AntDeploy.Util
                         flag = false;
                         int length = enumerateFileSystemInfo.FullName.Length - fullName.Length;
                         string entryName = EntryFromPath(enumerateFileSystemInfo.FullName, fullName.Length, length);
+                        var mathchEntryName = entryName.Substring(directoryInfo.Name.Length);
                         if (ignoreList != null)
                         {
                             var haveMatch = false;
@@ -146,7 +147,7 @@ namespace AntDeploy.Util
                                     if (ignorRule.StartsWith("*"))
                                     {
                                         var ignorRule2 = ignorRule.Substring(1);
-                                        if (entryName.EndsWith(ignorRule2))
+                                        if (mathchEntryName.EndsWith(ignorRule2))
                                         {
                                             haveMatch = true;
                                             break;
@@ -154,7 +155,7 @@ namespace AntDeploy.Util
                                     }
                                     else
                                     {
-                                        var isMatch = Regex.Match(entryName, ignorRule, RegexOptions.IgnoreCase);//忽略大小写
+                                        var isMatch = Regex.Match(mathchEntryName, ignorRule, RegexOptions.IgnoreCase);//忽略大小写
                                         if (isMatch.Success)
                                         {
                                             haveMatch = true;
@@ -230,6 +231,7 @@ namespace AntDeploy.Util
                         flag = false;
                         int length = enumerateFileSystemInfo.FullName.Length - fullName.Length;
                         string entryName = EntryFromPath(enumerateFileSystemInfo.FullName, fullName.Length, length);
+                        var mathchEntryName = entryName.Substring(directoryInfo.Name.Length);
                         if (ignoreList != null)
                         {
                             var haveMatch = false;
@@ -240,7 +242,7 @@ namespace AntDeploy.Util
                                     if (ignorRule.StartsWith("*"))
                                     {
                                         var ignorRule2 = ignorRule.Substring(1);
-                                        if (entryName.EndsWith(ignorRule2))
+                                        if (mathchEntryName.EndsWith(ignorRule2))
                                         {
                                             haveMatch = true;
                                             break;
@@ -248,7 +250,7 @@ namespace AntDeploy.Util
                                     }
                                     else
                                     {
-                                        var isMatch = Regex.Match(entryName, ignorRule, RegexOptions.IgnoreCase);//忽略大小写
+                                        var isMatch = Regex.Match(mathchEntryName, ignorRule, RegexOptions.IgnoreCase);//忽略大小写
                                         if (isMatch.Success)
                                         {
                                             haveMatch = true;
@@ -399,6 +401,7 @@ namespace AntDeploy.Util
 
                 int length = enumerateFileSystemInfo.FullName.Length - fullName.Length;
                 string entryName = EntryFromPath(enumerateFileSystemInfo.FullName, fullName.Length, length);
+                var mathchEntryName = entryName.Substring(directoryInfo.Name.Length);
                 if (ignoreList != null)
                 {
                     var haveMatch = false;
@@ -409,7 +412,7 @@ namespace AntDeploy.Util
                             if (ignorRule.StartsWith("*"))
                             {
                                 var ignorRule2 = ignorRule.Substring(1);
-                                if (entryName.EndsWith(ignorRule2))
+                                if (mathchEntryName.EndsWith(ignorRule2))
                                 {
                                     haveMatch = true;
                                     break;
@@ -417,7 +420,7 @@ namespace AntDeploy.Util
                             }
                             else
                             {
-                                var isMatch = Regex.Match(entryName, ignorRule, RegexOptions.IgnoreCase);//忽略大小写
+                                var isMatch = Regex.Match(mathchEntryName, ignorRule, RegexOptions.IgnoreCase);//忽略大小写
                                 if (isMatch.Success)
                                 {
                                     haveMatch = true;
