@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json;
 using NLog;
 using System;
+using System.Collections.Specialized;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Security;
 using System.Reflection;
@@ -13,6 +15,47 @@ namespace AntDeploy.Util
 {
     public class WebUtil
     {
+        public static Encoding GetEncodingFrom(
+        NameValueCollection responseHeaders,
+        Encoding defaultEncoding = null)
+        {
+            try
+            {
+                if (responseHeaders == null)
+                    return Encoding.UTF8;
+
+                //Note that key lookup is case-insensitive
+                var contentType = responseHeaders["Content-Type"];
+                if (contentType == null)
+                    return defaultEncoding;
+
+                var contentTypeParts = contentType.Split(';');
+                if (contentTypeParts.Length <= 1)
+                    return defaultEncoding;
+
+                var charsetPart =
+                    contentTypeParts.Skip(1).FirstOrDefault(
+                        p => p.TrimStart().StartsWith("charset", StringComparison.InvariantCultureIgnoreCase));
+                if (charsetPart == null)
+                    return defaultEncoding;
+
+                var charsetPartParts = charsetPart.Split('=');
+                if (charsetPartParts.Length != 2)
+                    return defaultEncoding;
+
+                var charsetName = charsetPartParts[1].Trim();
+                if (charsetName == "")
+                    return defaultEncoding;
+
+
+                return Encoding.GetEncoding(charsetName);
+            }
+            catch (ArgumentException ex)
+            {
+                return Encoding.UTF8;
+            }
+        }
+
         /// <summary>
         /// http://geekswithblogs.net/THines01/archive/2010/12/03/responsestatusline.aspx
         /// https://stackoverflow.com/questions/2482715/the-server-committed-a-protocol-violation-section-responsestatusline-error/3977369
@@ -23,8 +66,8 @@ namespace AntDeploy.Util
         {
             try
             {
-                ServicePointManager.Expect100Continue = false;
-                ServicePointManager.MaxServicePointIdleTime = 2000;
+                //ServicePointManager.Expect100Continue = false;
+                //ServicePointManager.MaxServicePointIdleTime = 2000;
 
                 //Get the assembly that contains the internal class
                 Assembly aNetAssembly = Assembly.GetAssembly(typeof(System.Net.Configuration.SettingsSection));

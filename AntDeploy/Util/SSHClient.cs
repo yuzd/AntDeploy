@@ -393,7 +393,11 @@ namespace AntDeploy.Util
 
             //执行docker build 生成一个镜像
             var dockerBuildResult = RunSheell($"sudo docker build --no-cache --rm -t {PorjectName}:{ClientDateTimeFolderName} -f {dockFilePath} {publishFolder} ");
-            if (!dockerBuildResult) return;
+            if (!dockerBuildResult)
+            {
+                _logger($"build image fail", NLog.LogLevel.Error);
+                return;
+            }
 
             var continarName = "d_" + PorjectName;
 
@@ -443,7 +447,11 @@ namespace AntDeploy.Util
             // 根据image启动一个容器
             var dockerRunRt = RunSheell($"sudo docker run --name {continarName}{volume} -d --restart=always -p {port}:{port} {PorjectName}:{ClientDateTimeFolderName}");
 
-            if (!dockerRunRt) return;
+            if (!dockerRunRt)
+            {
+                 _logger($"docker run fail", NLog.LogLevel.Error);
+                 return;
+            }
 
             //把旧的image给删除
             r1 = _sshClient.RunCommand("docker images --format '{{.Repository}}:{{.Tag}}:{{.ID}}' | grep '^" + PorjectName + ":'");
@@ -557,6 +565,13 @@ namespace AntDeploy.Util
 
         public void DeletePublishFolder(string destinationFolder)
         {
+            if (string.IsNullOrEmpty(RootFolder))
+            {
+                return;
+            }
+
+            _sftpClient.ChangeDirectory(RootFolder);
+
             if (!destinationFolder.EndsWith("/")) destinationFolder = destinationFolder + "/";
 
             if (string.IsNullOrEmpty(PorjectName) || string.IsNullOrEmpty(ClientDateTimeFolderName)) return;
@@ -667,6 +682,11 @@ namespace AntDeploy.Util
 
             if (!string.IsNullOrEmpty(cmd.Error))
             {
+                if(cmd.Error.Contains("unable to resolve host 127.0.0.1localhost.localdomainlocalhost"))
+                {
+                    _logger(cmd.Error, LogLevel.Warn);
+                    return true;
+                }
                 _logger(cmd.Error, LogLevel.Error);
                 return false;
             }

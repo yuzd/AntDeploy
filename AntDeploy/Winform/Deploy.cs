@@ -43,7 +43,7 @@ namespace AntDeploy.Winform
         public Deploy(string projectPath, Project project)
         {
             LoadLanguage();
-        
+
             InitializeComponent();
 
             this.Text += $"(Version:{Vsix.VERSION})";
@@ -321,69 +321,78 @@ namespace AntDeploy.Winform
 
         private void Deploy_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (this.tabPage_docker.Tag is Dictionary<string, ProgressBox> progressBoxList)
+            try
             {
-                foreach (var box in progressBoxList)
+                if (this.tabPage_docker.Tag is Dictionary<string, ProgressBox> progressBoxList)
                 {
-                    box.Value.Dispose();
-                    this.tabPage_docker.Controls.Remove(box.Value);
+                    foreach (var box in progressBoxList)
+                    {
+                        box.Value.Dispose();
+                        //this.tabPage_docker.Controls.Remove(box.Value);
+                    }
                 }
-            }
 
-            if (this.tabPage_progress.Tag is Dictionary<string, ProgressBox> progressBoxList2)
-            {
-                foreach (var box in progressBoxList2)
+                if (this.tabPage_progress.Tag is Dictionary<string, ProgressBox> progressBoxList2)
                 {
-                    box.Value.Dispose();
-                    this.tabPage_progress.Controls.Remove(box.Value);
+                    foreach (var box in progressBoxList2)
+                    {
+                        box.Value.Dispose();
+                        //this.tabPage_progress.Controls.Remove(box.Value);
+                    }
                 }
-            }
 
-            if (this.tabPage_windows_service.Tag is Dictionary<string, ProgressBox> progressBoxList3)
-            {
-                foreach (var box in progressBoxList3)
+                if (this.tabPage_windows_service.Tag is Dictionary<string, ProgressBox> progressBoxList3)
                 {
-                    box.Value.Dispose();
-                    this.tabControl_window_service.Controls.Remove(box.Value);
+                    foreach (var box in progressBoxList3)
+                    {
+                        box.Value.Dispose();
+                        //this.tabPage_windows_service.Controls.Remove(box.Value);
+                    }
                 }
+
+                PluginConfig.LastTabIndex = this.tabcontrol.SelectedIndex;
+                PluginConfig.IISEnableIncrement = this.checkBox_Increment_iis.Checked;
+                PluginConfig.WindowsServiceEnableIncrement = this.checkBox_Increment_window_service.Checked;
+
+                DeployConfig.IIsConfig.WebSiteName = this.txt_iis_web_site_name.Text.Trim();
+
+                DeployConfig.WindowsServiveConfig.ServiceName = this.txt_windowservice_name.Text.Trim();
+
+                DeployConfig.DockerConfig.Prot = this.txt_docker_port.Text.Trim();
+                DeployConfig.DockerConfig.AspNetCoreEnv = this.txt_docker_envname.Text.Trim();
+                DeployConfig.DockerConfig.RemoveDaysFromPublished = this.t_docker_delete_days.Text.Trim();
+                DeployConfig.DockerConfig.Volume = this.txt_docker_volume.Text.Trim();
+
+                if (!string.IsNullOrEmpty(ProjectConfigPath))
+                {
+                    var configJson = JsonConvert.SerializeObject(DeployConfig, Formatting.Indented);
+                    File.WriteAllText(ProjectConfigPath, configJson, Encoding.UTF8);
+                }
+
+                if (!string.IsNullOrEmpty(PluginConfigPath))
+                {
+                    var configJson = JsonConvert.SerializeObject(PluginConfig, Formatting.Indented);
+                    File.WriteAllText(PluginConfigPath, configJson, Encoding.UTF8);
+                }
+
+                RichTextBoxTarget.GetTargetByControl(rich_iis_log)?.Dispose();
+                RichTextBoxTarget.GetTargetByControl(rich_windowservice_log)?.Dispose();
+                RichTextBoxTarget.GetTargetByControl(rich_docker_log)?.Dispose();
+
+                this.b_docker_rollback.Dispose();
+                this.b_docker_rollback.Dispose();
+                this.b_windows_service_rollback.Dispose();
+                this.txt_docker_volume.Dispose();
+                this.b_iis_rollback.Dispose();
+                this.b_windows_service_rollback.Dispose();
+                this.b_docker_rollback.Dispose();
+                this.loading_win_server_test.Dispose();
+                this.loading_linux_server_test.Dispose();
             }
-
-            PluginConfig.LastTabIndex = this.tabcontrol.SelectedIndex;
-            PluginConfig.IISEnableIncrement = this.checkBox_Increment_iis.Checked;
-            PluginConfig.WindowsServiceEnableIncrement = this.checkBox_Increment_window_service.Checked;
-
-            DeployConfig.IIsConfig.WebSiteName = this.txt_iis_web_site_name.Text.Trim();
-
-            DeployConfig.WindowsServiveConfig.ServiceName = this.txt_windowservice_name.Text.Trim();
-
-            DeployConfig.DockerConfig.Prot = this.txt_docker_port.Text.Trim();
-            DeployConfig.DockerConfig.AspNetCoreEnv = this.txt_docker_envname.Text.Trim();
-            DeployConfig.DockerConfig.RemoveDaysFromPublished = this.t_docker_delete_days.Text.Trim();
-            DeployConfig.DockerConfig.Volume = this.txt_docker_volume.Text.Trim();
-
-            if (!string.IsNullOrEmpty(ProjectConfigPath))
+            catch (Exception)
             {
-                var configJson = JsonConvert.SerializeObject(DeployConfig, Formatting.Indented);
-                File.WriteAllText(ProjectConfigPath, configJson, Encoding.UTF8);
+                //ignore
             }
-
-            if (!string.IsNullOrEmpty(PluginConfigPath))
-            {
-                var configJson = JsonConvert.SerializeObject(PluginConfig, Formatting.Indented);
-                File.WriteAllText(PluginConfigPath, configJson, Encoding.UTF8);
-            }
-
-            RichTextBoxTarget.GetTargetByControl(rich_iis_log).Dispose();
-            RichTextBoxTarget.GetTargetByControl(rich_windowservice_log).Dispose();
-            RichTextBoxTarget.GetTargetByControl(rich_docker_log).Dispose();
-
-
-
-            this.b_iis_rollback.Dispose();
-            this.b_windows_service_rollback.Dispose();
-            this.b_docker_rollback.Dispose();
-            this.loading_win_server_test.Dispose();
-            this.loading_linux_server_test.Dispose();
         }
 
 
@@ -730,6 +739,9 @@ namespace AntDeploy.Winform
 
                     WebClient client = new WebClient();
                     client.Proxy = null;
+#if DEBUG
+                    //client.Proxy = new WebProxy("127.0.0.1:5389");
+#endif
                     var result = client.DownloadString($"http://{serverHost}/publish?Token={WebUtility.UrlEncode(serverTolen)}");
 
                     this.BeginInvokeLambda(() =>
@@ -1508,40 +1520,16 @@ namespace AntDeploy.Winform
                         httpRequestClient.SetFieldValue("Token", server.Token);
                         httpRequestClient.SetFieldValue("backUpIgnore", (backUpIgnoreList != null && backUpIgnoreList.Any()) ? string.Join("@_@", backUpIgnoreList) : "");
                         httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream", zipBytes);
-                        System.Net.WebSockets.Managed.ClientWebSocket webSocket = null;
-                        HttpLogger HttpLogger = null;
+                        HttpLogger HttpLogger = new HttpLogger
+                        {
+                            Key = loggerId,
+                            Url = $"http://{server.Host}/logger?key=" + loggerId
+                        };
+                        WebSocketClient webSocket = new WebSocketClient(this.nlog_iis,HttpLogger);
                         var haveError = false;
                         try
                         {
-                            var hostKey = "";
-
-                            HttpLogger = new HttpLogger
-                            {
-                                Key = loggerId,
-                                Url = $"http://{server.Host}/logger?key=" + loggerId
-                            };
-                            webSocket = await WebSocketHelper.Connect($"ws://{server.Host}/socket", (receiveMsg) =>
-                            {
-                                if (!string.IsNullOrEmpty(receiveMsg))
-                                {
-                                    if (receiveMsg.StartsWith("hostKey@"))
-                                    {
-                                        hostKey = receiveMsg.Replace("hostKey@", "");
-                                    }
-                                    else
-                                    {
-                                        if (receiveMsg.Contains("【Error】"))
-                                        {
-                                            haveError = true;
-                                            this.nlog_iis.Warn($"【Server】{receiveMsg}");
-                                        }
-                                        else
-                                        {
-                                            this.nlog_iis.Info($"【Server】{receiveMsg}");
-                                        }
-                                    }
-                                }
-                            }, HttpLogger);
+                            var hostKey = await webSocket.Connect($"ws://{server.Host}/socket");
 
                             httpRequestClient.SetFieldValue("wsKey", hostKey);
 
@@ -1551,7 +1539,7 @@ namespace AntDeploy.Winform
                             if (ProgressPercentage == 0) UploadError(this.tabPage_progress, server.Host);
                             if (ProgressPercentage > 0 && ProgressPercentage < 100)
                                 UpdateUploadProgress(this.tabPage_progress, ProgressCurrentHost, 100); //结束上传
-
+                            haveError = webSocket.HasError;
                             if (haveError)
                             {
                                 allSuccess = false;
@@ -1610,10 +1598,7 @@ namespace AntDeploy.Winform
                         }
                         finally
                         {
-                            await WebSocketHelper.SendText(webSocket, "close");
-                            webSocket?.Dispose();
-                            HttpLogger?.Dispose();
-
+                            await webSocket?.Dispose();
                         }
 
                         index++;
@@ -1844,47 +1829,22 @@ namespace AntDeploy.Winform
                         httpRequestClient.SetFieldValue("webSiteName", DeployConfig.IIsConfig.WebSiteName);
                         httpRequestClient.SetFieldValue("deployFolderName", dateTimeFolderName);
                         httpRequestClient.SetFieldValue("Token", server.Token);
-                        System.Net.WebSockets.Managed.ClientWebSocket webSocket = null;
-                        HttpLogger HttpLogger = null;
-                        var haveError = false;
-                        try
-                        {
-                            var hostKey = "";
-
-                            HttpLogger = new HttpLogger
+                         HttpLogger HttpLogger = new HttpLogger
                             {
                                 Key = loggerId,
                                 Url = $"http://{server.Host}/logger?key=" + loggerId
                             };
-                            webSocket = await WebSocketHelper.Connect($"ws://{server.Host}/socket", (receiveMsg) =>
-                            {
-                                if (!string.IsNullOrEmpty(receiveMsg))
-                                {
-                                    if (receiveMsg.StartsWith("hostKey@"))
-                                    {
-                                        hostKey = receiveMsg.Replace("hostKey@", "");
-                                    }
-                                    else
-                                    {
-                                        if (receiveMsg.Contains("【Error】"))
-                                        {
-                                            haveError = true;
-                                            allSuccess = false;
-                                            this.nlog_iis.Warn($"【Server】{receiveMsg}");
-                                        }
-                                        else
-                                        {
-                                            this.nlog_iis.Info($"【Server】{receiveMsg}");
-                                        }
-                                    }
-                                }
-                            }, HttpLogger);
-
+                        WebSocketClient webSocket = new WebSocketClient(this.nlog_iis,HttpLogger);
+                       
+                        var haveError = false;
+                        try
+                        {
+                            var hostKey = await webSocket.Connect($"ws://{server.Host}/socket");
                             httpRequestClient.SetFieldValue("wsKey", hostKey);
 
                             var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/rollback",
                                 (client) => { });
-
+                            haveError = webSocket.HasError;
                             if (haveError)
                             {
                                 allSuccess = false;
@@ -1943,10 +1903,7 @@ namespace AntDeploy.Winform
                         }
                         finally
                         {
-                            await WebSocketHelper.SendText(webSocket, "close");
-                            webSocket?.Dispose();
-                            HttpLogger?.Dispose();
-
+                            await webSocket?.Dispose();
                         }
 
                     }
@@ -2535,9 +2492,9 @@ namespace AntDeploy.Winform
                         {
                             if (!serviceNameByFile.Equals(serviceName))
                             {
-                                 this.nlog_windowservice.Warn($"windowsService name is {serviceNameByFile} in file: {serviceFile} ,but input name is {serviceName} ,will install service by [{serviceNameByFile}] ! ");
+                                this.nlog_windowservice.Warn($"windowsService name is {serviceNameByFile} in file: {serviceFile} ,but input name is {serviceName} ,will install service by [{serviceNameByFile}] ! ");
                             }
-                           
+
                             //return;
                             isProjectInstallService = true;
                             serviceName = serviceNameByFile;
@@ -2682,41 +2639,16 @@ namespace AntDeploy.Winform
                         httpRequestClient.SetFieldValue("Token", server.Token);
                         httpRequestClient.SetFieldValue("backUpIgnore", (backUpIgnoreList != null && backUpIgnoreList.Any()) ? string.Join("@_@", backUpIgnoreList) : "");
                         httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream", zipBytes);
-                        System.Net.WebSockets.Managed.ClientWebSocket webSocket = null;
-                        HttpLogger HttpLogger = null;
-                        var haveError = false;
-                        try
-                        {
-                            var hostKey = "";
-                            HttpLogger = new HttpLogger
+                        HttpLogger HttpLogger =  new HttpLogger
                             {
                                 Key = loggerId,
                                 Url = $"http://{server.Host}/logger?key=" + loggerId
-                            };
-                            webSocket = await WebSocketHelper.Connect($"ws://{server.Host}/socket", (receiveMsg) =>
-                            {
-                                if (!string.IsNullOrEmpty(receiveMsg))
-                                {
-                                    if (receiveMsg.StartsWith("hostKey@"))
-                                    {
-                                        hostKey = receiveMsg.Replace("hostKey@", "");
-                                    }
-                                    else
-                                    {
-                                        if (receiveMsg.Contains("【Error】"))
-                                        {
-                                            haveError = true;
-                                            this.nlog_windowservice.Warn($"【Server】{receiveMsg}");
-                                        }
-                                        else
-                                        {
-                                            this.nlog_windowservice.Info($"【Server】{receiveMsg}");
-                                        }
-
-                                    }
-                                }
-                            }, HttpLogger);
-
+                            };;
+                        WebSocketClient webSocket = new WebSocketClient(this.nlog_windowservice,HttpLogger);
+                        var haveError = false;
+                        try
+                        {
+                            var hostKey = await webSocket.Connect($"ws://{server.Host}/socket");
                             httpRequestClient.SetFieldValue("wsKey", hostKey);
 
                             var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/publish",
@@ -2726,7 +2658,7 @@ namespace AntDeploy.Winform
                             if (ProgressPercentageForWindowsService > 0 && ProgressPercentageForWindowsService < 100)
                                 UpdateUploadProgress(this.tabPage_windows_service, ProgressCurrentHostForWindowsService,
                                     100); //结束上传
-
+                            haveError = webSocket.HasError;
                             if (haveError)
                             {
                                 allSuccess = false;
@@ -2787,9 +2719,7 @@ namespace AntDeploy.Winform
                         }
                         finally
                         {
-                            await WebSocketHelper.SendText(webSocket, "close");
-                            webSocket?.Dispose();
-                            HttpLogger?.Dispose();
+                            await webSocket?.Dispose();
                         }
 
                         index++;
@@ -3033,47 +2963,23 @@ namespace AntDeploy.Winform
                         httpRequestClient.SetFieldValue("serviceName", DeployConfig.WindowsServiveConfig.ServiceName);
                         httpRequestClient.SetFieldValue("deployFolderName", dateTimeFolderName);
                         httpRequestClient.SetFieldValue("Token", server.Token);
-                        System.Net.WebSockets.Managed.ClientWebSocket webSocket = null;
-                        HttpLogger HttpLogger = null;
-                        var haveError = false;
-                        try
-                        {
-                            var hostKey = "";
-
-                            HttpLogger = new HttpLogger
+                        HttpLogger HttpLogger =  new HttpLogger
                             {
                                 Key = loggerId,
                                 Url = $"http://{server.Host}/logger?key=" + loggerId
                             };
-                            webSocket = await WebSocketHelper.Connect($"ws://{server.Host}/socket", (receiveMsg) =>
-                            {
-                                if (!string.IsNullOrEmpty(receiveMsg))
-                                {
-                                    if (receiveMsg.StartsWith("hostKey@"))
-                                    {
-                                        hostKey = receiveMsg.Replace("hostKey@", "");
-                                    }
-                                    else
-                                    {
-                                        if (receiveMsg.Contains("【Error】"))
-                                        {
-                                            haveError = true;
-                                            allSuccess = false;
-                                            this.nlog_windowservice.Warn($"【Server】{receiveMsg}");
-                                        }
-                                        else
-                                        {
-                                            this.nlog_windowservice.Info($"【Server】{receiveMsg}");
-                                        }
-                                    }
-                                }
-                            }, HttpLogger);
-
+                        WebSocketClient webSocket = new WebSocketClient(this.nlog_windowservice,HttpLogger);
+                      
+                        var haveError = false;
+                        try
+                        {
+                            var hostKey = await webSocket.Connect($"ws://{server.Host}/socket");
                             httpRequestClient.SetFieldValue("wsKey", hostKey);
 
                             var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/rollback",
                                 (client) => { });
 
+                            haveError = webSocket.HasError;
                             if (haveError)
                             {
                                 allSuccess = false;
@@ -3133,10 +3039,7 @@ namespace AntDeploy.Winform
                         }
                         finally
                         {
-                            await WebSocketHelper.SendText(webSocket, "close");
-                            webSocket?.Dispose();
-                            HttpLogger?.Dispose();
-
+                            await webSocket?.Dispose();
                         }
 
                         if (allSuccess)
@@ -4085,8 +3988,8 @@ namespace AntDeploy.Winform
                                         UpdateDeployProgress(this.tabPage_docker, server.Host, true);
                                     }
                                 }
-                               
-                               
+
+
                                 this.nlog_docker.Info($"RollBack Host: {getHostDisplayName(server)} End");
                             }
                             catch (Exception ex)

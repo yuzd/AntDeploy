@@ -59,6 +59,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 //解压
                 try
                 {
+                    Log("start unzip file");
                     ZipFile.ExtractToDirectory(filePath, _projectPublishFolder);
                 }
                 catch (Exception ex)
