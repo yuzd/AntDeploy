@@ -1,45 +1,53 @@
 ﻿using AntDeployAgentWindows;
+using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
-using System.ServiceProcess;
-using System.Text;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using TinyFox;
 
 namespace AntDeployAgentService
 {
-     public partial class AntDeployAgentWindowsService : ServiceBase
+    public class AntDeployAgentWindowsService : IHostedService, IDisposable
     {
         private Startup _startup;
-        public AntDeployAgentWindowsService()
+
+        public void Dispose()
         {
         }
 
-        public void RunAsConsole(string[] args)
+        public Task StartAsync(CancellationToken cancellationToken)
         {
-            OnStart(args);
-            Console.WriteLine("Current Version：" + AntDeployAgentWindows.Version.VERSION);
-            Console.WriteLine("Press any key to exit...");
-            Console.ReadLine();
-            OnStop();
+            try
+            {
+                var port = System.Configuration.ConfigurationManager.AppSettings["Port"];
+                TinyFoxService.Port = string.IsNullOrEmpty(port) ? 8088 : int.Parse(port);
+                _startup = new AntDeployAgentWindows.Startup();
+                TinyFoxService.Start(_startup.OwinMain);
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"startupError.txt"), ex.ToString());
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+
+            return Task.CompletedTask;
+
         }
 
-        public void start(string[] args)
-        {
-            this.OnStart(args);
-        }
-
-        protected override void OnStart(string[] args)
-        {
-            var port = System.Configuration.ConfigurationManager.AppSettings["Port"];
-            TinyFoxService.Port = string.IsNullOrEmpty(port) ? 8088 : int.Parse(port);
-            _startup = new AntDeployAgentWindows.Startup();
-            TinyFoxService.Start(_startup.OwinMain);
-        }
-
-        protected override void OnStop()
+        public Task StopAsync(CancellationToken cancellationToken)
         {
             _startup?.Stop();
             TinyFoxService.Stop();
+            return Task.CompletedTask;
         }
+
+
     }
 }

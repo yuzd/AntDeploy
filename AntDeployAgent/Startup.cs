@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AntDeployAgentWindows.Model;
+﻿using AntDeployAgentWindows.Model;
 using AntDeployAgentWindows.WebApiCore;
 using AntDeployAgentWindows.WebSocket.WebSocketApp;
 using Microsoft.Owin.Builder;
 using Owin;
-using TinyFox;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace AntDeployAgentWindows
 {
@@ -32,17 +30,17 @@ namespace AntDeployAgentWindows
             var deployDir = System.Configuration.ConfigurationManager.AppSettings["DeployDir"];
             if (!string.IsNullOrEmpty(deployDir))
             {
-                Setting.InitWebRoot(deployDir,true);
+                Setting.InitWebRoot(deployDir, true);
             }
             else
             {
                 Setting.InitWebRoot(AppDomain.CurrentDomain.BaseDirectory);
             }
-            
+
         }
 
 
-       
+
         /// <summary>
         /// 启动类的配置方法，格式是 Microsoft.Owin 所要求的
         /// <para>必须是public，而且方法名和参数类型、参数数量都固定</para>
