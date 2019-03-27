@@ -59,6 +59,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 //解压
                 try
                 {
+                    Log("start unzip file");
                     ZipFile.ExtractToDirectory(filePath, _projectPublishFolder);
                 }
                 catch (Exception ex)
@@ -269,7 +270,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                             string fullName = directoryInfo.FullName;
                             if (directoryInfo.Parent != null)
                                 fullName = directoryInfo.Parent.FullName;
-                            CopyHelper.DirectoryCopy(projectLocation.Item1, incrementFolder, true, fullName, this._backUpIgnoreList);
+                            CopyHelper.DirectoryCopy(projectLocation.Item1, incrementFolder, true, fullName,directoryInfo.Name, this._backUpIgnoreList);
                             Log("Increment deploy backup success...");
                         }
                     }

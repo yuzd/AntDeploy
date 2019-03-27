@@ -15,11 +15,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFormsAppTest", "WindowsFormsAppTest\WindowsFormsAppTest.csproj", "{43A14241-BA20-4402-B1E3-9CD0838B9181}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntDeployAgentWindows", "AntDeployAgentWindows\AntDeployAgentWindows.csproj", "{821CEB3F-4E45-48D7-B5F8-A347D5284AF5}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntDeployAgentWindowsService", "AntDeployAgentWindowsService\AntDeployAgentWindowsService.csproj", "{D9587A7D-E2E5-4EF4-BA90-5F45BE6C472A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntDeployWinform", "AntDeployWinform\AntDeployWinform.csproj", "{DD2721A8-5956-4259-B68F-4E6B21A7BF0F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AntDeployAgent", "AntDeployAgent\AntDeployAgent.csproj", "{7E116AC1-DCFA-4A76-959E-CFDEE3E1E836}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AntDeployAgentService", "AntDeployAgentService\AntDeployAgentService.csproj", "{79657373-4406-4509-9CDF-3B6D3D708FAA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,10 +41,6 @@ Global
 		{43A14241-BA20-4402-B1E3-9CD0838B9181}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43A14241-BA20-4402-B1E3-9CD0838B9181}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43A14241-BA20-4402-B1E3-9CD0838B9181}.Release|Any CPU.Build.0 = Release|Any CPU
-		{821CEB3F-4E45-48D7-B5F8-A347D5284AF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{821CEB3F-4E45-48D7-B5F8-A347D5284AF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{821CEB3F-4E45-48D7-B5F8-A347D5284AF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{821CEB3F-4E45-48D7-B5F8-A347D5284AF5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D9587A7D-E2E5-4EF4-BA90-5F45BE6C472A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D9587A7D-E2E5-4EF4-BA90-5F45BE6C472A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9587A7D-E2E5-4EF4-BA90-5F45BE6C472A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -51,6 +49,14 @@ Global
 		{DD2721A8-5956-4259-B68F-4E6B21A7BF0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD2721A8-5956-4259-B68F-4E6B21A7BF0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD2721A8-5956-4259-B68F-4E6B21A7BF0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E116AC1-DCFA-4A76-959E-CFDEE3E1E836}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E116AC1-DCFA-4A76-959E-CFDEE3E1E836}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E116AC1-DCFA-4A76-959E-CFDEE3E1E836}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E116AC1-DCFA-4A76-959E-CFDEE3E1E836}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79657373-4406-4509-9CDF-3B6D3D708FAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79657373-4406-4509-9CDF-3B6D3D708FAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79657373-4406-4509-9CDF-3B6D3D708FAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79657373-4406-4509-9CDF-3B6D3D708FAA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,17 +1,17 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using NLog;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using ClientWebSocket = System.Net.WebSockets.Managed.ClientWebSocket;
 
 namespace AntDeploy.Util
 {
-    public class HttpLogger:IDisposable
+    public class HttpLogger : IDisposable
     {
         public string Key { get; set; }
         public string Url { get; set; }
@@ -23,24 +23,59 @@ namespace AntDeploy.Util
         }
     }
 
-    public class WebSocketHelper
+    public class WebSocketClient
     {
         //private static UTF8Encoding encoding = new UTF8Encoding();
 
-        public static async Task<ClientWebSocket> Connect(string uri,Action<string> receiveAction,HttpLogger loggerKey = null)
+        public Logger receiveAction { get; set; }
+        public HttpLogger HttpLogger { get; set; }
+        public bool HasError { get; set; }
+        private ClientWebSocket webSocket = null;
+        private bool _dispose = false;
+        public WebSocketClient(Logger _receiveAction, HttpLogger _loggerKey)
         {
+            this.receiveAction = _receiveAction;
+            this.HttpLogger = _loggerKey;
+        }
 
-            ClientWebSocket webSocket = null;
+
+        public async Task Dispose()
+        {
             try
             {
-                webSocket =  new System.Net.WebSockets.Managed.ClientWebSocket();
+                if (_dispose) return;
+
+                _dispose = true;
+
+                HttpLogger?.Dispose();
+
+                await SendText("close");
+
+                webSocket?.Dispose();
+
+                Thread.Sleep(1000);
+
+                ReceiveHttpAction();
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+        public async Task<string> Connect(string uri)
+        {
+            string key = string.Empty;
+            try
+            {
+                webSocket = new System.Net.WebSockets.Managed.ClientWebSocket();
                 await webSocket.ConnectAsync(new Uri(uri), CancellationToken.None);
-                await ReceiveFirst(webSocket, receiveAction);
+                key = await ReceiveFirst();
                 new Task(async () =>
                 {
                     try
                     {
-                        await Receive(webSocket, receiveAction);
+                        await Receive();
                     }
                     catch (Exception)
                     {
@@ -54,42 +89,31 @@ namespace AntDeploy.Util
                         }
                     }
                 }).Start();
-                
-                new Task( () =>
-                {
-                    try
-                    {
-                         ReceiveHttp(receiveAction,loggerKey);
-                    }
-                    catch (Exception)
-                    {
-                    }
-                }).Start();
+
+                new Task(() =>
+               {
+                   try
+                   {
+                       ReceiveHttp();
+                   }
+                   catch (Exception)
+                   {
+                   }
+               }).Start();
             }
             catch (Exception ex)
             {
                 //ignore
             }
-
-            return webSocket;
+            if (string.IsNullOrEmpty(key))
+            {
+                key = await ReceiveFirst();
+            }
+            return key;
         }
 
-        //private static async Task Send(ClientWebSocket webSocket)
-        //{
 
-        //    while (webSocket.State == WebSocketState.Open)
-        //    {
-        //        string stringtoSend = Console.ReadLine();
-        //        byte[] buffer = encoding.GetBytes(stringtoSend);
-
-        //        await webSocket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Binary, false, CancellationToken.None);
-        //        Console.WriteLine("Sent:     " + stringtoSend);
-
-        //        await Task.Delay(1000);
-        //    }
-        //}
-
-        private static async Task ReceiveFirst(ClientWebSocket webSocket, Action<string> receiveAction)
+        private async Task<string> ReceiveFirst()
         {
             byte[] buffer = new byte[1024];
             if (webSocket.State == WebSocketState.Open)
@@ -102,17 +126,22 @@ namespace AntDeploy.Util
                 else
                 {
                     var text = Encoding.UTF8.GetString(buffer).TrimEnd('\0');
-                    receiveAction(text);
+                    if (text.StartsWith("hostKey@"))
+                    {
+                        return text.Replace("hostKey@", "");
+                    }
+                    return string.Empty;
                 }
             }
+            return string.Empty;
         }
 
 
-        public static async Task SendText(ClientWebSocket webSocket,string text)
+        public async Task SendText(string text)
         {
             try
             {
-                if (webSocket!=null && webSocket.State == WebSocketState.Open)
+                if (webSocket != null && webSocket.State == WebSocketState.Open)
                 {
                     ArraySegment<byte> textBytes = new ArraySegment<byte>(Encoding.UTF8.GetBytes(text));
                     await webSocket.SendAsync(textBytes, WebSocketMessageType.Text, true, CancellationToken.None);
@@ -125,32 +154,71 @@ namespace AntDeploy.Util
         }
 
 
-        private static void ReceiveHttp(Action<string> receiveAction, HttpLogger logger)
+        public void ReceiveHttpAction()
         {
             var client = new WebClient();
-            while (!logger.IsDispose)
+            try
             {
-                try
+                
+                var rawData = client.DownloadData(new Uri(this.HttpLogger.Url));
+                var encoding = WebUtil.GetEncodingFrom(client.ResponseHeaders, Encoding.UTF8);
+                var result = encoding.GetString(rawData);
+
+                //var result = client.DownloadString(new Uri(logger.Url));
+                if (!string.IsNullOrEmpty(result))
                 {
-                    var result = client.DownloadString(new Uri(logger.Url));
-                    if (!string.IsNullOrEmpty(result))
+                    var list = JsonConvert.DeserializeObject<List<LoggerModel>>(result);
+                    foreach (var li in list)
                     {
-                        var list = JsonConvert.DeserializeObject<List<LoggerModel>>(result);
-                        foreach (var li in list)
+                        var receiveMsg = "**" + li.Msg;
+                        if (!string.IsNullOrEmpty(receiveMsg))
                         {
-                            receiveAction("**"+li.Msg);
+                            if (receiveMsg.Contains("【Error】"))
+                            {
+                                this.receiveAction.Warn($"【Server】{receiveMsg}");
+                                HasError = true;
+                            }
+                            else
+                            {
+                                this.receiveAction.Info($"【Server】{receiveMsg}");
+                            }
                         }
                     }
-                    Thread.Sleep(1000);
                 }
-                catch (Exception)
-                {
 
-                }
+            }
+            catch (Exception)
+            {
+
+            }
+            finally
+            {
+                client.Dispose();
             }
         }
 
-        private static async Task Receive(ClientWebSocket webSocket, Action<string> receiveAction)
+        /// <summary>
+        /// 接受http轮训 log
+        /// </summary>
+        private void ReceiveHttp()
+        {
+            //在未结束之前 1秒钟拿1次
+            while (!this.HttpLogger.IsDispose)
+            {
+                ReceiveHttpAction();
+
+                Thread.Sleep(1000);
+            }
+
+            //结束之后拿一次
+            ReceiveHttpAction();
+        }
+
+        /// <summary>
+        /// 接受websocket日志
+        /// </summary>
+        /// <returns></returns>
+        private async Task Receive()
         {
             byte[] buffer = new byte[2048];
             while (webSocket.State == WebSocketState.Open)
@@ -165,10 +233,22 @@ namespace AntDeploy.Util
                     else
                     {
                         var text = Encoding.UTF8.GetString(buffer).TrimEnd('\0');
-                        if (!text.StartsWith("@hello@"))
+                        if (!string.IsNullOrEmpty(text))
                         {
                             var arr = text.Split(new string[] { "@_@" }, StringSplitOptions.None);
-                            receiveAction("*"+arr[0]);
+                            var receiveMsg = "*" + arr[0];
+                            if (!string.IsNullOrEmpty(receiveMsg))
+                            {
+                                if (receiveMsg.Contains("【Error】"))
+                                {
+                                    this.receiveAction.Warn($"【Server】{receiveMsg}");
+                                    HasError = true;
+                                }
+                                else
+                                {
+                                    this.receiveAction.Info($"【Server】{receiveMsg}");
+                                }
+                            }
                         }
 
                     }

@@ -334,6 +334,7 @@ namespace AntDeploy.Models
                 StartDeploy();
             }
         }
+     
         public void StartDeploy()
         {
             progress_iis_deploy.Value = 20;
@@ -359,6 +360,7 @@ namespace AntDeploy.Models
             progress_iis_build.Value = 100;
             progress_iis_build.SuperscriptText = "√";
             b_build_end.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(99)))), ((int)(((byte)(180)))));
+            progress_iis_package.Value = 20;
         }
 
         public void BuildError()

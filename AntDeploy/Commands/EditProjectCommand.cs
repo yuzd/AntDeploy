@@ -61,8 +61,15 @@ namespace AntDeploy.Commands
         protected override void OnExecute()
         {
             //RootNamespace Title Product OutputFileName
-            Deploy deploy = new Deploy(_projectFile,_project);
-            deploy.ShowDialog();
+            try
+            {
+                Deploy deploy = new Deploy(_projectFile, _project);
+                deploy.ShowDialog();
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
     }

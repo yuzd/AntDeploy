@@ -68,12 +68,15 @@ namespace AntDeploy.Util
         /// <returns></returns>
         public async Task<Tuple<bool, string>> Upload(String requestUrl, Action<WebClient> config)
         {
-            WebClient webClient = new AntDeplopyWebClient
-            {
-                Timeout = 1000*60*30
-            };//设置超时为20分钟
+            WebClient webClient = new WebClient();
+            //{
+            //    Timeout = 1000*60*30
+            //};//设置超时为20分钟
 
             webClient.Proxy = null;
+#if DEBUG
+           //webClient.Proxy = new WebProxy("127.0.0.1:5389");
+#endif
             webClient.Headers.Add("Content-Type", "multipart/form-data; boundary=" + boundary);
             webClient.Headers.Add("User-Agent", "antdeploy");
             config?.Invoke(webClient);
@@ -111,12 +114,16 @@ namespace AntDeploy.Util
                     responseBytes = new byte[ex.Response.ContentLength];
                     responseStream?.Read(responseBytes, 0, responseBytes.Length);
                     var responseText2 = System.Text.Encoding.UTF8.GetString(responseBytes);
-                    return new Tuple<bool, string>(false, responseText2);
+                    return new Tuple<bool, string>(false, responseText2 + "==>exception:" + ex.Message);
                 }
                 catch (Exception)
                 {
                     return new Tuple<bool, string>(false, ex.Message);
                 }
+            }
+            catch(Exception ex1)
+            {
+                return new Tuple<bool, string>(false, ex1.Message);
             }
             finally
             {

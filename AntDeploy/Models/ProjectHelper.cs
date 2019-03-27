@@ -1,23 +1,19 @@
-﻿using EnvDTE;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
-using static AntDeploy.Models.ProjectKinds;
+﻿using AntDeploy.Util;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
-using System.IO;
 using System.Collections.Generic;
-using System.Linq;
+using System.Configuration;
 using System.Diagnostics;
-using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
 using System.Text.RegularExpressions;
-using AntDeploy.Util;
-using Microsoft.Win32;
+using static AntDeploy.Models.ProjectKinds;
 
 namespace AntDeploy.Models
 {
@@ -52,9 +48,9 @@ namespace AntDeploy.Models
                                 var obj = Activator.CreateInstance(myType);
                                 using (ServiceInstaller serviceInstaller = (ServiceInstaller)myFieldInfo.GetValue(obj))
                                 {
-                                     re = serviceInstaller.ServiceName;
+                                    re = serviceInstaller.ServiceName;
                                 }
-                               
+
                                 var dis = obj as IDisposable;
                                 if (dis != null)
                                 {
@@ -192,7 +188,7 @@ namespace AntDeploy.Models
         {
             try
             {
-                var path =Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
                 var folderName = Path.Combine(path, "AntDeploy");
                 if (!string.IsNullOrEmpty(folderName))
                 {
@@ -201,7 +197,7 @@ namespace AntDeploy.Models
                         Directory.CreateDirectory(folderName);
                     }
 
-                    return Path.Combine(folderName, string.IsNullOrEmpty(projectName)? "AntDeploy.json": CodingHelper.MD5(projectName) + ".json");
+                    return Path.Combine(folderName, string.IsNullOrEmpty(projectName) ? "AntDeploy.json" : CodingHelper.MD5(projectName) + ".json");
                 }
                 return string.Empty;
             }
@@ -212,13 +208,44 @@ namespace AntDeploy.Models
         }
 
 
+        public static string GetCultureFromAppFileNew()
+        {
+            try
+            {
+                var config = System.Configuration.ConfigurationManager.OpenExeConfiguration(Assembly.GetExecutingAssembly().Location);
+                var se = config.AppSettings.Settings["Culture"];
+                return se.Value;
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+        }
+        public static bool SetCultureFromAppFileNew(string culture)
+        {
+            try
+            {
+                var config = System.Configuration.ConfigurationManager.OpenExeConfiguration(Assembly.GetExecutingAssembly().Location);
+                config.AppSettings.Settings["Culture"].Value = culture;
+                config.Save(ConfigurationSaveMode.Modified);
+                System.Configuration.ConfigurationManager.RefreshSection("appSettings");
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         public static string GetCultureFromAppFile()
         {
             try
             {
+                // var appConfig = ConfigurationManager.OpenExeConfiguration(Assembly.GetExecutingAssembly().Location);
+
                 var location = typeof(ProjectHelper).Assembly.Location;
                 var fileInfo = new FileInfo(location);
-                var appFileName = Path.Combine(fileInfo.DirectoryName, "app.config");
+                var appFileName = Path.Combine(fileInfo.DirectoryName, "AntDeploy.dll.config");
                 if (!File.Exists(appFileName))
                 {
                     return string.Empty;
@@ -254,22 +281,22 @@ namespace AntDeploy.Models
         {
             try
             {
-                if(string.IsNullOrEmpty(Culture)) return false;
+                if (string.IsNullOrEmpty(Culture)) return false;
 
                 var location = typeof(ProjectHelper).Assembly.Location;
                 var fileInfo = new FileInfo(location);
-                var appFileName = Path.Combine(fileInfo.DirectoryName, "app.config");
+                var appFileName = Path.Combine(fileInfo.DirectoryName, "AntDeploy.dll.config");
                 if (!File.Exists(appFileName))
                 {
                     return false;
                 }
 
                 var text = File.ReadAllText(appFileName);
-                if(string.IsNullOrEmpty(text)) return false;
+                if (string.IsNullOrEmpty(text)) return false;
 
-                text = text.Replace(Culture,Culture.Replace(CultureValue,$"\"{culture}\""));
+                text = text.Replace(Culture, Culture.Replace(CultureValue, $"\"{culture}\""));
 
-                File.WriteAllText(appFileName,text,System.Text.Encoding.UTF8);
+                File.WriteAllText(appFileName, text, System.Text.Encoding.UTF8);
 
                 return true;
             }
