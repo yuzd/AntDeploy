@@ -156,9 +156,10 @@ namespace AntDeploy.Util
 
         public void ReceiveHttpAction()
         {
+            var client = new WebClient();
             try
             {
-                var client = new WebClient();
+                
                 var rawData = client.DownloadData(new Uri(this.HttpLogger.Url));
                 var encoding = WebUtil.GetEncodingFrom(client.ResponseHeaders, Encoding.UTF8);
                 var result = encoding.GetString(rawData);
@@ -189,6 +190,10 @@ namespace AntDeploy.Util
             catch (Exception)
             {
 
+            }
+            finally
+            {
+                client.Dispose();
             }
         }
 

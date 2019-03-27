@@ -379,15 +379,18 @@ namespace AntDeploy.Winform
                 RichTextBoxTarget.GetTargetByControl(rich_windowservice_log)?.Dispose();
                 RichTextBoxTarget.GetTargetByControl(rich_docker_log)?.Dispose();
 
-                this.b_docker_rollback.Dispose();
-                this.b_docker_rollback.Dispose();
-                this.b_windows_service_rollback.Dispose();
-                this.txt_docker_volume.Dispose();
                 this.b_iis_rollback.Dispose();
-                this.b_windows_service_rollback.Dispose();
                 this.b_docker_rollback.Dispose();
+                this.b_windows_service_rollback.Dispose();
+
+                this.txt_docker_volume.Dispose();
+
                 this.loading_win_server_test.Dispose();
                 this.loading_linux_server_test.Dispose();
+
+                this.rich_docker_log.Dispose();
+                this.rich_iis_log.Dispose();
+                this.rich_windowservice_log.Dispose();
             }
             catch (Exception)
             {
@@ -733,11 +736,11 @@ namespace AntDeploy.Winform
             new Task(() =>
             {
                 EnableForTestWinServer(false);
-
+                WebClient client = new WebClient();
                 try
                 {
 
-                    WebClient client = new WebClient();
+                    
                     client.Proxy = null;
 #if DEBUG
                     //client.Proxy = new WebProxy("127.0.0.1:5389");
@@ -763,6 +766,7 @@ namespace AntDeploy.Winform
                 finally
                 {
                     EnableForTestWinServer(true);
+                    client.Dispose();
                 }
 
             }).Start();
