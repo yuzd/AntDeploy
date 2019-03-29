@@ -5,6 +5,7 @@ namespace AntDeployWinform.Models
     public class GlobalConfig
     {
         public string MsBuildPath { get; set; }
+        public bool IsChinease { get; set; }
     }
     public class PluginConfig
     {

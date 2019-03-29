@@ -165,6 +165,9 @@
     <EmbeddedResource Include="Winform\Deploy.zh-Hans.resx">
       <DependentUpon>Deploy.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Winform\Deploy.zh.resx">
+      <DependentUpon>Deploy.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Winform\RollBack.resx">
       <DependentUpon>RollBack.cs</DependentUpon>
     </EmbeddedResource>

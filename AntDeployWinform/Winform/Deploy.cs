@@ -43,6 +43,16 @@ namespace AntDeployWinform.Winform
 
         public Deploy(string projectPath, ProjectParam project)
         {
+            
+            ProjectPath = projectPath;
+            _project = project;
+            CommandHelper.MsBuildPath = project?.MsBuildPath;
+            ReadPorjectConfig(projectPath);
+            PluginConfigPath = ProjectHelper.GetPluginConfigPath(projectPath);
+            ConfigPath = ProjectHelper.GetPluginConfigPath();
+            ReadPluginConfig(PluginConfigPath);
+            ReadConfig(ConfigPath);
+
             LoadLanguage();
 
             InitializeComponent();
@@ -56,14 +66,6 @@ namespace AntDeployWinform.Winform
                 if (stream != null) this.Icon = new Icon(stream);
             }
 
-            ProjectPath = projectPath;
-            _project = project;
-            CommandHelper.MsBuildPath = project?.MsBuildPath;
-            ReadPorjectConfig(projectPath);
-            PluginConfigPath = ProjectHelper.GetPluginConfigPath(projectPath);
-            ConfigPath = ProjectHelper.GetPluginConfigPath();
-            ReadPluginConfig(PluginConfigPath);
-            ReadConfig(ConfigPath);
 
             NlogConfig();
         }
@@ -152,9 +154,8 @@ namespace AntDeployWinform.Winform
         {
             try
             {
-                ProjectHelper.GetCultureFromAppFile();
-                System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(ProjectHelper.CultureValue.Replace("\"", ""));
-
+                
+                System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(GlobalConfig.IsChinease?"zh-CN":"");
             }
             catch (Exception)
             {
@@ -164,13 +165,27 @@ namespace AntDeployWinform.Winform
 
         private void Deploy_Load(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(ProjectHelper.CultureValue) && ProjectHelper.CultureValue.Length == 2)
+            this.checkBox_Chinese.Checked = GlobalConfig.IsChinease;
+
+            //只要有传了msbuild来初始化的话 就覆盖原来配置的
+            if (!string.IsNullOrEmpty(CommandHelper.MsBuildPath))
             {
-                checkBox_Chinese.Checked = false;
+                GlobalConfig.MsBuildPath = CommandHelper.MsBuildPath;
+            }
+
+            if (!string.IsNullOrEmpty(GlobalConfig.MsBuildPath))
+            {
+                this.txt_msbuild_path.Text = GlobalConfig.MsBuildPath;
+                CommandHelper.MsBuildPath = GlobalConfig.MsBuildPath;
             }
             else
             {
-                checkBox_Chinese.Checked = true;
+                var msbuildPath = CommandHelper.GetMsBuildPath();
+                if (!string.IsNullOrEmpty(msbuildPath))
+                {
+                    this.txt_msbuild_path.Text = msbuildPath;
+                    CommandHelper.MsBuildPath = GlobalConfig.MsBuildPath = msbuildPath;
+                }
             }
 
             //计算pannel的起始位置
@@ -3312,28 +3327,9 @@ namespace AntDeployWinform.Winform
                 GlobalConfig = new GlobalConfig();
             }
 
-            //只要有传了msbuild来初始化的话 就覆盖原来配置的
-            if (!string.IsNullOrEmpty(CommandHelper.MsBuildPath))
-            {
-                GlobalConfig.MsBuildPath = CommandHelper.MsBuildPath;
-            }
+            
 
-            if (!string.IsNullOrEmpty(GlobalConfig.MsBuildPath))
-            {
-                this.txt_msbuild_path.Text = GlobalConfig.MsBuildPath;
-                CommandHelper.MsBuildPath = GlobalConfig.MsBuildPath;
-            }
-            else
-            {
-                var msbuildPath = CommandHelper.GetMsBuildPath();
-                if (!string.IsNullOrEmpty(msbuildPath))
-                {
-                    this.txt_msbuild_path.Text = msbuildPath;
-                    CommandHelper.MsBuildPath = GlobalConfig.MsBuildPath = msbuildPath;
-                }
-            }
-
-
+           
         }
 
         private void BeginInvokeLambda(Action action)
@@ -4331,17 +4327,8 @@ namespace AntDeployWinform.Winform
 
         private void checkBox_Chinese_Click(object sender, EventArgs e)
         {
-            var result = ProjectHelper.SetCultureFromAppFile(checkBox_Chinese.Checked ? "zh-CN" : "");
-            if (result)
-            {
-                MessageBox.Show("change success please reload antdeploy!");
-                return;
-            }
-            else
-            {
-                MessageBox.Show("change fail！");
-                return;
-            }
+            GlobalConfig.IsChinease = checkBox_Chinese.Checked ;
+            MessageBox.Show("change success please reload antdeploy!");
         }
 
         private void btn_choose_msbuild_Click(object sender, EventArgs e)

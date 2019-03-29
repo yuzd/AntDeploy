@@ -67,10 +67,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="AntDeploy.dll.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <None Include="app.config" />
     <None Include="Key.snk" />
     <Content Include="lib\win32\x64\git2-572e4d8.dll">
