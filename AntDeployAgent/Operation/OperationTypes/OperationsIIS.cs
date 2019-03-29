@@ -51,18 +51,18 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
 
                     if (retryStopWebSite >= 3)
                     {
-                        logger($"【Error】File to IIS WebsiteStop :{this.args.SiteName},Err:{siteResult}, Retry limit.");
+                        logger($"【Error】Fail to IIS WebsiteStop :{this.args.SiteName},Err:{siteResult}, Retry limit.");
                         return;
                     }
 
-                    logger($"File to IIS WebsiteStop :{this.args.SiteName},Err:{siteResult}, wait 5seconds and Retry : " + retryStopWebSite);
+                    logger($"Fail to IIS WebsiteStop :{this.args.SiteName},Err:{siteResult}, wait 5seconds and Retry : " + retryStopWebSite);
                     Thread.Sleep(5000);
                     goto ReTryStopWebSiet;
                 }
             }
 
 
-            
+            logger("Start to Stop IIS ApplicationPool :" + this.args.ApplicationPoolName);
             if (!IISHelper.IsApplicationPoolStop(this.args.ApplicationPoolName))
             {
                 var retryStopPool = 0;
@@ -74,14 +74,20 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
                 {
                     if (retryStopPool >= 3)
                     {
-                        logger($"【Error】File to Stop IIS ApplicationPool :{this.args.ApplicationPoolName },Err:{stopPoolResult},  Retry limit.");
+                        logger($"【Error】Fail to Stop IIS ApplicationPool :{this.args.ApplicationPoolName },Err:{stopPoolResult},  Retry limit.");
                         return;
                     }
 
-                    logger($"File to Stop IIS ApplicationPool :{this.args.ApplicationPoolName },Err:{stopPoolResult}, wait 5seconds and Retry : " + retryStopPool);
+                    logger($"Fail to Stop IIS ApplicationPool :{this.args.ApplicationPoolName },Err:{stopPoolResult}, wait 5seconds and Retry : " + retryStopPool);
                     Thread.Sleep(5000);
                     goto ReTryStopPool;
                 }
+
+                logger("Success to Stop ApplicationPool :" + this.args.ApplicationPoolName);
+            }
+            else
+            {
+                logger("ApplicationPool :" + this.args.ApplicationPoolName + " is already stoped！");
             }
 
            
@@ -125,11 +131,11 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
             {
                 if (retryStartPool >= 3)
                 {
-                    logger($"【Error】File to Start IIS ApplicationPool :{this.args.ApplicationPoolName },Err:{poolstartReult},  Retry limit.");
+                    logger($"【Error】Fail to Start IIS ApplicationPool :{this.args.ApplicationPoolName },Err:{poolstartReult},  Retry limit.");
                     return;
                 }
 
-                logger($"File to Start IIS ApplicationPool :{this.args.ApplicationPoolName },Err:{poolstartReult}, wait 5seconds and Retry : " + retryStartPool);
+                logger($"Fail to Start IIS ApplicationPool :{this.args.ApplicationPoolName },Err:{poolstartReult}, wait 5seconds and Retry : " + retryStartPool);
                 Thread.Sleep(5000);
                 goto ReTryStartPool;
             }
@@ -150,11 +156,11 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
 
                 if (retryStartSite >= 3)
                 {
-                    logger($"【Error】File to Start IIS Websit :{ this.args.SiteName},Err:{websiteStartResult}, Retry limit.");
+                    logger($"【Error】Fail to Start IIS Websit :{ this.args.SiteName},Err:{websiteStartResult}, Retry limit.");
                     return;
                 }
 
-                logger($"File to Start IIS Website :{ this.args.SiteName},Err:{websiteStartResult}, wait 5seconds and Retry : " + retryStartSite);
+                logger($"Fail to Start IIS Website :{ this.args.SiteName},Err:{websiteStartResult}, wait 5seconds and Retry : " + retryStartSite);
                 Thread.Sleep(5000);
                 goto ReTryStartSite;
             }
