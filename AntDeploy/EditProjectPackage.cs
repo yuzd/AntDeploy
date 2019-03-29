@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
+using AntDeployWinform;
 using UIContextGuids = Microsoft.VisualStudio.Shell.Interop.UIContextGuids;
 
 namespace AntDeploy
