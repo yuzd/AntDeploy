@@ -40,25 +40,15 @@ namespace AntDeployWinform.Winform
         private string ProgressCurrentHostForWindowsService = null;
         private int ProgressPercentageForWindowsService = 0;
         private int ProgressBoxLocationLeft = 30;
-
-        public Deploy(string projectPath, ProjectParam project)
+        public Deploy(string projectPath = null, ProjectParam project = null)
         {
-            
-            ProjectPath = projectPath;
-            _project = project;
-            CommandHelper.MsBuildPath = project?.MsBuildPath;
-            ReadPorjectConfig(projectPath);
-            PluginConfigPath = ProjectHelper.GetPluginConfigPath(projectPath);
+
             ConfigPath = ProjectHelper.GetPluginConfigPath();
-            ReadPluginConfig(PluginConfigPath);
             ReadConfig(ConfigPath);
 
             LoadLanguage();
 
             InitializeComponent();
-
-            ProjectName = Path.GetFileNameWithoutExtension(projectPath);
-            this.Text += $"(Version:{Vsix.VERSION})[{ProjectName}]";
 
             Assembly assembly = typeof(Deploy).Assembly;
             using (Stream stream = assembly.GetManifestResourceStream("AntDeployWinform.Resources.Logo1.ico"))
@@ -66,15 +56,79 @@ namespace AntDeployWinform.Winform
                 if (stream != null) this.Icon = new Icon(stream);
             }
 
+            Init(projectPath, project);
 
             NlogConfig();
         }
+
+
 
         public DeployConfig DeployConfig { get; set; }
         public PluginConfig PluginConfig { get; set; }
         public GlobalConfig GlobalConfig { get; set; }
 
         #region Form
+
+        private void Init(string projectPath, ProjectParam project = null, bool isFirst = true)
+        {
+            if (string.IsNullOrEmpty(projectPath))
+            {
+                if (isFirst)
+                {
+                    return;
+                }
+
+                this.page_set.Enabled = false;
+                this.page_docker.Enabled = false;
+                this.page_window_service.Enabled = false;
+                this.page_web_iis.Enabled = false;
+                this.pag_advance_setting.Enabled = false;
+                SelectProject selectProject = new SelectProject(GlobalConfig.ProjectPathList);
+                var r = selectProject.ShowDialog();
+                if (r == DialogResult.Cancel)
+                {
+                    this.Close();
+                    return;
+                }
+                else
+                {
+                    projectPath = selectProject.SelectProjectPath;
+                    //保存记录
+
+
+                    this.page_set.Enabled = true;
+                    this.page_docker.Enabled = true;
+                    this.page_window_service.Enabled = true;
+                    this.page_web_iis.Enabled = true;
+                    this.pag_advance_setting.Enabled = true;
+                }
+
+            }
+            else
+            {
+                if (!isFirst) return;
+            }
+            ProjectName = Path.GetFileNameWithoutExtension(projectPath);
+            this.Text += $"(Version:{Vsix.VERSION})[{ProjectName}]";
+            ProjectPath = projectPath;
+            if (project == null)
+            {
+                project = new ProjectParam();
+                //读配置
+            }
+            _project = project;
+            CommandHelper.MsBuildPath = _project?.MsBuildPath;
+            ReadPorjectConfig(projectPath);
+            PluginConfigPath = ProjectHelper.GetPluginConfigPath(projectPath);
+            ReadPluginConfig(PluginConfigPath);
+            if (!isFirst)
+            {
+                if(GlobalConfig.ProjectPathList == null)GlobalConfig.ProjectPathList = new List<string>();
+                GlobalConfig.ProjectPathList.Insert(0, projectPath);
+                GlobalConfig.ProjectPathList = GlobalConfig.ProjectPathList.Distinct().ToList();
+                Reload();
+            }
+        }
 
         private void NlogConfig()
         {
@@ -154,8 +208,8 @@ namespace AntDeployWinform.Winform
         {
             try
             {
-                
-                System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(GlobalConfig.IsChinease?"zh-CN":"");
+
+                System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(GlobalConfig.IsChinease ? "zh-CN" : "");
             }
             catch (Exception)
             {
@@ -164,6 +218,16 @@ namespace AntDeployWinform.Winform
         }
 
         private void Deploy_Load(object sender, EventArgs e)
+        {
+            Reload();
+            WebUtil.SetAllowUnsafeHeaderParsing20();
+        }
+        private void Deploy_Activated(object sender, EventArgs e)
+        {
+            this.Activated -= Deploy_Activated;
+            Init(ProjectPath, _project, false);
+        }
+        private void Reload()
         {
             this.checkBox_Chinese.Checked = GlobalConfig.IsChinease;
 
@@ -306,10 +370,7 @@ namespace AntDeployWinform.Winform
             this.txt_linux_host.Text = string.Empty;
             this.txt_linux_username.Text = string.Empty;
             this.txt_linux_pwd.Text = string.Empty;
-
-            WebUtil.SetAllowUnsafeHeaderParsing20();
         }
-
 
         public void RichLogInit()
         {
@@ -349,6 +410,30 @@ namespace AntDeployWinform.Winform
 
         private void Deploy_FormClosing(object sender, FormClosingEventArgs e)
         {
+            Unload();
+
+            RichTextBoxTarget.GetTargetByControl(rich_iis_log)?.Dispose();
+            RichTextBoxTarget.GetTargetByControl(rich_windowservice_log)?.Dispose();
+            RichTextBoxTarget.GetTargetByControl(rich_docker_log)?.Dispose();
+
+
+
+            this.b_iis_rollback.Dispose();
+            this.b_docker_rollback.Dispose();
+            this.b_windows_service_rollback.Dispose();
+
+            this.txt_docker_volume.Dispose();
+
+            this.loading_win_server_test.Dispose();
+            this.loading_linux_server_test.Dispose();
+
+            this.rich_docker_log.Dispose();
+            this.rich_iis_log.Dispose();
+            this.rich_windowservice_log.Dispose();
+        }
+
+        private void Unload()
+        {
             try
             {
                 if (this.tabPage_docker.Tag is Dictionary<string, ProgressBox> progressBoxList)
@@ -379,7 +464,7 @@ namespace AntDeployWinform.Winform
                 }
 
                 GlobalConfig.MsBuildPath = this.txt_msbuild_path.Text.Trim();
-
+                GlobalConfig.ProjectPathList = GlobalConfig.ProjectPathList.Take(10).ToList();
                 PluginConfig.LastTabIndex = this.tabcontrol.SelectedIndex;
                 PluginConfig.IISEnableIncrement = this.checkBox_Increment_iis.Checked;
                 PluginConfig.WindowsServiceEnableIncrement = this.checkBox_Increment_window_service.Checked;
@@ -409,30 +494,14 @@ namespace AntDeployWinform.Winform
                     var configJson = JsonConvert.SerializeObject(GlobalConfig, Formatting.Indented);
                     File.WriteAllText(ConfigPath, configJson, Encoding.UTF8);
                 }
-                RichTextBoxTarget.GetTargetByControl(rich_iis_log)?.Dispose();
-                RichTextBoxTarget.GetTargetByControl(rich_windowservice_log)?.Dispose();
-                RichTextBoxTarget.GetTargetByControl(rich_docker_log)?.Dispose();
 
-                this.b_iis_rollback.Dispose();
-                this.b_docker_rollback.Dispose();
-                this.b_windows_service_rollback.Dispose();
 
-                this.txt_docker_volume.Dispose();
-
-                this.loading_win_server_test.Dispose();
-                this.loading_linux_server_test.Dispose();
-
-                this.rich_docker_log.Dispose();
-                this.rich_iis_log.Dispose();
-                this.rich_windowservice_log.Dispose();
             }
             catch (Exception)
             {
                 //ignore
             }
         }
-
-
         #endregion
 
         #region setting page
@@ -2007,7 +2076,7 @@ namespace AntDeployWinform.Winform
                 this.page_set.Enabled = flag;
                 this.page_docker.Enabled = flag;
                 this.page_window_service.Enabled = flag;
-
+                this.pag_advance_setting.Enabled = flag;
                 if (flag)
                 {
                     this.rich_windowservice_log.Text = "";
@@ -2310,7 +2379,7 @@ namespace AntDeployWinform.Winform
                 this.page_set.Enabled = flag;
                 this.page_docker.Enabled = flag;
                 this.page_web_iis.Enabled = flag;
-
+                this.pag_advance_setting.Enabled = flag;
                 if (flag)
                 {
                     this.rich_iis_log.Text = "";
@@ -3266,6 +3335,7 @@ namespace AntDeployWinform.Winform
             if (string.IsNullOrEmpty(projectPath))
             {
                 PluginConfig = new PluginConfig();
+                return;
             }
 
             if (File.Exists(projectPath))
@@ -3298,7 +3368,8 @@ namespace AntDeployWinform.Winform
         {
             if (string.IsNullOrEmpty(projectPath))
             {
-                GlobalConfig = new GlobalConfig();
+                GlobalConfig = new GlobalConfig() { ProjectPathList = new List<string>() };
+                return;
             }
 
             if (File.Exists(projectPath))
@@ -3315,21 +3386,18 @@ namespace AntDeployWinform.Winform
                         //ignore
                     }
 
-                    if (GlobalConfig == null) GlobalConfig = new GlobalConfig();
+                    if (GlobalConfig == null) GlobalConfig = new GlobalConfig() { ProjectPathList = new List<string>() };
                 }
                 else
                 {
-                    if (GlobalConfig == null) GlobalConfig = new GlobalConfig();
+                    if (GlobalConfig == null) new GlobalConfig() { ProjectPathList = new List<string>() };
                 }
             }
             else
             {
-                GlobalConfig = new GlobalConfig();
+                GlobalConfig = new GlobalConfig() { ProjectPathList = new List<string>() };
             }
 
-            
-
-           
         }
 
         private void BeginInvokeLambda(Action action)
@@ -4122,7 +4190,7 @@ namespace AntDeployWinform.Winform
                 this.page_set.Enabled = flag;
                 this.page_window_service.Enabled = flag;
                 this.page_web_iis.Enabled = flag;
-
+                this.pag_advance_setting.Enabled = flag;
                 if (flag)
                 {
                     this.rich_iis_log.Text = "";
@@ -4327,7 +4395,7 @@ namespace AntDeployWinform.Winform
 
         private void checkBox_Chinese_Click(object sender, EventArgs e)
         {
-            GlobalConfig.IsChinease = checkBox_Chinese.Checked ;
+            GlobalConfig.IsChinease = checkBox_Chinese.Checked;
             MessageBox.Show("change success please reload antdeploy!");
         }
 
@@ -4337,7 +4405,7 @@ namespace AntDeployWinform.Winform
             fdlg.Title = "Choose MSBuild.exe";
             fdlg.Filter = "Exe Files (.exe)|*.exe|All Files (*.*)|*.*";
             fdlg.FilterIndex = 1;
-            if(!string.IsNullOrEmpty(this.txt_msbuild_path.Text))
+            if (!string.IsNullOrEmpty(this.txt_msbuild_path.Text))
             {
                 try
                 {
@@ -4360,5 +4428,7 @@ namespace AntDeployWinform.Winform
                 CommandHelper.MsBuildPath = GlobalConfig.MsBuildPath = this.txt_msbuild_path.Text;
             }
         }
+
+
     }
 }

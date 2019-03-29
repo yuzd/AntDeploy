@@ -99,7 +99,10 @@ namespace AntDeploy.Commands
                 param.OutPutName = _project.GetProjectProperty("OutputFileName");
                 param.VsVersion = ProjectHelper.GetVsVersion();
                 param.MsBuildPath = ProjectHelper.GetMsBuildPath();
-
+                if (!string.IsNullOrEmpty(param.MsBuildPath))
+                {
+                    param.MsBuildPath = Path.Combine(param.MsBuildPath, "MSBuild.exe");
+                }
                 //Deploy deploy = new Deploy(_projectFile, param);
                 //deploy.ShowDialog();
 
@@ -132,40 +135,6 @@ namespace AntDeploy.Commands
 
     }
 
-    public class AntDeployForm : MarshalByRefObject
-    {
-        private Assembly _assembly;
-
-        public void LoadAssembly(string assemblyFile)
-        {
-            try
-            {
-                _assembly = Assembly.LoadFrom(assemblyFile);
-                //return _assembly;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        public T GetInstance<T>(string typeName) where T : class
-        {
-            if (_assembly == null) return null;
-            var type = _assembly.GetType(typeName);
-            if (type == null) return null;
-            return Activator.CreateInstance(type) as T;
-        }
-
-        public void ExecuteMothod(string typeName, string methodName)
-        {
-            if (_assembly == null) return;
-            var type = _assembly.GetType(typeName);
-            var obj = Activator.CreateInstance(type);
-            Expression<Action> lambda = System.Linq.Expressions.Expression.Lambda<Action>(System.Linq.Expressions.Expression.Call(System.Linq.Expressions.Expression.Constant(obj), type.GetMethod(methodName)), null);
-            lambda.Compile()();
-        }
-
-    }
+   
 
 }

@@ -6,6 +6,7 @@ namespace AntDeployWinform.Models
     {
         public string MsBuildPath { get; set; }
         public bool IsChinease { get; set; }
+        public List<string> ProjectPathList  { get; set; }
     }
     public class PluginConfig
     {

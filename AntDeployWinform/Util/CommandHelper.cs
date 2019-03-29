@@ -36,7 +36,7 @@ namespace AntDeployWinform.Util
             {
                 path2 = path2.Substring(0, path2.Length - 1);
             }
-            var msbuildPath = msBuild + "\\MsBuild.exe";
+            var msbuildPath =  msBuild ;
             var buildArg = "\"" + path.Replace("\\\\", "\\") + "\"";
             if (isWeb)
             {

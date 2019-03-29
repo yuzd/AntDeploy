@@ -140,6 +140,12 @@
     <Compile Include="Winform\RollBack.Designer.cs">
       <DependentUpon>RollBack.cs</DependentUpon>
     </Compile>
+    <Compile Include="Winform\SelectProject.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Winform\SelectProject.Designer.cs">
+      <DependentUpon>SelectProject.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -170,6 +176,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Winform\RollBack.resx">
       <DependentUpon>RollBack.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Winform\SelectProject.resx">
+      <DependentUpon>SelectProject.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Winform\SelectProject.zh-Hans.resx">
+      <DependentUpon>SelectProject.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

@@ -1151,6 +1151,7 @@
             this.MinimizeBox = false;
             this.Name = "Deploy";
             this.HelpButtonClicked += new System.ComponentModel.CancelEventHandler(this.Deploy_HelpButtonClicked);
+            this.Activated += new System.EventHandler(this.Deploy_Activated);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Deploy_FormClosing);
             this.Load += new System.EventHandler(this.Deploy_Load);
             this.tabcontrol.ResumeLayout(false);
