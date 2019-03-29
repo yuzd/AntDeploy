@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		appveyor.yml = appveyor.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFormsApp", "WindowsFormsApp\WindowsFormsApp.csproj", "{43A14241-BA20-4402-B1E3-9CD0838B9181}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntDeployApp", "AntDeployApp\AntDeployApp.csproj", "{43A14241-BA20-4402-B1E3-9CD0838B9181}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntDeployAgentWindowsService", "AntDeployAgentWindowsService\AntDeployAgentWindowsService.csproj", "{D9587A7D-E2E5-4EF4-BA90-5F45BE6C472A}"
 EndProject
