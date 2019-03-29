@@ -5,12 +5,6 @@ using AntDeployWinform.Winform;
 using System;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Security;
-using System.Security.Policy;
-using AppDomainToolkit;
-using Expression = EnvDTE.Expression;
 
 namespace AntDeploy.Commands
 {
@@ -103,25 +97,8 @@ namespace AntDeploy.Commands
                 {
                     param.MsBuildPath = Path.Combine(param.MsBuildPath, "MSBuild.exe");
                 }
-                //Deploy deploy = new Deploy(_projectFile, param);
-                //deploy.ShowDialog();
-
-                //String name = Assembly.GetExecutingAssembly().GetName().FullName;
-                //var remoteLoader = otherDomain.CreateInstanceAndUnwrap(name, typeof(AntDeployForm).FullName) as AntDeployForm;
-                using(var context = AppDomainContext.Create())
-                {
-                    
-                    var area = RemoteFunc.Invoke(
-                        context.Domain,
-                        _projectFile,
-                        param,
-                        (pi, r) =>
-                        {
-                            Deploy deploy = new Deploy(_projectFile, param);
-                            deploy.ShowDialog();
-                            return 1;
-                        });
-                }
+                Deploy deploy = new Deploy(_projectFile, param);
+                deploy.ShowDialog();
             }
             catch (Exception ex)
             {
@@ -135,6 +112,6 @@ namespace AntDeploy.Commands
 
     }
 
-   
+
 
 }

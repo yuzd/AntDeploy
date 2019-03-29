@@ -261,6 +261,5 @@ __pycache__/
 *.pyc
 Test/
 NLog.Windows.Forms/
-WindowsFormsAppTest/
 AntDeployAgentWindowsService/agent_publish/antdeploy/
 AntDeployAgentWindowsService/agent_publish/
