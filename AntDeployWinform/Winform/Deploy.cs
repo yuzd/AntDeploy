@@ -63,9 +63,9 @@ namespace AntDeployWinform.Winform
 
 
 
-        public DeployConfig DeployConfig { get; set; }
-        public PluginConfig PluginConfig { get; set; }
-        public GlobalConfig GlobalConfig { get; set; }
+        public DeployConfig DeployConfig { get; set; } = new DeployConfig();
+        public PluginConfig PluginConfig { get; set; } = new PluginConfig();
+        public GlobalConfig GlobalConfig { get; set; } = new GlobalConfig();
 
         #region Form
 
@@ -4429,6 +4429,10 @@ namespace AntDeployWinform.Winform
             }
         }
 
-
+        private void label_without_vs_Click(object sender, EventArgs e)
+        {
+            ProcessStartInfo sInfo = new ProcessStartInfo("https://github.com/yuzd/AntDeployAgent/issues/18");
+            Process.Start(sInfo);
+        }
     }
 }

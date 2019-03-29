@@ -153,6 +153,7 @@
             this.b_env_add_by_name = new System.Windows.Forms.Button();
             this.combo_env_list = new System.Windows.Forms.ComboBox();
             this.pag_advance_setting = new System.Windows.Forms.TabPage();
+            this.label_without_vs = new System.Windows.Forms.Label();
             this.checkBox_Chinese = new System.Windows.Forms.CheckBox();
             this.btn_choose_msbuild = new System.Windows.Forms.Button();
             this.label36 = new System.Windows.Forms.Label();
@@ -1109,12 +1110,20 @@
             // pag_advance_setting
             // 
             resources.ApplyResources(this.pag_advance_setting, "pag_advance_setting");
+            this.pag_advance_setting.Controls.Add(this.label_without_vs);
             this.pag_advance_setting.Controls.Add(this.checkBox_Chinese);
             this.pag_advance_setting.Controls.Add(this.btn_choose_msbuild);
             this.pag_advance_setting.Controls.Add(this.label36);
             this.pag_advance_setting.Controls.Add(this.txt_msbuild_path);
             this.pag_advance_setting.Name = "pag_advance_setting";
             this.pag_advance_setting.UseVisualStyleBackColor = true;
+            // 
+            // label_without_vs
+            // 
+            resources.ApplyResources(this.label_without_vs, "label_without_vs");
+            this.label_without_vs.ForeColor = System.Drawing.Color.RoyalBlue;
+            this.label_without_vs.Name = "label_without_vs";
+            this.label_without_vs.Click += new System.EventHandler(this.label_without_vs_Click);
             // 
             // checkBox_Chinese
             // 
@@ -1325,5 +1334,6 @@
         private System.Windows.Forms.TextBox txt_msbuild_path;
         private System.Windows.Forms.Button btn_choose_msbuild;
         private System.Windows.Forms.CheckBox checkBox_Chinese;
+        private System.Windows.Forms.Label label_without_vs;
     }
 }
