@@ -67,6 +67,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AntDeployApp.exe.config">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <None Include="app.config" />
     <None Include="Key.snk" />
     <Content Include="AntDeployApp.exe">
