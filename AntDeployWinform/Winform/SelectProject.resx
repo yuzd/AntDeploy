@@ -150,6 +150,9 @@
   <data name="listBox_project.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Bottom</value>
   </data>
+  <data name="listBox_project.HorizontalScrollbar" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
   <data name="listBox_project.ItemHeight" type="System.Int32, mscorlib">
     <value>12</value>
   </data>
@@ -201,9 +204,6 @@
   <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>zh-Hans</value>
-  </metadata>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
