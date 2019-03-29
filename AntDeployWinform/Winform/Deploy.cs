@@ -115,6 +115,7 @@ namespace AntDeployWinform.Winform
             {
                 project = new ProjectParam();
                 //读配置
+                project.IsNetcorePorject = ProjectHelper.IsNetCore(projectPath);
             }
             _project = project;
             CommandHelper.MsBuildPath = _project?.MsBuildPath;

@@ -1,10 +1,13 @@
 ﻿using AntDeploy.Models;
 using AntDeployWinform.Models;
-using AntDeployWinform.Winform;
-
+using AntDeployWinform.Util;
+using Newtonsoft.Json;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Text;
 
 namespace AntDeploy.Commands
 {
@@ -93,12 +96,13 @@ namespace AntDeploy.Commands
                 param.OutPutName = _project.GetProjectProperty("OutputFileName");
                 param.VsVersion = ProjectHelper.GetVsVersion();
                 param.MsBuildPath = ProjectHelper.GetMsBuildPath();
+                param.ProjectPath = _projectFile;
                 if (!string.IsNullOrEmpty(param.MsBuildPath))
                 {
                     param.MsBuildPath = Path.Combine(param.MsBuildPath, "MSBuild.exe");
                 }
-                Deploy deploy = new Deploy(_projectFile, param);
-                deploy.ShowDialog();
+
+                DoAntDeployProcess(_projectFile, param);
             }
             catch (Exception ex)
             {
@@ -108,6 +112,35 @@ namespace AntDeploy.Commands
             {
                 //AppDomain.Unload(otherDomain);
             }
+        }
+
+        private void DoAntDeployProcess(string projectPath, ProjectParam param)
+        {
+           
+            var md5 = CodingHelper.MD5(projectPath);
+            var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var projectPram = JsonConvert.SerializeObject(param);
+            var projectPramPath = Path.Combine(path, md5 + "_param.json");
+            File.WriteAllText(projectPramPath, projectPram, Encoding.UTF8);
+           
+            var assembly = Assembly.GetExecutingAssembly();
+            var codeBase = assembly.Location;
+            var codeBaseDirectory = Path.GetDirectoryName(codeBase);
+            var ant = Path.Combine(codeBaseDirectory, "AntDeployApp.exe");
+            using (var process = new Process())
+            {
+                process.StartInfo.FileName = ant;
+                process.StartInfo.Arguments = $"\"{projectPramPath}\"";
+                process.StartInfo.CreateNoWindow = false;
+                process.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.Verb = "runas";
+
+                process.Start();
+
+                process.WaitForExit();
+            }
+
         }
 
     }

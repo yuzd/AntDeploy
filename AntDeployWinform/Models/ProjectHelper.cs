@@ -2,6 +2,7 @@
 using System;
 using System.Configuration;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.ServiceProcess;
 using System.Text.RegularExpressions;
@@ -59,6 +60,23 @@ namespace AntDeployWinform.Models
         }
 
 
+        public static bool IsNetCore(string projectPath)
+        {
+            try
+            {
+                var info = File.ReadAllLines(projectPath);
+                var firstLine = info.FirstOrDefault();
+                if (!string.IsNullOrEmpty(firstLine))
+                {
+                    return firstLine.StartsWith("<Project Sdk=\"Microsoft.NET.Sdk\">") || firstLine.Contains("Sdk=\"Microsoft.NET.Sdk\"");
+                }
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
 
 
         public static string GetProjectSkdInNetCoreProject(string projectPath)

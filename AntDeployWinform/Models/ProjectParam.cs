@@ -25,5 +25,6 @@ namespace AntDeployWinform.Models
         public string OutPutName { get; set; }
         public string VsVersion { get; set; }
         public string MsBuildPath { get; set; }
+        public string ProjectPath { get; set; }
     }
 }

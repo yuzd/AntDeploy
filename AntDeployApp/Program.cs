@@ -1,4 +1,6 @@
-﻿using AntDeployWinform.Winform;
+﻿using AntDeployWinform.Models;
+using AntDeployWinform.Winform;
+using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Windows.Forms;
@@ -22,11 +24,28 @@ namespace WindowsFormsApp
             Application.Run(new Deploy(@"d:\Users\zdyu\source\repos\WebApplication3\WebApplication3\WebApplication3.csproj"));
             return;
 #endif
-            if (args != null && args.Length == 2)
+            if (args.Length == 2)
             {
                 if (File.Exists(args[1]))
                 {
-                    Application.Run(new Deploy(args[1]));
+                    var fileInfo = File.ReadAllText(args[1]);
+                    if (string.IsNullOrEmpty(fileInfo))
+                    {
+                        Application.Run(new Deploy());
+                    }
+                    else
+                    {
+                        try
+                        {
+                            var model = JsonConvert.DeserializeObject<ProjectParam>(fileInfo);
+                            Application.Run(model != null ? new Deploy(model.ProjectPath, model) : new Deploy());
+                        }
+                        catch (Exception)
+                        {
+
+                            Application.Run(new Deploy());
+                        }
+                    }
                 }
                 else
                 {
