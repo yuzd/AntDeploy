@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // 有关程序集的一般信息由以下
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("WindowsFormsAppTest")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("AntDeployApp")]
+[assembly: AssemblyDescription("zdyu")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("WindowsFormsAppTest")]
+[assembly: AssemblyCompany("zdyu")]
+[assembly: AssemblyProduct("AntDeployApp")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

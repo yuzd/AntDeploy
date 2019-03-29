@@ -1,11 +1,10 @@
 ﻿using AntDeployWinform.Models;
 using AntDeployWinform.Winform;
-using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Windows.Forms;
 
-namespace WindowsFormsApp
+namespace AntDeployApp
 {
     static class Program
     {
@@ -20,10 +19,6 @@ namespace WindowsFormsApp
             Application.SetCompatibleTextRenderingDefault(false);
             //System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("zh-CN");
 
-#if DEBUG
-            Application.Run(new Deploy(@"d:\Users\zdyu\source\repos\WebApplication3\WebApplication3\WebApplication3.csproj"));
-            return;
-#endif
             if (args.Length == 2)
             {
                 if (File.Exists(args[1]))
@@ -37,7 +32,7 @@ namespace WindowsFormsApp
                     {
                         try
                         {
-                            var model = JsonConvert.DeserializeObject<ProjectParam>(fileInfo);
+                            var model = Newtonsoft.Json.JsonConvert.DeserializeObject<ProjectParam>(fileInfo);
                             Application.Run(model != null ? new Deploy(model.ProjectPath, model) : new Deploy());
                         }
                         catch (Exception)
