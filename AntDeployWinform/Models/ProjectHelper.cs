@@ -53,24 +53,80 @@ namespace AntDeployWinform.Models
                 }
                 return "";
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return "";
             }
         }
 
 
-        public static bool IsNetCore(string projectPath)
+        public static ProjectParam GetNetCoreParamInCsprojectFile(string projectPath)
         {
             try
             {
+                var project = new ProjectParam();
                 var info = File.ReadAllLines(projectPath);
                 var firstLine = info.FirstOrDefault();
                 if (!string.IsNullOrEmpty(firstLine))
                 {
-                    return firstLine.StartsWith("<Project Sdk=\"Microsoft.NET.Sdk\">") || firstLine.Contains("Sdk=\"Microsoft.NET.Sdk\"");
+                    project.IsNetcorePorject = firstLine.StartsWith("<Project Sdk=\"Microsoft.NET.Sdk\">") || firstLine.Contains("Sdk=\"Microsoft.NET.Sdk\"");
                 }
-                return true;
+
+                var assembly = info.FirstOrDefault(r => r.Contains("<AssemblyName>") && r.Contains("</AssemblyName>"));
+                if (!string.IsNullOrEmpty(assembly))
+                {
+                    project.OutPutName = assembly.Split(new string[] {"<AssemblyName>"}, StringSplitOptions.None)[1]
+                        .Split(new string[]{ "<" }, StringSplitOptions.RemoveEmptyEntries)[0];
+                    if (project.IsNetcorePorject)
+                    {
+                        project.OutPutName += ".dll";
+                    }
+                    else
+                    {
+                        project.OutPutName += ".exe";
+                    }
+                }
+
+                var framework = info.FirstOrDefault(r => r.Contains("TargetFramework>"));
+                if (!string.IsNullOrEmpty(framework))
+                {
+                    var TargetFramework = framework.Split(new string[] { "TargetFramework>" }, StringSplitOptions.None)[1]
+                        .Split(new string[] { "<" }, StringSplitOptions.None)[0];
+                    var version = Regex.Replace(TargetFramework, "[a-zA-Z]+", "").Trim();
+                    var temp = version.Replace(".", "");
+                    if (int.TryParse(temp, out _))
+                    {
+                        project.NetCoreSDKVersion = version;
+                    }
+                }
+
+                return project;
+            }
+            catch (Exception)
+            {
+                return new ProjectParam();
+            }
+        }
+
+        /// <summary>
+        /// 检查工程文件里面是否含有 WebProjectProperties字样
+        /// </summary>
+        /// <param name="projectPath"></param>
+        /// <returns></returns>
+        public static bool IsWebProject(string projectPath)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(projectPath) && File.Exists(projectPath))
+                {
+                    var fileInfo = File.ReadAllText(projectPath);
+                    if (fileInfo.Contains("<WebProjectProperties>") && fileInfo.Contains("</WebProjectProperties>"))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
             }
             catch (Exception)
             {
@@ -172,7 +228,7 @@ namespace AntDeployWinform.Models
             }
         }
 
-      
+
 
         public const string SolutionItemsFolder = "Solution Items";
 

@@ -50,7 +50,7 @@ namespace AntDeployWinform.Util
 
                 return Encoding.GetEncoding(charsetName);
             }
-            catch (ArgumentException ex)
+            catch (ArgumentException )
             {
                 return Encoding.UTF8;
             }

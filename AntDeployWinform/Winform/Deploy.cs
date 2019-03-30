@@ -113,9 +113,8 @@ namespace AntDeployWinform.Winform
             ProjectPath = projectPath;
             if (project == null)
             {
-                project = new ProjectParam();
                 //读配置
-                project.IsNetcorePorject = ProjectHelper.IsNetCore(projectPath);
+                project = ProjectHelper.GetNetCoreParamInCsprojectFile(projectPath);
             }
             _project = project;
             CommandHelper.MsBuildPath = _project?.MsBuildPath;
@@ -1338,13 +1337,9 @@ namespace AntDeployWinform.Winform
             if (!isWeb)
             {
                 //检查工程文件里面是否含有 WebProjectProperties字样
-                if (!string.IsNullOrEmpty(ProjectPath) && File.Exists(ProjectPath))
+                if (ProjectHelper.IsWebProject(ProjectPath))
                 {
-                    var fileInfo = File.ReadAllText(ProjectPath);
-                    if (fileInfo.Contains("<WebProjectProperties>") && fileInfo.Contains("</WebProjectProperties>"))
-                    {
-                        isWeb = true;
-                    }
+                    isWeb = true;
                 }
             }
 
@@ -1758,13 +1753,9 @@ namespace AntDeployWinform.Winform
             if (!isWeb)
             {
                 //检查工程文件里面是否含有 WebProjectProperties字样
-                if (!string.IsNullOrEmpty(ProjectPath) && File.Exists(ProjectPath))
+                if (ProjectHelper.IsWebProject(ProjectPath))
                 {
-                    var fileInfo = File.ReadAllText(ProjectPath);
-                    if (fileInfo.Contains("<WebProjectProperties>") && fileInfo.Contains("</WebProjectProperties>"))
-                    {
-                        isWeb = true;
-                    }
+                    isWeb = true;
                 }
             }
 
@@ -2415,16 +2406,12 @@ namespace AntDeployWinform.Winform
             }
 
             //检查工程文件里面是否含有 WebProjectProperties字样
-            if (!string.IsNullOrEmpty(ProjectPath) && File.Exists(ProjectPath))
+            if (ProjectHelper.IsWebProject(ProjectPath))
             {
-                var fileInfo = File.ReadAllText(ProjectPath);
-                if (fileInfo.Contains("<WebProjectProperties>") && fileInfo.Contains("</WebProjectProperties>"))
-                {
-                    MessageBox.Show("current project is not windows service project!");
-                    return;
-                }
+                MessageBox.Show("current project is not windows service project!");
+                return;
             }
-
+           
             var sdkTypeName = this.combo_windowservice_sdk_type.SelectedItem as string;
             if (string.IsNullOrWhiteSpace(sdkTypeName))
             {
@@ -2516,6 +2503,17 @@ namespace AntDeployWinform.Winform
 
             this.rich_windowservice_log.Text = "";
             this.nlog_windowservice.Info($"windows Service exe name:{execFilePath.Replace(".dll", ".exe")}");
+            if (DeployConfig.WindowsServiveConfig.SdkType.Equals("netcore"))
+            {
+                if (string.IsNullOrEmpty(_project.NetCoreSDKVersion))
+                {
+                    _project.NetCoreSDKVersion = ProjectHelper.GetProjectSkdInNetCoreProject(ProjectPath);
+                }
+                if (!string.IsNullOrEmpty(_project.NetCoreSDKVersion))
+                {
+                    this.nlog_windowservice.Info($"DotNetSDK.Version:{_project.NetCoreSDKVersion}");
+                }
+            }
 
             new Task(async () =>
             {
@@ -2873,15 +2871,12 @@ namespace AntDeployWinform.Winform
                 return;
             }
 
+         
             //检查工程文件里面是否含有 WebProjectProperties字样
-            if (!string.IsNullOrEmpty(ProjectPath) && File.Exists(ProjectPath))
+            if (ProjectHelper.IsWebProject(ProjectPath))
             {
-                var fileInfo = File.ReadAllText(ProjectPath);
-                if (fileInfo.Contains("<WebProjectProperties>") && fileInfo.Contains("</WebProjectProperties>"))
-                {
-                    MessageBox.Show("current project is not windows service project!");
-                    return;
-                }
+                MessageBox.Show("current project is not windows service project!");
+                return;
             }
 
 
@@ -3550,7 +3545,7 @@ namespace AntDeployWinform.Winform
                 ENTRYPOINT = this.ProjectName + ".dll";
             }
 #endif
-            var SDKVersion = ProjectHelper.GetProjectSkdInNetCoreProject(ProjectPath);
+            var SDKVersion = !string.IsNullOrEmpty(_project.NetCoreSDKVersion)?_project.NetCoreSDKVersion: ProjectHelper.GetProjectSkdInNetCoreProject(ProjectPath);
             if (string.IsNullOrEmpty(SDKVersion))
             {
                 MessageBox.Show("get current project skd version error");
@@ -3580,9 +3575,9 @@ namespace AntDeployWinform.Winform
             combo_docker_env_SelectedIndexChanged(null, null);
 
             this.rich_docker_log.Text = "";
-            this.nlog_docker.Info($"The Porject ENTRYPOINT name:{ENTRYPOINT}");
+            this.nlog_docker.Info($"The Porject ENTRYPOINT name:{ENTRYPOINT},DotNetSDK.Version:{_project.NetCoreSDKVersion}");
             var clientDateTimeFolderName = DateTime.Now.ToString("yyyyMMddHHmmss");
-            new Task(async () =>
+            new Task( () =>
             {
                 this.nlog_docker.Info($"-----------------Start publish[Ver:{Vsix.VERSION}]-----------------");
                 PrintCommonLog(this.nlog_docker);
@@ -3852,7 +3847,7 @@ namespace AntDeployWinform.Winform
                 ENTRYPOINT = this.ProjectName + ".dll";//MessageBox.Show("get current project property:outputfilename error");
             }
 #endif
-            var SDKVersion = ProjectHelper.GetProjectSkdInNetCoreProject(ProjectPath);
+            var SDKVersion = !string.IsNullOrEmpty(_project.NetCoreSDKVersion) ? _project.NetCoreSDKVersion : ProjectHelper.GetProjectSkdInNetCoreProject(ProjectPath);
             if (string.IsNullOrEmpty(SDKVersion))
             {
                 MessageBox.Show("get current project skd version error");
@@ -3885,7 +3880,7 @@ namespace AntDeployWinform.Winform
             this.rich_docker_log.Text = "";
             this.nlog_docker.Info($"The Porject ENTRYPOINT name:{ENTRYPOINT}");
             this.tabControl_docker.SelectedIndex = 1;
-            new Task(async () =>
+            new Task( () =>
             {
 
 
@@ -4006,7 +4001,7 @@ namespace AntDeployWinform.Winform
         {
 
 
-            new Task(async () =>
+            new Task( () =>
             {
 
                 this.nlog_docker.Info($"-----------------Rollback Start[Ver:{Vsix.VERSION}]-----------------");

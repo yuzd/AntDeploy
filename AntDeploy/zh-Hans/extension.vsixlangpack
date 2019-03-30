@@ -2,6 +2,6 @@
 <PackageLanguagePackManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011">
   <Metadata>
     <DisplayName>AntDeploy</DisplayName>
-    <Description>AntDeploy发布工具</Description>
+    <Description>一键发布部署到服务器Docker,iis,windows服务(支持netcore和netframework)</Description>
   </Metadata>
 </PackageLanguagePackManifest>

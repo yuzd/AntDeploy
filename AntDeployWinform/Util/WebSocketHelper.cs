@@ -101,7 +101,7 @@ namespace AntDeployWinform.Util
                    }
                }).Start();
             }
-            catch (Exception ex)
+            catch (Exception )
             {
                 //ignore
             }
