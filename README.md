@@ -7,6 +7,7 @@ https://marketplace.visualstudio.com/items?itemName=nainaigu.AntDeploy
 * 支持iis一键部署(支持netcore和framework)(支持增量发布)(支持点火)
 * 支持windows服务一键部署(支持netcore和framework)(支持增量发布)
 * 支持一键回滚(windows服务器需要装>=2.7版本的agent)
+* 支持脱离Visual Studio独立使用
 
 # (如要安装Windows服务器上agent服务)How to install 
 
@@ -15,6 +16,10 @@ https://github.com/yuzd/AntDeployAgent/issues/1
 # 为什么发布到windows服务器要装agent?
 
 https://github.com/yuzd/AntDeployAgent/issues/7
+
+# 如何脱离Visual Studio独立使用
+
+https://github.com/yuzd/AntDeployAgent/issues/18
 
 # 脑图
 
@@ -38,8 +43,11 @@ https://github.com/yuzd/AntDeployAgent/issues/3
 【demo演示】一键发布WindowsService项目(netframwork版本)
 https://github.com/yuzd/AntDeployAgent/issues/4
 
-【demo演示】一键发布WindowsService项目(netcore)
+【demo演示】一键发布WindowsService项目(netcore web项目)
 https://github.com/yuzd/AntDeployAgent/issues/5
+
+【demo演示】一键发布WindowsService项目(netcore 普通项目)
+https://github.com/yuzd/AntDeployAgent/issues/17
 
 # 其他
 如果您对这款vs插件有任何意见和建议都欢迎提Issue
@@ -48,6 +56,7 @@ https://github.com/yuzd/AntDeployAgent/issues/5
 
 反馈QQ群：
  ![image](https://images4.c-ctrip.com/target/zb0711000000rv06a5645.jpg)
+
 
 # 关于源码
 所有源代码全部开源,如果用到请注明出处
