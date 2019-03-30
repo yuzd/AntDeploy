@@ -101,6 +101,8 @@ namespace AntDeployWinform.Winform
                     this.page_window_service.Enabled = true;
                     this.page_web_iis.Enabled = true;
                     this.pag_advance_setting.Enabled = true;
+
+                    this.BringToFront();
                 }
 
             }
@@ -1642,6 +1644,8 @@ namespace AntDeployWinform.Winform
                             if (ProgressPercentage == 0) UploadError(this.tabPage_progress, server.Host);
                             if (ProgressPercentage > 0 && ProgressPercentage < 100)
                                 UpdateUploadProgress(this.tabPage_progress, ProgressCurrentHost, 100); //结束上传
+
+                            webSocket.ReceiveHttpAction();
                             haveError = webSocket.HasError;
                             if (haveError)
                             {
@@ -1945,6 +1949,7 @@ namespace AntDeployWinform.Winform
 
                             var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/rollback",
                                 (client) => { });
+                            webSocket.ReceiveHttpAction();
                             haveError = webSocket.HasError;
                             if (haveError)
                             {
@@ -2766,6 +2771,7 @@ namespace AntDeployWinform.Winform
                             if (ProgressPercentageForWindowsService > 0 && ProgressPercentageForWindowsService < 100)
                                 UpdateUploadProgress(this.tabPage_windows_service, ProgressCurrentHostForWindowsService,
                                     100); //结束上传
+                            webSocket.ReceiveHttpAction();
                             haveError = webSocket.HasError;
                             if (haveError)
                             {
@@ -3083,7 +3089,7 @@ namespace AntDeployWinform.Winform
 
                             var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/rollback",
                                 (client) => { });
-
+                            webSocket.ReceiveHttpAction();
                             haveError = webSocket.HasError;
                             if (haveError)
                             {

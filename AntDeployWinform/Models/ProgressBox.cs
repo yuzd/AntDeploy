@@ -255,24 +255,32 @@ namespace AntDeployWinform.Models
         {
             Action action = () =>
             {
-                  if (ServerType.Equals(ServerType.IIS))
-                  {
-                      Server.IIsFireUrl = this.FireUrlText.Text;
-                  }
-                  if (ServerType.Equals(ServerType.DOCKER))
-                  {
-                      Server.DockerFireUrl = this.FireUrlText.Text;
-                  }
-                  if (ServerType.Equals(ServerType.WINSERVICE))
-                  {
-                      Server.WindowsServiceFireUrl = this.FireUrlText.Text;
-                  }
+                 
+                try
+                {
+                    if (ServerType.Equals(ServerType.IIS))
+                    {
+                        Server.IIsFireUrl = this.FireUrlText.Text;
+                    }
+                    if (ServerType.Equals(ServerType.DOCKER))
+                    {
+                        Server.DockerFireUrl = this.FireUrlText.Text;
+                    }
+                    if (ServerType.Equals(ServerType.WINSERVICE))
+                    {
+                        Server.WindowsServiceFireUrl = this.FireUrlText.Text;
+                    }
 
-                  progress_iis_build.Dispose();
-                  progress_iis_package.Dispose();
-                  progress_iis_upload.Dispose();
-                  progress_iis_deploy.Dispose();
-                  base.Dispose(disposing);
+                    progress_iis_build.Dispose();
+                    progress_iis_package.Dispose();
+                    progress_iis_upload.Dispose();
+                    progress_iis_deploy.Dispose();
+                    base.Dispose(disposing);
+                }
+                catch (Exception)
+                {
+
+                }
               };
 
             if (this.InvokeRequired)

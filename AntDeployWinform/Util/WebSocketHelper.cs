@@ -71,6 +71,9 @@ namespace AntDeployWinform.Util
                 webSocket = new System.Net.WebSockets.Managed.ClientWebSocket();
                 await webSocket.ConnectAsync(new Uri(uri), CancellationToken.None);
                 key = await ReceiveFirst();
+                receiveAction.Debug(!string.IsNullOrEmpty(key)
+                    ? $"WebSocket Connect Success:{key},Server excute logs will accept from websocket"
+                    : $"WebSocket Connect Fail,Server excute logs will accept from http request");
                 new Task(async () =>
                 {
                     try
@@ -101,7 +104,7 @@ namespace AntDeployWinform.Util
                    }
                }).Start();
             }
-            catch (Exception )
+            catch (Exception)
             {
                 //ignore
             }

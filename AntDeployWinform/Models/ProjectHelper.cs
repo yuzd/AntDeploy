@@ -69,7 +69,7 @@ namespace AntDeployWinform.Models
                 var firstLine = info.FirstOrDefault();
                 if (!string.IsNullOrEmpty(firstLine))
                 {
-                    project.IsNetcorePorject = firstLine.StartsWith("<Project Sdk=\"Microsoft.NET.Sdk\">") || firstLine.Contains("Sdk=\"Microsoft.NET.Sdk\"");
+                    project.IsNetcorePorject = firstLine.Contains("Sdk=\"Microsoft.NET.Sdk.Web\"") || firstLine.Contains("Sdk=\"Microsoft.NET.Sdk\"");
                 }
 
                 var assembly = info.FirstOrDefault(r => r.Contains("<AssemblyName>") && r.Contains("</AssemblyName>"));
