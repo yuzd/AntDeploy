@@ -31,12 +31,15 @@ namespace AntDeployWinform.Util
                 logger.Error("Fail to get msbuild.exe path.please set it in Config tab page.");
                 return false;
             }
+
+
+
             var path2 = publishPath.Replace("\\\\", "\\");
             if (path2.EndsWith("\\"))
             {
                 path2 = path2.Substring(0, path2.Length - 1);
             }
-            var msbuildPath =  msBuild ;
+            var msbuildPath = msBuild;
             var buildArg = "\"" + path.Replace("\\\\", "\\") + "\"";
             if (isWeb)
             {
@@ -47,19 +50,53 @@ namespace AntDeployWinform.Util
                 buildArg += " /t:Rebuild /v:m /p:Configuration=Release;OutDir=\"" + path2 + "\"";
 
             }
+
+            //先清空目录
+            ClearPublishFolder(path2);
+            logger.Info($"current project Path:{path}");
             return RunDotnetExternalExe(string.Empty, msbuildPath, buildArg, logger);
         }
 
+        /// <summary>
+        /// 执行dotnet
+        /// </summary>
+        /// <param name="projectPath"></param>
+        /// <param name="fileName"></param>
+        /// <param name="arguments"></param>
+        /// <param name="publishPath"></param>
+        /// <param name="logger"></param>
+        /// <returns></returns>
+        public static bool RunDotnetExe(string projectPath,string fileName, string publishPath, string arguments,
+            NLog.Logger logger)
+        {
+            if (!string.IsNullOrEmpty(publishPath))
+            {
 
+                if (publishPath.EndsWith("\\"))
+                {
+                    var path2 = publishPath.Substring(0, publishPath.Length - 1);
+                    //先清空目录
+                    ClearPublishFolder(path2);
+                }
+                else
+                {
+                    ClearPublishFolder(publishPath);
+                }
+                arguments += " -o \"" + publishPath + "\"";
+            }
+            logger.Info($"current project Path:{projectPath}");
+            return RunDotnetExternalExe(fileName, "dotnet", arguments, logger);
+        }
 
         /// <summary>
         /// 执行dotnet Command命令
         /// </summary>
         /// <param name="projectPath"></param>
+        /// <param name="fileName"></param>
         /// <param name="arguments"></param>
         /// <param name="logger"></param>
         /// <returns></returns>
-        public static bool RunDotnetExternalExe(string projectPath, string fileName, string arguments, NLog.Logger logger)
+        private static bool RunDotnetExternalExe(string projectPath, string fileName, string arguments, NLog.Logger logger)
         {
             Process process = null;
             try
@@ -142,6 +179,54 @@ namespace AntDeployWinform.Util
             finally
             {
                 process?.Dispose();
+            }
+        }
+
+
+        /// <summary>
+        /// 发布前清空
+        /// </summary>
+        /// <param name="srcDir"></param>
+        private static void ClearPublishFolder(string srcDir)
+        {
+            try
+            {
+                DirectoryInfo dir = new DirectoryInfo(srcDir);
+
+                if (!dir.Exists) return;
+
+                FileInfo[] files = dir.GetFiles();
+
+                foreach (FileInfo file in files)
+                {
+                    try
+                    {
+                        file.Delete();
+                    }
+                    catch (Exception)
+                    {
+                        //ignore
+                    }
+                }
+
+                var folderList = dir.GetDirectories();
+
+                foreach (var folder in folderList)
+                {
+                    if (folder.Name.EndsWith(".git")) continue;
+                    try
+                    {
+                        folder.Delete(true);
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
             }
         }
 

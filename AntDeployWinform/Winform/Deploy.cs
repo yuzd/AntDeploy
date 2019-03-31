@@ -1426,8 +1426,8 @@ namespace AntDeployWinform.Winform
                     if (DeployConfig.IIsConfig.SdkType.Equals("netcore"))
                     {
                         //执行 publish
-                        var isSuccess = CommandHelper.RunDotnetExternalExe(ProjectFolderPath, "dotnet",
-                            "publish -c Release -o \"" + path.Replace("\\\\", "\\") + "\"", this.nlog_iis);
+                        var isSuccess = CommandHelper.RunDotnetExe(ProjectPath,ProjectFolderPath, path.Replace("\\\\", "\\"),
+                            "publish -c Release", this.nlog_iis);
 
                         if (!isSuccess)
                         {
@@ -2536,8 +2536,8 @@ namespace AntDeployWinform.Winform
                         isNetcore = true;
 
                         //执行 publish
-                        var isSuccess = CommandHelper.RunDotnetExternalExe(ProjectFolderPath, "dotnet",
-                            "publish -c Release --runtime win-x64 -o \"" + path.Replace("\\\\", "\\") + "\"", nlog_windowservice);
+                        var isSuccess = CommandHelper.RunDotnetExe(ProjectPath, ProjectFolderPath, path.Replace("\\\\", "\\"),
+                            "publish -c Release --runtime win-x64", nlog_windowservice);
 
                         if (!isSuccess)
                         {
@@ -3594,8 +3594,8 @@ namespace AntDeployWinform.Winform
                     var publishPath = Path.Combine(ProjectFolderPath, "bin", "Release", "deploy_docker", envName);
                     var path = publishPath + "\\";
                     //执行 publish
-                    var isSuccess = CommandHelper.RunDotnetExternalExe(ProjectFolderPath, "dotnet",
-                        "publish -c Release -o \"" + path.Replace("\\\\", "\\") + "\"", nlog_docker);
+                    var isSuccess = CommandHelper.RunDotnetExe(ProjectPath, ProjectFolderPath, path.Replace("\\\\", "\\"),
+                        "publish -c Release", nlog_docker);
 
                     if (!isSuccess)
                     {

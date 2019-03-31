@@ -26,9 +26,16 @@ namespace AntDeployAgentWindows.Util
 
         public static void ApplicationPoolRecycle(string applicationPoolName)
         {
-            using (ServerManager iis = new ServerManager())
+            try
             {
-                iis.ApplicationPools[applicationPoolName].Recycle();
+                using (ServerManager iis = new ServerManager())
+                {
+                    iis.ApplicationPools[applicationPoolName].Recycle();
+                }
+            }
+            catch (Exception)
+            {
+                //ignore
             }
         }
 

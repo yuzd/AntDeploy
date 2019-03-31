@@ -65,6 +65,9 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
             logger("Start to Stop IIS ApplicationPool :" + this.args.ApplicationPoolName);
             if (!IISHelper.IsApplicationPoolStop(this.args.ApplicationPoolName))
             {
+                logger("Recycle IIS ApplicationPool :" + this.args.ApplicationPoolName);
+                IISHelper.ApplicationPoolRecycle(this.args.ApplicationPoolName);
+
                 var retryStopPool = 0;
                 ReTryStopPool:
                 retryStopPool++;
