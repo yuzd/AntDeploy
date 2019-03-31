@@ -105,9 +105,12 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 {
                      return $"【Error】 : {isSiteExistResult.Item3}";
                 }
+
+                var iisVersion = IISHelper.GetIISVersion();
+                if(iisVersion>0) Log($"IIS_Version : {iisVersion} ");
                 if (!isSiteExistResult.Item1)//一级都不存在
                 {
-                    if (IISHelper.GetIISVersion() <= 6)
+                    if (iisVersion <= 6)
                     {
                         return $"website : {_webSiteName} not found,start to create,but iis verison is too low!";
                     }

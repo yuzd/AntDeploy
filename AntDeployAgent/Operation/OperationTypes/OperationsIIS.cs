@@ -109,17 +109,37 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
             {
                 logger("Copy File Fail :" + exception.Message);
                 retryTimes++;
-                logger("Wait 5Sencond to Retry :" + retryTimes);
+                logger("Wait 5Senconds to Retry :" + retryTimes);
                 Thread.Sleep(5000);
                 if (retryTimes > 3)
                 {
-                    logger("【Error】Retry Copy Limit ");
-                    throw;
+                    //执行终极方法
+                    var r1 = IISHelper.RunAppCmd($"recycle apppool /apppool.name:\"{this.args.ApplicationPoolName}\"", logger);
+                    logger($"recycle apppool /apppool.name:{this.args.ApplicationPoolName} ===> {(r1 ? "Success" : "Fail")}");
+                    var r2 = IISHelper.RunAppCmd($"stop apppool /apppool.name:\"{this.args.ApplicationPoolName}\"", logger);
+                    logger($"stop apppool /apppool.name:{this.args.ApplicationPoolName} ===> {(r2 ? "Success" : "Fail")}");
+                    var r3 = IISHelper.RunAppCmd($"stop site /site.name:\"{this.args.SiteName}\"", logger);
+                    logger($"stop site /site.name:{this.args.SiteName} ===> {(r3 ? "Success" : "Fail")}");
+
+                    logger("Wait 5Senconds to Try deploy again");
+                    Thread.Sleep(5000);
+                    try
+                    {
+                        base.Deploy();
+                        return;
+                    }
+                    catch (Exception)
+                    {
+                        logger("【Error】Retry Copy Limit ");
+                        throw;
+                    }
+                   
                 }
 
                 Deploy();
             }
         }
+
 
         public override void Start()
         {
