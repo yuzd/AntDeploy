@@ -363,6 +363,11 @@ namespace AntDeployWinform.Winform
                 this.tabcontrol.SelectedIndex = PluginConfig.LastTabIndex;
             }
 
+            if (!string.IsNullOrEmpty(PluginConfig.NetCorePublishMode))
+            {
+                this.combo_netcore_publish_mode.SelectedItem = PluginConfig.NetCorePublishMode;
+            }
+
             this.checkBox_Increment_iis.Checked = PluginConfig.IISEnableIncrement;
             this.checkBox_Increment_window_service.Checked = PluginConfig.WindowsServiceEnableIncrement;
 
@@ -1427,7 +1432,7 @@ namespace AntDeployWinform.Winform
                     {
                         //执行 publish
                         var isSuccess = CommandHelper.RunDotnetExe(ProjectPath,ProjectFolderPath, path.Replace("\\\\", "\\"),
-                            "publish -c Release", this.nlog_iis);
+                            $"publish -c Release{PluginConfig.GetNetCorePublishRuntimeArg()}", this.nlog_iis);
 
                         if (!isSuccess)
                         {
@@ -1448,26 +1453,7 @@ namespace AntDeployWinform.Winform
                             BuildError(this.tabPage_progress);
                             return;
                         }
-
-
-
-                        //if (Directory.Exists(publishPath))
-                        //{
-                        //    var webPublishPath = Path.Combine(publishPath, "_PublishedWebsites");
-                        //    if (Directory.Exists(webPublishPath))
-                        //    {
-                        //        gitPath = webPublishPath;
-                        //        var webPublishFolder = new DirectoryInfo(webPublishPath);
-                        //        var targetFolder = webPublishFolder.GetDirectories()
-                        //            .FirstOrDefault(r => !r.Name.Equals(".git"));
-                        //        if (targetFolder != null)
-                        //        {
-                        //            //targetFolder.MoveTo(Path.Combine(targetFolder.Parent.FullName, "publish"));
-                        //            publishPath = targetFolder.FullName;
-                        //            webFolderName = targetFolder.Name;
-                        //        }
-                        //    }
-                        //}
+                        
                     }
 
                     BuildEnd(this.tabPage_progress); //第一台结束编译
@@ -2431,6 +2417,15 @@ namespace AntDeployWinform.Winform
                     MessageBox.Show("current project is not netcore project!");
                     return;
                 }
+
+
+                //检查一下 如果是netcore的话 不允许runtime部署
+                if (!string.IsNullOrEmpty(PluginConfig.NetCorePublishMode) &&
+                    PluginConfig.NetCorePublishMode.Contains("runtime"))
+                {
+                    MessageBox.Show("netcore project can not use [FDD(runtime)] mode!");
+                    return;
+                }
             }
 
             var serviceName = this.txt_windowservice_name.Text.Trim();
@@ -2534,10 +2529,18 @@ namespace AntDeployWinform.Winform
                     if (DeployConfig.WindowsServiveConfig.SdkType.Equals("netcore"))
                     {
                         isNetcore = true;
-
+                        var runtime = "";
+                        if (string.IsNullOrEmpty(PluginConfig.NetCorePublishMode))
+                        {
+                            runtime = " --runtime win-x64";
+                        }
+                        else
+                        {
+                            runtime = PluginConfig.GetNetCorePublishRuntimeArg();
+                        }
                         //执行 publish
                         var isSuccess = CommandHelper.RunDotnetExe(ProjectPath, ProjectFolderPath, path.Replace("\\\\", "\\"),
-                            "publish -c Release --runtime win-x64", nlog_windowservice);
+                            $"publish -c Release{runtime}", nlog_windowservice);
 
                         if (!isSuccess)
                         {
@@ -3595,7 +3598,7 @@ namespace AntDeployWinform.Winform
                     var path = publishPath + "\\";
                     //执行 publish
                     var isSuccess = CommandHelper.RunDotnetExe(ProjectPath, ProjectFolderPath, path.Replace("\\\\", "\\"),
-                        "publish -c Release", nlog_docker);
+                        $"publish -c Release{PluginConfig.GetNetCorePublishRuntimeArg()}", nlog_docker);
 
                     if (!isSuccess)
                     {
@@ -4434,6 +4437,21 @@ namespace AntDeployWinform.Winform
         private void label_without_vs_Click(object sender, EventArgs e)
         {
             ProcessStartInfo sInfo = new ProcessStartInfo("https://github.com/yuzd/AntDeployAgent/issues/18");
+            Process.Start(sInfo);
+        }
+
+        private void combo_netcore_publish_mode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var selectName = this.combo_netcore_publish_mode.SelectedItem as string;
+            if (!string.IsNullOrEmpty(selectName))
+            {
+                PluginConfig.NetCorePublishMode = selectName;
+            }
+        }
+
+        private void pag_advance_setting_Click(object sender, EventArgs e)
+        {
+            ProcessStartInfo sInfo = new ProcessStartInfo("https://docs.microsoft.com/en-us/dotnet/core/deploying/");
             Process.Start(sInfo);
         }
     }

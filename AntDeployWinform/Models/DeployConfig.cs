@@ -8,11 +8,36 @@ namespace AntDeployWinform.Models
         public bool IsChinease { get; set; }
         public List<string> ProjectPathList  { get; set; }
     }
+
+    /// <summary>
+    /// 跟着项目来的
+    /// </summary>
     public class PluginConfig
     {
         public int LastTabIndex { get; set; }
         public bool IISEnableIncrement { get; set; }
         public bool WindowsServiceEnableIncrement { get; set; }
+        public string NetCorePublishMode { get; set; }
+
+
+        public string GetNetCorePublishRuntimeArg()
+        {
+            if (string.IsNullOrEmpty(NetCorePublishMode))
+            {
+                return string.Empty;
+            }
+
+            if (NetCorePublishMode.Equals("FDD(runtime)"))
+            {
+                return string.Empty;
+            }
+            else
+            {
+                var runtime = NetCorePublishMode.Split('(')[1].Split(')')[0];
+                return $" --runtime {runtime}";
+            }
+
+        }
     }
 
     public delegate void EnvChange(Env env, bool isServerChange);
