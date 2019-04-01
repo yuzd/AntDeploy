@@ -4448,8 +4448,7 @@ namespace AntDeployWinform.Winform
                 PluginConfig.NetCorePublishMode = selectName;
             }
         }
-
-        private void pag_advance_setting_Click(object sender, EventArgs e)
+        private void label39_Click(object sender, EventArgs e)
         {
             ProcessStartInfo sInfo = new ProcessStartInfo("https://docs.microsoft.com/en-us/dotnet/core/deploying/");
             Process.Start(sInfo);

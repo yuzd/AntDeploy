@@ -81,6 +81,9 @@
     <Content Include="lib\win32\x86\git2-572e4d8.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="netstandard.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Newtonsoft.Json.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>

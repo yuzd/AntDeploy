@@ -121,12 +121,6 @@
   <data name="label42.Location" type="System.Drawing.Point, System.Drawing">
     <value>440, 180</value>
   </data>
-  <data name="label42.Size" type="System.Drawing.Size, System.Drawing">
-    <value>167, 12</value>
-  </data>
-  <data name="label42.Text" xml:space="preserve">
-    <value>【IIS&amp;&amp;Docker:FDD(runtime)】</value>
-  </data>
   <data name="label38.Location" type="System.Drawing.Point, System.Drawing">
     <value>333, 161</value>
   </data>
@@ -145,8 +139,7 @@
   <data name="label37.Text" xml:space="preserve">
     <value>NetCore 发布模式:</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
+  <data name="label_without_vs.Location" type="System.Drawing.Point, System.Drawing">
+    <value>362, 9</value>
   </data>
 </root>

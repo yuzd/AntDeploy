@@ -798,6 +798,7 @@
             // label_check_update
             // 
             resources.ApplyResources(this.label_check_update, "label_check_update");
+            this.label_check_update.Cursor = System.Windows.Forms.Cursors.Hand;
             this.label_check_update.ForeColor = System.Drawing.Color.RoyalBlue;
             this.label_check_update.Name = "label_check_update";
             this.label_check_update.Click += new System.EventHandler(this.label_check_update_Click);
@@ -1129,7 +1130,6 @@
             resources.ApplyResources(this.pag_advance_setting, "pag_advance_setting");
             this.pag_advance_setting.Name = "pag_advance_setting";
             this.pag_advance_setting.UseVisualStyleBackColor = true;
-            this.pag_advance_setting.Click += new System.EventHandler(this.pag_advance_setting_Click);
             // 
             // label42
             // 
@@ -1144,8 +1144,10 @@
             // label39
             // 
             resources.ApplyResources(this.label39, "label39");
+            this.label39.Cursor = System.Windows.Forms.Cursors.Hand;
             this.label39.ForeColor = System.Drawing.Color.RoyalBlue;
             this.label39.Name = "label39";
+            this.label39.Click += new System.EventHandler(this.label39_Click);
             // 
             // label38
             // 
@@ -1175,6 +1177,7 @@
             // label_without_vs
             // 
             resources.ApplyResources(this.label_without_vs, "label_without_vs");
+            this.label_without_vs.Cursor = System.Windows.Forms.Cursors.Hand;
             this.label_without_vs.ForeColor = System.Drawing.Color.RoyalBlue;
             this.label_without_vs.Name = "label_without_vs";
             this.label_without_vs.Click += new System.EventHandler(this.label_without_vs_Click);
