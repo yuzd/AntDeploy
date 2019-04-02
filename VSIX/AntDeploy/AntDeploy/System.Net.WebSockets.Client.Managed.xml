@@ -1,0 +1,487 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>System.Net.WebSockets.Client.Managed</name>
+    </assembly>
+    <members>
+        <member name="T:System.Net.WebSockets.Managed.ManagedWebSocket">
+            <summary>A managed implementation of a web socket that sends and receives data via a <see cref="T:System.IO.Stream"/>.</summary>
+            <remarks>
+            Thread-safety:
+            - It's acceptable to call ReceiveAsync and SendAsync in parallel.  One of each may run concurrently.
+            - It's acceptable to have a pending ReceiveAsync while CloseOutputAsync or CloseAsync is called.
+            - Attemping to invoke any other operations in parallel may corrupt the instance.  Attempting to invoke
+              a send operation while another is in progress or a receive operation while another is in progress will
+              result in an exception.
+            </remarks>
+        </member>
+        <member name="M:System.Net.WebSockets.Managed.ManagedWebSocket.CreateFromConnectedStream(System.IO.Stream,System.Boolean,System.String,System.TimeSpan,System.Int32,System.Nullable{System.ArraySegment{System.Byte}})">
+            <summary>Creates a <see cref="T:System.Net.WebSockets.Managed.ManagedWebSocket"/> from a <see cref="T:System.IO.Stream"/> connected to a websocket endpoint.</summary>
+            <param name="stream">The connected Stream.</param>
+            <param name="isServer">true if this is the server-side of the connection; false if this is the client-side of the connection.</param>
+            <param name="subprotocol">The agreed upon subprotocol for the connection.</param>
+            <param name="keepAliveInterval">The interval to use for keep-alive pings.</param>
+            <param name="receiveBufferSize">The buffer size to use for received data.</param>
+            <param name="receiveBuffer">Optional buffer to use for receives.</param>
+            <returns>The created <see cref="T:System.Net.WebSockets.Managed.ManagedWebSocket"/> instance.</returns>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket.t_headerMask">
+            <summary>Per-thread cached 4-byte mask byte array.</summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket.s_random">
+            <summary>Thread-safe random number generator used to generate masks for each send.</summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket.s_textEncoding">
+            <summary>Encoding for the payload of text messages: UTF8 encoding that throws if invalid bytes are discovered, per the RFC.</summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket.s_validSendStates">
+            <summary>Valid states to be in when calling SendAsync.</summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket.s_validReceiveStates">
+            <summary>Valid states to be in when calling ReceiveAsync.</summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket.s_validCloseOutputStates">
+            <summary>Valid states to be in when calling CloseOutputAsync.</summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket.s_validCloseStates">
+            <summary>Valid states to be in when calling CloseAsync.</summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket.MaxMessageHeaderLength">
+            <summary>The maximum size in bytes of a message frame header that includes mask bytes.</summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket.MaxControlPayloadLength">
+            <summary>The maximum size of a control message payload.</summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket.MaskLength">
+            <summary>Length of the mask XOR'd with the payload data.</summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket._stream">
+            <summary>The stream used to communicate with the remote server.</summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket._isServer">
+            <summary>
+            true if this is the server-side of the connection; false if it's client.
+            This impacts masking behavior: clients always mask payloads they send and
+            expect to always receive unmasked payloads, whereas servers always send
+            unmasked payloads and expect to always receive masked payloads.
+            </summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket._subprotocol">
+            <summary>The agreed upon subprotocol with the server.</summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket._keepAliveTimer">
+            <summary>Timer used to send periodic pings to the server, at the interval specified</summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket._abortSource">
+            <summary>CancellationTokenSource used to abort all current and future operations when anything is canceled or any error occurs.</summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket._receiveBuffer">
+            <summary>Buffer used for reading data from the network.</summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket._receiveBufferFromPool">
+            <summary>Gets whether the receive buffer came from the ArrayPool.</summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket._utf8TextState">
+            <summary>
+            Tracks the state of the validity of the UTF8 encoding of text payloads.  Text may be split across fragments.
+            </summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket._sendFrameAsyncLock">
+            <summary>
+            Semaphore used to ensure that calls to SendFrameAsync don't run concurrently.  While <see cref="F:System.Net.WebSockets.Managed.ManagedWebSocket._lastSendAsync"/>
+            is used to fail if a caller tries to issue another SendAsync while a previous one is running, internally
+            we use SendFrameAsync as an implementation detail, and it should not cause user requests to SendAsync to fail,
+            nor should such internal usage be allowed to run concurrently with other internal usage or with SendAsync.
+            </summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket._state">
+            <summary>The current state of the web socket in the protocol.</summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket._disposed">
+            <summary>true if Dispose has been called; otherwise, false.</summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket._sentCloseFrame">
+            <summary>Whether we've ever sent a close frame.</summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket._receivedCloseFrame">
+            <summary>Whether we've ever received a close frame.</summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket._closeStatus">
+            <summary>The reason for the close, as sent by the server, or null if not yet closed.</summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket._closeStatusDescription">
+            <summary>A description of the close reason as sent by the server, or null if not yet closed.</summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket._lastReceiveHeader">
+            <summary>
+            The last header received in a ReceiveAsync.  If ReceiveAsync got a header but then
+            returned fewer bytes than was indicated in the header, subsequent ReceiveAsync calls
+            will use the data from the header to construct the subsequent receive results, and
+            the payload length in this header will be decremented to indicate the number of bytes
+            remaining to be received for that header.  As a result, between fragments, the payload
+            length in this header should be 0.
+            </summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket._receiveBufferOffset">
+            <summary>The offset of the next available byte in the _receiveBuffer.</summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket._receiveBufferCount">
+            <summary>The number of bytes available in the _receiveBuffer.</summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket._receivedMaskOffsetOffset">
+            <summary>
+            When dealing with partially read fragments of binary/text messages, a mask previously received may still
+            apply, and the first new byte received may not correspond to the 0th position in the mask.  This value is
+            the next offset into the mask that should be applied.
+            </summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket._sendBuffer">
+            <summary>
+            Temporary send buffer.  This should be released back to the ArrayPool once it's
+            no longer needed for the current send operation.  It is stored as an instance
+            field to minimize needing to pass it around and to avoid it becoming a field on
+            various async state machine objects.
+            </summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket._lastSendWasFragment">
+            <summary>
+            Whether the last SendAsync had endOfMessage==false. We need to track this so that we
+            can send the subsequent message with a continuation opcode if the last message was a fragment.
+            </summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket._lastSendAsync">
+            <summary>
+            The task returned from the last SendAsync operation to not complete synchronously.
+            If this is not null and not completed when a subsequent SendAsync is issued, an exception occurs.
+            </summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.ManagedWebSocket._lastReceiveAsync">
+            <summary>
+            The task returned from the last ReceiveAsync operation to not complete synchronously.
+            If this is not null and not completed when a subsequent ReceiveAsync is issued, an exception occurs.
+            </summary>
+        </member>
+        <member name="P:System.Net.WebSockets.Managed.ManagedWebSocket.StateUpdateLock">
+            <summary>Lock used to protect update and check-and-update operations on _state.</summary>
+        </member>
+        <member name="P:System.Net.WebSockets.Managed.ManagedWebSocket.ReceiveAsyncLock">
+            <summary>
+            We need to coordinate between receives and close operations happening concurrently, as a ReceiveAsync may
+            be pending while a Close{Output}Async is issued, which itself needs to loop until a close frame is received.
+            As such, we need thread-safety in the management of <see cref="F:System.Net.WebSockets.Managed.ManagedWebSocket._lastReceiveAsync"/>. 
+            </summary>
+        </member>
+        <member name="M:System.Net.WebSockets.Managed.ManagedWebSocket.#ctor(System.IO.Stream,System.Boolean,System.String,System.TimeSpan,System.Int32,System.Nullable{System.ArraySegment{System.Byte}})">
+            <summary>Initializes the websocket.</summary>
+            <param name="stream">The connected Stream.</param>
+            <param name="isServer">true if this is the server-side of the connection; false if this is the client-side of the connection.</param>
+            <param name="subprotocol">The agreed upon subprotocol for the connection.</param>
+            <param name="keepAliveInterval">The interval to use for keep-alive pings.</param>
+            <param name="receiveBufferSize">The buffer size to use for received data.</param>
+            <param name="receiveBuffer">Optional buffer to use for receives</param>
+        </member>
+        <member name="M:System.Net.WebSockets.Managed.ManagedWebSocket.SendFrameAsync(System.Net.WebSockets.Managed.ManagedWebSocket.MessageOpcode,System.Boolean,System.ArraySegment{System.Byte},System.Threading.CancellationToken)">
+            <summary>Sends a websocket frame to the network.</summary>
+            <param name="opcode">The opcode for the message.</param>
+            <param name="endOfMessage">The value of the FIN bit for the message.</param>
+            <param name="payloadBuffer">The buffer containing the payload data fro the message.</param>
+            <param name="cancellationToken">The CancellationToken to use to cancel the websocket.</param>
+        </member>
+        <member name="M:System.Net.WebSockets.Managed.ManagedWebSocket.SendFrameLockAcquiredNonCancelableAsync(System.Net.WebSockets.Managed.ManagedWebSocket.MessageOpcode,System.Boolean,System.ArraySegment{System.Byte})">
+            <summary>Sends a websocket frame to the network. The caller must hold the sending lock.</summary>
+            <param name="opcode">The opcode for the message.</param>
+            <param name="endOfMessage">The value of the FIN bit for the message.</param>
+            <param name="payloadBuffer">The buffer containing the payload data fro the message.</param>
+        </member>
+        <member name="M:System.Net.WebSockets.Managed.ManagedWebSocket.WriteFrameToSendBuffer(System.Net.WebSockets.Managed.ManagedWebSocket.MessageOpcode,System.Boolean,System.ArraySegment{System.Byte})">
+            <summary>Writes a frame into the send buffer, which can then be sent over the network.</summary>
+        </member>
+        <member name="M:System.Net.WebSockets.Managed.ManagedWebSocket.WriteRandomMask(System.Byte[],System.Int32)">
+            <summary>Writes a 4-byte random mask to the specified buffer at the specified offset.</summary>
+            <param name="buffer">The buffer to which to write the mask.</param>
+            <param name="offset">The offset into the buffer at which to write the mask.</param>
+        </member>
+        <member name="M:System.Net.WebSockets.Managed.ManagedWebSocket.ReceiveAsyncPrivate(System.ArraySegment{System.Byte},System.Threading.CancellationToken)">
+            <summary>
+            Receive the next text, binary, continuation, or close message, returning information about it and
+            writing its payload into the supplied buffer.  Other control messages may be consumed and processed
+            as part of this operation, but data about them will not be returned.
+            </summary>
+            <param name="payloadBuffer">The buffer into which payload data should be written.</param>
+            <param name="cancellationToken">The CancellationToken used to cancel the websocket.</param>
+            <returns>Information about the received message.</returns>
+        </member>
+        <member name="M:System.Net.WebSockets.Managed.ManagedWebSocket.HandleReceivedCloseAsync(System.Net.WebSockets.Managed.ManagedWebSocket.MessageHeader,System.Threading.CancellationToken)">
+            <summary>Processes a received close message.</summary>
+            <param name="header">The message header.</param>
+            <param name="cancellationToken">The cancellation token to use to cancel the websocket.</param>
+            <returns>The received result message.</returns>
+        </member>
+        <member name="M:System.Net.WebSockets.Managed.ManagedWebSocket.HandleReceivedPingPongAsync(System.Net.WebSockets.Managed.ManagedWebSocket.MessageHeader,System.Threading.CancellationToken)">
+            <summary>Processes a received ping or pong message.</summary>
+            <param name="header">The message header.</param>
+            <param name="cancellationToken">The cancellation token to use to cancel the websocket.</param>
+        </member>
+        <member name="M:System.Net.WebSockets.Managed.ManagedWebSocket.IsValidCloseStatus(System.Net.WebSockets.WebSocketCloseStatus)">
+            <summary>Check whether a close status is valid according to the RFC.</summary>
+            <param name="closeStatus">The status to validate.</param>
+            <returns>true if the status if valid; otherwise, false.</returns>
+        </member>
+        <member name="M:System.Net.WebSockets.Managed.ManagedWebSocket.CloseWithReceiveErrorAndThrowAsync(System.Net.WebSockets.WebSocketCloseStatus,System.Net.WebSockets.WebSocketError,System.Threading.CancellationToken,System.Exception)">
+            <summary>Send a close message to the server and throw an exception, in response to getting bad data from the server.</summary>
+            <param name="closeStatus">The close status code to use.</param>
+            <param name="error">The error reason.</param>
+            <param name="cancellationToken">The CancellationToken used to cancel the websocket.</param>
+            <param name="innerException">An optional inner exception to include in the thrown exception.</param>
+        </member>
+        <member name="M:System.Net.WebSockets.Managed.ManagedWebSocket.TryParseMessageHeaderFromReceiveBuffer(System.Net.WebSockets.Managed.ManagedWebSocket.MessageHeader@)">
+            <summary>Parses a message header from the buffer.  This assumes the header is in the buffer.</summary>
+            <param name="resultHeader">The read header.</param>
+            <returns>true if a header was read; false if the header was invalid.</returns>
+        </member>
+        <member name="M:System.Net.WebSockets.Managed.ManagedWebSocket.CloseAsyncPrivate(System.Net.WebSockets.WebSocketCloseStatus,System.String,System.Threading.CancellationToken)">
+            <summary>Send a close message, then receive until we get a close response message.</summary>
+            <param name="closeStatus">The close status to send.</param>
+            <param name="statusDescription">The close status description to send.</param>
+            <param name="cancellationToken">The CancellationToken to use to cancel the websocket.</param>
+        </member>
+        <member name="M:System.Net.WebSockets.Managed.ManagedWebSocket.SendCloseFrameAsync(System.Net.WebSockets.WebSocketCloseStatus,System.String,System.Threading.CancellationToken)">
+            <summary>Sends a close message to the server.</summary>
+            <param name="closeStatus">The close status to send.</param>
+            <param name="closeStatusDescription">The close status description to send.</param>
+            <param name="cancellationToken">The CancellationToken to use to cancel the websocket.</param>
+        </member>
+        <member name="M:System.Net.WebSockets.Managed.ManagedWebSocket.AllocateSendBuffer(System.Int32)">
+            <summary>Gets a send buffer from the pool.</summary>
+        </member>
+        <member name="M:System.Net.WebSockets.Managed.ManagedWebSocket.ReleaseSendBuffer">
+            <summary>Releases the send buffer to the pool.</summary>
+        </member>
+        <member name="M:System.Net.WebSockets.Managed.ManagedWebSocket.ApplyMask(System.Byte[],System.Int32,System.Byte[],System.Int32,System.Int32,System.Int64)">
+            <summary>Applies a mask to a portion of a byte array.</summary>
+            <param name="toMask">The buffer to which the mask should be applied.</param>
+            <param name="toMaskOffset">The offset into <paramref name="toMask"/> at which the mask should start to be applied.</param>
+            <param name="mask">The array containing the mask to apply.</param>
+            <param name="maskOffset">The offset into <paramref name="mask"/> of the mask to apply of length <see cref="F:System.Net.WebSockets.Managed.ManagedWebSocket.MaskLength"/>.</param>
+            <param name="maskOffsetIndex">The next position offset from <paramref name="maskOffset"/> of which by to apply next from the mask.</param>
+            <param name="count">The number of bytes starting from <paramref name="toMaskOffset"/> to which the mask should be applied.</param>
+            <returns>The updated maskOffsetOffset value.</returns>
+        </member>
+        <member name="M:System.Net.WebSockets.Managed.ManagedWebSocket.ApplyMask(System.Byte[],System.Int32,System.Int32,System.Int32,System.Int64)">
+            <summary>Applies a mask to a portion of a byte array.</summary>
+            <param name="toMask">The buffer to which the mask should be applied.</param>
+            <param name="toMaskOffset">The offset into <paramref name="toMask"/> at which the mask should start to be applied.</param>
+            <param name="mask">The four-byte mask, stored as an Int32.</param>
+            <param name="maskIndex">The index into the mask.</param>
+            <param name="count">The number of bytes to mask.</param>
+            <returns>The next index into the mask to be used for future applications of the mask.</returns>
+        </member>
+        <member name="M:System.Net.WebSockets.Managed.ManagedWebSocket.ThrowIfOperationInProgress(System.Threading.Tasks.Task,System.String)">
+            <summary>Aborts the websocket and throws an exception if an existing operation is in progress.</summary>
+        </member>
+        <member name="M:System.Net.WebSockets.Managed.ManagedWebSocket.CreateOperationCanceledException(System.Exception,System.Threading.CancellationToken)">
+            <summary>Creates an OperationCanceledException instance, using a default message and the specified inner exception and token.</summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.WebSocketHandle.t_cachedStringBuilder">
+            <summary>Per-thread cached StringBuilder for building of strings to send on the connection.</summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.WebSocketHandle.s_defaultHttpEncoding">
+            <summary>Default encoding for HTTP requests. Latin alphabeta no 1, ISO/IEC 8859-1.</summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.WebSocketHandle.DefaultReceiveBufferSize">
+            <summary>Size of the receive buffer to use.</summary>
+        </member>
+        <member name="F:System.Net.WebSockets.Managed.WebSocketHandle.WSServerGuid">
+            <summary>GUID appended by the server as part of the security key response.  Defined in the RFC.</summary>
+        </member>
+        <member name="M:System.Net.WebSockets.Managed.WebSocketHandle.ConnectSocketAsync(System.String,System.Int32,System.Threading.CancellationToken)">
+            <summary>Connects a socket to the specified host and port, subject to cancellation and aborting.</summary>
+            <param name="host">The host to which to connect.</param>
+            <param name="port">The port to which to connect on the host.</param>
+            <param name="cancellationToken">The CancellationToken to use to cancel the websocket.</param>
+            <returns>The connected Socket.</returns>
+        </member>
+        <member name="M:System.Net.WebSockets.Managed.WebSocketHandle.BuildRequestHeader(System.Uri,System.Net.WebSockets.Managed.ClientWebSocketOptions,System.String)">
+            <summary>Creates a byte[] containing the headers to send to the server.</summary>
+            <param name="uri">The Uri of the server.</param>
+            <param name="options">The options used to configure the websocket.</param>
+            <param name="secKey">The generated security key to send in the Sec-WebSocket-Key header.</param>
+            <returns>The byte[] containing the encoded headers ready to send to the network.</returns>
+        </member>
+        <member name="M:System.Net.WebSockets.Managed.WebSocketHandle.CreateSecKeyAndSecWebSocketAccept">
+            <summary>
+            Creates a pair of a security key for sending in the Sec-WebSocket-Key header and
+            the associated response we expect to receive as the Sec-WebSocket-Accept header value.
+            </summary>
+            <returns>A key-value pair of the request header security key and expected response header value.</returns>
+        </member>
+        <member name="M:System.Net.WebSockets.Managed.WebSocketHandle.ParseAndValidateConnectResponseAsync(System.IO.Stream,System.Net.WebSockets.Managed.ClientWebSocketOptions,System.String,System.Threading.CancellationToken)">
+            <summary>Read and validate the connect response headers from the server.</summary>
+            <param name="stream">The stream from which to read the response headers.</param>
+            <param name="options">The options used to configure the websocket.</param>
+            <param name="expectedSecWebSocketAccept">The expected value of the Sec-WebSocket-Accept header.</param>
+            <param name="cancellationToken">The CancellationToken to use to cancel the websocket.</param>
+            <returns>The agreed upon subprotocol with the server, or null if there was none.</returns>
+        </member>
+        <member name="M:System.Net.WebSockets.Managed.WebSocketHandle.ValidateAndTrackHeader(System.String,System.String,System.String,System.String,System.Boolean@)">
+            <summary>Validates a received header against expected values and tracks that we've received it.</summary>
+            <param name="targetHeaderName">The header name against which we're comparing.</param>
+            <param name="targetHeaderValue">The header value against which we're comparing.</param>
+            <param name="foundHeaderName">The actual header name received.</param>
+            <param name="foundHeaderValue">The actual header value received.</param>
+            <param name="foundHeader">A bool tracking whether this header has been seen.</param>
+        </member>
+        <member name="M:System.Net.WebSockets.Managed.WebSocketHandle.ReadResponseHeaderLineAsync(System.IO.Stream,System.Threading.CancellationToken)">
+            <summary>Reads a line from the stream.</summary>
+            <param name="stream">The stream from which to read.</param>
+            <param name="cancellationToken">The CancellationToken used to cancel the websocket.</param>
+            <returns>The read line, or null if none could be read.</returns>
+        </member>
+        <member name="T:System.Net.WebSockets.Client.Managed.Strings">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:System.Net.WebSockets.Client.Managed.Strings.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:System.Net.WebSockets.Client.Managed.Strings.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:System.Net.WebSockets.Client.Managed.Strings.net_securityprotocolnotsupported">
+            <summary>
+              Looks up a localized string similar to The requested security protocol is not supported..
+            </summary>
+        </member>
+        <member name="P:System.Net.WebSockets.Client.Managed.Strings.net_uri_NotAbsolute">
+            <summary>
+              Looks up a localized string similar to This operation is not supported for a relative URI..
+            </summary>
+        </member>
+        <member name="P:System.Net.WebSockets.Client.Managed.Strings.net_WebSockets_AcceptUnsupportedProtocol">
+            <summary>
+              Looks up a localized string similar to The WebSocket client request requested &apos;{0}&apos; protocol(s), but server is only accepting &apos;{1}&apos; protocol(s)..
+            </summary>
+        </member>
+        <member name="P:System.Net.WebSockets.Client.Managed.Strings.net_Websockets_AlreadyOneOutstandingOperation">
+            <summary>
+              Looks up a localized string similar to There is already one outstanding &apos;{0}&apos; call for this WebSocket instance. ReceiveAsync and SendAsync can be called simultaneously, but at most one outstanding operation for each of them is allowed at the same time..
+            </summary>
+        </member>
+        <member name="P:System.Net.WebSockets.Client.Managed.Strings.net_WebSockets_AlreadyStarted">
+            <summary>
+              Looks up a localized string similar to The WebSocket has already been started..
+            </summary>
+        </member>
+        <member name="P:System.Net.WebSockets.Client.Managed.Strings.net_WebSockets_Argument_InvalidMessageType">
+            <summary>
+              Looks up a localized string similar to The message type &apos;{0}&apos; is not allowed for the &apos;{1}&apos; operation. Valid message types are: &apos;{2}, {3}&apos;. To close the WebSocket, use the &apos;{4}&apos; operation instead. .
+            </summary>
+        </member>
+        <member name="P:System.Net.WebSockets.Client.Managed.Strings.net_WebSockets_ArgumentOutOfRange_TooSmall">
+            <summary>
+              Looks up a localized string similar to The argument must be a value greater than {0}..
+            </summary>
+        </member>
+        <member name="P:System.Net.WebSockets.Client.Managed.Strings.net_WebSockets_Generic">
+            <summary>
+              Looks up a localized string similar to An internal WebSocket error occurred. Please see the innerException, if present, for more details. .
+            </summary>
+        </member>
+        <member name="P:System.Net.WebSockets.Client.Managed.Strings.net_WebSockets_InvalidCharInProtocolString">
+            <summary>
+              Looks up a localized string similar to The WebSocket protocol &apos;{0}&apos; is invalid because it contains the invalid character &apos;{1}&apos;..
+            </summary>
+        </member>
+        <member name="P:System.Net.WebSockets.Client.Managed.Strings.net_WebSockets_InvalidCloseStatusCode">
+            <summary>
+              Looks up a localized string similar to The close status code &apos;{0}&apos; is reserved for system use only and cannot be specified when calling this method..
+            </summary>
+        </member>
+        <member name="P:System.Net.WebSockets.Client.Managed.Strings.net_WebSockets_InvalidCloseStatusDescription">
+            <summary>
+              Looks up a localized string similar to The close status description &apos;{0}&apos; is too long. The UTF8-representation of the status description must not be longer than {1} bytes..
+            </summary>
+        </member>
+        <member name="P:System.Net.WebSockets.Client.Managed.Strings.net_WebSockets_InvalidEmptySubProtocol">
+            <summary>
+              Looks up a localized string similar to Empty string is not a valid subprotocol value. Please use \&quot;null\&quot; to specify no value..
+            </summary>
+        </member>
+        <member name="P:System.Net.WebSockets.Client.Managed.Strings.net_WebSockets_InvalidResponseHeader">
+            <summary>
+              Looks up a localized string similar to The &apos;{0}&apos; header value &apos;{1}&apos; is invalid..
+            </summary>
+        </member>
+        <member name="P:System.Net.WebSockets.Client.Managed.Strings.net_WebSockets_InvalidState">
+            <summary>
+              Looks up a localized string similar to The WebSocket is in an invalid state (&apos;{0}&apos;) for this operation. Valid states are: &apos;{1}&apos;.
+            </summary>
+        </member>
+        <member name="P:System.Net.WebSockets.Client.Managed.Strings.net_WebSockets_InvalidState_ClosedOrAborted">
+            <summary>
+              Looks up a localized string similar to The &apos;{0}&apos; instance cannot be used for communication because it has been transitioned into the &apos;{1}&apos; state..
+            </summary>
+        </member>
+        <member name="P:System.Net.WebSockets.Client.Managed.Strings.net_WebSockets_NoDuplicateProtocol">
+            <summary>
+              Looks up a localized string similar to Duplicate protocols are not allowed: &apos;{0}&apos;..
+            </summary>
+        </member>
+        <member name="P:System.Net.WebSockets.Client.Managed.Strings.net_WebSockets_NotConnected">
+            <summary>
+              Looks up a localized string similar to The WebSocket is not connected..
+            </summary>
+        </member>
+        <member name="P:System.Net.WebSockets.Client.Managed.Strings.net_WebSockets_ReasonNotNull">
+            <summary>
+              Looks up a localized string similar to The close status description &apos;{0}&apos; is invalid. When using close status code &apos;{1}&apos; the description must be null..
+            </summary>
+        </member>
+        <member name="P:System.Net.WebSockets.Client.Managed.Strings.net_WebSockets_Scheme">
+            <summary>
+              Looks up a localized string similar to Only Uris starting with &apos;ws://&apos; or &apos;wss://&apos; are supported..
+            </summary>
+        </member>
+        <member name="P:System.Net.WebSockets.Client.Managed.Strings.net_WebSockets_UnsupportedPlatform">
+            <summary>
+              Looks up a localized string similar to The WebSocket protocol is not supported on this platform..
+            </summary>
+        </member>
+        <member name="P:System.Net.WebSockets.Client.Managed.Strings.net_webstatus_ConnectFailure">
+            <summary>
+              Looks up a localized string similar to Unable to connect to the remote server.
+            </summary>
+        </member>
+        <member name="P:System.Net.WebSockets.Client.Managed.Strings.NotReadableStream">
+            <summary>
+              Looks up a localized string similar to The base stream is not readable..
+            </summary>
+        </member>
+        <member name="P:System.Net.WebSockets.Client.Managed.Strings.NotWriteableStream">
+            <summary>
+              Looks up a localized string similar to The base stream is not writeable..
+            </summary>
+        </member>
+        <member name="P:System.Net.WebSockets.SystemClientWebSocket.ManagedWebSocketRequired">
+            <summary>
+            False if System.Net.WebSockets.ClientWebSocket is available on this platform, true if System.Net.WebSockets.Managed.ClientWebSocket is required.
+            </summary>
+        </member>
+        <member name="M:System.Net.WebSockets.SystemClientWebSocket.CreateClientWebSocket">
+            <summary>
+            Creates a ClientWebSocket that works for this platform. Uses System.Net.WebSockets.ClientWebSocket if supported or System.Net.WebSockets.Managed.ClientWebSocket if not.
+            </summary>
+        </member>
+        <member name="M:System.Net.WebSockets.SystemClientWebSocket.ConnectAsync(System.Uri,System.Threading.CancellationToken)">
+            <summary>
+            Creates and connects a ClientWebSocket that works for this platform. Uses System.Net.WebSockets.ClientWebSocket if supported or System.Net.WebSockets.Managed.ClientWebSocket if not.
+            </summary>
+        </member>
+    </members>
+</doc>

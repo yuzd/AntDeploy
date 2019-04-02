@@ -1,0 +1,3617 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WinFormAnimation</name>
+    </assembly>
+    <members>
+        <member name="T:WinFormAnimation.Animator">
+            <summary>
+                The one dimensional animator class, useful for animating raw values
+            </summary>
+        </member>
+        <member name="T:WinFormAnimation.Animator.KnownProperties">
+            <summary>
+                The known one dimensional properties of WinForm controls
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.Animator.KnownProperties.Value">
+            <summary>
+                The property named 'Value' of the object
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.Animator.KnownProperties.Text">
+            <summary>
+                The property named 'Text' of the object
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.Animator.KnownProperties.Caption">
+            <summary>
+                The property named 'Caption' of the object
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.Animator.KnownProperties.BackColor">
+            <summary>
+                The property named 'BackColor' of the object
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.Animator.KnownProperties.ForeColor">
+            <summary>
+                The property named 'ForeColor' of the object
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.Animator.KnownProperties.Opacity">
+            <summary>
+                The property named 'Opacity' of the object
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.Animator.EndCallback">
+            <summary>
+                The callback to get invoked at the end of the animation
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.Animator.FrameCallback">
+            <summary>
+                The callback to get invoked at each frame
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.Animator.TargetObject">
+            <summary>
+                The target object to change the property of
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Animator.#ctor">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Animator" /> class.
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Animator.#ctor(WinFormAnimation.FPSLimiterKnownValues)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Animator" /> class.
+            </summary>
+            <param name="fpsLimiter">
+                Limits the maximum frames per seconds
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Animator.#ctor(WinFormAnimation.Path)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Animator" /> class.
+            </summary>
+            <param name="path">
+                The path of the animation
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Animator.#ctor(WinFormAnimation.Path,WinFormAnimation.FPSLimiterKnownValues)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Animator" /> class.
+            </summary>
+            <param name="path">
+                The path of the animation
+            </param>
+            <param name="fpsLimiter">
+                Limits the maximum frames per seconds
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Animator.#ctor(WinFormAnimation.Path[])">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Animator" /> class.
+            </summary>
+            <param name="paths">
+                An array containing the list of paths of the animation
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Animator.#ctor(WinFormAnimation.Path[],WinFormAnimation.FPSLimiterKnownValues)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Animator" /> class.
+            </summary>
+            <param name="paths">
+                An array containing the list of paths of the animation
+            </param>
+            <param name="fpsLimiter">
+                Limits the maximum frames per seconds
+            </param>
+        </member>
+        <member name="P:WinFormAnimation.Animator.Paths">
+            <summary>
+                Gets or sets an array containing the list of paths of the animation
+            </summary>
+            <exception cref="T:System.InvalidOperationException">Animation is running</exception>
+        </member>
+        <member name="P:WinFormAnimation.Animator.ActivePath">
+            <summary>
+                Gets the currently active path.
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Animator.Repeat">
+            <summary>
+                Gets or sets a value indicating whether animator should repeat the animation after its ending
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Animator.ReverseRepeat">
+            <summary>
+                Gets or sets a value indicating whether animator should repeat the animation in reverse after its ending.
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Animator.CurrentStatus">
+            <summary>
+                Gets the current status of the animation
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Animator.Pause">
+            <summary>
+                Pause the animation
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Animator.Play(System.Object,System.String)">
+            <summary>
+                Starts the playing of the animation
+            </summary>
+            <param name="targetObject">
+                The target object to change the property
+            </param>
+            <param name="propertyName">
+                The name of the property to change
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Animator.Play(System.Object,System.String,WinFormAnimation.SafeInvoker)">
+            <summary>
+                Starts the playing of the animation
+            </summary>
+            <param name="targetObject">
+                The target object to change the property
+            </param>
+            <param name="propertyName">
+                The name of the property to change
+            </param>
+            <param name="endCallback">
+                The callback to get invoked at the end of the animation
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Animator.Play``1(``0,System.Linq.Expressions.Expression{System.Func{``0,System.Object}})">
+            <summary>
+                Starts the playing of the animation
+            </summary>
+            <param name="targetObject">
+                The target object to change the property
+            </param>
+            <param name="propertySetter">
+                The expression that represents the property of the target object
+            </param>
+            <typeparam name="T">
+                Any object containing a property
+            </typeparam>
+        </member>
+        <member name="M:WinFormAnimation.Animator.Play``1(``0,System.Linq.Expressions.Expression{System.Func{``0,System.Object}},WinFormAnimation.SafeInvoker)">
+            <summary>
+                Starts the playing of the animation
+            </summary>
+            <param name="targetObject">
+                The target object to change the property
+            </param>
+            <param name="propertySetter">
+                The expression that represents the property of the target object
+            </param>
+            <param name="endCallback">
+                The callback to get invoked at the end of the animation
+            </param>
+            <typeparam name="T">
+                Any object containing a property
+            </typeparam>
+        </member>
+        <member name="M:WinFormAnimation.Animator.Resume">
+            <summary>
+                Resume the animation from where it paused
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Animator.Stop">
+            <summary>
+                Stops the animation and resets its status, resume is no longer possible
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Animator.Play(System.Object,WinFormAnimation.Animator.KnownProperties)">
+            <summary>
+                Starts the playing of the animation
+            </summary>
+            <param name="targetObject">
+                The target object to change the property
+            </param>
+            <param name="property">
+                The property to change
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Animator.Play(System.Object,WinFormAnimation.Animator.KnownProperties,WinFormAnimation.SafeInvoker)">
+            <summary>
+                Starts the playing of the animation
+            </summary>
+            <param name="targetObject">
+                The target object to change the property
+            </param>
+            <param name="property">
+                The property to change
+            </param>
+            <param name="endCallback">
+                The callback to get invoked at the end of the animation
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Animator.Play(WinFormAnimation.SafeInvoker{System.Single})">
+            <summary>
+                Starts the playing of the animation
+            </summary>
+            <param name="frameCallback">
+                The callback to get invoked at each frame
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Animator.Play(WinFormAnimation.SafeInvoker{System.Single},WinFormAnimation.SafeInvoker)">
+            <summary>
+                Starts the playing of the animation
+            </summary>
+            <param name="frameCallback">
+                The callback to get invoked at each frame
+            </param>
+            <param name="endCallback">
+                The callback to get invoked at the end of the animation
+            </param>
+        </member>
+        <member name="T:WinFormAnimation.Animator2D">
+            <summary>
+                The two dimensional animator class, useful for animating values
+                created from two underlying values
+            </summary>
+        </member>
+        <member name="T:WinFormAnimation.Animator2D.KnownProperties">
+            <summary>
+                The known two dimensional properties of WinForm controls
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.Animator2D.KnownProperties.Size">
+            <summary>
+                The property named 'Size' of the object
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.Animator2D.KnownProperties.Location">
+            <summary>
+                The property named 'Location' of the object
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.Animator2D.EndCallback">
+            <summary>
+                The callback to get invoked at the end of the animation
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.Animator2D.FrameCallback">
+            <summary>
+                The callback to get invoked at each frame
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.Animator2D.IsEnded">
+            <summary>
+                A boolean value indicating if the EndInvoker already invoked
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.Animator2D.TargetObject">
+            <summary>
+                The target object to change the property of
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.Animator2D.XValue">
+            <summary>
+                The latest horizontal value
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.Animator2D.YValue">
+            <summary>
+                The latest vertical value
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Animator2D.#ctor">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Animator2D" /> class.
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Animator2D.#ctor(WinFormAnimation.FPSLimiterKnownValues)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Animator2D" /> class.
+            </summary>
+            <param name="fpsLimiter">
+                Limits the maximum frames per seconds
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Animator2D.#ctor(WinFormAnimation.Path2D)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Animator2D" /> class.
+            </summary>
+            <param name="path">
+                The path of the animation
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Animator2D.#ctor(WinFormAnimation.Path2D,WinFormAnimation.FPSLimiterKnownValues)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Animator2D" /> class.
+            </summary>
+            <param name="path">
+                The path of the animation
+            </param>
+            <param name="fpsLimiter">
+                Limits the maximum frames per seconds
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Animator2D.#ctor(WinFormAnimation.Path2D[])">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Animator2D" /> class.
+            </summary>
+            <param name="paths">
+                An array containing the list of paths of the animation
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Animator2D.#ctor(WinFormAnimation.Path2D[],WinFormAnimation.FPSLimiterKnownValues)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Animator2D" /> class.
+            </summary>
+            <param name="paths">
+                An array containing the list of paths of the animation
+            </param>
+            <param name="fpsLimiter">
+                Limits the maximum frames per seconds
+            </param>
+        </member>
+        <member name="P:WinFormAnimation.Animator2D.ActivePath">
+            <summary>
+                Gets the currently active path.
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Animator2D.HorizontalAnimator">
+            <summary>
+                Gets the horizontal animator.
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Animator2D.VerticalAnimator">
+            <summary>
+                Gets the vertical animator.
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Animator2D.Paths">
+            <summary>
+                Gets or sets an array containing the list of paths of the animation
+            </summary>
+            <exception cref="T:System.InvalidOperationException">Animation is running</exception>
+        </member>
+        <member name="P:WinFormAnimation.Animator2D.Repeat">
+            <summary>
+                Gets or sets a value indicating whether animator should repeat the animation after its ending
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Animator2D.ReverseRepeat">
+            <summary>
+                Gets or sets a value indicating whether animator should repeat the animation in reverse after its ending.
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Animator2D.CurrentStatus">
+            <summary>
+                Gets the current status of the animation
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Animator2D.Pause">
+            <summary>
+                Pause the animation
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Animator2D.Play(System.Object,System.String)">
+            <summary>
+                Starts the playing of the animation
+            </summary>
+            <param name="targetObject">
+                The target object to change the property
+            </param>
+            <param name="propertyName">
+                The name of the property to change
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Animator2D.Play(System.Object,System.String,WinFormAnimation.SafeInvoker)">
+            <summary>
+                Starts the playing of the animation
+            </summary>
+            <param name="targetObject">
+                The target object to change the property
+            </param>
+            <param name="propertyName">
+                The name of the property to change
+            </param>
+            <param name="endCallback">
+                The callback to get invoked at the end of the animation
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Animator2D.Play``1(``0,System.Linq.Expressions.Expression{System.Func{``0,System.Object}})">
+            <summary>
+                Starts the playing of the animation
+            </summary>
+            <param name="targetObject">
+                The target object to change the property
+            </param>
+            <param name="propertySetter">
+                The expression that represents the property of the target object
+            </param>
+            <typeparam name="T">
+                Any object containing a property
+            </typeparam>
+        </member>
+        <member name="M:WinFormAnimation.Animator2D.Play``1(``0,System.Linq.Expressions.Expression{System.Func{``0,System.Object}},WinFormAnimation.SafeInvoker)">
+            <summary>
+                Starts the playing of the animation
+            </summary>
+            <param name="targetObject">
+                The target object to change the property
+            </param>
+            <param name="propertySetter">
+                The expression that represents the property of the target object
+            </param>
+            <param name="endCallback">
+                The callback to get invoked at the end of the animation
+            </param>
+            <typeparam name="T">
+                Any object containing a property
+            </typeparam>
+        </member>
+        <member name="M:WinFormAnimation.Animator2D.Resume">
+            <summary>
+                Resume the animation from where it paused
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Animator2D.Stop">
+            <summary>
+                Stops the animation and resets its status, resume is no longer possible
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Animator2D.Play(System.Object,WinFormAnimation.Animator2D.KnownProperties)">
+            <summary>
+                Starts the playing of the animation
+            </summary>
+            <param name="targetObject">
+                The target object to change the property
+            </param>
+            <param name="property">
+                The property to change
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Animator2D.Play(System.Object,WinFormAnimation.Animator2D.KnownProperties,WinFormAnimation.SafeInvoker)">
+            <summary>
+                Starts the playing of the animation
+            </summary>
+            <param name="targetObject">
+                The target object to change the property
+            </param>
+            <param name="property">
+                The property to change
+            </param>
+            <param name="endCallback">
+                The callback to get invoked at the end of the animation
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Animator2D.Play(WinFormAnimation.SafeInvoker{WinFormAnimation.Float2D})">
+            <summary>
+                Starts the playing of the animation
+            </summary>
+            <param name="frameCallback">
+                The callback to get invoked at each frame
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Animator2D.Play(WinFormAnimation.SafeInvoker{WinFormAnimation.Float2D},WinFormAnimation.SafeInvoker)">
+            <summary>
+                Starts the playing of the animation
+            </summary>
+            <param name="frameCallback">
+                The callback to get invoked at each frame
+            </param>
+            <param name="endCallback">
+                The callback to get invoked at the end of the animation
+            </param>
+        </member>
+        <member name="T:WinFormAnimation.Animator3D">
+            <summary>
+                The three dimensional animator class, useful for animating values
+                created from three underlying values
+            </summary>
+        </member>
+        <member name="T:WinFormAnimation.Animator3D.KnownProperties">
+            <summary>
+                The known three dimensional properties of WinForm controls
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.Animator3D.KnownProperties.BackColor">
+            <summary>
+                The property named 'BackColor' of the object
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.Animator3D.KnownProperties.ForeColor">
+            <summary>
+                The property named 'ForeColor' of the object
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.Animator3D.EndCallback">
+            <summary>
+                The callback to get invoked at the end of the animation
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.Animator3D.FrameCallback">
+            <summary>
+                The callback to get invoked at each frame
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.Animator3D.IsEnded">
+            <summary>
+                A boolean value indicating if the EndInvoker already invoked
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.Animator3D.TargetObject">
+            <summary>
+                The target object to change the property of
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.Animator3D.XValue">
+            <summary>
+                The latest horizontal value
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.Animator3D.YValue">
+            <summary>
+                The latest vertical value
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.Animator3D.ZValue">
+            <summary>
+                The latest depth value
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Animator3D.#ctor">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Animator3D" /> class.
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Animator3D.#ctor(WinFormAnimation.FPSLimiterKnownValues)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Animator3D" /> class.
+            </summary>
+            <param name="fpsLimiter">
+                Limits the maximum frames per seconds
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Animator3D.#ctor(WinFormAnimation.Path3D)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Animator3D" /> class.
+            </summary>
+            <param name="path">
+                The path of the animation
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Animator3D.#ctor(WinFormAnimation.Path3D,WinFormAnimation.FPSLimiterKnownValues)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Animator3D" /> class.
+            </summary>
+            <param name="path">
+                The path of the animation
+            </param>
+            <param name="fpsLimiter">
+                Limits the maximum frames per seconds
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Animator3D.#ctor(WinFormAnimation.Path3D[])">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Animator3D" /> class.
+            </summary>
+            <param name="paths">
+                An array containing the list of paths of the animation
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Animator3D.#ctor(WinFormAnimation.Path3D[],WinFormAnimation.FPSLimiterKnownValues)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Animator3D" /> class.
+            </summary>
+            <param name="paths">
+                An array containing the list of paths of the animation
+            </param>
+            <param name="fpsLimiter">
+                Limits the maximum frames per seconds
+            </param>
+        </member>
+        <member name="P:WinFormAnimation.Animator3D.ActivePath">
+            <summary>
+                Gets the currently active path.
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Animator3D.HorizontalAnimator">
+            <summary>
+                Gets the horizontal animator.
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Animator3D.VerticalAnimator">
+            <summary>
+                Gets the vertical animator.
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Animator3D.DepthAnimator">
+            <summary>
+                Gets the depth animator.
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Animator3D.Paths">
+            <summary>
+                Gets or sets an array containing the list of paths of the animation
+            </summary>
+            <exception cref="T:System.InvalidOperationException">Animation is running</exception>
+        </member>
+        <member name="P:WinFormAnimation.Animator3D.Repeat">
+            <summary>
+                Gets or sets a value indicating whether animator should repeat the animation after its ending
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Animator3D.ReverseRepeat">
+            <summary>
+                Gets or sets a value indicating whether animator should repeat the animation in reverse after its ending.
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Animator3D.CurrentStatus">
+            <summary>
+                Gets the current status of the animation
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Animator3D.Pause">
+            <summary>
+                Pause the animation
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Animator3D.Play(System.Object,System.String)">
+            <summary>
+                Starts the playing of the animation
+            </summary>
+            <param name="targetObject">
+                The target object to change the property
+            </param>
+            <param name="propertyName">
+                The name of the property to change
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Animator3D.Play(System.Object,System.String,WinFormAnimation.SafeInvoker)">
+            <summary>
+                Starts the playing of the animation
+            </summary>
+            <param name="targetObject">
+                The target object to change the property
+            </param>
+            <param name="propertyName">
+                The name of the property to change
+            </param>
+            <param name="endCallback">
+                The callback to get invoked at the end of the animation
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Animator3D.Play``1(``0,System.Linq.Expressions.Expression{System.Func{``0,System.Object}})">
+            <summary>
+                Starts the playing of the animation
+            </summary>
+            <param name="targetObject">
+                The target object to change the property
+            </param>
+            <param name="propertySetter">
+                The expression that represents the property of the target object
+            </param>
+            <typeparam name="T">
+                Any object containing a property
+            </typeparam>
+        </member>
+        <member name="M:WinFormAnimation.Animator3D.Play``1(``0,System.Linq.Expressions.Expression{System.Func{``0,System.Object}},WinFormAnimation.SafeInvoker)">
+            <summary>
+                Starts the playing of the animation
+            </summary>
+            <param name="targetObject">
+                The target object to change the property
+            </param>
+            <param name="propertySetter">
+                The expression that represents the property of the target object
+            </param>
+            <param name="endCallback">
+                The callback to get invoked at the end of the animation
+            </param>
+            <typeparam name="T">
+                Any object containing a property
+            </typeparam>
+        </member>
+        <member name="M:WinFormAnimation.Animator3D.Resume">
+            <summary>
+                Resume the animation from where it paused
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Animator3D.Stop">
+            <summary>
+                Stops the animation and resets its status, resume is no longer possible
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Animator3D.Play(System.Object,WinFormAnimation.Animator3D.KnownProperties)">
+            <summary>
+                Starts the playing of the animation
+            </summary>
+            <param name="targetObject">
+                The target object to change the property
+            </param>
+            <param name="property">
+                The property to change
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Animator3D.Play(System.Object,WinFormAnimation.Animator3D.KnownProperties,WinFormAnimation.SafeInvoker)">
+            <summary>
+                Starts the playing of the animation
+            </summary>
+            <param name="targetObject">
+                The target object to change the property
+            </param>
+            <param name="property">
+                The property to change
+            </param>
+            <param name="endCallback">
+                The callback to get invoked at the end of the animation
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Animator3D.Play(WinFormAnimation.SafeInvoker{WinFormAnimation.Float3D})">
+            <summary>
+                Starts the playing of the animation
+            </summary>
+            <param name="frameCallback">
+                The callback to get invoked at each frame
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Animator3D.Play(WinFormAnimation.SafeInvoker{WinFormAnimation.Float3D},WinFormAnimation.SafeInvoker)">
+            <summary>
+                Starts the playing of the animation
+            </summary>
+            <param name="frameCallback">
+                The callback to get invoked at each frame
+            </param>
+            <param name="endCallback">
+                The callback to get invoked at the end of the animation
+            </param>
+        </member>
+        <member name="T:WinFormAnimation.AnimatorStatus">
+            <summary>
+                The possible statuses for an animator instance
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.AnimatorStatus.Stopped">
+            <summary>
+                Animation is stopped
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.AnimatorStatus.Playing">
+            <summary>
+                Animation is now playing
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.AnimatorStatus.OnHold">
+            <summary>
+                Animation is now on hold for path delay, consider this value as playing
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.AnimatorStatus.Paused">
+            <summary>
+                Animation is paused
+            </summary>
+        </member>
+        <member name="T:WinFormAnimation.FloatExtensions">
+            <summary>
+                Contains public extension methods about Float2D and Fload3D classes
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.FloatExtensions.ToFloat2D(System.Drawing.Point)">
+            <summary>
+                Creates and returns a new instance of the <see cref="T:WinFormAnimation.Float2D" /> class from this instance
+            </summary>
+            <param name="point">The object to create the <see cref="T:WinFormAnimation.Float2D" /> instance from</param>
+            <returns>The newly created <see cref="T:WinFormAnimation.Float2D" /> instance</returns>
+        </member>
+        <member name="M:WinFormAnimation.FloatExtensions.ToFloat2D(System.Drawing.PointF)">
+            <summary>
+                Creates and returns a new instance of the <see cref="T:WinFormAnimation.Float2D" /> class from this instance
+            </summary>
+            <param name="point">The object to create the <see cref="T:WinFormAnimation.Float2D" /> instance from</param>
+            <returns>The newly created <see cref="T:WinFormAnimation.Float2D" /> instance</returns>
+        </member>
+        <member name="M:WinFormAnimation.FloatExtensions.ToFloat2D(System.Drawing.Size)">
+            <summary>
+                Creates and returns a new instance of the <see cref="T:WinFormAnimation.Float2D" /> class from this instance
+            </summary>
+            <param name="size">The object to create the <see cref="T:WinFormAnimation.Float2D" /> instance from</param>
+            <returns>The newly created <see cref="T:WinFormAnimation.Float2D" /> instance</returns>
+        </member>
+        <member name="M:WinFormAnimation.FloatExtensions.ToFloat2D(System.Drawing.SizeF)">
+            <summary>
+                Creates and returns a new instance of the <see cref="T:WinFormAnimation.Float2D" /> class from this instance
+            </summary>
+            <param name="size">The object to create the <see cref="T:WinFormAnimation.Float2D" /> instance from</param>
+            <returns>The newly created <see cref="T:WinFormAnimation.Float2D" /> instance</returns>
+        </member>
+        <member name="M:WinFormAnimation.FloatExtensions.ToFloat3D(System.Drawing.Color)">
+            <summary>
+                Creates and returns a new instance of the <see cref="T:WinFormAnimation.Float3D" /> class from this instance
+            </summary>
+            <param name="color">The object to create the <see cref="T:WinFormAnimation.Float3D" /> instance from</param>
+            <returns>The newly created <see cref="T:WinFormAnimation.Float3D" /> instance</returns>
+        </member>
+        <member name="T:WinFormAnimation.FPSLimiterKnownValues">
+            <summary>
+                FPS limiter known values
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.FPSLimiterKnownValues.LimitTen">
+            <summary>
+                Limits maximum frames per second to 10fps
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.FPSLimiterKnownValues.LimitTwenty">
+            <summary>
+                Limits maximum frames per second to 20fps
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.FPSLimiterKnownValues.LimitThirty">
+            <summary>
+                Limits maximum frames per second to 30fps
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.FPSLimiterKnownValues.LimitSixty">
+            <summary>
+                Limits maximum frames per second to 60fps
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.FPSLimiterKnownValues.LimitOneHundred">
+            <summary>
+                Limits maximum frames per second to 100fps
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.FPSLimiterKnownValues.LimitTwoHundred">
+            <summary>
+                Limits maximum frames per second to 200fps
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.FPSLimiterKnownValues.NoFPSLimit">
+            <summary>
+                Adds no limit to the number of frames per second
+            </summary>
+        </member>
+        <member name="T:WinFormAnimation.IAnimator">
+            <summary>
+                The base interface for any Animator class, custom or build-in
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.IAnimator.CurrentStatus">
+            <summary>
+                Gets the current status of the animation
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.IAnimator.Repeat">
+            <summary>
+                Gets or sets a value indicating whether animator should repeat the animation after its ending
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.IAnimator.ReverseRepeat">
+            <summary>
+                Gets or sets a value indicating whether animator should repeat the animation in reverse after its ending.
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.IAnimator.Play(System.Object,System.String)">
+            <summary>
+                Starts the playing of the animation
+            </summary>
+            <param name="targetObject">
+                The target object to change the property
+            </param>
+            <param name="propertyName">
+                The name of the property to change
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.IAnimator.Play(System.Object,System.String,WinFormAnimation.SafeInvoker)">
+            <summary>
+                Starts the playing of the animation
+            </summary>
+            <param name="targetObject">
+                The target object to change the property
+            </param>
+            <param name="propertyName">
+                The name of the property to change
+            </param>
+            <param name="endCallback">
+                The callback to get invoked at the end of the animation
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.IAnimator.Play``1(``0,System.Linq.Expressions.Expression{System.Func{``0,System.Object}})">
+            <summary>
+                Starts the playing of the animation
+            </summary>
+            <param name="targetObject">
+                The target object to change the property
+            </param>
+            <param name="propertySetter">
+                The expression that represents the property of the target object
+            </param>
+            <typeparam name="T">
+                Any object containing a property
+            </typeparam>
+        </member>
+        <member name="M:WinFormAnimation.IAnimator.Play``1(``0,System.Linq.Expressions.Expression{System.Func{``0,System.Object}},WinFormAnimation.SafeInvoker)">
+            <summary>
+                Starts the playing of the animation
+            </summary>
+            <param name="targetObject">
+                The target object to change the property
+            </param>
+            <param name="propertySetter">
+                The expression that represents the property of the target object
+            </param>
+            <param name="endCallback">
+                The callback to get invoked at the end of the animation
+            </param>
+            <typeparam name="T">
+                Any object containing a property
+            </typeparam>
+        </member>
+        <member name="M:WinFormAnimation.IAnimator.Resume">
+            <summary>
+                Resume the animation from where it paused
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.IAnimator.Stop">
+            <summary>
+                Stops the animation and resets its status, resume is no longer possible
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.IAnimator.Pause">
+            <summary>
+                Pause the animation
+            </summary>
+        </member>
+        <member name="T:WinFormAnimation.KnownAnimationFunctions">
+            <summary>
+                Contains a list of all known animation functions
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.KnownAnimationFunctions.None">
+            <summary>
+                No known animation function
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.KnownAnimationFunctions.CubicEaseIn">
+            <summary>
+                The cubic ease-in animation function.
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.KnownAnimationFunctions.CubicEaseInOut">
+            <summary>
+                The cubic ease-in and ease-out animation function.
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.KnownAnimationFunctions.CubicEaseOut">
+            <summary>
+                The cubic ease-out animation function.
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.KnownAnimationFunctions.Liner">
+            <summary>
+                The liner animation function.
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.KnownAnimationFunctions.CircularEaseInOut">
+            <summary>
+                The circular ease-in and ease-out animation function.
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.KnownAnimationFunctions.CircularEaseIn">
+            <summary>
+                The circular ease-in animation function.
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.KnownAnimationFunctions.CircularEaseOut">
+            <summary>
+                The circular ease-out animation function.
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.KnownAnimationFunctions.QuadraticEaseIn">
+            <summary>
+                The quadratic ease-in animation function.
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.KnownAnimationFunctions.QuadraticEaseOut">
+            <summary>
+                The quadratic ease-out animation function.
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.KnownAnimationFunctions.QuadraticEaseInOut">
+            <summary>
+                The quadratic ease-in and ease-out animation function.
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.KnownAnimationFunctions.QuarticEaseIn">
+            <summary>
+                The quartic ease-in animation function.
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.KnownAnimationFunctions.QuarticEaseOut">
+            <summary>
+                The quartic ease-out animation function.
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.KnownAnimationFunctions.QuarticEaseInOut">
+            <summary>
+                The quartic ease-in and ease-out animation function.
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.KnownAnimationFunctions.QuinticEaseInOut">
+            <summary>
+                The quintic ease-in and ease-out animation function.
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.KnownAnimationFunctions.QuinticEaseIn">
+            <summary>
+                The quintic ease-in animation function.
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.KnownAnimationFunctions.QuinticEaseOut">
+            <summary>
+                The quintic ease-out animation function.
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.KnownAnimationFunctions.SinusoidalEaseIn">
+            <summary>
+                The sinusoidal ease-in animation function.
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.KnownAnimationFunctions.SinusoidalEaseOut">
+            <summary>
+                The sinusoidal ease-out animation function.
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.KnownAnimationFunctions.SinusoidalEaseInOut">
+            <summary>
+                The sinusoidal ease-in and ease-out animation function.
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.KnownAnimationFunctions.ExponentialEaseIn">
+            <summary>
+                The exponential ease-in animation function.
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.KnownAnimationFunctions.ExponentialEaseOut">
+            <summary>
+                The exponential ease-out animation function.
+            </summary>
+        </member>
+        <member name="F:WinFormAnimation.KnownAnimationFunctions.ExponentialEaseInOut">
+            <summary>
+                The exponential ease-in and ease-out animation function.
+            </summary>
+        </member>
+        <member name="T:WinFormAnimation.Path3DExtensions">
+            <summary>
+                Contains public extensions methods about Path3D class
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Path3DExtensions.ContinueTo(WinFormAnimation.Path3D[],WinFormAnimation.Float3D,System.UInt64)">
+            <summary>
+                Continue the last paths with a new one
+            </summary>
+            <param name="paths">Array of paths</param>
+            <param name="end">Next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path3DExtensions.ContinueTo(WinFormAnimation.Path3D[],WinFormAnimation.Float3D,System.UInt64,WinFormAnimation.AnimationFunctions.Function)">
+            <summary>
+                Continue the last paths with a new one
+            </summary>
+            <param name="paths">Array of paths</param>
+            <param name="end">Next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <param name="function">Animation controller function</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path3DExtensions.ContinueTo(WinFormAnimation.Path3D[],WinFormAnimation.Float3D,System.UInt64,System.UInt64)">
+            <summary>
+                Continue the last paths with a new one
+            </summary>
+            <param name="paths">Array of paths</param>
+            <param name="end">Next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <param name="delay">Starting delay</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path3DExtensions.ContinueTo(WinFormAnimation.Path3D[],WinFormAnimation.Float3D,System.UInt64,System.UInt64,WinFormAnimation.AnimationFunctions.Function)">
+            <summary>
+                Continue the last paths with a new one
+            </summary>
+            <param name="paths">Array of paths</param>
+            <param name="end">Next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <param name="delay">Starting delay</param>
+            <param name="function">Animation controller function</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path3DExtensions.ContinueTo(WinFormAnimation.Path3D[],System.Single,System.Single,System.Single,System.UInt64)">
+            <summary>
+                Continue the last paths with a new one
+            </summary>
+            <param name="paths">Array of paths</param>
+            <param name="endX">Horizontal value of the next point to follow</param>
+            <param name="endY">Vertical value of the next point to follow</param>
+            <param name="endZ">Depth value of the next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path3DExtensions.ContinueTo(WinFormAnimation.Path3D[],System.Single,System.Single,System.Single,System.UInt64,WinFormAnimation.AnimationFunctions.Function)">
+            <summary>
+                Continue the last paths with a new one
+            </summary>
+            <param name="paths">Array of paths</param>
+            <param name="endX">Horizontal value of the next point to follow</param>
+            <param name="endY">Vertical value of the next point to follow</param>
+            <param name="endZ">Depth value of the next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <param name="function">Animation controller function</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path3DExtensions.ContinueTo(WinFormAnimation.Path3D[],System.Single,System.Single,System.Single,System.UInt64,System.UInt64)">
+            <summary>
+                Continue the last paths with a new one
+            </summary>
+            <param name="paths">Array of paths</param>
+            <param name="endX">Horizontal value of the next point to follow</param>
+            <param name="endY">Vertical value of the next point to follow</param>
+            <param name="endZ">Depth value of the next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <param name="delay">Starting delay</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path3DExtensions.ContinueTo(WinFormAnimation.Path3D[],System.Single,System.Single,System.Single,System.UInt64,System.UInt64,WinFormAnimation.AnimationFunctions.Function)">
+            <summary>
+                Continue the last paths with a new one
+            </summary>
+            <param name="paths">Array of paths</param>
+            <param name="endX">Horizontal value of the next point to follow</param>
+            <param name="endY">Vertical value of the next point to follow</param>
+            <param name="endZ">Depth value of the next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <param name="delay">Starting delay</param>
+            <param name="function">Animation controller function</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path3DExtensions.ContinueTo(WinFormAnimation.Path3D,WinFormAnimation.Float3D,System.UInt64)">
+            <summary>
+                Continue the path with a new one
+            </summary>
+            <param name="path">The path to continue</param>
+            <param name="end">Next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path3DExtensions.ContinueTo(WinFormAnimation.Path3D,WinFormAnimation.Float3D,System.UInt64,WinFormAnimation.AnimationFunctions.Function)">
+            <summary>
+                Continue the path with a new one
+            </summary>
+            <param name="path">The path to continue</param>
+            <param name="end">Next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <param name="function">Animation controller function</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path3DExtensions.ContinueTo(WinFormAnimation.Path3D,WinFormAnimation.Float3D,System.UInt64,System.UInt64)">
+            <summary>
+                Continue the path with a new one
+            </summary>
+            <param name="path">The path to continue</param>
+            <param name="end">Next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <param name="delay">Starting delay</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path3DExtensions.ContinueTo(WinFormAnimation.Path3D,WinFormAnimation.Float3D,System.UInt64,System.UInt64,WinFormAnimation.AnimationFunctions.Function)">
+            <summary>
+                Continue the path with a new one
+            </summary>
+            <param name="path">The path to continue</param>
+            <param name="end">Next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <param name="delay">Starting delay</param>
+            <param name="function">Animation controller function</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path3DExtensions.ContinueTo(WinFormAnimation.Path3D,System.Single,System.Single,System.Single,System.UInt64)">
+            <summary>
+                Continue the path with a new one
+            </summary>
+            <param name="path">The path to continue</param>
+            <param name="endX">Horizontal value of the next point to follow</param>
+            <param name="endY">Vertical value of the next point to follow</param>
+            <param name="endZ">Depth value of the next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path3DExtensions.ContinueTo(WinFormAnimation.Path3D,System.Single,System.Single,System.Single,System.UInt64,WinFormAnimation.AnimationFunctions.Function)">
+            <summary>
+                Continue the path with a new one
+            </summary>
+            <param name="path">The path to continue</param>
+            <param name="endX">Horizontal value of the next point to follow</param>
+            <param name="endY">Vertical value of the next point to follow</param>
+            <param name="endZ">Depth value of the next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <param name="function">Animation controller function</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path3DExtensions.ContinueTo(WinFormAnimation.Path3D,System.Single,System.Single,System.Single,System.UInt64,System.UInt64)">
+            <summary>
+                Continue the path with a new one
+            </summary>
+            <param name="path">The path to continue</param>
+            <param name="endX">Horizontal value of the next point to follow</param>
+            <param name="endY">Vertical value of the next point to follow</param>
+            <param name="endZ">Depth value of the next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <param name="delay">Starting delay</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path3DExtensions.ContinueTo(WinFormAnimation.Path3D,System.Single,System.Single,System.Single,System.UInt64,System.UInt64,WinFormAnimation.AnimationFunctions.Function)">
+            <summary>
+                Continue the path with a new one
+            </summary>
+            <param name="path">The path to continue</param>
+            <param name="endX">Horizontal value of the next point to follow</param>
+            <param name="endY">Vertical value of the next point to follow</param>
+            <param name="endZ">Depth value of the next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <param name="delay">Starting delay</param>
+            <param name="function">Animation controller function</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path3DExtensions.ContinueTo(WinFormAnimation.Path3D[],WinFormAnimation.Path3D[])">
+            <summary>
+                Continue the path array with a new ones
+            </summary>
+            <param name="paths">Array of paths</param>
+            <param name="newPaths">An array of new paths to adds</param>
+            <returns>An array of paths including the new ones</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path3DExtensions.ContinueTo(WinFormAnimation.Path3D,WinFormAnimation.Path3D[])">
+            <summary>
+                Continue the path with a new ones
+            </summary>
+            <param name="path">The path to continue</param>
+            <param name="newPaths">An array of new paths to adds</param>
+            <returns>An array of paths including the new ones</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path3DExtensions.ToArray(WinFormAnimation.Path3D)">
+            <summary>
+                Contains a single path in an array
+            </summary>
+            <param name="path">The path to add to the array</param>
+            <returns>An array of paths including the new ones</returns>
+        </member>
+        <member name="T:WinFormAnimation.Path2DExtensions">
+            <summary>
+                Contains public extensions methods about Path2D class
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Path2DExtensions.ContinueTo(WinFormAnimation.Path2D[],WinFormAnimation.Float2D,System.UInt64)">
+            <summary>
+                Continue the last paths with a new one
+            </summary>
+            <param name="paths">Array of paths</param>
+            <param name="end">Next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path2DExtensions.ContinueTo(WinFormAnimation.Path2D[],WinFormAnimation.Float2D,System.UInt64,WinFormAnimation.AnimationFunctions.Function)">
+            <summary>
+                Continue the last paths with a new one
+            </summary>
+            <param name="paths">Array of paths</param>
+            <param name="end">Next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <param name="function">Animation controller function</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path2DExtensions.ContinueTo(WinFormAnimation.Path2D[],WinFormAnimation.Float2D,System.UInt64,System.UInt64)">
+            <summary>
+                Continue the last paths with a new one
+            </summary>
+            <param name="paths">Array of paths</param>
+            <param name="end">Next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <param name="delay">Starting delay</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path2DExtensions.ContinueTo(WinFormAnimation.Path2D[],WinFormAnimation.Float2D,System.UInt64,System.UInt64,WinFormAnimation.AnimationFunctions.Function)">
+            <summary>
+                Continue the last paths with a new one
+            </summary>
+            <param name="paths">Array of paths</param>
+            <param name="end">Next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <param name="delay">Starting delay</param>
+            <param name="function">Animation controller function</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path2DExtensions.ContinueTo(WinFormAnimation.Path2D[],System.Single,System.Single,System.UInt64)">
+            <summary>
+                Continue the last paths with a new one
+            </summary>
+            <param name="paths">Array of paths</param>
+            <param name="endX">Horizontal value of the next point to follow</param>
+            <param name="endY">Vertical value of the next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path2DExtensions.ContinueTo(WinFormAnimation.Path2D[],System.Single,System.Single,System.UInt64,WinFormAnimation.AnimationFunctions.Function)">
+            <summary>
+                Continue the last paths with a new one
+            </summary>
+            <param name="paths">Array of paths</param>
+            <param name="endX">Horizontal value of the next point to follow</param>
+            <param name="endY">Vertical value of the next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <param name="function">Animation controller function</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path2DExtensions.ContinueTo(WinFormAnimation.Path2D[],System.Single,System.Single,System.UInt64,System.UInt64)">
+            <summary>
+                Continue the last paths with a new one
+            </summary>
+            <param name="paths">Array of paths</param>
+            <param name="endX">Horizontal value of the next point to follow</param>
+            <param name="endY">Vertical value of the next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <param name="delay">Starting delay</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path2DExtensions.ContinueTo(WinFormAnimation.Path2D[],System.Single,System.Single,System.UInt64,System.UInt64,WinFormAnimation.AnimationFunctions.Function)">
+            <summary>
+                Continue the last paths with a new one
+            </summary>
+            <param name="paths">Array of paths</param>
+            <param name="endX">Horizontal value of the next point to follow</param>
+            <param name="endY">Vertical value of the next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <param name="delay">Starting delay</param>
+            <param name="function">Animation controller function</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path2DExtensions.ContinueTo(WinFormAnimation.Path2D,WinFormAnimation.Float2D,System.UInt64)">
+            <summary>
+                Continue the path with a new one
+            </summary>
+            <param name="path">The path to continue</param>
+            <param name="end">Next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path2DExtensions.ContinueTo(WinFormAnimation.Path2D,WinFormAnimation.Float2D,System.UInt64,WinFormAnimation.AnimationFunctions.Function)">
+            <summary>
+                Continue the path with a new one
+            </summary>
+            <param name="path">The path to continue</param>
+            <param name="end">Next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <param name="function">Animation controller function</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path2DExtensions.ContinueTo(WinFormAnimation.Path2D,WinFormAnimation.Float2D,System.UInt64,System.UInt64)">
+            <summary>
+                Continue the path with a new one
+            </summary>
+            <param name="path">The path to continue</param>
+            <param name="end">Next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <param name="delay">Starting delay</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path2DExtensions.ContinueTo(WinFormAnimation.Path2D,WinFormAnimation.Float2D,System.UInt64,System.UInt64,WinFormAnimation.AnimationFunctions.Function)">
+            <summary>
+                Continue the path with a new one
+            </summary>
+            <param name="path">The path to continue</param>
+            <param name="end">Next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <param name="delay">Starting delay</param>
+            <param name="function">Animation controller function</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path2DExtensions.ContinueTo(WinFormAnimation.Path2D,System.Single,System.Single,System.UInt64)">
+            <summary>
+                Continue the path with a new one
+            </summary>
+            <param name="path">The path to continue</param>
+            <param name="endX">Horizontal value of the next point to follow</param>
+            <param name="endY">Vertical value of the next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path2DExtensions.ContinueTo(WinFormAnimation.Path2D,System.Single,System.Single,System.UInt64,WinFormAnimation.AnimationFunctions.Function)">
+            <summary>
+                Continue the path with a new one
+            </summary>
+            <param name="path">The path to continue</param>
+            <param name="endX">Horizontal value of the next point to follow</param>
+            <param name="endY">Vertical value of the next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <param name="function">Animation controller function</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path2DExtensions.ContinueTo(WinFormAnimation.Path2D,System.Single,System.Single,System.UInt64,System.UInt64)">
+            <summary>
+                Continue the path with a new one
+            </summary>
+            <param name="path">The path to continue</param>
+            <param name="endX">Horizontal value of the next point to follow</param>
+            <param name="endY">Vertical value of the next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <param name="delay">Starting delay</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path2DExtensions.ContinueTo(WinFormAnimation.Path2D,System.Single,System.Single,System.UInt64,System.UInt64,WinFormAnimation.AnimationFunctions.Function)">
+            <summary>
+                Continue the path with a new one
+            </summary>
+            <param name="path">The path to continue</param>
+            <param name="endX">Horizontal value of the next point to follow</param>
+            <param name="endY">Vertical value of the next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <param name="delay">Starting delay</param>
+            <param name="function">Animation controller function</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path2DExtensions.ContinueTo(WinFormAnimation.Path2D[],WinFormAnimation.Path2D[])">
+            <summary>
+                Continue the path array with a new ones
+            </summary>
+            <param name="paths">Array of paths</param>
+            <param name="newPaths">An array of new paths to adds</param>
+            <returns>An array of paths including the new ones</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path2DExtensions.ContinueTo(WinFormAnimation.Path2D,WinFormAnimation.Path2D[])">
+            <summary>
+                Continue the path with a new ones
+            </summary>
+            <param name="path">The path to continue</param>
+            <param name="newPaths">An array of new paths to adds</param>
+            <returns>An array of paths including the new ones</returns>
+        </member>
+        <member name="M:WinFormAnimation.Path2DExtensions.ToArray(WinFormAnimation.Path2D)">
+            <summary>
+                Contains a single path in an array
+            </summary>
+            <param name="path">The path to add to the array</param>
+            <returns>An array of paths including the new ones</returns>
+        </member>
+        <member name="T:WinFormAnimation.Path3D">
+            <summary>
+                The Path3D class is a representation of a line in a 3D plane and the
+                speed in which the animator plays it
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Path3D.#ctor(System.Single,System.Single,System.Single,System.Single,System.Single,System.Single,System.UInt64,System.UInt64,WinFormAnimation.AnimationFunctions.Function)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Path3D" /> class.
+            </summary>
+            <param name="startX">
+                The starting horizontal value
+            </param>
+            <param name="endX">
+                The ending horizontal value
+            </param>
+            <param name="startY">
+                The starting vertical value
+            </param>
+            <param name="endY">
+                The ending vertical value
+            </param>
+            <param name="startZ">
+                The starting depth value
+            </param>
+            <param name="endZ">
+                The ending depth value
+            </param>
+            <param name="duration">
+                The time in miliseconds that the animator must play this path
+            </param>
+            <param name="delay">
+                The time in miliseconds that the animator must wait before playing this path
+            </param>
+            <param name="function">
+                The animation function
+            </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+                Duration is less than zero
+            </exception>
+        </member>
+        <member name="M:WinFormAnimation.Path3D.#ctor(System.Single,System.Single,System.Single,System.Single,System.Single,System.Single,System.UInt64,System.UInt64)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Path3D" /> class.
+            </summary>
+            <param name="startX">
+                The starting horizontal value
+            </param>
+            <param name="endX">
+                The ending horizontal value
+            </param>
+            <param name="startY">
+                The starting vertical value
+            </param>
+            <param name="endY">
+                The ending vertical value
+            </param>
+            <param name="startZ">
+                The starting depth value
+            </param>
+            <param name="endZ">
+                The ending depth value
+            </param>
+            <param name="duration">
+                The time in miliseconds that the animator must play this path
+            </param>
+            <param name="delay">
+                The time in miliseconds that the animator must wait before playing this path
+            </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+                Duration is less than zero
+            </exception>
+        </member>
+        <member name="M:WinFormAnimation.Path3D.#ctor(System.Single,System.Single,System.Single,System.Single,System.Single,System.Single,System.UInt64,WinFormAnimation.AnimationFunctions.Function)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Path3D" /> class.
+            </summary>
+            <param name="startX">
+                The starting horizontal value
+            </param>
+            <param name="endX">
+                The ending horizontal value
+            </param>
+            <param name="startY">
+                The starting vertical value
+            </param>
+            <param name="endY">
+                The ending vertical value
+            </param>
+            <param name="startZ">
+                The starting depth value
+            </param>
+            <param name="endZ">
+                The ending depth value
+            </param>
+            <param name="duration">
+                The time in miliseconds that the animator must play this path
+            </param>
+            <param name="function">
+                The animation function
+            </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+                Duration is less than zero
+            </exception>
+        </member>
+        <member name="M:WinFormAnimation.Path3D.#ctor(System.Single,System.Single,System.Single,System.Single,System.Single,System.Single,System.UInt64)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Path3D" /> class.
+            </summary>
+            <param name="startX">
+                The starting horizontal value
+            </param>
+            <param name="endX">
+                The ending horizontal value
+            </param>
+            <param name="startY">
+                The starting vertical value
+            </param>
+            <param name="endY">
+                The ending vertical value
+            </param>
+            <param name="startZ">
+                The starting depth value
+            </param>
+            <param name="endZ">
+                The ending depth value
+            </param>
+            <param name="duration">
+                The time in miliseconds that the animator must play this path
+            </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+                Duration is less than zero
+            </exception>
+        </member>
+        <member name="M:WinFormAnimation.Path3D.#ctor(WinFormAnimation.Float3D,WinFormAnimation.Float3D,System.UInt64,System.UInt64,WinFormAnimation.AnimationFunctions.Function)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Path3D" /> class.
+            </summary>
+            <param name="start">
+                The starting point in a 3D plane
+            </param>
+            <param name="end">
+                The ending point in a 3D plane
+            </param>
+            <param name="duration">
+                The time in miliseconds that the animator must play this path
+            </param>
+            <param name="delay">
+                The time in miliseconds that the animator must wait before playing this path
+            </param>
+            <param name="function">
+                The animation function
+            </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+                Duration is less than zero
+            </exception>
+        </member>
+        <member name="M:WinFormAnimation.Path3D.#ctor(WinFormAnimation.Float3D,WinFormAnimation.Float3D,System.UInt64,System.UInt64)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Path3D" /> class.
+            </summary>
+            <param name="start">
+                The starting point in a 3D plane
+            </param>
+            <param name="end">
+                The ending point in a 3D plane
+            </param>
+            <param name="duration">
+                The time in miliseconds that the animator must play this path
+            </param>
+            <param name="delay">
+                The time in miliseconds that the animator must wait before playing this path
+            </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+                Duration is less than zero
+            </exception>
+        </member>
+        <member name="M:WinFormAnimation.Path3D.#ctor(WinFormAnimation.Float3D,WinFormAnimation.Float3D,System.UInt64,WinFormAnimation.AnimationFunctions.Function)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Path3D" /> class.
+            </summary>
+            <param name="start">
+                The starting point in a 3D plane
+            </param>
+            <param name="end">
+                The ending point in a 3D plane
+            </param>
+            <param name="duration">
+                The time in miliseconds that the animator must play this path
+            </param>
+            <param name="function">
+                The animation function
+            </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+                Duration is less than zero
+            </exception>
+        </member>
+        <member name="M:WinFormAnimation.Path3D.#ctor(WinFormAnimation.Float3D,WinFormAnimation.Float3D,System.UInt64)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Path3D" /> class.
+            </summary>
+            <param name="start">
+                The starting point in a 3D plane
+            </param>
+            <param name="end">
+                The ending point in a 3D plane
+            </param>
+            <param name="duration">
+                The time in miliseconds that the animator must play this path
+            </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+                Duration is less than zero
+            </exception>
+        </member>
+        <member name="M:WinFormAnimation.Path3D.#ctor(WinFormAnimation.Path,WinFormAnimation.Path,WinFormAnimation.Path)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Path3D" /> class.
+            </summary>
+            <param name="x">
+                The horizontal path.
+            </param>
+            <param name="y">
+                The vertical path.
+            </param>
+            <param name="z">
+                The depth path.
+            </param>
+        </member>
+        <member name="P:WinFormAnimation.Path3D.HorizontalPath">
+            <summary>
+                Gets the horizontal path
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Path3D.VerticalPath">
+            <summary>
+                Gets the vertical path
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Path3D.DepthPath">
+            <summary>
+                Gets the depth path
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Path3D.Start">
+            <summary>
+                Gets the starting point of the path
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Path3D.End">
+            <summary>
+                Gets the ending point of the path
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Path3D.Reverse">
+            <summary>
+                Creates and returns a new <see cref="T:WinFormAnimation.Path3D" /> based on the current path but in reverse order
+            </summary>
+            <returns>
+                A new <see cref="T:WinFormAnimation.Path" /> which is the reverse of the current <see cref="T:WinFormAnimation.Path3D" />
+            </returns>
+        </member>
+        <member name="T:WinFormAnimation.Float3D">
+            <summary>
+                The Float3D class contains two <see langword="float" /> values and
+                represents a point in a 3D plane
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Float3D.#ctor(System.Single,System.Single,System.Single)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Float3D" /> class.
+            </summary>
+            <param name="x">
+                The horizontal value
+            </param>
+            <param name="y">
+                The vertical value
+            </param>
+            <param name="z">
+                The depth value
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Float3D.#ctor">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Float3D" /> class.
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Float3D.X">
+            <summary>
+                Gets the horizontal value of the point
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Float3D.Y">
+            <summary>
+                Gets the vertical value of the point
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Float3D.Z">
+            <summary>
+                Gets the depth value of the point
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Float3D.GetTypeCode">
+            <summary>
+                Returns the <see cref="T:System.TypeCode" /> for this instance.
+            </summary>
+            <returns>
+                The enumerated constant that is the <see cref="T:System.TypeCode" /> of the class or value type that implements
+                this interface.
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.Float3D.ToBoolean(System.IFormatProvider)">
+            <summary>
+                Converts the value of this instance to an equivalent Boolean value using the specified culture-specific formatting
+                information.
+            </summary>
+            <returns>
+                A Boolean value equivalent to the value of this instance.
+            </returns>
+            <param name="provider">
+                An <see cref="T:System.IFormatProvider" /> interface implementation that supplies
+                culture-specific formatting information.
+            </param>
+            <exception cref="T:System.InvalidCastException">This method is not supported</exception>
+        </member>
+        <member name="M:WinFormAnimation.Float3D.ToByte(System.IFormatProvider)">
+            <summary>
+                Converts the value of this instance to an equivalent 8-bit unsigned integer using the specified culture-specific
+                formatting information.
+            </summary>
+            <returns>
+                An 8-bit unsigned integer equivalent to the value of this instance.
+            </returns>
+            <param name="provider">
+                An <see cref="T:System.IFormatProvider" /> interface implementation that supplies
+                culture-specific formatting information.
+            </param>
+            <exception cref="T:System.InvalidCastException">This method is not supported</exception>
+        </member>
+        <member name="M:WinFormAnimation.Float3D.ToChar(System.IFormatProvider)">
+            <summary>
+                Converts the value of this instance to an equivalent Unicode character using the specified culture-specific
+                formatting information.
+            </summary>
+            <returns>
+                A Unicode character equivalent to the value of this instance.
+            </returns>
+            <param name="provider">
+                An <see cref="T:System.IFormatProvider" /> interface implementation that supplies
+                culture-specific formatting information.
+            </param>
+            <exception cref="T:System.InvalidCastException">This method is not supported</exception>
+        </member>
+        <member name="M:WinFormAnimation.Float3D.ToDateTime(System.IFormatProvider)">
+            <summary>
+                Converts the value of this instance to an equivalent <see cref="T:System.DateTime" /> using the specified
+                culture-specific formatting information.
+            </summary>
+            <returns>
+                A <see cref="T:System.DateTime" /> instance equivalent to the value of this instance.
+            </returns>
+            <param name="provider">
+                An <see cref="T:System.IFormatProvider" /> interface implementation that supplies
+                culture-specific formatting information.
+            </param>
+            <exception cref="T:System.InvalidCastException">This method is not supported</exception>
+        </member>
+        <member name="M:WinFormAnimation.Float3D.ToDecimal(System.IFormatProvider)">
+            <summary>
+                Converts the value of this instance to an equivalent <see cref="T:System.Decimal" /> number using the specified
+                culture-specific formatting information.
+            </summary>
+            <returns>
+                A <see cref="T:System.Decimal" /> number equivalent to the value of this instance.
+            </returns>
+            <param name="provider">
+                An <see cref="T:System.IFormatProvider" /> interface implementation that supplies
+                culture-specific formatting information.
+            </param>
+            <exception cref="T:System.InvalidCastException">This method is not supported</exception>
+        </member>
+        <member name="M:WinFormAnimation.Float3D.ToDouble(System.IFormatProvider)">
+            <summary>
+                Converts the value of this instance to an equivalent double-precision floating-point number using the specified
+                culture-specific formatting information.
+            </summary>
+            <returns>
+                A double-precision floating-point number equivalent to the value of this instance.
+            </returns>
+            <param name="provider">
+                An <see cref="T:System.IFormatProvider" /> interface implementation that supplies
+                culture-specific formatting information.
+            </param>
+            <exception cref="T:System.InvalidCastException">This method is not supported</exception>
+        </member>
+        <member name="M:WinFormAnimation.Float3D.ToInt16(System.IFormatProvider)">
+            <summary>
+                Converts the value of this instance to an equivalent 16-bit signed integer using the specified culture-specific
+                formatting information.
+            </summary>
+            <returns>
+                An 16-bit signed integer equivalent to the value of this instance.
+            </returns>
+            <param name="provider">
+                An <see cref="T:System.IFormatProvider" /> interface implementation that supplies
+                culture-specific formatting information.
+            </param>
+            <exception cref="T:System.InvalidCastException">This method is not supported</exception>
+        </member>
+        <member name="M:WinFormAnimation.Float3D.ToInt32(System.IFormatProvider)">
+            <summary>
+                Converts the value of this instance to an equivalent 32-bit signed integer using the specified culture-specific
+                formatting information.
+            </summary>
+            <returns>
+                An 32-bit signed integer equivalent to the value of this instance.
+            </returns>
+            <param name="provider">
+                An <see cref="T:System.IFormatProvider" /> interface implementation that supplies
+                culture-specific formatting information.
+            </param>
+            <exception cref="T:System.InvalidCastException">This method is not supported</exception>
+        </member>
+        <member name="M:WinFormAnimation.Float3D.ToInt64(System.IFormatProvider)">
+            <summary>
+                Converts the value of this instance to an equivalent 64-bit signed integer using the specified culture-specific
+                formatting information.
+            </summary>
+            <returns>
+                An 64-bit signed integer equivalent to the value of this instance.
+            </returns>
+            <param name="provider">
+                An <see cref="T:System.IFormatProvider" /> interface implementation that supplies
+                culture-specific formatting information.
+            </param>
+            <exception cref="T:System.InvalidCastException">This method is not supported</exception>
+        </member>
+        <member name="M:WinFormAnimation.Float3D.ToSByte(System.IFormatProvider)">
+            <summary>
+                Converts the value of this instance to an equivalent 8-bit signed integer using the specified culture-specific
+                formatting information.
+            </summary>
+            <returns>
+                An 8-bit signed integer equivalent to the value of this instance.
+            </returns>
+            <param name="provider">
+                An <see cref="T:System.IFormatProvider" /> interface implementation that supplies
+                culture-specific formatting information.
+            </param>
+            <exception cref="T:System.InvalidCastException">This method is not supported</exception>
+        </member>
+        <member name="M:WinFormAnimation.Float3D.ToSingle(System.IFormatProvider)">
+            <summary>
+                Converts the value of this instance to an equivalent single-precision floating-point number using the specified
+                culture-specific formatting information.
+            </summary>
+            <returns>
+                A single-precision floating-point number equivalent to the value of this instance.
+            </returns>
+            <param name="provider">
+                An <see cref="T:System.IFormatProvider" /> interface implementation that supplies
+                culture-specific formatting information.
+            </param>
+            <exception cref="T:System.InvalidCastException">This method is not supported</exception>
+        </member>
+        <member name="M:WinFormAnimation.Float3D.ToUInt16(System.IFormatProvider)">
+            <summary>
+                Converts the value of this instance to an equivalent 16-bit unsigned integer using the specified culture-specific
+                formatting information.
+            </summary>
+            <returns>
+                An 16-bit unsigned integer equivalent to the value of this instance.
+            </returns>
+            <param name="provider">
+                An <see cref="T:System.IFormatProvider" /> interface implementation that supplies
+                culture-specific formatting information.
+            </param>
+            <exception cref="T:System.InvalidCastException">This method is not supported</exception>
+        </member>
+        <member name="M:WinFormAnimation.Float3D.ToUInt32(System.IFormatProvider)">
+            <summary>
+                Converts the value of this instance to an equivalent 32-bit unsigned integer using the specified culture-specific
+                formatting information.
+            </summary>
+            <returns>
+                An 32-bit unsigned integer equivalent to the value of this instance.
+            </returns>
+            <param name="provider">
+                An <see cref="T:System.IFormatProvider" /> interface implementation that supplies
+                culture-specific formatting information.
+            </param>
+            <exception cref="T:System.InvalidCastException">This method is not supported</exception>
+        </member>
+        <member name="M:WinFormAnimation.Float3D.ToUInt64(System.IFormatProvider)">
+            <summary>
+                Converts the value of this instance to an equivalent 64-bit unsigned integer using the specified culture-specific
+                formatting information.
+            </summary>
+            <returns>
+                An 64-bit unsigned integer equivalent to the value of this instance.
+            </returns>
+            <param name="provider">
+                An <see cref="T:System.IFormatProvider" /> interface implementation that supplies
+                culture-specific formatting information.
+            </param>
+            <exception cref="T:System.InvalidCastException">This method is not supported</exception>
+        </member>
+        <member name="M:WinFormAnimation.Float3D.ToString(System.IFormatProvider)">
+            <summary>
+                Converts the value of this instance to an equivalent <see cref="T:System.String" /> using the specified
+                culture-specific formatting information.
+            </summary>
+            <returns>
+                A <see cref="T:System.String" /> instance equivalent to the value of this instance.
+            </returns>
+            <param name="provider">
+                An <see cref="T:System.IFormatProvider" /> interface implementation that supplies
+                culture-specific formatting information.
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Float3D.ToType(System.Type,System.IFormatProvider)">
+            <summary>
+                Converts the value of this instance to an <see cref="T:System.Object" /> of the specified
+                <see cref="T:System.Type" /> that has an equivalent value, using the specified culture-specific formatting
+                information.
+            </summary>
+            <returns>
+                An <see cref="T:System.Object" /> instance of type <paramref name="conversionType" /> whose value is equivalent to
+                the value of this instance.
+            </returns>
+            <param name="conversionType">The <see cref="T:System.Type" /> to which the value of this instance is converted. </param>
+            <param name="provider">
+                An <see cref="T:System.IFormatProvider" /> interface implementation that supplies
+                culture-specific formatting information.
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Float3D.Equals(System.Drawing.Color)">
+            <summary>
+                Indicates whether the current object is equal to a <see cref="T:System.Drawing.Color" /> object.
+            </summary>
+            <returns>
+                true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.
+            </returns>
+            <param name="other">An object to compare with this object.</param>
+        </member>
+        <member name="M:WinFormAnimation.Float3D.Equals(WinFormAnimation.Float3D)">
+            <summary>
+                Indicates whether the current object is equal to another object of the same type.
+            </summary>
+            <returns>
+                true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.
+            </returns>
+            <param name="other">An object to compare with this object.</param>
+        </member>
+        <member name="M:WinFormAnimation.Float3D.Equals(System.Object)">
+            <summary>
+                Determines whether the specified <see cref="T:System.Object" /> is equal to the current
+                <see cref="T:System.Object" />.
+            </summary>
+            <returns>
+                true if the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:System.Object" />;
+                otherwise, false.
+            </returns>
+            <param name="obj">The <see cref="T:System.Object" /> to compare with the current <see cref="T:System.Object" />. </param>
+        </member>
+        <member name="M:WinFormAnimation.Float3D.GetHashCode">
+            <summary>
+                Serves as a hash function for a particular type. This code will change of the values of the X and Y changes. Make
+                sure to not change the values while stored in a hash dependent data structure.
+            </summary>
+            <returns>
+                A hash code for the current <see cref="T:WinFormAnimation.Float3D" />.
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.Float3D.op_Equality(WinFormAnimation.Float3D,WinFormAnimation.Float3D)">
+            <summary>
+                Compares two <see cref="T:WinFormAnimation.Float3D" /> objects for equality
+            </summary>
+            <param name="left">Left <see cref="T:WinFormAnimation.Float3D" /> object</param>
+            <param name="right">Right <see cref="T:WinFormAnimation.Float3D" /> object</param>
+            <returns>true if both objects are equal, otherwise false</returns>
+        </member>
+        <member name="M:WinFormAnimation.Float3D.op_Inequality(WinFormAnimation.Float3D,WinFormAnimation.Float3D)">
+            <summary>
+                Compares two <see cref="T:WinFormAnimation.Float3D" /> objects for in-equality
+            </summary>
+            <param name="left">Left <see cref="T:WinFormAnimation.Float3D" /> object</param>
+            <param name="right">Right <see cref="T:WinFormAnimation.Float3D" /> object</param>
+            <returns>false if both objects are equal, otherwise true</returns>
+        </member>
+        <member name="M:WinFormAnimation.Float3D.op_Implicit(WinFormAnimation.Float3D)~System.Drawing.Color">
+            <summary>
+                Represents the values as an instance of the <see cref="T:System.Drawing.Color" /> class
+            </summary>
+            <param name="float3D">
+                The <see cref="T:WinFormAnimation.Float3D" /> class to convert
+            </param>
+            <returns>
+                A new instance of the <see cref="T:System.Drawing.Color" /> class representing the values in the <see cref="T:WinFormAnimation.Float3D" /> instance
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.Float3D.ToString">
+            <summary>
+                Returns a string that represents the current <see cref="T:WinFormAnimation.Float3D" />.
+            </summary>
+            <returns>
+                A string that represents the current <see cref="T:WinFormAnimation.Float3D" />.
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.Float3D.FromColor(System.Drawing.Color)">
+            <summary>
+                Creates and returns a new instance of the <see cref="T:WinFormAnimation.Float3D" /> class from a <see cref="T:System.Drawing.Color" /> instance
+            </summary>
+            <param name="color">The object to create the <see cref="T:WinFormAnimation.Float3D" /> instance from</param>
+            <returns>The newly created <see cref="T:WinFormAnimation.Float3D" /> instance</returns>
+        </member>
+        <member name="T:WinFormAnimation.Float2D">
+            <summary>
+                The Float2D class contains two <see langword="float" /> values and
+                represents a point in a 2D plane
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.#ctor(System.Single,System.Single)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Float2D" /> class.
+            </summary>
+            <param name="x">
+                The horizontal value
+            </param>
+            <param name="y">
+                The vertical value
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.#ctor">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Float2D" /> class.
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Float2D.X">
+            <summary>
+                Gets the horizontal value of the point
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Float2D.Y">
+            <summary>
+                Gets the vertical value of the point
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.GetTypeCode">
+            <summary>
+                Returns the <see cref="T:System.TypeCode" /> for this instance.
+            </summary>
+            <returns>
+                The enumerated constant that is the <see cref="T:System.TypeCode" /> of the class or value type that implements
+                this interface.
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.ToBoolean(System.IFormatProvider)">
+            <summary>
+                Converts the value of this instance to an equivalent Boolean value using the specified culture-specific formatting
+                information.
+            </summary>
+            <returns>
+                A Boolean value equivalent to the value of this instance.
+            </returns>
+            <param name="provider">
+                An <see cref="T:System.IFormatProvider" /> interface implementation that supplies
+                culture-specific formatting information.
+            </param>
+            <exception cref="T:System.InvalidCastException">This method is not supported</exception>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.ToByte(System.IFormatProvider)">
+            <summary>
+                Converts the value of this instance to an equivalent 8-bit unsigned integer using the specified culture-specific
+                formatting information.
+            </summary>
+            <returns>
+                An 8-bit unsigned integer equivalent to the value of this instance.
+            </returns>
+            <param name="provider">
+                An <see cref="T:System.IFormatProvider" /> interface implementation that supplies
+                culture-specific formatting information.
+            </param>
+            <exception cref="T:System.InvalidCastException">This method is not supported</exception>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.ToChar(System.IFormatProvider)">
+            <summary>
+                Converts the value of this instance to an equivalent Unicode character using the specified culture-specific
+                formatting information.
+            </summary>
+            <returns>
+                A Unicode character equivalent to the value of this instance.
+            </returns>
+            <param name="provider">
+                An <see cref="T:System.IFormatProvider" /> interface implementation that supplies
+                culture-specific formatting information.
+            </param>
+            <exception cref="T:System.InvalidCastException">This method is not supported</exception>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.ToDateTime(System.IFormatProvider)">
+            <summary>
+                Converts the value of this instance to an equivalent <see cref="T:System.DateTime" /> using the specified
+                culture-specific formatting information.
+            </summary>
+            <returns>
+                A <see cref="T:System.DateTime" /> instance equivalent to the value of this instance.
+            </returns>
+            <param name="provider">
+                An <see cref="T:System.IFormatProvider" /> interface implementation that supplies
+                culture-specific formatting information.
+            </param>
+            <exception cref="T:System.InvalidCastException">This method is not supported</exception>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.ToDecimal(System.IFormatProvider)">
+            <summary>
+                Converts the value of this instance to an equivalent <see cref="T:System.Decimal" /> number using the specified
+                culture-specific formatting information.
+            </summary>
+            <returns>
+                A <see cref="T:System.Decimal" /> number equivalent to the value of this instance.
+            </returns>
+            <param name="provider">
+                An <see cref="T:System.IFormatProvider" /> interface implementation that supplies
+                culture-specific formatting information.
+            </param>
+            <exception cref="T:System.InvalidCastException">This method is not supported</exception>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.ToDouble(System.IFormatProvider)">
+            <summary>
+                Converts the value of this instance to an equivalent double-precision floating-point number using the specified
+                culture-specific formatting information.
+            </summary>
+            <returns>
+                A double-precision floating-point number equivalent to the value of this instance.
+            </returns>
+            <param name="provider">
+                An <see cref="T:System.IFormatProvider" /> interface implementation that supplies
+                culture-specific formatting information.
+            </param>
+            <exception cref="T:System.InvalidCastException">This method is not supported</exception>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.ToInt16(System.IFormatProvider)">
+            <summary>
+                Converts the value of this instance to an equivalent 16-bit signed integer using the specified culture-specific
+                formatting information.
+            </summary>
+            <returns>
+                An 16-bit signed integer equivalent to the value of this instance.
+            </returns>
+            <param name="provider">
+                An <see cref="T:System.IFormatProvider" /> interface implementation that supplies
+                culture-specific formatting information.
+            </param>
+            <exception cref="T:System.InvalidCastException">This method is not supported</exception>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.ToInt32(System.IFormatProvider)">
+            <summary>
+                Converts the value of this instance to an equivalent 32-bit signed integer using the specified culture-specific
+                formatting information.
+            </summary>
+            <returns>
+                An 32-bit signed integer equivalent to the value of this instance.
+            </returns>
+            <param name="provider">
+                An <see cref="T:System.IFormatProvider" /> interface implementation that supplies
+                culture-specific formatting information.
+            </param>
+            <exception cref="T:System.InvalidCastException">This method is not supported</exception>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.ToInt64(System.IFormatProvider)">
+            <summary>
+                Converts the value of this instance to an equivalent 64-bit signed integer using the specified culture-specific
+                formatting information.
+            </summary>
+            <returns>
+                An 64-bit signed integer equivalent to the value of this instance.
+            </returns>
+            <param name="provider">
+                An <see cref="T:System.IFormatProvider" /> interface implementation that supplies
+                culture-specific formatting information.
+            </param>
+            <exception cref="T:System.InvalidCastException">This method is not supported</exception>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.ToSByte(System.IFormatProvider)">
+            <summary>
+                Converts the value of this instance to an equivalent 8-bit signed integer using the specified culture-specific
+                formatting information.
+            </summary>
+            <returns>
+                An 8-bit signed integer equivalent to the value of this instance.
+            </returns>
+            <param name="provider">
+                An <see cref="T:System.IFormatProvider" /> interface implementation that supplies
+                culture-specific formatting information.
+            </param>
+            <exception cref="T:System.InvalidCastException">This method is not supported</exception>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.ToSingle(System.IFormatProvider)">
+            <summary>
+                Converts the value of this instance to an equivalent single-precision floating-point number using the specified
+                culture-specific formatting information.
+            </summary>
+            <returns>
+                A single-precision floating-point number equivalent to the value of this instance.
+            </returns>
+            <param name="provider">
+                An <see cref="T:System.IFormatProvider" /> interface implementation that supplies
+                culture-specific formatting information.
+            </param>
+            <exception cref="T:System.InvalidCastException">This method is not supported</exception>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.ToUInt16(System.IFormatProvider)">
+            <summary>
+                Converts the value of this instance to an equivalent 16-bit unsigned integer using the specified culture-specific
+                formatting information.
+            </summary>
+            <returns>
+                An 16-bit unsigned integer equivalent to the value of this instance.
+            </returns>
+            <param name="provider">
+                An <see cref="T:System.IFormatProvider" /> interface implementation that supplies
+                culture-specific formatting information.
+            </param>
+            <exception cref="T:System.InvalidCastException">This method is not supported</exception>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.ToUInt32(System.IFormatProvider)">
+            <summary>
+                Converts the value of this instance to an equivalent 32-bit unsigned integer using the specified culture-specific
+                formatting information.
+            </summary>
+            <returns>
+                An 32-bit unsigned integer equivalent to the value of this instance.
+            </returns>
+            <param name="provider">
+                An <see cref="T:System.IFormatProvider" /> interface implementation that supplies
+                culture-specific formatting information.
+            </param>
+            <exception cref="T:System.InvalidCastException">This method is not supported</exception>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.ToUInt64(System.IFormatProvider)">
+            <summary>
+                Converts the value of this instance to an equivalent 64-bit unsigned integer using the specified culture-specific
+                formatting information.
+            </summary>
+            <returns>
+                An 64-bit unsigned integer equivalent to the value of this instance.
+            </returns>
+            <param name="provider">
+                An <see cref="T:System.IFormatProvider" /> interface implementation that supplies
+                culture-specific formatting information.
+            </param>
+            <exception cref="T:System.InvalidCastException">This method is not supported</exception>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.ToString(System.IFormatProvider)">
+            <summary>
+                Converts the value of this instance to an equivalent <see cref="T:System.String" /> using the specified
+                culture-specific formatting information.
+            </summary>
+            <returns>
+                A <see cref="T:System.String" /> instance equivalent to the value of this instance.
+            </returns>
+            <param name="provider">
+                An <see cref="T:System.IFormatProvider" /> interface implementation that supplies
+                culture-specific formatting information.
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.ToType(System.Type,System.IFormatProvider)">
+            <summary>
+                Converts the value of this instance to an <see cref="T:System.Object" /> of the specified
+                <see cref="T:System.Type" /> that has an equivalent value, using the specified culture-specific formatting
+                information.
+            </summary>
+            <returns>
+                An <see cref="T:System.Object" /> instance of type <paramref name="conversionType" /> whose value is equivalent to
+                the value of this instance.
+            </returns>
+            <param name="conversionType">The <see cref="T:System.Type" /> to which the value of this instance is converted. </param>
+            <param name="provider">
+                An <see cref="T:System.IFormatProvider" /> interface implementation that supplies
+                culture-specific formatting information.
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.Equals(WinFormAnimation.Float2D)">
+            <summary>
+                Indicates whether the current object is equal to another object of the same type.
+            </summary>
+            <returns>
+                true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.
+            </returns>
+            <param name="other">An object to compare with this object.</param>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.Equals(System.Drawing.Point)">
+            <summary>
+                Indicates whether the current object is equal to a <see cref="T:System.Drawing.Point" /> object.
+            </summary>
+            <returns>
+                true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.
+            </returns>
+            <param name="other">An object to compare with this object.</param>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.Equals(System.Drawing.PointF)">
+            <summary>
+                Indicates whether the current object is equal to a <see cref="T:System.Drawing.PointF" /> object.
+            </summary>
+            <returns>
+                true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.
+            </returns>
+            <param name="other">An object to compare with this object.</param>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.Equals(System.Drawing.Size)">
+            <summary>
+                Indicates whether the current object is equal to a <see cref="T:System.Drawing.Size" /> object.
+            </summary>
+            <returns>
+                true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.
+            </returns>
+            <param name="other">An object to compare with this object.</param>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.Equals(System.Drawing.SizeF)">
+            <summary>
+                Indicates whether the current object is equal to a <see cref="T:System.Drawing.SizeF" /> object.
+            </summary>
+            <returns>
+                true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.
+            </returns>
+            <param name="other">An object to compare with this object.</param>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.Equals(System.Object)">
+            <summary>
+                Determines whether the specified <see cref="T:System.Object" /> is equal to the current
+                <see cref="T:System.Object" />.
+            </summary>
+            <returns>
+                true if the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:System.Object" />;
+                otherwise, false.
+            </returns>
+            <param name="obj">The <see cref="T:System.Object" /> to compare with the current <see cref="T:System.Object" />. </param>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.GetHashCode">
+            <summary>
+                Serves as a hash function for a particular type. This code will change of the values of the X and Y changes. Make
+                sure to not change the values while stored in a hash dependent data structure.
+            </summary>
+            <returns>
+                A hash code for the current <see cref="T:WinFormAnimation.Float2D" />.
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.op_Equality(WinFormAnimation.Float2D,WinFormAnimation.Float2D)">
+            <summary>
+                Compares two <see cref="T:WinFormAnimation.Float2D" /> objects for equality
+            </summary>
+            <param name="left">Left <see cref="T:WinFormAnimation.Float2D" /> object</param>
+            <param name="right">Right <see cref="T:WinFormAnimation.Float2D" /> object</param>
+            <returns>true if both objects are equal, otherwise false</returns>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.op_Inequality(WinFormAnimation.Float2D,WinFormAnimation.Float2D)">
+            <summary>
+                Compares two <see cref="T:WinFormAnimation.Float2D" /> objects for in-equality
+            </summary>
+            <param name="left">Left <see cref="T:WinFormAnimation.Float2D" /> object</param>
+            <param name="right">Right <see cref="T:WinFormAnimation.Float2D" /> object</param>
+            <returns>false if both objects are equal, otherwise true</returns>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.op_Implicit(WinFormAnimation.Float2D)~System.Drawing.Size">
+            <summary>
+                Represents the values as an instance of the <see cref="T:System.Drawing.Size" /> class
+            </summary>
+            <param name="float2D">
+                The <see cref="T:WinFormAnimation.Float2D" /> class to convert
+            </param>
+            <returns>
+                A new instance of the <see cref="T:System.Drawing.Size" /> class representing the values in the <see cref="T:WinFormAnimation.Float2D" /> instance
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.op_Implicit(WinFormAnimation.Float2D)~System.Drawing.Point">
+            <summary>
+                Represents the values as an instance of the <see cref="T:System.Drawing.Point" /> class
+            </summary>
+            <param name="float2D">
+                The <see cref="T:WinFormAnimation.Float2D" /> class to convert
+            </param>
+            <returns>
+                A new instance of the <see cref="T:System.Drawing.Point" /> class representing the values in the <see cref="T:WinFormAnimation.Float2D" /> instance
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.op_Implicit(WinFormAnimation.Float2D)~System.Drawing.SizeF">
+            <summary>
+                Represents the values as an instance of the <see cref="T:System.Drawing.SizeF" /> class
+            </summary>
+            <param name="float2D">
+                The <see cref="T:WinFormAnimation.Float2D" /> class to convert
+            </param>
+            <returns>
+                A new instance of the <see cref="T:System.Drawing.SizeF" /> class representing the values in the <see cref="T:WinFormAnimation.Float2D" /> instance
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.op_Implicit(WinFormAnimation.Float2D)~System.Drawing.PointF">
+            <summary>
+                Represents the values as an instance of the <see cref="T:System.Drawing.PointF" /> class
+            </summary>
+            <param name="float2D">
+                The <see cref="T:WinFormAnimation.Float2D" /> class to convert
+            </param>
+            <returns>
+                A new instance of the <see cref="T:System.Drawing.PointF" /> class representing the values in the <see cref="T:WinFormAnimation.Float2D" /> instance
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.ToString">
+            <summary>
+                Returns a string that represents the current <see cref="T:WinFormAnimation.Float2D" />.
+            </summary>
+            <returns>
+                A string that represents the current <see cref="T:WinFormAnimation.Float2D" />.
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.FromPoint(System.Drawing.Point)">
+            <summary>
+                Creates and returns a new instance of the <see cref="T:WinFormAnimation.Float2D" /> class from a <see cref="T:System.Drawing.Point" /> instance
+            </summary>
+            <param name="point">The object to create the <see cref="T:WinFormAnimation.Float2D" /> instance from</param>
+            <returns>The newly created <see cref="T:WinFormAnimation.Float2D" /> instance</returns>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.FromPoint(System.Drawing.PointF)">
+            <summary>
+                Creates and returns a new instance of the <see cref="T:WinFormAnimation.Float2D" /> class from a <see cref="T:System.Drawing.PointF" /> instance
+            </summary>
+            <param name="point">The object to create the <see cref="T:WinFormAnimation.Float2D" /> instance from</param>
+            <returns>The newly created <see cref="T:WinFormAnimation.Float2D" /> instance</returns>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.FromSize(System.Drawing.Size)">
+            <summary>
+                Creates and returns a new instance of the <see cref="T:WinFormAnimation.Float2D" /> class from a <see cref="T:System.Drawing.Size" /> instance
+            </summary>
+            <param name="size">The object to create the <see cref="T:WinFormAnimation.Float2D" /> instance from</param>
+            <returns>The newly created <see cref="T:WinFormAnimation.Float2D" /> instance</returns>
+        </member>
+        <member name="M:WinFormAnimation.Float2D.FromSize(System.Drawing.SizeF)">
+            <summary>
+                Creates and returns a new instance of the <see cref="T:WinFormAnimation.Float2D" /> class from a <see cref="T:System.Drawing.SizeF" /> instance
+            </summary>
+            <param name="size">The object to create the <see cref="T:WinFormAnimation.Float2D" /> instance from</param>
+            <returns>The newly created <see cref="T:WinFormAnimation.Float2D" /> instance</returns>
+        </member>
+        <member name="T:WinFormAnimation.Path2D">
+            <summary>
+                The Path2D class is a representation of a line in a 2D plane and the
+                speed in which the animator plays it
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Path2D.#ctor(System.Single,System.Single,System.Single,System.Single,System.UInt64,System.UInt64,WinFormAnimation.AnimationFunctions.Function)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Path2D" /> class.
+            </summary>
+            <param name="startX">
+                The starting horizontal value
+            </param>
+            <param name="endX">
+                The ending horizontal value
+            </param>
+            <param name="startY">
+                The starting vertical value
+            </param>
+            <param name="endY">
+                The ending vertical value
+            </param>
+            <param name="duration">
+                The time in miliseconds that the animator must play this path
+            </param>
+            <param name="delay">
+                The time in miliseconds that the animator must wait before playing this path
+            </param>
+            <param name="function">
+                The animation function
+            </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+                Duration is less than zero
+            </exception>
+        </member>
+        <member name="M:WinFormAnimation.Path2D.#ctor(System.Single,System.Single,System.Single,System.Single,System.UInt64,System.UInt64)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Path2D" /> class.
+            </summary>
+            <param name="startX">
+                The starting horizontal value
+            </param>
+            <param name="endX">
+                The ending horizontal value
+            </param>
+            <param name="startY">
+                The starting vertical value
+            </param>
+            <param name="endY">
+                The ending vertical value
+            </param>
+            <param name="duration">
+                The time in miliseconds that the animator must play this path
+            </param>
+            <param name="delay">
+                The time in miliseconds that the animator must wait before playing this path
+            </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+                Duration is less than zero
+            </exception>
+        </member>
+        <member name="M:WinFormAnimation.Path2D.#ctor(System.Single,System.Single,System.Single,System.Single,System.UInt64,WinFormAnimation.AnimationFunctions.Function)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Path2D" /> class.
+            </summary>
+            <param name="startX">
+                The starting horizontal value
+            </param>
+            <param name="endX">
+                The ending horizontal value
+            </param>
+            <param name="startY">
+                The starting vertical value
+            </param>
+            <param name="endY">
+                The ending vertical value
+            </param>
+            <param name="duration">
+                The time in miliseconds that the animator must play this path
+            </param>
+            <param name="function">
+                The animation function
+            </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+                Duration is less than zero
+            </exception>
+        </member>
+        <member name="M:WinFormAnimation.Path2D.#ctor(System.Single,System.Single,System.Single,System.Single,System.UInt64)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Path2D" /> class.
+            </summary>
+            <param name="startX">
+                The starting horizontal value
+            </param>
+            <param name="endX">
+                The ending horizontal value
+            </param>
+            <param name="startY">
+                The starting vertical value
+            </param>
+            <param name="endY">
+                The ending vertical value
+            </param>
+            <param name="duration">
+                The time in miliseconds that the animator must play this path
+            </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+                Duration is less than zero
+            </exception>
+        </member>
+        <member name="M:WinFormAnimation.Path2D.#ctor(WinFormAnimation.Float2D,WinFormAnimation.Float2D,System.UInt64,System.UInt64,WinFormAnimation.AnimationFunctions.Function)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Path2D" /> class.
+            </summary>
+            <param name="start">
+                The starting point or location
+            </param>
+            <param name="end">
+                The ending point or location
+            </param>
+            <param name="duration">
+                The time in miliseconds that the animator must play this path
+            </param>
+            <param name="delay">
+                The time in miliseconds that the animator must wait before playing this path
+            </param>
+            <param name="function">
+                The animation function
+            </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+                Duration is less than zero
+            </exception>
+        </member>
+        <member name="M:WinFormAnimation.Path2D.#ctor(WinFormAnimation.Float2D,WinFormAnimation.Float2D,System.UInt64,System.UInt64)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Path2D" /> class.
+            </summary>
+            <param name="start">
+                The starting point or location
+            </param>
+            <param name="end">
+                The ending point or location
+            </param>
+            <param name="duration">
+                The time in miliseconds that the animator must play this path
+            </param>
+            <param name="delay">
+                The time in miliseconds that the animator must wait before playing this path
+            </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+                Duration is less than zero
+            </exception>
+        </member>
+        <member name="M:WinFormAnimation.Path2D.#ctor(WinFormAnimation.Float2D,WinFormAnimation.Float2D,System.UInt64,WinFormAnimation.AnimationFunctions.Function)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Path2D" /> class.
+            </summary>
+            <param name="start">
+                The starting point or location
+            </param>
+            <param name="end">
+                The ending point or location
+            </param>
+            <param name="duration">
+                The time in miliseconds that the animator must play this path
+            </param>
+            <param name="function">
+                The animation function
+            </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+                Duration is less than zero
+            </exception>
+        </member>
+        <member name="M:WinFormAnimation.Path2D.#ctor(WinFormAnimation.Float2D,WinFormAnimation.Float2D,System.UInt64)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Path2D" /> class.
+            </summary>
+            <param name="start">
+                The starting point or location
+            </param>
+            <param name="end">
+                The ending point or location
+            </param>
+            <param name="duration">
+                The time in miliseconds that the animator must play this path
+            </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+                Duration is less than zero
+            </exception>
+        </member>
+        <member name="M:WinFormAnimation.Path2D.#ctor(WinFormAnimation.Path,WinFormAnimation.Path)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Path2D" /> class.
+            </summary>
+            <param name="x">
+                The horizontal path.
+            </param>
+            <param name="y">
+                The vertical path.
+            </param>
+        </member>
+        <member name="P:WinFormAnimation.Path2D.HorizontalPath">
+            <summary>
+                Gets the horizontal path
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Path2D.VerticalPath">
+            <summary>
+                Gets the vertical path
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Path2D.Start">
+            <summary>
+                Gets the starting point of the path
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Path2D.End">
+            <summary>
+                Gets the ending point of the path
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Path2D.Reverse">
+            <summary>
+                Creates and returns a new <see cref="T:WinFormAnimation.Path2D" /> based on the current path but in reverse order
+            </summary>
+            <returns>
+                A new <see cref="T:WinFormAnimation.Path2D" /> which is the reverse of the current <see cref="T:WinFormAnimation.Path2D" />
+            </returns>
+        </member>
+        <member name="T:WinFormAnimation.AnimationFunctions">
+            <summary>
+                The functions gallery for animation
+            </summary>
+        </member>
+        <member name="T:WinFormAnimation.AnimationFunctions.Function">
+            <summary>
+                The base delegate for defining new animation functions.
+            </summary>
+            <param name="time">
+                The time of the animation.
+            </param>
+            <param name="beginningValue">
+                The starting value.
+            </param>
+            <param name="changeInValue">
+                The different between starting and ending value.
+            </param>
+            <param name="duration">
+                The duration of the animations.
+            </param>
+            <returns>
+                The calculated current value of the animation
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.AnimationFunctions.FromKnown(WinFormAnimation.KnownAnimationFunctions)">
+            <summary>
+                Returns a function delegate based on the the passed known animation function
+            </summary>
+            <param name="knownFunction">The animation function</param>
+            <returns>Animation fucntion delegate</returns>
+        </member>
+        <member name="M:WinFormAnimation.AnimationFunctions.CubicEaseIn(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+                The cubic ease-in animation function.
+            </summary>
+            <param name="t">
+                The time of the animation.
+            </param>
+            <param name="b">
+                The starting value.
+            </param>
+            <param name="c">
+                The different between starting and ending value.
+            </param>
+            <param name="d">
+                The duration of the animations.
+            </param>
+            <returns>
+                The calculated current value of the animation
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.AnimationFunctions.CubicEaseInOut(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+                The cubic ease-in and ease-out animation function.
+            </summary>
+            <param name="t">
+                The time of the animation.
+            </param>
+            <param name="b">
+                The starting value.
+            </param>
+            <param name="c">
+                The different between starting and ending value.
+            </param>
+            <param name="d">
+                The duration of the animations.
+            </param>
+            <returns>
+                The calculated current value of the animation
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.AnimationFunctions.CubicEaseOut(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+                The cubic ease-out animation function.
+            </summary>
+            <param name="t">
+                The time of the animation.
+            </param>
+            <param name="b">
+                The starting value.
+            </param>
+            <param name="c">
+                The different between starting and ending value.
+            </param>
+            <param name="d">
+                The duration of the animations.
+            </param>
+            <returns>
+                The calculated current value of the animation
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.AnimationFunctions.Liner(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+                The liner animation function.
+            </summary>
+            <param name="t">
+                The time of the animation.
+            </param>
+            <param name="b">
+                The starting value.
+            </param>
+            <param name="c">
+                The different between starting and ending value.
+            </param>
+            <param name="d">
+                The duration of the animations.
+            </param>
+            <returns>
+                The calculated current value of the animation
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.AnimationFunctions.CircularEaseInOut(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+                The circular ease-in and ease-out animation function.
+            </summary>
+            <param name="t">
+                The time of the animation.
+            </param>
+            <param name="b">
+                The starting value.
+            </param>
+            <param name="c">
+                The different between starting and ending value.
+            </param>
+            <param name="d">
+                The duration of the animations.
+            </param>
+            <returns>
+                The calculated current value of the animation
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.AnimationFunctions.CircularEaseIn(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+                The circular ease-in animation function.
+            </summary>
+            <param name="t">
+                The time of the animation.
+            </param>
+            <param name="b">
+                The starting value.
+            </param>
+            <param name="c">
+                The different between starting and ending value.
+            </param>
+            <param name="d">
+                The duration of the animations.
+            </param>
+            <returns>
+                The calculated current value of the animation
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.AnimationFunctions.CircularEaseOut(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+                The circular ease-out animation function.
+            </summary>
+            <param name="t">
+                The time of the animation.
+            </param>
+            <param name="b">
+                The starting value.
+            </param>
+            <param name="c">
+                The different between starting and ending value.
+            </param>
+            <param name="d">
+                The duration of the animations.
+            </param>
+            <returns>
+                The calculated current value of the animation
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.AnimationFunctions.QuadraticEaseIn(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+                The quadratic ease-in animation function.
+            </summary>
+            <param name="t">
+                The time of the animation.
+            </param>
+            <param name="b">
+                The starting value.
+            </param>
+            <param name="c">
+                The different between starting and ending value.
+            </param>
+            <param name="d">
+                The duration of the animations.
+            </param>
+            <returns>
+                The calculated current value of the animation
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.AnimationFunctions.QuadraticEaseOut(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+                The quadratic ease-out animation function.
+            </summary>
+            <param name="t">
+                The time of the animation.
+            </param>
+            <param name="b">
+                The starting value.
+            </param>
+            <param name="c">
+                The different between starting and ending value.
+            </param>
+            <param name="d">
+                The duration of the animations.
+            </param>
+            <returns>
+                The calculated current value of the animation
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.AnimationFunctions.QuadraticEaseInOut(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+                The quadratic ease-in and ease-out animation function.
+            </summary>
+            <param name="t">
+                The time of the animation.
+            </param>
+            <param name="b">
+                The starting value.
+            </param>
+            <param name="c">
+                The different between starting and ending value.
+            </param>
+            <param name="d">
+                The duration of the animations.
+            </param>
+            <returns>
+                The calculated current value of the animation
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.AnimationFunctions.QuarticEaseIn(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+                The quartic ease-in animation function.
+            </summary>
+            <param name="t">
+                The time of the animation.
+            </param>
+            <param name="b">
+                The starting value.
+            </param>
+            <param name="c">
+                The different between starting and ending value.
+            </param>
+            <param name="d">
+                The duration of the animations.
+            </param>
+            <returns>
+                The calculated current value of the animation
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.AnimationFunctions.QuarticEaseOut(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+                The quartic ease-out animation function.
+            </summary>
+            <param name="t">
+                The time of the animation.
+            </param>
+            <param name="b">
+                The starting value.
+            </param>
+            <param name="c">
+                The different between starting and ending value.
+            </param>
+            <param name="d">
+                The duration of the animations.
+            </param>
+            <returns>
+                The calculated current value of the animation
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.AnimationFunctions.QuarticEaseInOut(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+                The quartic ease-in and ease-out animation function.
+            </summary>
+            <param name="t">
+                The time of the animation.
+            </param>
+            <param name="b">
+                The starting value.
+            </param>
+            <param name="c">
+                The different between starting and ending value.
+            </param>
+            <param name="d">
+                The duration of the animations.
+            </param>
+            <returns>
+                The calculated current value of the animation
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.AnimationFunctions.QuinticEaseInOut(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+                The quintic ease-in and ease-out animation function.
+            </summary>
+            <param name="t">
+                The time of the animation.
+            </param>
+            <param name="b">
+                The starting value.
+            </param>
+            <param name="c">
+                The different between starting and ending value.
+            </param>
+            <param name="d">
+                The duration of the animations.
+            </param>
+            <returns>
+                The calculated current value of the animation
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.AnimationFunctions.QuinticEaseIn(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+                The quintic ease-in animation function.
+            </summary>
+            <param name="t">
+                The time of the animation.
+            </param>
+            <param name="b">
+                The starting value.
+            </param>
+            <param name="c">
+                The different between starting and ending value.
+            </param>
+            <param name="d">
+                The duration of the animations.
+            </param>
+            <returns>
+                The calculated current value of the animation
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.AnimationFunctions.QuinticEaseOut(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+                The quintic ease-out animation function.
+            </summary>
+            <param name="t">
+                The time of the animation.
+            </param>
+            <param name="b">
+                The starting value.
+            </param>
+            <param name="c">
+                The different between starting and ending value.
+            </param>
+            <param name="d">
+                The duration of the animations.
+            </param>
+            <returns>
+                The calculated current value of the animation
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.AnimationFunctions.SinusoidalEaseIn(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+                The sinusoidal ease-in animation function.
+            </summary>
+            <param name="t">
+                The time of the animation.
+            </param>
+            <param name="b">
+                The starting value.
+            </param>
+            <param name="c">
+                The different between starting and ending value.
+            </param>
+            <param name="d">
+                The duration of the animations.
+            </param>
+            <returns>
+                The calculated current value of the animation
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.AnimationFunctions.SinusoidalEaseOut(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+                The sinusoidal ease-out animation function.
+            </summary>
+            <param name="t">
+                The time of the animation.
+            </param>
+            <param name="b">
+                The starting value.
+            </param>
+            <param name="c">
+                The different between starting and ending value.
+            </param>
+            <param name="d">
+                The duration of the animations.
+            </param>
+            <returns>
+                The calculated current value of the animation
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.AnimationFunctions.SinusoidalEaseInOut(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+                The sinusoidal ease-in and ease-out animation function.
+            </summary>
+            <param name="t">
+                The time of the animation.
+            </param>
+            <param name="b">
+                The starting value.
+            </param>
+            <param name="c">
+                The different between starting and ending value.
+            </param>
+            <param name="d">
+                The duration of the animations.
+            </param>
+            <returns>
+                The calculated current value of the animation
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.AnimationFunctions.ExponentialEaseIn(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+                The exponential ease-in animation function.
+            </summary>
+            <param name="t">
+                The time of the animation.
+            </param>
+            <param name="b">
+                The starting value.
+            </param>
+            <param name="c">
+                The different between starting and ending value.
+            </param>
+            <param name="d">
+                The duration of the animations.
+            </param>
+            <returns>
+                The calculated current value of the animation
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.AnimationFunctions.ExponentialEaseOut(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+                The exponential ease-out animation function.
+            </summary>
+            <param name="t">
+                The time of the animation.
+            </param>
+            <param name="b">
+                The starting value.
+            </param>
+            <param name="c">
+                The different between starting and ending value.
+            </param>
+            <param name="d">
+                The duration of the animations.
+            </param>
+            <returns>
+                The calculated current value of the animation
+            </returns>
+        </member>
+        <member name="M:WinFormAnimation.AnimationFunctions.ExponentialEaseInOut(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+                The exponential ease-in and ease-out animation function.
+            </summary>
+            <param name="t">
+                The time of the animation.
+            </param>
+            <param name="b">
+                The starting value.
+            </param>
+            <param name="c">
+                The different between starting and ending value.
+            </param>
+            <param name="d">
+                The duration of the animations.
+            </param>
+            <returns>
+                The calculated current value of the animation
+            </returns>
+        </member>
+        <member name="T:WinFormAnimation.PathExtensions">
+            <summary>
+                Contains public extensions methods about Path class
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.PathExtensions.ContinueTo(WinFormAnimation.Path[],System.Single,System.UInt64)">
+            <summary>
+                Continue the last paths with a new one
+            </summary>
+            <param name="paths">Array of paths</param>
+            <param name="end">Next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.PathExtensions.ContinueTo(WinFormAnimation.Path[],System.Single,System.UInt64,WinFormAnimation.AnimationFunctions.Function)">
+            <summary>
+                Continue the last paths with a new one
+            </summary>
+            <param name="paths">Array of paths</param>
+            <param name="end">Next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <param name="function">Animation controller function</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.PathExtensions.ContinueTo(WinFormAnimation.Path[],System.Single,System.UInt64,System.UInt64)">
+            <summary>
+                Continue the last paths with a new one
+            </summary>
+            <param name="paths">Array of paths</param>
+            <param name="end">Next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <param name="delay">Starting delay</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.PathExtensions.ContinueTo(WinFormAnimation.Path[],System.Single,System.UInt64,System.UInt64,WinFormAnimation.AnimationFunctions.Function)">
+            <summary>
+                Continue the last paths with a new one
+            </summary>
+            <param name="paths">Array of paths</param>
+            <param name="end">Next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <param name="delay">Starting delay</param>
+            <param name="function">Animation controller function</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.PathExtensions.ContinueTo(WinFormAnimation.Path,System.Single,System.UInt64)">
+            <summary>
+                Continue the path with a new one
+            </summary>
+            <param name="path">The path to continue</param>
+            <param name="end">Next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.PathExtensions.ContinueTo(WinFormAnimation.Path,System.Single,System.UInt64,WinFormAnimation.AnimationFunctions.Function)">
+            <summary>
+                Continue the path with a new one
+            </summary>
+            <param name="path">The path to continue</param>
+            <param name="end">Next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <param name="function">Animation controller function</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.PathExtensions.ContinueTo(WinFormAnimation.Path,System.Single,System.UInt64,System.UInt64)">
+            <summary>
+                Continue the path with a new one
+            </summary>
+            <param name="path">The path to continue</param>
+            <param name="end">Next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <param name="delay">Starting delay</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.PathExtensions.ContinueTo(WinFormAnimation.Path,System.Single,System.UInt64,System.UInt64,WinFormAnimation.AnimationFunctions.Function)">
+            <summary>
+                Continue the path with a new one
+            </summary>
+            <param name="path">The path to continue</param>
+            <param name="end">Next point to follow</param>
+            <param name="duration">Duration of the animation</param>
+            <param name="delay">Starting delay</param>
+            <param name="function">Animation controller function</param>
+            <returns>An array of paths including the newly created one</returns>
+        </member>
+        <member name="M:WinFormAnimation.PathExtensions.ContinueTo(WinFormAnimation.Path[],WinFormAnimation.Path[])">
+            <summary>
+                Continue the path array with a new ones
+            </summary>
+            <param name="paths">Array of paths</param>
+            <param name="newPaths">An array of new paths to adds</param>
+            <returns>An array of paths including the new ones</returns>
+        </member>
+        <member name="M:WinFormAnimation.PathExtensions.ContinueTo(WinFormAnimation.Path,WinFormAnimation.Path[])">
+            <summary>
+                Continue the path with a new ones
+            </summary>
+            <param name="path">The path to continue</param>
+            <param name="newPaths">An array of new paths to adds</param>
+            <returns>An array of paths including the new ones</returns>
+        </member>
+        <member name="M:WinFormAnimation.PathExtensions.ToArray(WinFormAnimation.Path)">
+            <summary>
+                Contains a single path in an array
+            </summary>
+            <param name="path">The path to add to the array</param>
+            <returns>An array of paths including the new ones</returns>
+        </member>
+        <member name="T:WinFormAnimation.SafeInvoker">
+            <summary>
+                The safe invoker class is a delegate reference holder that always
+                execute them in the correct thread based on the passed control.
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.SafeInvoker.#ctor(System.Action,System.Object)">
+            <summary>
+                Initializes a new instance of the SafeInvoker class.
+            </summary>
+            <param name="action">
+                The callback to be invoked
+            </param>
+            <param name="targetControl">
+                The control to be used to invoke the callback in UI thread
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.SafeInvoker.#ctor(System.Delegate,System.Object)">
+            <summary>
+                Initializes a new instance of the SafeInvoker class.
+            </summary>
+            <param name="action">
+                The callback to be invoked
+            </param>
+            <param name="targetControl">
+                The control to be used to invoke the callback in UI thread
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.SafeInvoker.#ctor(System.Action)">
+            <summary>
+                Initializes a new instance of the SafeInvoker class.
+            </summary>
+            <param name="action">
+                The callback to be invoked
+            </param>
+        </member>
+        <member name="P:WinFormAnimation.SafeInvoker.TargetControl">
+            <summary>
+                Gets or sets the reference to the control thats going to be used to invoke the callback in UI thread
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.SafeInvoker.UnderlyingDelegate">
+            <summary>
+                Gets the reference to the callback to be invoked
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.SafeInvoker.Invoke">
+            <summary>
+                Invoke the contained callback
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.SafeInvoker.Invoke(System.Object)">
+            <summary>
+                Invoke the referenced callback
+            </summary>
+            <param name="value">The argument to send to the callback</param>
+        </member>
+        <member name="T:WinFormAnimation.Timer">
+            <summary>
+                The timer class, will execute your code in specific time frames
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Timer.#ctor(System.Action{System.UInt64},WinFormAnimation.FPSLimiterKnownValues)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Timer" /> class.
+            </summary>
+            <param name="callback">
+                The callback to be executed at each tick
+            </param>
+            <param name="fpsKnownLimit">
+                The max ticks per second
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.Timer.#ctor(System.Action{System.UInt64},System.Int32)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Timer" /> class.
+            </summary>
+            <param name="callback">
+                The callback to be executed at each tick
+            </param>
+            <param name="fpsLimit">
+                The max ticks per second
+            </param>
+        </member>
+        <member name="P:WinFormAnimation.Timer.LastTick">
+            <summary>
+                Gets the time of the last frame/tick related to the global-timer start reference
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Timer.FrameLimiter">
+            <summary>
+                Gets or sets the maximum frames/ticks per second
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Timer.FirstTick">
+            <summary>
+                Gets the time of the first frame/tick related to the global-timer start reference
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Timer.ResetClock">
+            <summary>
+                The method to reset the time of the starting frame/tick
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Timer.Resume">
+            <summary>
+                The method to resume the timer after stopping it
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Timer.Start">
+            <summary>
+                The method to start the timer from the beginning
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Timer.Stop">
+            <summary>
+                The method to stop the timer from generating any new ticks/frames
+            </summary>
+        </member>
+        <member name="T:WinFormAnimation.Path">
+            <summary>
+                The Path class is a representation of a line in a 1D plane and the
+                speed in which the animator plays it
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Path.#ctor">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Path" /> class.
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Path.#ctor(System.Single,System.Single,System.UInt64)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Path" /> class.
+            </summary>
+            <param name="start">
+                The starting value
+            </param>
+            <param name="end">
+                The ending value
+            </param>
+            <param name="duration">
+                The time in miliseconds that the animator must play this path
+            </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+                Duration is less than zero
+            </exception>
+        </member>
+        <member name="M:WinFormAnimation.Path.#ctor(System.Single,System.Single,System.UInt64,WinFormAnimation.AnimationFunctions.Function)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Path" /> class.
+            </summary>
+            <param name="start">
+                The starting value
+            </param>
+            <param name="end">
+                The ending value
+            </param>
+            <param name="duration">
+                The time in miliseconds that the animator must play this path
+            </param>
+            <param name="function">
+                The animation function
+            </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+                Duration is less than zero
+            </exception>
+        </member>
+        <member name="M:WinFormAnimation.Path.#ctor(System.Single,System.Single,System.UInt64,System.UInt64)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Path" /> class.
+            </summary>
+            <param name="start">
+                The starting value
+            </param>
+            <param name="end">
+                The ending value
+            </param>
+            <param name="duration">
+                The time in miliseconds that the animator must play this path
+            </param>
+            <param name="delay">
+                The time in miliseconds that the animator must wait before playing this path
+            </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+                Duration is less than zero
+            </exception>
+        </member>
+        <member name="M:WinFormAnimation.Path.#ctor(System.Single,System.Single,System.UInt64,System.UInt64,WinFormAnimation.AnimationFunctions.Function)">
+            <summary>
+                Initializes a new instance of the <see cref="T:WinFormAnimation.Path" /> class.
+            </summary>
+            <param name="start">
+                The starting value
+            </param>
+            <param name="end">
+                The ending value
+            </param>
+            <param name="duration">
+                The time in miliseconds that the animator must play this path
+            </param>
+            <param name="delay">
+                The time in miliseconds that the animator must wait before playing this path
+            </param>
+            <param name="function">
+                The animation function
+            </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+                Duration is less than zero
+            </exception>
+        </member>
+        <member name="P:WinFormAnimation.Path.Change">
+            <summary>
+                Gets the difference of starting and ending values
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Path.Delay">
+            <summary>
+                Gets or sets the starting delay
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Path.Duration">
+            <summary>
+                Gets or sets the duration in milliseconds
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Path.End">
+            <summary>
+                Gets or sets the ending value
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Path.Function">
+            <summary>
+                Gets or sets the animation function
+            </summary>
+        </member>
+        <member name="P:WinFormAnimation.Path.Start">
+            <summary>
+                Gets or sets the starting value
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.Path.Reverse">
+            <summary>
+                Creates and returns a new <see cref="T:WinFormAnimation.Path" /> based on the current path but in reverse order
+            </summary>
+            <returns>
+                A new <see cref="T:WinFormAnimation.Path" /> which is the reverse of the current <see cref="T:WinFormAnimation.Path" />
+            </returns>
+        </member>
+        <member name="T:WinFormAnimation.SafeInvoker`1">
+            <summary>
+                The safe invoker class is a delegate reference holder that always
+                execute them in the correct thread based on the passed control.
+            </summary>
+        </member>
+        <member name="M:WinFormAnimation.SafeInvoker`1.#ctor(System.Action{`0},System.Object)">
+            <summary>
+                Initializes a new instance of the SafeInvoker class.
+            </summary>
+            <param name="action">
+                The callback to be invoked
+            </param>
+            <param name="targetControl">
+                The control to be used to invoke the callback in UI thread
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.SafeInvoker`1.#ctor(System.Action{`0})">
+            <summary>
+                Initializes a new instance of the SafeInvoker class.
+            </summary>
+            <param name="action">
+                The callback to be invoked
+            </param>
+        </member>
+        <member name="M:WinFormAnimation.SafeInvoker`1.Invoke(`0)">
+            <summary>
+                Invoke the contained callback with the specified value as the parameter
+            </summary>
+            <param name="value"></param>
+        </member>
+    </members>
+</doc>
