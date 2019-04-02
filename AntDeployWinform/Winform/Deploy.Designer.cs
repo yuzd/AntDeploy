@@ -192,18 +192,19 @@
             // 
             // tabcontrol
             // 
+            resources.ApplyResources(this.tabcontrol, "tabcontrol");
             this.tabcontrol.Controls.Add(this.page_web_iis);
             this.tabcontrol.Controls.Add(this.page_docker);
             this.tabcontrol.Controls.Add(this.page_window_service);
             this.tabcontrol.Controls.Add(this.page_set);
             this.tabcontrol.Controls.Add(this.pag_advance_setting);
-            resources.ApplyResources(this.tabcontrol, "tabcontrol");
             this.tabcontrol.Name = "tabcontrol";
             this.tabcontrol.SelectedIndex = 0;
             this.tabcontrol.SelectedIndexChanged += new System.EventHandler(this.page__SelectedIndexChanged);
             // 
             // page_web_iis
             // 
+            resources.ApplyResources(this.page_web_iis, "page_web_iis");
             this.page_web_iis.Controls.Add(this.b_iis_rollback);
             this.page_web_iis.Controls.Add(this.checkBox_Increment_iis);
             this.page_web_iis.Controls.Add(this.label25);
@@ -218,17 +219,16 @@
             this.page_web_iis.Controls.Add(this.label6);
             this.page_web_iis.Controls.Add(this.label_iis_demo);
             this.page_web_iis.Controls.Add(this.tab_iis);
-            resources.ApplyResources(this.page_web_iis, "page_web_iis");
             this.page_web_iis.Name = "page_web_iis";
             this.page_web_iis.UseVisualStyleBackColor = true;
             // 
             // b_iis_rollback
             // 
+            resources.ApplyResources(this.b_iis_rollback, "b_iis_rollback");
             this.b_iis_rollback.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
             this.b_iis_rollback.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
             this.b_iis_rollback.BackColor = System.Drawing.Color.Transparent;
             this.b_iis_rollback.DialogResult = System.Windows.Forms.DialogResult.OK;
-            resources.ApplyResources(this.b_iis_rollback, "b_iis_rollback");
             this.b_iis_rollback.ForeColor = System.Drawing.Color.Black;
             this.b_iis_rollback.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.b_iis_rollback.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
@@ -253,6 +253,7 @@
             // 
             // groupBox4
             // 
+            resources.ApplyResources(this.groupBox4, "groupBox4");
             this.groupBox4.Controls.Add(this.label33);
             this.groupBox4.Controls.Add(this.txt_iis_port);
             this.groupBox4.Controls.Add(this.txt_iis_PhysicalPath);
@@ -260,7 +261,6 @@
             this.groupBox4.Controls.Add(this.label15);
             this.groupBox4.Controls.Add(this.txt_pool_name);
             this.groupBox4.Controls.Add(this.label16);
-            resources.ApplyResources(this.groupBox4, "groupBox4");
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.TabStop = false;
             // 
@@ -313,10 +313,10 @@
             // 
             // combo_iis_env
             // 
+            resources.ApplyResources(this.combo_iis_env, "combo_iis_env");
             this.combo_iis_env.BackColor = System.Drawing.SystemColors.Window;
             this.combo_iis_env.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_iis_env.FormattingEnabled = true;
-            resources.ApplyResources(this.combo_iis_env, "combo_iis_env");
             this.combo_iis_env.Name = "combo_iis_env";
             this.combo_iis_env.SelectedIndexChanged += new System.EventHandler(this.combo_iis_env_SelectedIndexChanged);
             // 
@@ -337,13 +337,13 @@
             // 
             // combo_iis_sdk_type
             // 
+            resources.ApplyResources(this.combo_iis_sdk_type, "combo_iis_sdk_type");
             this.combo_iis_sdk_type.BackColor = System.Drawing.SystemColors.Window;
             this.combo_iis_sdk_type.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_iis_sdk_type.FormattingEnabled = true;
             this.combo_iis_sdk_type.Items.AddRange(new object[] {
             resources.GetString("combo_iis_sdk_type.Items"),
             resources.GetString("combo_iis_sdk_type.Items1")});
-            resources.ApplyResources(this.combo_iis_sdk_type, "combo_iis_sdk_type");
             this.combo_iis_sdk_type.Name = "combo_iis_sdk_type";
             this.combo_iis_sdk_type.SelectedIndexChanged += new System.EventHandler(this.combo_iis_sdk_type_SelectedIndexChanged);
             // 
@@ -362,9 +362,9 @@
             // 
             // tab_iis
             // 
+            resources.ApplyResources(this.tab_iis, "tab_iis");
             this.tab_iis.Controls.Add(this.tabPage_progress);
             this.tab_iis.Controls.Add(this.tabPage_iis_log);
-            resources.ApplyResources(this.tab_iis, "tab_iis");
             this.tab_iis.Name = "tab_iis";
             this.tab_iis.SelectedIndex = 0;
             // 
@@ -377,14 +377,14 @@
             // 
             // progress_iis_tip
             // 
-            this.progress_iis_tip.ForeColor = System.Drawing.Color.Blue;
             resources.ApplyResources(this.progress_iis_tip, "progress_iis_tip");
+            this.progress_iis_tip.ForeColor = System.Drawing.Color.Blue;
             this.progress_iis_tip.Name = "progress_iis_tip";
             // 
             // tabPage_iis_log
             // 
-            this.tabPage_iis_log.Controls.Add(this.rich_iis_log);
             resources.ApplyResources(this.tabPage_iis_log, "tabPage_iis_log");
+            this.tabPage_iis_log.Controls.Add(this.rich_iis_log);
             this.tabPage_iis_log.Name = "tabPage_iis_log";
             this.tabPage_iis_log.UseVisualStyleBackColor = true;
             // 
@@ -398,6 +398,7 @@
             // 
             // page_docker
             // 
+            resources.ApplyResources(this.page_docker, "page_docker");
             this.page_docker.Controls.Add(this.label13);
             this.page_docker.Controls.Add(this.label12);
             this.page_docker.Controls.Add(this.t_docker_delete_days);
@@ -409,7 +410,6 @@
             this.page_docker.Controls.Add(this.label_docker_demo);
             this.page_docker.Controls.Add(this.tabControl_docker);
             this.page_docker.Controls.Add(this.b_docker_rollback);
-            resources.ApplyResources(this.page_docker, "page_docker");
             this.page_docker.Name = "page_docker";
             this.page_docker.UseVisualStyleBackColor = true;
             // 
@@ -421,12 +421,15 @@
             // label12
             // 
             resources.ApplyResources(this.label12, "label12");
+            this.label12.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.label12.ForeColor = System.Drawing.Color.RoyalBlue;
             this.label12.Name = "label12";
+            this.label12.Click += new System.EventHandler(this.label12_Click);
             // 
             // t_docker_delete_days
             // 
-            this.t_docker_delete_days.ForeColor = System.Drawing.Color.Blue;
             resources.ApplyResources(this.t_docker_delete_days, "t_docker_delete_days");
+            this.t_docker_delete_days.ForeColor = System.Drawing.Color.Blue;
             this.t_docker_delete_days.Name = "t_docker_delete_days";
             // 
             // label24
@@ -436,6 +439,7 @@
             // 
             // groupBox5
             // 
+            resources.ApplyResources(this.groupBox5, "groupBox5");
             this.groupBox5.Controls.Add(this.label28);
             this.groupBox5.Controls.Add(this.txt_docker_volume);
             this.groupBox5.Controls.Add(this.label27);
@@ -443,7 +447,6 @@
             this.groupBox5.Controls.Add(this.txt_docker_envname);
             this.groupBox5.Controls.Add(this.label23);
             this.groupBox5.Controls.Add(this.txt_docker_port);
-            resources.ApplyResources(this.groupBox5, "groupBox5");
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.TabStop = false;
             // 
@@ -454,9 +457,9 @@
             // 
             // txt_docker_volume
             // 
+            resources.ApplyResources(this.txt_docker_volume, "txt_docker_volume");
             this.txt_docker_volume.BackColor = System.Drawing.Color.Transparent;
             this.txt_docker_volume.Br = System.Drawing.Color.White;
-            resources.ApplyResources(this.txt_docker_volume, "txt_docker_volume");
             this.txt_docker_volume.ForeColor = System.Drawing.Color.DimGray;
             this.txt_docker_volume.Name = "txt_docker_volume";
             // 
@@ -494,10 +497,10 @@
             // 
             // combo_docker_env
             // 
+            resources.ApplyResources(this.combo_docker_env, "combo_docker_env");
             this.combo_docker_env.BackColor = System.Drawing.SystemColors.Window;
             this.combo_docker_env.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_docker_env.FormattingEnabled = true;
-            resources.ApplyResources(this.combo_docker_env, "combo_docker_env");
             this.combo_docker_env.Name = "combo_docker_env";
             this.combo_docker_env.SelectedIndexChanged += new System.EventHandler(this.combo_docker_env_SelectedIndexChanged);
             // 
@@ -516,9 +519,9 @@
             // 
             // tabControl_docker
             // 
+            resources.ApplyResources(this.tabControl_docker, "tabControl_docker");
             this.tabControl_docker.Controls.Add(this.tabPage_docker);
             this.tabControl_docker.Controls.Add(this.tabPage_docker_log);
-            resources.ApplyResources(this.tabControl_docker, "tabControl_docker");
             this.tabControl_docker.Name = "tabControl_docker";
             this.tabControl_docker.SelectedIndex = 0;
             // 
@@ -531,14 +534,14 @@
             // 
             // progress_docker_tip
             // 
-            this.progress_docker_tip.ForeColor = System.Drawing.Color.Blue;
             resources.ApplyResources(this.progress_docker_tip, "progress_docker_tip");
+            this.progress_docker_tip.ForeColor = System.Drawing.Color.Blue;
             this.progress_docker_tip.Name = "progress_docker_tip";
             // 
             // tabPage_docker_log
             // 
-            this.tabPage_docker_log.Controls.Add(this.rich_docker_log);
             resources.ApplyResources(this.tabPage_docker_log, "tabPage_docker_log");
+            this.tabPage_docker_log.Controls.Add(this.rich_docker_log);
             this.tabPage_docker_log.Name = "tabPage_docker_log";
             this.tabPage_docker_log.UseVisualStyleBackColor = true;
             // 
@@ -552,11 +555,11 @@
             // 
             // b_docker_rollback
             // 
+            resources.ApplyResources(this.b_docker_rollback, "b_docker_rollback");
             this.b_docker_rollback.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
             this.b_docker_rollback.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
             this.b_docker_rollback.BackColor = System.Drawing.Color.Transparent;
             this.b_docker_rollback.DialogResult = System.Windows.Forms.DialogResult.OK;
-            resources.ApplyResources(this.b_docker_rollback, "b_docker_rollback");
             this.b_docker_rollback.ForeColor = System.Drawing.Color.Black;
             this.b_docker_rollback.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.b_docker_rollback.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
@@ -569,6 +572,7 @@
             // 
             // page_window_service
             // 
+            resources.ApplyResources(this.page_window_service, "page_window_service");
             this.page_window_service.Controls.Add(this.groupBox2);
             this.page_window_service.Controls.Add(this.checkBox_Increment_window_service);
             this.page_window_service.Controls.Add(this.label_windows_serivce_demo);
@@ -582,16 +586,15 @@
             this.page_window_service.Controls.Add(this.label10);
             this.page_window_service.Controls.Add(this.tabControl_window_service);
             this.page_window_service.Controls.Add(this.b_windows_service_rollback);
-            resources.ApplyResources(this.page_window_service, "page_window_service");
             this.page_window_service.Name = "page_window_service";
             this.page_window_service.UseVisualStyleBackColor = true;
             // 
             // groupBox2
             // 
+            resources.ApplyResources(this.groupBox2, "groupBox2");
             this.groupBox2.Controls.Add(this.label34);
             this.groupBox2.Controls.Add(this.txt_windows_service_PhysicalPath);
             this.groupBox2.Controls.Add(this.label31);
-            resources.ApplyResources(this.groupBox2, "groupBox2");
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.TabStop = false;
             // 
@@ -642,13 +645,13 @@
             // 
             // combo_windowservice_sdk_type
             // 
+            resources.ApplyResources(this.combo_windowservice_sdk_type, "combo_windowservice_sdk_type");
             this.combo_windowservice_sdk_type.BackColor = System.Drawing.SystemColors.Window;
             this.combo_windowservice_sdk_type.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_windowservice_sdk_type.FormattingEnabled = true;
             this.combo_windowservice_sdk_type.Items.AddRange(new object[] {
             resources.GetString("combo_windowservice_sdk_type.Items"),
             resources.GetString("combo_windowservice_sdk_type.Items1")});
-            resources.ApplyResources(this.combo_windowservice_sdk_type, "combo_windowservice_sdk_type");
             this.combo_windowservice_sdk_type.Name = "combo_windowservice_sdk_type";
             this.combo_windowservice_sdk_type.SelectedIndexChanged += new System.EventHandler(this.combo_windowservice_sdk_type_SelectedIndexChanged);
             // 
@@ -666,10 +669,10 @@
             // 
             // combo_windowservice_env
             // 
+            resources.ApplyResources(this.combo_windowservice_env, "combo_windowservice_env");
             this.combo_windowservice_env.BackColor = System.Drawing.SystemColors.Window;
             this.combo_windowservice_env.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_windowservice_env.FormattingEnabled = true;
-            resources.ApplyResources(this.combo_windowservice_env, "combo_windowservice_env");
             this.combo_windowservice_env.Name = "combo_windowservice_env";
             this.combo_windowservice_env.SelectedIndexChanged += new System.EventHandler(this.combo_windowservice_env_SelectedIndexChanged);
             // 
@@ -680,9 +683,9 @@
             // 
             // tabControl_window_service
             // 
+            resources.ApplyResources(this.tabControl_window_service, "tabControl_window_service");
             this.tabControl_window_service.Controls.Add(this.tabPage_windows_service);
             this.tabControl_window_service.Controls.Add(this.tabPage2);
-            resources.ApplyResources(this.tabControl_window_service, "tabControl_window_service");
             this.tabControl_window_service.Name = "tabControl_window_service";
             this.tabControl_window_service.SelectedIndex = 0;
             // 
@@ -695,14 +698,14 @@
             // 
             // progress_window_service_tip
             // 
-            this.progress_window_service_tip.ForeColor = System.Drawing.Color.Blue;
             resources.ApplyResources(this.progress_window_service_tip, "progress_window_service_tip");
+            this.progress_window_service_tip.ForeColor = System.Drawing.Color.Blue;
             this.progress_window_service_tip.Name = "progress_window_service_tip";
             // 
             // tabPage2
             // 
-            this.tabPage2.Controls.Add(this.rich_windowservice_log);
             resources.ApplyResources(this.tabPage2, "tabPage2");
+            this.tabPage2.Controls.Add(this.rich_windowservice_log);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
@@ -716,11 +719,11 @@
             // 
             // b_windows_service_rollback
             // 
+            resources.ApplyResources(this.b_windows_service_rollback, "b_windows_service_rollback");
             this.b_windows_service_rollback.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
             this.b_windows_service_rollback.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
             this.b_windows_service_rollback.BackColor = System.Drawing.Color.Transparent;
             this.b_windows_service_rollback.DialogResult = System.Windows.Forms.DialogResult.OK;
-            resources.ApplyResources(this.b_windows_service_rollback, "b_windows_service_rollback");
             this.b_windows_service_rollback.ForeColor = System.Drawing.Color.Black;
             this.b_windows_service_rollback.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.b_windows_service_rollback.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
@@ -733,12 +736,12 @@
             // 
             // page_set
             // 
+            resources.ApplyResources(this.page_set, "page_set");
             this.page_set.Controls.Add(this.label_how_to_set);
             this.page_set.Controls.Add(this.groupBox1);
             this.page_set.Controls.Add(this.label_check_update);
             this.page_set.Controls.Add(this.groupBoxIgnore);
             this.page_set.Controls.Add(this.environment);
-            resources.ApplyResources(this.page_set, "page_set");
             this.page_set.Name = "page_set";
             this.page_set.UseVisualStyleBackColor = true;
             // 
@@ -752,12 +755,12 @@
             // 
             // groupBox1
             // 
+            resources.ApplyResources(this.groupBox1, "groupBox1");
             this.groupBox1.Controls.Add(this.b_copy_backup_ignore);
             this.groupBox1.Controls.Add(this.b_backUp_ignore_remove);
             this.groupBox1.Controls.Add(this.b_backUp_ignore_add);
             this.groupBox1.Controls.Add(this.txt_backUp_ignore);
             this.groupBox1.Controls.Add(this.list_backUp_ignore);
-            resources.ApplyResources(this.groupBox1, "groupBox1");
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.TabStop = false;
             // 
@@ -791,8 +794,8 @@
             // 
             // list_backUp_ignore
             // 
-            this.list_backUp_ignore.FormattingEnabled = true;
             resources.ApplyResources(this.list_backUp_ignore, "list_backUp_ignore");
+            this.list_backUp_ignore.FormattingEnabled = true;
             this.list_backUp_ignore.Name = "list_backUp_ignore";
             // 
             // label_check_update
@@ -805,12 +808,12 @@
             // 
             // groupBoxIgnore
             // 
+            resources.ApplyResources(this.groupBoxIgnore, "groupBoxIgnore");
             this.groupBoxIgnore.Controls.Add(this.b_copy_pack_ignore);
             this.groupBoxIgnore.Controls.Add(this.b_env_ignore_remove);
             this.groupBoxIgnore.Controls.Add(this.b_env_ignore_add);
             this.groupBoxIgnore.Controls.Add(this.txt_env_ignore);
             this.groupBoxIgnore.Controls.Add(this.list_env_ignore);
-            resources.ApplyResources(this.groupBoxIgnore, "groupBoxIgnore");
             this.groupBoxIgnore.Name = "groupBoxIgnore";
             this.groupBoxIgnore.TabStop = false;
             // 
@@ -844,12 +847,13 @@
             // 
             // list_env_ignore
             // 
-            this.list_env_ignore.FormattingEnabled = true;
             resources.ApplyResources(this.list_env_ignore, "list_env_ignore");
+            this.list_env_ignore.FormattingEnabled = true;
             this.list_env_ignore.Name = "list_env_ignore";
             // 
             // environment
             // 
+            resources.ApplyResources(this.environment, "environment");
             this.environment.Controls.Add(this.tabControl1);
             this.environment.Controls.Add(this.label2);
             this.environment.Controls.Add(this.label1);
@@ -857,20 +861,20 @@
             this.environment.Controls.Add(this.txt_env_name);
             this.environment.Controls.Add(this.b_env_add_by_name);
             this.environment.Controls.Add(this.combo_env_list);
-            resources.ApplyResources(this.environment, "environment");
             this.environment.Name = "environment";
             this.environment.TabStop = false;
             // 
             // tabControl1
             // 
+            resources.ApplyResources(this.tabControl1, "tabControl1");
             this.tabControl1.Controls.Add(this.page_winserver);
             this.tabControl1.Controls.Add(this.page_linux_server);
-            resources.ApplyResources(this.tabControl1, "tabControl1");
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             // 
             // page_winserver
             // 
+            resources.ApplyResources(this.page_winserver, "page_winserver");
             this.page_winserver.Controls.Add(this.txt_winserver_nickname);
             this.page_winserver.Controls.Add(this.label32);
             this.page_winserver.Controls.Add(this.label29);
@@ -884,7 +888,6 @@
             this.page_winserver.Controls.Add(this.label3);
             this.page_winserver.Controls.Add(this.txt_env_server_token);
             this.page_winserver.Controls.Add(this.label4);
-            resources.ApplyResources(this.page_winserver, "page_winserver");
             this.page_winserver.Name = "page_winserver";
             this.page_winserver.UseVisualStyleBackColor = true;
             // 
@@ -908,10 +911,10 @@
             // 
             // loading_win_server_test
             // 
+            resources.ApplyResources(this.loading_win_server_test, "loading_win_server_test");
             this.loading_win_server_test.BackColor = System.Drawing.Color.Transparent;
             this.loading_win_server_test.FullTransparent = true;
             this.loading_win_server_test.Increment = 1F;
-            resources.ApplyResources(this.loading_win_server_test, "loading_win_server_test");
             this.loading_win_server_test.N = 8;
             this.loading_win_server_test.Name = "loading_win_server_test";
             this.loading_win_server_test.Radius = 2.5F;
@@ -930,9 +933,9 @@
             // 
             // combo_env_server_list
             // 
+            resources.ApplyResources(this.combo_env_server_list, "combo_env_server_list");
             this.combo_env_server_list.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_env_server_list.FormattingEnabled = true;
-            resources.ApplyResources(this.combo_env_server_list, "combo_env_server_list");
             this.combo_env_server_list.Name = "combo_env_server_list";
             this.combo_env_server_list.SelectedIndexChanged += new System.EventHandler(this.combo_env_server_list_SelectedIndexChanged);
             // 
@@ -973,6 +976,7 @@
             // 
             // page_linux_server
             // 
+            resources.ApplyResources(this.page_linux_server, "page_linux_server");
             this.page_linux_server.Controls.Add(this.txt_linux_server_nickname);
             this.page_linux_server.Controls.Add(this.loading_linux_server_test);
             this.page_linux_server.Controls.Add(this.label20);
@@ -987,7 +991,6 @@
             this.page_linux_server.Controls.Add(this.label18);
             this.page_linux_server.Controls.Add(this.label19);
             this.page_linux_server.Controls.Add(this.label35);
-            resources.ApplyResources(this.page_linux_server, "page_linux_server");
             this.page_linux_server.Name = "page_linux_server";
             this.page_linux_server.UseVisualStyleBackColor = true;
             // 
@@ -998,10 +1001,10 @@
             // 
             // loading_linux_server_test
             // 
+            resources.ApplyResources(this.loading_linux_server_test, "loading_linux_server_test");
             this.loading_linux_server_test.BackColor = System.Drawing.Color.Transparent;
             this.loading_linux_server_test.FullTransparent = true;
             this.loading_linux_server_test.Increment = 1F;
-            resources.ApplyResources(this.loading_linux_server_test, "loading_linux_server_test");
             this.loading_linux_server_test.N = 8;
             this.loading_linux_server_test.Name = "loading_linux_server_test";
             this.loading_linux_server_test.Radius = 2.5F;
@@ -1013,9 +1016,9 @@
             // 
             // combo_linux_server_list
             // 
+            resources.ApplyResources(this.combo_linux_server_list, "combo_linux_server_list");
             this.combo_linux_server_list.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_linux_server_list.FormattingEnabled = true;
-            resources.ApplyResources(this.combo_linux_server_list, "combo_linux_server_list");
             this.combo_linux_server_list.Name = "combo_linux_server_list";
             this.combo_linux_server_list.SelectedIndexChanged += new System.EventHandler(this.combo_linux_server_list_SelectedIndexChanged);
             // 
@@ -1088,8 +1091,8 @@
             // 
             // b_env_remove
             // 
-            this.b_env_remove.ForeColor = System.Drawing.Color.Red;
             resources.ApplyResources(this.b_env_remove, "b_env_remove");
+            this.b_env_remove.ForeColor = System.Drawing.Color.Red;
             this.b_env_remove.Name = "b_env_remove";
             this.b_env_remove.UseVisualStyleBackColor = true;
             this.b_env_remove.Click += new System.EventHandler(this.b_env_remove_Click);
@@ -1108,14 +1111,15 @@
             // 
             // combo_env_list
             // 
+            resources.ApplyResources(this.combo_env_list, "combo_env_list");
             this.combo_env_list.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_env_list.FormattingEnabled = true;
-            resources.ApplyResources(this.combo_env_list, "combo_env_list");
             this.combo_env_list.Name = "combo_env_list";
             this.combo_env_list.SelectedIndexChanged += new System.EventHandler(this.combo_env_list_SelectedIndexChanged);
             // 
             // pag_advance_setting
             // 
+            resources.ApplyResources(this.pag_advance_setting, "pag_advance_setting");
             this.pag_advance_setting.Controls.Add(this.label42);
             this.pag_advance_setting.Controls.Add(this.label41);
             this.pag_advance_setting.Controls.Add(this.label39);
@@ -1127,7 +1131,6 @@
             this.pag_advance_setting.Controls.Add(this.btn_choose_msbuild);
             this.pag_advance_setting.Controls.Add(this.label36);
             this.pag_advance_setting.Controls.Add(this.txt_msbuild_path);
-            resources.ApplyResources(this.pag_advance_setting, "pag_advance_setting");
             this.pag_advance_setting.Name = "pag_advance_setting";
             this.pag_advance_setting.UseVisualStyleBackColor = true;
             // 
@@ -1156,6 +1159,7 @@
             // 
             // combo_netcore_publish_mode
             // 
+            resources.ApplyResources(this.combo_netcore_publish_mode, "combo_netcore_publish_mode");
             this.combo_netcore_publish_mode.BackColor = System.Drawing.SystemColors.Window;
             this.combo_netcore_publish_mode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_netcore_publish_mode.FormattingEnabled = true;
@@ -1165,7 +1169,6 @@
             resources.GetString("combo_netcore_publish_mode.Items2"),
             resources.GetString("combo_netcore_publish_mode.Items3"),
             resources.GetString("combo_netcore_publish_mode.Items4")});
-            resources.ApplyResources(this.combo_netcore_publish_mode, "combo_netcore_publish_mode");
             this.combo_netcore_publish_mode.Name = "combo_netcore_publish_mode";
             this.combo_netcore_publish_mode.SelectedIndexChanged += new System.EventHandler(this.combo_netcore_publish_mode_SelectedIndexChanged);
             // 

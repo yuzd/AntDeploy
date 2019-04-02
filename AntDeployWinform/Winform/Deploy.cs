@@ -4453,5 +4453,11 @@ namespace AntDeployWinform.Winform
             ProcessStartInfo sInfo = new ProcessStartInfo("https://docs.microsoft.com/en-us/dotnet/core/deploying/");
             Process.Start(sInfo);
         }
+
+        private void label12_Click(object sender, EventArgs e)
+        {
+            ProcessStartInfo sInfo = new ProcessStartInfo("https://github.com/yuzd/AntDeployAgent/issues/16");
+            Process.Start(sInfo);
+        }
     }
 }
