@@ -388,6 +388,9 @@ namespace AntDeployWinform.Util
 
             DirectoryInfo directoryInfo = new DirectoryInfo(sourceDirectory);
             string fullName = directoryInfo.FullName;
+            if (directoryInfo.Parent != null)
+                fullName = directoryInfo.Parent.FullName;
+
             var allFile = FindFileDir(sourceDirectory);
             var allFileLength = allFile.Count();
             var index = 0;
@@ -400,9 +403,9 @@ namespace AntDeployWinform.Util
 
                 int length = enumerateFileSystemInfo.FullName.Length - fullName.Length;
                 string entryName = EntryFromPath(enumerateFileSystemInfo.FullName, fullName.Length, length);
-                var mathchEntryName = entryName.Substring(directoryInfo.Name.Length);
                 if (ignoreList != null)
                 {
+                    var mathchEntryName = entryName.Substring(directoryInfo.Name.Length);
                     var haveMatch = false;
                     foreach (var ignorRule in ignoreList)
                     {
