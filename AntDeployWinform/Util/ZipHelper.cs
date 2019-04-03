@@ -14,6 +14,16 @@ namespace AntDeployWinform.Util
         private static readonly char s_pathSeperator = '/';
 
 
+        public static List<FileSystemInfo> GetSelectDeployFiles(List<string> fileList)
+        {
+            List<FileSystemInfo> findlist = new List<FileSystemInfo>();
+            foreach (var filePath in fileList)
+            {
+                findlist.Add(new FileInfo(filePath));
+            }
+
+            return findlist;
+        }
 
 
         public static List<FileSystemInfo> GetFullFileInfo(List<string> fileList, string folderPath)
@@ -108,7 +118,7 @@ namespace AntDeployWinform.Util
         }
 
 
-        public static byte[] DoCreateFromDirectory(string sourceDirectoryName, List<string> fileList, CompressionLevel? compressionLevel, bool includeBaseDirectory, List<string> ignoreList = null, Action<int> progress = null)
+        public static byte[] DoCreateFromDirectory(string sourceDirectoryName, List<string> fileList, CompressionLevel? compressionLevel, bool includeBaseDirectory, List<string> ignoreList = null, Action<int> progress = null,bool isSelectDeploy = false)
         {
             //if (ignoreList != null)
             //{
@@ -124,7 +134,7 @@ namespace AntDeployWinform.Util
                     string fullName = directoryInfo.FullName;
                     if (includeBaseDirectory && directoryInfo.Parent != null)
                         fullName = directoryInfo.Parent.FullName;
-                    var allFile = GetFullFileInfo(fileList, sourceDirectoryName);
+                    var allFile = isSelectDeploy? GetSelectDeployFiles(fileList) : GetFullFileInfo(fileList, sourceDirectoryName);
                     var allFileLength = allFile.Count();
                     var index = 0;
                     foreach (FileSystemInfo enumerateFileSystemInfo in allFile)

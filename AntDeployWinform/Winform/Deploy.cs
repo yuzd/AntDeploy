@@ -125,7 +125,7 @@ namespace AntDeployWinform.Winform
             ReadPluginConfig(PluginConfigPath);
             if (!isFirst)
             {
-                if(GlobalConfig.ProjectPathList == null)GlobalConfig.ProjectPathList = new List<string>();
+                if (GlobalConfig.ProjectPathList == null) GlobalConfig.ProjectPathList = new List<string>();
                 GlobalConfig.ProjectPathList.Insert(0, projectPath);
                 GlobalConfig.ProjectPathList = GlobalConfig.ProjectPathList.Distinct().ToList();
                 Reload();
@@ -370,6 +370,8 @@ namespace AntDeployWinform.Winform
 
             this.checkBox_Increment_iis.Checked = PluginConfig.IISEnableIncrement;
             this.checkBox_Increment_window_service.Checked = PluginConfig.WindowsServiceEnableIncrement;
+            this.checkBox_select_deploy_service.Checked = PluginConfig.WindowsServiceEnableSelectDeploy;
+            this.checkBox_select_deploy_iis.Checked = PluginConfig.IISEnableSelectDeploy;
 
 
             this.txt_env_server_host.Text = string.Empty;
@@ -475,6 +477,8 @@ namespace AntDeployWinform.Winform
                 PluginConfig.LastTabIndex = this.tabcontrol.SelectedIndex;
                 PluginConfig.IISEnableIncrement = this.checkBox_Increment_iis.Checked;
                 PluginConfig.WindowsServiceEnableIncrement = this.checkBox_Increment_window_service.Checked;
+                PluginConfig.IISEnableSelectDeploy = this.checkBox_select_deploy_iis.Checked;
+                PluginConfig.WindowsServiceEnableSelectDeploy = this.checkBox_select_deploy_service.Checked;
 
                 DeployConfig.IIsConfig.WebSiteName = this.txt_iis_web_site_name.Text.Trim();
 
@@ -1431,7 +1435,7 @@ namespace AntDeployWinform.Winform
                     if (DeployConfig.IIsConfig.SdkType.Equals("netcore"))
                     {
                         //执行 publish
-                        var isSuccess = CommandHelper.RunDotnetExe(ProjectPath,ProjectFolderPath, path.Replace("\\\\", "\\"),
+                        var isSuccess = CommandHelper.RunDotnetExe(ProjectPath, ProjectFolderPath, path.Replace("\\\\", "\\"),
                             $"publish -c Release{PluginConfig.GetNetCorePublishRuntimeArg()}", this.nlog_iis);
 
                         if (!isSuccess)
@@ -1453,7 +1457,7 @@ namespace AntDeployWinform.Winform
                             BuildError(this.tabPage_progress);
                             return;
                         }
-                        
+
                     }
 
                     BuildEnd(this.tabPage_progress); //第一台结束编译
@@ -1540,10 +1544,23 @@ namespace AntDeployWinform.Winform
                             return;
                         }
                     }
-                    else
+                    else if (this.PluginConfig.IISEnableSelectDeploy)
                     {
+                        this.nlog_iis.Info("-----------------Select File Start-----------------");
+                        this.BeginInvokeLambda(() =>
+                        {
+                            var slectFileForm = new SelectFile(publishPath);
+                            slectFileForm.ShowDialog();
+                            DoSelectDeployIIS(slectFileForm.SelectedFileList, publishPath, serverList, backUpIgnoreList, Port, PoolName, PhysicalPath);
+                        });
 
-                        try
+
+                        return;
+                    }
+
+                    try
+                    {
+                        if (zipBytes == null)
                         {
                             zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, CompressionLevel.Optimal, true,
                                 ignoreList,
@@ -1552,14 +1569,14 @@ namespace AntDeployWinform.Winform
                                     UpdatePackageProgress(this.tabPage_progress, null, progressValue); //打印打包记录
                                 });
                         }
-                        catch (Exception ex)
-                        {
-                            this.nlog_iis.Error("package fail:" + ex.Message);
-                            PackageError(this.tabPage_progress);
-                            return;
-                        }
-                    }
 
+                    }
+                    catch (Exception ex)
+                    {
+                        this.nlog_iis.Error("package fail:" + ex.Message);
+                        PackageError(this.tabPage_progress);
+                        return;
+                    }
 
                     if (zipBytes == null || zipBytes.Length < 1)
                     {
@@ -1718,16 +1735,215 @@ namespace AntDeployWinform.Winform
                 }
                 finally
                 {
+                    if (!this.PluginConfig.IISEnableSelectDeploy)
+                    {
+                        ProgressPercentage = 0;
+                        ProgressCurrentHost = null;
+                        Enable(true);
+                        gitModel?.Dispose();
+                    }
 
-                    ProgressPercentage = 0;
-                    ProgressCurrentHost = null;
-                    Enable(true);
-                    gitModel?.Dispose();
                 }
 
 
             }).Start();
 
+        }
+
+        private void DoSelectDeployIIS(List<string> fileList, string publishPath, List<Server> serverList, List<string> backUpIgnoreList, string Port, string PoolName, string PhysicalPath)
+        {
+            new Task(async () =>
+            {
+                try
+                {
+                    if (fileList == null || !fileList.Any())
+                    {
+                        PackageError(this.tabPage_progress);
+                        this.nlog_iis.Error("Please Select Files");
+                        return;
+                    }
+                    this.nlog_iis.Info("Select Files count:"+ fileList.Count);
+                    byte[] zipBytes = null;
+                    List<string> ignoreList = new List<string>();
+                    try
+                    {
+                        zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, fileList, CompressionLevel.Optimal, true,
+                            ignoreList,
+                            (progressValue) =>
+                            {
+                                UpdatePackageProgress(this.tabPage_progress, null, progressValue); //打印打包记录
+                            }, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        this.nlog_iis.Error("package fail:" + ex.Message);
+                        PackageError(this.tabPage_progress);
+                        return;
+                    }
+
+                    if (zipBytes == null || zipBytes.Length < 1)
+                    {
+                        this.nlog_iis.Error("package fail");
+                        PackageError(this.tabPage_progress);
+                        return;
+                    }
+                    var packageSize = (zipBytes.Length / 1024 / 1024);
+                    this.nlog_iis.Info($"package success,package size:{(packageSize > 0 ? (packageSize + "") : "<1")}M");
+                    var loggerId = Guid.NewGuid().ToString("N");
+                    var dateTimeFolderName = DateTime.Now.ToString("yyyyMMddHHmmss");
+                    //执行 上传
+                    this.nlog_iis.Info("-----------------Deploy Start-----------------");
+                    var index = 0;
+                    var allSuccess = true;
+                    var failCount = 0;
+                    foreach (var server in serverList)
+                    {
+                        if (index != 0) //因为编译和打包只会占用第一台服务器的时间
+                        {
+                            BuildEnd(this.tabPage_progress, server.Host);
+                            UpdatePackageProgress(this.tabPage_progress, server.Host, 100);
+                        }
+
+                        if (string.IsNullOrEmpty(server.Token))
+                        {
+                            this.nlog_iis.Warn($"{server.Host} Deploy skip,Token is null or empty!");
+                            UploadError(this.tabPage_progress, server.Host);
+                            allSuccess = false;
+                            failCount++;
+                            continue;
+                        }
+
+
+                        ProgressPercentage = 0;
+                        ProgressCurrentHost = server.Host;
+                        this.nlog_iis.Info($"Start Uppload,Host:{getHostDisplayName(server)}");
+                        HttpRequestClient httpRequestClient = new HttpRequestClient();
+                        httpRequestClient.SetFieldValue("publishType", "iis");
+                        httpRequestClient.SetFieldValue("isIncrement", "true");
+                        httpRequestClient.SetFieldValue("sdkType", DeployConfig.IIsConfig.SdkType);
+                        httpRequestClient.SetFieldValue("port", Port);
+                        httpRequestClient.SetFieldValue("id", loggerId);
+                        httpRequestClient.SetFieldValue("poolName", PoolName);
+                        httpRequestClient.SetFieldValue("physicalPath", PhysicalPath);
+                        httpRequestClient.SetFieldValue("webSiteName", DeployConfig.IIsConfig.WebSiteName);
+                        httpRequestClient.SetFieldValue("deployFolderName", dateTimeFolderName);
+                        httpRequestClient.SetFieldValue("Token", server.Token);
+                        httpRequestClient.SetFieldValue("backUpIgnore", (backUpIgnoreList != null && backUpIgnoreList.Any()) ? string.Join("@_@", backUpIgnoreList) : "");
+                        httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream", zipBytes);
+                        HttpLogger HttpLogger = new HttpLogger
+                        {
+                            Key = loggerId,
+                            Url = $"http://{server.Host}/logger?key=" + loggerId
+                        };
+                        WebSocketClient webSocket = new WebSocketClient(this.nlog_iis, HttpLogger);
+                        var haveError = false;
+                        try
+                        {
+                            var hostKey = await webSocket.Connect($"ws://{server.Host}/socket");
+
+                            httpRequestClient.SetFieldValue("wsKey", hostKey);
+
+                            var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/publish",
+                                (client) => { client.UploadProgressChanged += ClientOnUploadProgressChanged; });
+
+                            if (ProgressPercentage == 0) UploadError(this.tabPage_progress, server.Host);
+                            if (ProgressPercentage > 0 && ProgressPercentage < 100)
+                                UpdateUploadProgress(this.tabPage_progress, ProgressCurrentHost, 100); //结束上传
+
+                            webSocket.ReceiveHttpAction();
+                            haveError = webSocket.HasError;
+                            if (haveError)
+                            {
+                                allSuccess = false;
+                                failCount++;
+                                this.nlog_iis.Error($"Host:{getHostDisplayName(server)},Deploy Fail,Skip to Next");
+                                UpdateDeployProgress(this.tabPage_progress, server.Host, false);
+                            }
+                            else
+                            {
+                                if (uploadResult.Item1)
+                                {
+                                    this.nlog_iis.Info($"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2}");
+
+                                    //fire the website
+                                    if (!string.IsNullOrEmpty(server.IIsFireUrl))
+                                    {
+                                        LogEventInfo publisEvent22 = new LogEventInfo(LogLevel.Info, "", $"Host:{getHostDisplayName(server)} Start to Fire Url,TimeOut：10senconds  ==> ");
+                                        publisEvent22.LoggerName = "rich_iis_log";
+                                        publisEvent22.Properties["ShowLink"] = server.IIsFireUrl;
+                                        this.nlog_iis.Log(publisEvent22);
+
+                                        var fireRt = WebUtil.IsHttpGetOk(server.IIsFireUrl, this.nlog_iis);
+                                        if (fireRt)
+                                        {
+                                            UpdateDeployProgress(this.tabPage_progress, server.Host, true);
+                                            this.nlog_iis.Info($"Host:{getHostDisplayName(server)},Success Fire Url");
+                                        }
+                                        else
+                                        {
+                                            allSuccess = false;
+                                            failCount++;
+                                            UpdateDeployProgress(this.tabPage_progress, server.Host, false);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        UpdateDeployProgress(this.tabPage_progress, server.Host, true);
+                                    }
+                                }
+                                else
+                                {
+                                    allSuccess = false;
+                                    failCount++;
+                                    this.nlog_iis.Error($"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2},Skip to Next");
+                                    UpdateDeployProgress(this.tabPage_progress, server.Host, false);
+                                }
+                            }
+
+                        }
+                        catch (Exception ex)
+                        {
+                            allSuccess = false;
+                            failCount++;
+                            this.nlog_iis.Error($"Fail Deploy,Host:{getHostDisplayName(server)},Response:{ex.Message},Skip to Next");
+                            UpdateDeployProgress(this.tabPage_progress, server.Host, false);
+                        }
+                        finally
+                        {
+                            await webSocket?.Dispose();
+                        }
+
+                        index++;
+                    }
+
+                    //交互
+                    if (allSuccess)
+                    {
+                        this.nlog_iis.Info("Deploy Version：" + dateTimeFolderName);
+                    }
+
+                    LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local publish folder  ==> ");
+                    publisEvent2.LoggerName = "rich_iis_log";
+                    publisEvent2.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
+                    this.nlog_iis.Log(publisEvent2);
+                    this.nlog_iis.Info($"-----------------Deploy End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
+                    zipBytes = null;
+
+                }
+                catch (Exception ex1)
+                {
+                    this.nlog_iis.Error(ex1);
+                }
+                finally
+                {
+
+                    ProgressPercentage = 0;
+                    ProgressCurrentHost = null;
+                    Enable(true);
+                }
+
+
+            }).Start();
         }
 
         private string getHostDisplayName(BaseServer server)
@@ -2060,6 +2276,7 @@ namespace AntDeployWinform.Winform
                 this.page_docker.Enabled = flag;
                 this.page_window_service.Enabled = flag;
                 this.pag_advance_setting.Enabled = flag;
+                this.checkBox_select_deploy_iis.Enabled = flag;
                 if (flag)
                 {
                     this.rich_windowservice_log.Text = "";
@@ -2250,6 +2467,20 @@ namespace AntDeployWinform.Winform
         private void checkBox_Increment_iis_CheckedChanged(object sender, EventArgs e)
         {
             PluginConfig.IISEnableIncrement = checkBox_Increment_iis.Checked;
+            if (PluginConfig.IISEnableIncrement)
+            {
+                checkBox_select_deploy_iis.Checked = false;
+                PluginConfig.IISEnableSelectDeploy = false;
+            }
+        }
+        private void checkBox_selectDeplot_iis_CheckedChanged(object sender, EventArgs e)
+        {
+            PluginConfig.IISEnableSelectDeploy = checkBox_select_deploy_iis.Checked;
+            if (PluginConfig.IISEnableSelectDeploy)
+            {
+                checkBox_Increment_iis.Checked = false;
+                PluginConfig.IISEnableIncrement = false;
+            }
         }
 
         #endregion
@@ -2363,6 +2594,7 @@ namespace AntDeployWinform.Winform
                 this.page_docker.Enabled = flag;
                 this.page_web_iis.Enabled = flag;
                 this.pag_advance_setting.Enabled = flag;
+                checkBox_select_deploy_service.Enabled = flag;
                 if (flag)
                 {
                     this.rich_iis_log.Text = "";
@@ -2402,7 +2634,7 @@ namespace AntDeployWinform.Winform
                 MessageBox.Show("current project is not windows service project!");
                 return;
             }
-           
+
             var sdkTypeName = this.combo_windowservice_sdk_type.SelectedItem as string;
             if (string.IsNullOrWhiteSpace(sdkTypeName))
             {
@@ -2540,7 +2772,7 @@ namespace AntDeployWinform.Winform
                         }
                         //执行 publish
                         var isSuccess = CommandHelper.RunDotnetExe(ProjectPath, ProjectFolderPath, path.Replace("\\\\", "\\"),
-                            $"publish -c Release{runtime}", nlog_windowservice);
+                    $"publish -c Release{runtime}", nlog_windowservice);
 
                         if (!isSuccess)
                         {
@@ -2684,9 +2916,23 @@ namespace AntDeployWinform.Winform
                             return;
                         }
                     }
-                    else
+                    else if (PluginConfig.WindowsServiceEnableSelectDeploy)
                     {
-                        try
+                        this.nlog_windowservice.Info("-----------------Select File Start-----------------");
+                        this.BeginInvokeLambda(() =>
+                        {
+                            var slectFileForm = new SelectFile(publishPath);
+                            slectFileForm.ShowDialog();
+                            DoWindowsServiceSelectDeploy(slectFileForm.SelectedFileList, publishPath, serverList,serviceName,isProjectInstallService,execFilePath,PhysicalPath,backUpIgnoreList);
+                        });
+
+
+                        return;
+                    }
+
+                    try
+                    {
+                        if (zipBytes == null)
                         {
                             zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, CompressionLevel.Optimal, true,
                                 ignoreList,
@@ -2695,14 +2941,14 @@ namespace AntDeployWinform.Winform
                                     UpdatePackageProgress(this.tabPage_windows_service, null, progressValue); //打印打包记录
                                 });
                         }
-                        catch (Exception ex)
-                        {
-                            this.nlog_windowservice.Error("package fail:" + ex.Message);
-                            PackageError(this.tabPage_windows_service);
-                            return;
-                        }
-                    }
 
+                    }
+                    catch (Exception ex)
+                    {
+                        this.nlog_windowservice.Error("package fail:" + ex.Message);
+                        PackageError(this.tabPage_windows_service);
+                        return;
+                    }
 
                     if (zipBytes == null || zipBytes.Length < 1)
                     {
@@ -2861,14 +3107,212 @@ namespace AntDeployWinform.Winform
                 }
                 finally
                 {
-                    ProgressPercentageForWindowsService = 0;
-                    ProgressCurrentHostForWindowsService = null;
-                    EnableForWindowsService(true);
-                    gitModel?.Dispose();
+                    if (!PluginConfig.WindowsServiceEnableSelectDeploy)
+                    {
+                        ProgressPercentageForWindowsService = 0;
+                        ProgressCurrentHostForWindowsService = null;
+                        EnableForWindowsService(true);
+                        gitModel?.Dispose();
+                    }
+                   
                 }
 
 
 
+            }).Start();
+        }
+
+
+        private void DoWindowsServiceSelectDeploy(List<string> fileList,string publishPath,List<Server> serverList,string serviceName,bool isProjectInstallService,string execFilePath,string PhysicalPath,List<string> backUpIgnoreList)
+        {
+            new Task(async () =>
+            {
+                try
+                {
+                    byte[] zipBytes = null;
+                    if (fileList == null || !fileList.Any())
+                    {
+                        PackageError(this.tabPage_windows_service);
+                        this.nlog_windowservice.Error("Please Select Files");
+                        return;
+                    }
+                    this.nlog_windowservice.Info("Select Files count:" + fileList.Count);
+                    List<string> ignoreList = new List<string>();
+                    try
+                    {
+                        zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, fileList, CompressionLevel.Optimal, true,
+                            ignoreList,
+                            (progressValue) =>
+                            {
+                                UpdatePackageProgress(this.tabPage_windows_service, null, progressValue); //打印打包记录
+                            },true);
+                    }
+                    catch (Exception ex)
+                    {
+                        this.nlog_windowservice.Error("package fail:" + ex.Message);
+                        PackageError(this.tabPage_windows_service);
+                        return;
+                    }
+
+                    if (zipBytes == null || zipBytes.Length < 1)
+                    {
+                        this.nlog_windowservice.Error("package fail");
+                        PackageError(this.tabPage_windows_service);
+                        return;
+                    }
+                    var packageSize = (zipBytes.Length / 1024 / 1024);
+                    this.nlog_windowservice.Info($"package success,package size:{(packageSize > 0 ? (packageSize + "") : "<1")}M");
+                    var loggerId = Guid.NewGuid().ToString("N");
+                    //执行 上传
+                    this.nlog_windowservice.Info("-----------------Deploy Start-----------------");
+                    var index = 0;
+                    var allSuccess = true;
+                    var failCount = 0;
+                    var dateTimeFolderName = DateTime.Now.ToString("yyyyMMddHHmmss");
+                    foreach (var server in serverList)
+                    {
+                        if (index != 0) //因为编译和打包只会占用第一台服务器的时间
+                        {
+                            BuildEnd(this.tabPage_windows_service, server.Host);
+                            UpdatePackageProgress(this.tabPage_windows_service, server.Host, 100);
+                        }
+
+                        if (string.IsNullOrEmpty(server.Token))
+                        {
+                            this.nlog_windowservice.Warn($"{server.Host} Deploy skip,Token is null or empty!");
+                            UploadError(this.tabPage_windows_service, server.Host);
+                            allSuccess = false;
+                            failCount++;
+                            continue;
+                        }
+
+
+                        ProgressPercentageForWindowsService = 0;
+                        ProgressCurrentHostForWindowsService = server.Host;
+                        this.nlog_windowservice.Info($"Start Uppload,Host:{getHostDisplayName(server)}");
+                        HttpRequestClient httpRequestClient = new HttpRequestClient();
+                        httpRequestClient.SetFieldValue("publishType", "windowservice");
+                        httpRequestClient.SetFieldValue("isIncrement", "true");
+                        httpRequestClient.SetFieldValue("serviceName", serviceName);
+                        httpRequestClient.SetFieldValue("id", loggerId);
+                        httpRequestClient.SetFieldValue("sdkType", DeployConfig.WindowsServiveConfig.SdkType);
+                        httpRequestClient.SetFieldValue("isProjectInstallService",
+                            isProjectInstallService ? "yes" : "no");
+                        httpRequestClient.SetFieldValue("execFilePath", execFilePath);
+                        httpRequestClient.SetFieldValue("deployFolderName", dateTimeFolderName);
+                        httpRequestClient.SetFieldValue("physicalPath", PhysicalPath);
+                        httpRequestClient.SetFieldValue("Token", server.Token);
+                        httpRequestClient.SetFieldValue("backUpIgnore", (backUpIgnoreList != null && backUpIgnoreList.Any()) ? string.Join("@_@", backUpIgnoreList) : "");
+                        httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream", zipBytes);
+                        HttpLogger HttpLogger = new HttpLogger
+                        {
+                            Key = loggerId,
+                            Url = $"http://{server.Host}/logger?key=" + loggerId
+                        }; ;
+                        WebSocketClient webSocket = new WebSocketClient(this.nlog_windowservice, HttpLogger);
+                        var haveError = false;
+                        try
+                        {
+                            var hostKey = await webSocket.Connect($"ws://{server.Host}/socket");
+                            httpRequestClient.SetFieldValue("wsKey", hostKey);
+
+                            var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/publish",
+                                (client) => { client.UploadProgressChanged += ClientOnUploadProgressChanged2; });
+                            if (ProgressPercentageForWindowsService == 0)
+                                UploadError(this.tabPage_windows_service, server.Host);
+                            if (ProgressPercentageForWindowsService > 0 && ProgressPercentageForWindowsService < 100)
+                                UpdateUploadProgress(this.tabPage_windows_service, ProgressCurrentHostForWindowsService,
+                                    100); //结束上传
+                            webSocket.ReceiveHttpAction();
+                            haveError = webSocket.HasError;
+                            if (haveError)
+                            {
+                                allSuccess = false;
+                                failCount++;
+                                this.nlog_windowservice.Error($"Host:{getHostDisplayName(server)},Deploy Fail,Skip to Next");
+                                UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
+                            }
+                            else
+                            {
+                                if (uploadResult.Item1)
+                                {
+                                    this.nlog_windowservice.Info($"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2}");
+
+                                    //fire the website
+                                    if (!string.IsNullOrEmpty(server.WindowsServiceFireUrl))
+                                    {
+                                        LogEventInfo publisEvent22 = new LogEventInfo(LogLevel.Info, "", "Start to Fire Url,TimeOut：10senconds  ==> ");
+                                        publisEvent22.Properties["ShowLink"] = server.WindowsServiceFireUrl;
+                                        publisEvent22.LoggerName = "rich_windowservice_log";
+                                        this.nlog_windowservice.Log(publisEvent22);
+
+                                        var fireRt = WebUtil.IsHttpGetOk(server.WindowsServiceFireUrl, this.nlog_windowservice);
+                                        if (fireRt)
+                                        {
+                                            UpdateDeployProgress(this.tabPage_windows_service, server.Host, true);
+                                            this.nlog_windowservice.Info($"Host:{getHostDisplayName(server)},Success Fire Url");
+                                        }
+                                        else
+                                        {
+                                            failCount++;
+                                            allSuccess = false;
+                                            UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        UpdateDeployProgress(this.tabPage_windows_service, server.Host, true);
+                                    }
+                                }
+                                else
+                                {
+                                    allSuccess = false;
+                                    failCount++;
+                                    this.nlog_windowservice.Error(
+                                        $"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2},Skip to Next");
+                                    UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
+                                }
+                            }
+
+                        }
+                        catch (Exception ex)
+                        {
+                            failCount++;
+                            allSuccess = false;
+                            this.nlog_windowservice.Error(
+                                $"Fail Deploy,Host:{getHostDisplayName(server)},Response:{ex.Message},Skip to Next");
+                            UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
+                        }
+                        finally
+                        {
+                            await webSocket?.Dispose();
+                        }
+
+                        index++;
+                    }
+
+                    //交互
+                    if (allSuccess)
+                    {
+                        this.nlog_windowservice.Info("Deploy Version：" + dateTimeFolderName);
+                    }
+
+                    LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local publish folder  ==> ");
+                    publisEvent2.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
+                    publisEvent2.LoggerName = "rich_windowservice_log";
+                    this.nlog_windowservice.Log(publisEvent2);
+                    this.nlog_windowservice.Info($"-----------------Deploy End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
+                }
+                catch (Exception ex1)
+                {
+                    this.nlog_windowservice.Error(ex1);
+                }
+                finally
+                {
+                    ProgressPercentageForWindowsService = 0;
+                    ProgressCurrentHostForWindowsService = null;
+                    EnableForWindowsService(true);
+                }
             }).Start();
         }
 
@@ -2880,7 +3324,7 @@ namespace AntDeployWinform.Winform
                 return;
             }
 
-         
+
             //检查工程文件里面是否含有 WebProjectProperties字样
             if (ProjectHelper.IsWebProject(ProjectPath))
             {
@@ -3449,8 +3893,21 @@ namespace AntDeployWinform.Winform
         private void checkBox_Increment_window_service_CheckedChanged(object sender, EventArgs e)
         {
             PluginConfig.WindowsServiceEnableIncrement = checkBox_Increment_window_service.Checked;
+            if (PluginConfig.WindowsServiceEnableIncrement)
+            {
+                checkBox_select_deploy_service.Checked = false;
+                PluginConfig.WindowsServiceEnableSelectDeploy = false;
+            }
         }
-
+        private void checkBox_SelectDeploy_window_service_CheckedChanged(object sender, EventArgs e)
+        {
+            PluginConfig.WindowsServiceEnableSelectDeploy = checkBox_select_deploy_service.Checked;
+            if (PluginConfig.WindowsServiceEnableSelectDeploy)
+            {
+                checkBox_Increment_window_service.Checked = false;
+                PluginConfig.WindowsServiceEnableIncrement = false;
+            }
+        }
         #endregion
 
 
@@ -3554,7 +4011,7 @@ namespace AntDeployWinform.Winform
                 ENTRYPOINT = this.ProjectName + ".dll";
             }
 #endif
-            var SDKVersion = !string.IsNullOrEmpty(_project.NetCoreSDKVersion)?_project.NetCoreSDKVersion: ProjectHelper.GetProjectSkdInNetCoreProject(ProjectPath);
+            var SDKVersion = !string.IsNullOrEmpty(_project.NetCoreSDKVersion) ? _project.NetCoreSDKVersion : ProjectHelper.GetProjectSkdInNetCoreProject(ProjectPath);
             if (string.IsNullOrEmpty(SDKVersion))
             {
                 MessageBox.Show("get current project skd version error");
@@ -3586,241 +4043,241 @@ namespace AntDeployWinform.Winform
             this.rich_docker_log.Text = "";
             this.nlog_docker.Info($"The Porject ENTRYPOINT name:{ENTRYPOINT},DotNetSDK.Version:{_project.NetCoreSDKVersion}");
             var clientDateTimeFolderName = DateTime.Now.ToString("yyyyMMddHHmmss");
-            new Task( () =>
-            {
-                this.nlog_docker.Info($"-----------------Start publish[Ver:{Vsix.VERSION}]-----------------");
-                PrintCommonLog(this.nlog_docker);
-                EnableForDocker(false);
+            new Task(() =>
+           {
+               this.nlog_docker.Info($"-----------------Start publish[Ver:{Vsix.VERSION}]-----------------");
+               PrintCommonLog(this.nlog_docker);
+               EnableForDocker(false);
 
-                try
-                {
-                    var publishPath = Path.Combine(ProjectFolderPath, "bin", "Release", "deploy_docker", envName);
-                    var path = publishPath + "\\";
-                    //执行 publish
-                    var isSuccess = CommandHelper.RunDotnetExe(ProjectPath, ProjectFolderPath, path.Replace("\\\\", "\\"),
-                        $"publish -c Release{PluginConfig.GetNetCorePublishRuntimeArg()}", nlog_docker);
+               try
+               {
+                   var publishPath = Path.Combine(ProjectFolderPath, "bin", "Release", "deploy_docker", envName);
+                   var path = publishPath + "\\";
+                   //执行 publish
+                   var isSuccess = CommandHelper.RunDotnetExe(ProjectPath, ProjectFolderPath, path.Replace("\\\\", "\\"),
+              $"publish -c Release{PluginConfig.GetNetCorePublishRuntimeArg()}", nlog_docker);
 
-                    if (!isSuccess)
-                    {
-                        this.nlog_docker.Error("publish error,please check build log");
-                        BuildError(this.tabPage_docker);
-                        return;
-                    }
+                   if (!isSuccess)
+                   {
+                       this.nlog_docker.Error("publish error,please check build log");
+                       BuildError(this.tabPage_docker);
+                       return;
+                   }
 
-                    var serviceFile = Path.Combine(publishPath, ENTRYPOINT);
-                    if (!File.Exists(serviceFile))
-                    {
-                        this.nlog_docker.Error($"ENTRYPOINT file can not find in publish folder: {serviceFile}");
-                        BuildError(this.tabPage_docker);
-                        return;
-                    }
+                   var serviceFile = Path.Combine(publishPath, ENTRYPOINT);
+                   if (!File.Exists(serviceFile))
+                   {
+                       this.nlog_docker.Error($"ENTRYPOINT file can not find in publish folder: {serviceFile}");
+                       BuildError(this.tabPage_docker);
+                       return;
+                   }
 
-                    BuildEnd(this.tabPage_docker); //第一台结束编译
+                   BuildEnd(this.tabPage_docker); //第一台结束编译
 
-                    LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish success  ==> ");
-                    publisEvent.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
-                    publisEvent.LoggerName = "rich_docker_log";
-                    this.nlog_docker.Log(publisEvent);
-
-
-
-                    //执行 打包
-                    this.nlog_docker.Info("-----------------Start package-----------------");
-                    MemoryStream zipBytes;
-                    try
-                    {
-                        zipBytes = ZipHelper.DoCreateTarFromDirectory(publishPath,
-                            ignoreList,
-                            (progressValue) =>
-                            {
-                                UpdatePackageProgress(this.tabPage_docker, null, progressValue); //打印打包记录
-                            });
-                    }
-                    catch (Exception ex)
-                    {
-                        this.nlog_docker.Error("package fail:" + ex.Message);
-                        PackageError(this.tabPage_docker);
-                        return;
-                    }
-
-                    if (zipBytes == null || zipBytes.Length < 1)
-                    {
-                        this.nlog_docker.Error("package fail");
-                        PackageError(this.tabPage_docker);
-                        return;
-                    }
-
-                    this.nlog_docker.Info($"package success,package size:{(zipBytes.Length / 1024 / 1024)}M");
-                    //执行 上传
-                    this.nlog_docker.Info("-----------------Deploy Start-----------------");
-                    var index = 0;
-                    var allSuccess = true;
-                    var failCount = 0;
-                    foreach (var server in serverList)
-                    {
-                        if (index != 0) //因为编译和打包只会占用第一台服务器的时间
-                        {
-                            BuildEnd(this.tabPage_docker, server.Host);
-                            UpdatePackageProgress(this.tabPage_docker, server.Host, 100);
-                        }
-
-                        #region 参数Check
-
-                        if (string.IsNullOrEmpty(server.Host))
-                        {
-                            this.nlog_docker.Error("Server Host is Empty");
-                            UploadError(this.tabPage_docker);
-                            allSuccess = false;
-                            failCount++;
-                            continue;
-                        }
-
-                        if (string.IsNullOrEmpty(server.UserName))
-                        {
-                            this.nlog_docker.Error("Server UserName is Empty");
-                            UploadError(this.tabPage_docker);
-                            allSuccess = false;
-                            failCount++;
-                            continue;
-                        }
-
-                        if (string.IsNullOrEmpty(server.Pwd))
-                        {
-                            this.nlog_docker.Error("Server Pwd is Empty");
-                            UploadError(this.tabPage_docker);
-                            allSuccess = false;
-                            failCount++;
-                            continue;
-                        }
-
-                        var pwd = CodingHelper.AESDecrypt(server.Pwd);
-                        if (string.IsNullOrEmpty(pwd))
-                        {
-                            this.nlog_docker.Error("Server Pwd is Empty");
-                            UploadError(this.tabPage_docker);
-                            allSuccess = false;
-                            failCount++;
-                            continue;
-                        }
-
-                        #endregion
-
-                        var hasError = false;
-
-                        zipBytes.Seek(0, SeekOrigin.Begin);
-                        using (SSHClient sshClient = new SSHClient(server.Host, server.UserName, pwd, (str, logLevel) =>
-                        {
-                            if (logLevel == NLog.LogLevel.Error)
-                            {
-                                hasError = true;
-                                allSuccess = false;
-                                this.nlog_docker.Error("【Server】" + str);
-                            }
-                            else
-                            {
-                                this.nlog_docker.Info("【Server】" + str);
-                            }
-                        }, (uploadValue) => { UpdateUploadProgress(this.tabPage_docker, server.Host, uploadValue); })
-                        {
-                            NetCoreENTRYPOINT = ENTRYPOINT,
-                            NetCoreVersion = SDKVersion,
-                            NetCorePort = DeployConfig.DockerConfig.Prot,
-                            NetCoreEnvironment = DeployConfig.DockerConfig.AspNetCoreEnv,
-                            ClientDateTimeFolderName = clientDateTimeFolderName,
-                            RemoveDaysFromPublished = DeployConfig.DockerConfig.RemoveDaysFromPublished,
-                            Volume = DeployConfig.DockerConfig.Volume
-                        })
-                        {
-                            var connectResult = sshClient.Connect();
-                            if (!connectResult)
-                            {
-                                this.nlog_docker.Error($"Deploy Host:{getHostDisplayName(server)} Fail: connect fail");
-                                UploadError(this.tabPage_docker);
-                                allSuccess = false;
-                                failCount++;
-                                continue;
-                            }
-
-                            try
-                            {
-                                sshClient.PublishZip(zipBytes, "antdeploy", "publish.tar");
-                                UpdateUploadProgress(this.tabPage_docker, server.Host, 100);
-
-                                if (hasError)
-                                {
-                                    allSuccess = false;
-                                    failCount++;
-                                    sshClient.DeletePublishFolder("antdeploy");
-                                    UpdateDeployProgress(this.tabPage_docker, server.Host, !hasError);
-                                }
-                                else
-                                {
-                                    //fire the website
-                                    if (!string.IsNullOrEmpty(server.DockerFireUrl))
-                                    {
-                                        LogEventInfo publisEvent22 = new LogEventInfo(LogLevel.Info, "", "Start to Fire Url,TimeOut：10senconds  ==> ");
-                                        publisEvent22.Properties["ShowLink"] = server.DockerFireUrl;
-                                        publisEvent22.LoggerName = "rich_docker_log";
-                                        this.nlog_docker.Log(publisEvent22);
-
-                                        var fireRt = WebUtil.IsHttpGetOk(server.DockerFireUrl, this.nlog_docker);
-                                        if (fireRt)
-                                        {
-                                            UpdateDeployProgress(this.tabPage_docker, server.Host, true);
-                                            this.nlog_docker.Info($"Host:{getHostDisplayName(server)},Success Fire Url");
-                                        }
-                                        else
-                                        {
-                                            UpdateDeployProgress(this.tabPage_docker, server.Host, false);
-                                            allSuccess = false;
-                                            failCount++;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        UpdateDeployProgress(this.tabPage_docker, server.Host, true);
-                                    }
-
-                                }
-
-                                this.nlog_docker.Info($"publish Host: {getHostDisplayName(server)} End");
-                            }
-                            catch (Exception ex)
-                            {
-                                allSuccess = false;
-                                failCount++;
-                                this.nlog_docker.Error($"Deploy Host:{getHostDisplayName(server)} Fail:" + ex.Message);
-                                UpdateDeployProgress(this.tabPage_docker, server.Host, false);
-                            }
-                        }
-
-                        index++;
-                    }
-
-                    zipBytes.Dispose();
-                    if (allSuccess)
-                    {
-                        this.nlog_docker.Info("Deploy Version：" + clientDateTimeFolderName);
-                    }
-
-                    LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local publish folder  ==> ");
-                    publisEvent2.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
-                    publisEvent2.LoggerName = "rich_docker_log";
-                    this.nlog_docker.Log(publisEvent2);
-                    this.nlog_docker.Info($"-----------------Deploy End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
-                }
-                catch (Exception ex1)
-                {
-                    this.nlog_docker.Error(ex1);
-                }
-                finally
-                {
-                    EnableForDocker(true);
-                }
+                   LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish success  ==> ");
+                   publisEvent.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
+                   publisEvent.LoggerName = "rich_docker_log";
+                   this.nlog_docker.Log(publisEvent);
 
 
 
-            }).Start();
+                   //执行 打包
+                   this.nlog_docker.Info("-----------------Start package-----------------");
+                   MemoryStream zipBytes;
+                   try
+                   {
+                       zipBytes = ZipHelper.DoCreateTarFromDirectory(publishPath,
+                           ignoreList,
+                           (progressValue) =>
+                           {
+                               UpdatePackageProgress(this.tabPage_docker, null, progressValue); //打印打包记录
+                           });
+                   }
+                   catch (Exception ex)
+                   {
+                       this.nlog_docker.Error("package fail:" + ex.Message);
+                       PackageError(this.tabPage_docker);
+                       return;
+                   }
+
+                   if (zipBytes == null || zipBytes.Length < 1)
+                   {
+                       this.nlog_docker.Error("package fail");
+                       PackageError(this.tabPage_docker);
+                       return;
+                   }
+
+                   this.nlog_docker.Info($"package success,package size:{(zipBytes.Length / 1024 / 1024)}M");
+                   //执行 上传
+                   this.nlog_docker.Info("-----------------Deploy Start-----------------");
+                   var index = 0;
+                   var allSuccess = true;
+                   var failCount = 0;
+                   foreach (var server in serverList)
+                   {
+                       if (index != 0) //因为编译和打包只会占用第一台服务器的时间
+                       {
+                           BuildEnd(this.tabPage_docker, server.Host);
+                           UpdatePackageProgress(this.tabPage_docker, server.Host, 100);
+                       }
+
+                       #region 参数Check
+
+                       if (string.IsNullOrEmpty(server.Host))
+                       {
+                           this.nlog_docker.Error("Server Host is Empty");
+                           UploadError(this.tabPage_docker);
+                           allSuccess = false;
+                           failCount++;
+                           continue;
+                       }
+
+                       if (string.IsNullOrEmpty(server.UserName))
+                       {
+                           this.nlog_docker.Error("Server UserName is Empty");
+                           UploadError(this.tabPage_docker);
+                           allSuccess = false;
+                           failCount++;
+                           continue;
+                       }
+
+                       if (string.IsNullOrEmpty(server.Pwd))
+                       {
+                           this.nlog_docker.Error("Server Pwd is Empty");
+                           UploadError(this.tabPage_docker);
+                           allSuccess = false;
+                           failCount++;
+                           continue;
+                       }
+
+                       var pwd = CodingHelper.AESDecrypt(server.Pwd);
+                       if (string.IsNullOrEmpty(pwd))
+                       {
+                           this.nlog_docker.Error("Server Pwd is Empty");
+                           UploadError(this.tabPage_docker);
+                           allSuccess = false;
+                           failCount++;
+                           continue;
+                       }
+
+                       #endregion
+
+                       var hasError = false;
+
+                       zipBytes.Seek(0, SeekOrigin.Begin);
+                       using (SSHClient sshClient = new SSHClient(server.Host, server.UserName, pwd, (str, logLevel) =>
+                       {
+                           if (logLevel == NLog.LogLevel.Error)
+                           {
+                               hasError = true;
+                               allSuccess = false;
+                               this.nlog_docker.Error("【Server】" + str);
+                           }
+                           else
+                           {
+                               this.nlog_docker.Info("【Server】" + str);
+                           }
+                       }, (uploadValue) => { UpdateUploadProgress(this.tabPage_docker, server.Host, uploadValue); })
+                       {
+                           NetCoreENTRYPOINT = ENTRYPOINT,
+                           NetCoreVersion = SDKVersion,
+                           NetCorePort = DeployConfig.DockerConfig.Prot,
+                           NetCoreEnvironment = DeployConfig.DockerConfig.AspNetCoreEnv,
+                           ClientDateTimeFolderName = clientDateTimeFolderName,
+                           RemoveDaysFromPublished = DeployConfig.DockerConfig.RemoveDaysFromPublished,
+                           Volume = DeployConfig.DockerConfig.Volume
+                       })
+                       {
+                           var connectResult = sshClient.Connect();
+                           if (!connectResult)
+                           {
+                               this.nlog_docker.Error($"Deploy Host:{getHostDisplayName(server)} Fail: connect fail");
+                               UploadError(this.tabPage_docker);
+                               allSuccess = false;
+                               failCount++;
+                               continue;
+                           }
+
+                           try
+                           {
+                               sshClient.PublishZip(zipBytes, "antdeploy", "publish.tar");
+                               UpdateUploadProgress(this.tabPage_docker, server.Host, 100);
+
+                               if (hasError)
+                               {
+                                   allSuccess = false;
+                                   failCount++;
+                                   sshClient.DeletePublishFolder("antdeploy");
+                                   UpdateDeployProgress(this.tabPage_docker, server.Host, !hasError);
+                               }
+                               else
+                               {
+                                   //fire the website
+                                   if (!string.IsNullOrEmpty(server.DockerFireUrl))
+                                   {
+                                       LogEventInfo publisEvent22 = new LogEventInfo(LogLevel.Info, "", "Start to Fire Url,TimeOut：10senconds  ==> ");
+                                       publisEvent22.Properties["ShowLink"] = server.DockerFireUrl;
+                                       publisEvent22.LoggerName = "rich_docker_log";
+                                       this.nlog_docker.Log(publisEvent22);
+
+                                       var fireRt = WebUtil.IsHttpGetOk(server.DockerFireUrl, this.nlog_docker);
+                                       if (fireRt)
+                                       {
+                                           UpdateDeployProgress(this.tabPage_docker, server.Host, true);
+                                           this.nlog_docker.Info($"Host:{getHostDisplayName(server)},Success Fire Url");
+                                       }
+                                       else
+                                       {
+                                           UpdateDeployProgress(this.tabPage_docker, server.Host, false);
+                                           allSuccess = false;
+                                           failCount++;
+                                       }
+                                   }
+                                   else
+                                   {
+                                       UpdateDeployProgress(this.tabPage_docker, server.Host, true);
+                                   }
+
+                               }
+
+                               this.nlog_docker.Info($"publish Host: {getHostDisplayName(server)} End");
+                           }
+                           catch (Exception ex)
+                           {
+                               allSuccess = false;
+                               failCount++;
+                               this.nlog_docker.Error($"Deploy Host:{getHostDisplayName(server)} Fail:" + ex.Message);
+                               UpdateDeployProgress(this.tabPage_docker, server.Host, false);
+                           }
+                       }
+
+                       index++;
+                   }
+
+                   zipBytes.Dispose();
+                   if (allSuccess)
+                   {
+                       this.nlog_docker.Info("Deploy Version：" + clientDateTimeFolderName);
+                   }
+
+                   LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local publish folder  ==> ");
+                   publisEvent2.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
+                   publisEvent2.LoggerName = "rich_docker_log";
+                   this.nlog_docker.Log(publisEvent2);
+                   this.nlog_docker.Info($"-----------------Deploy End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
+               }
+               catch (Exception ex1)
+               {
+                   this.nlog_docker.Error(ex1);
+               }
+               finally
+               {
+                   EnableForDocker(true);
+               }
+
+
+
+           }).Start();
         }
 
         private void btn_docker_rollback_Click(object sender, EventArgs e)
@@ -3889,115 +4346,115 @@ namespace AntDeployWinform.Winform
             this.rich_docker_log.Text = "";
             this.nlog_docker.Info($"The Porject ENTRYPOINT name:{ENTRYPOINT}");
             this.tabControl_docker.SelectedIndex = 1;
-            new Task( () =>
-            {
+            new Task(() =>
+           {
 
 
-                var versionList = new List<string>();
+               var versionList = new List<string>();
 
-                try
-                {
+               try
+               {
 
-                    EnableForDocker(false, true);
+                   EnableForDocker(false, true);
 
-                    var firstServer = serverList.First();
+                   var firstServer = serverList.First();
 
-                    #region 参数Check
+                   #region 参数Check
 
-                    if (string.IsNullOrEmpty(firstServer.Host))
-                    {
-                        this.nlog_docker.Error("Server Host is Empty");
-                        return;
-                    }
+                   if (string.IsNullOrEmpty(firstServer.Host))
+                   {
+                       this.nlog_docker.Error("Server Host is Empty");
+                       return;
+                   }
 
-                    if (string.IsNullOrEmpty(firstServer.UserName))
-                    {
-                        this.nlog_docker.Error("Server UserName is Empty");
-                        return;
-                    }
+                   if (string.IsNullOrEmpty(firstServer.UserName))
+                   {
+                       this.nlog_docker.Error("Server UserName is Empty");
+                       return;
+                   }
 
-                    if (string.IsNullOrEmpty(firstServer.Pwd))
-                    {
-                        this.nlog_docker.Error("Server Pwd is Empty");
-                        return;
-                    }
+                   if (string.IsNullOrEmpty(firstServer.Pwd))
+                   {
+                       this.nlog_docker.Error("Server Pwd is Empty");
+                       return;
+                   }
 
-                    var pwd1 = CodingHelper.AESDecrypt(firstServer.Pwd);
-                    if (string.IsNullOrEmpty(pwd1))
-                    {
-                        this.nlog_docker.Error("Server Pwd is Empty");
-                        return;
-                    }
+                   var pwd1 = CodingHelper.AESDecrypt(firstServer.Pwd);
+                   if (string.IsNullOrEmpty(pwd1))
+                   {
+                       this.nlog_docker.Error("Server Pwd is Empty");
+                       return;
+                   }
 
-                    #endregion
+                   #endregion
 
-                    this.nlog_docker.Info("Start get rollBack version list from first Server:" + firstServer.Host);
+                   this.nlog_docker.Info("Start get rollBack version list from first Server:" + firstServer.Host);
 
-                    using (SSHClient sshClient = new SSHClient(firstServer.Host, firstServer.UserName, pwd1,
-                        (str, logLevel) =>
-                        {
-                            if (logLevel == NLog.LogLevel.Error)
-                            {
-                                this.nlog_docker.Error("【Server】" + str);
-                            }
-                            else
-                            {
-                                this.nlog_docker.Info("【Server】" + str);
-                            }
-                        }, (uploadValue) => { })
-                    {
-                        NetCoreENTRYPOINT = ENTRYPOINT,
-                        NetCoreVersion = SDKVersion,
-                        NetCorePort = DeployConfig.DockerConfig.Prot,
-                        NetCoreEnvironment = DeployConfig.DockerConfig.AspNetCoreEnv,
-                    })
-                    {
-                        var connectResult = sshClient.Connect();
-                        if (!connectResult)
-                        {
-                            this.nlog_docker.Error($"connect rollBack Host:{getHostDisplayName(firstServer)} Fail");
-                            return;
-                        }
+                   using (SSHClient sshClient = new SSHClient(firstServer.Host, firstServer.UserName, pwd1,
+                       (str, logLevel) =>
+                       {
+                           if (logLevel == NLog.LogLevel.Error)
+                           {
+                               this.nlog_docker.Error("【Server】" + str);
+                           }
+                           else
+                           {
+                               this.nlog_docker.Info("【Server】" + str);
+                           }
+                       }, (uploadValue) => { })
+                   {
+                       NetCoreENTRYPOINT = ENTRYPOINT,
+                       NetCoreVersion = SDKVersion,
+                       NetCorePort = DeployConfig.DockerConfig.Prot,
+                       NetCoreEnvironment = DeployConfig.DockerConfig.AspNetCoreEnv,
+                   })
+                   {
+                       var connectResult = sshClient.Connect();
+                       if (!connectResult)
+                       {
+                           this.nlog_docker.Error($"connect rollBack Host:{getHostDisplayName(firstServer)} Fail");
+                           return;
+                       }
 
-                        versionList = sshClient.GetDeployHistory("antdeploy", 11);
-                    }
-                }
-                catch (Exception ex1)
-                {
-                    this.nlog_docker.Error(ex1);
-                    return;
-                }
-                finally
-                {
-                    EnableForDocker(true);
-                }
+                       versionList = sshClient.GetDeployHistory("antdeploy", 11);
+                   }
+               }
+               catch (Exception ex1)
+               {
+                   this.nlog_docker.Error(ex1);
+                   return;
+               }
+               finally
+               {
+                   EnableForDocker(true);
+               }
 
-                if (versionList.Count <= 1)
-                {
-                    this.nlog_docker.Error($"get rollBack version list count = 0");
-                    return;
-                }
+               if (versionList.Count <= 1)
+               {
+                   this.nlog_docker.Error($"get rollBack version list count = 0");
+                   return;
+               }
 
-                this.BeginInvokeLambda(() =>
-                {
-                    RollBack rolleback = new RollBack(versionList);
-                    var r = rolleback.ShowDialog();
-                    if (r == DialogResult.Cancel)
-                    {
-                        this.nlog_docker.Info($"rollback canceled!");
-                        return;
-                    }
-                    else
-                    {
-                        PrintCommonLog(this.nlog_docker);
-                        this.nlog_docker.Info("Start rollBack from version:" + rolleback.SelectRollBackVersion);
-                        this.tabControl_docker.SelectedIndex = 0;
-                        DoRollBack(serverList, ENTRYPOINT, SDKVersion, rolleback.SelectRollBackVersion);
-                    }
-                });
+               this.BeginInvokeLambda(() =>
+               {
+                   RollBack rolleback = new RollBack(versionList);
+                   var r = rolleback.ShowDialog();
+                   if (r == DialogResult.Cancel)
+                   {
+                       this.nlog_docker.Info($"rollback canceled!");
+                       return;
+                   }
+                   else
+                   {
+                       PrintCommonLog(this.nlog_docker);
+                       this.nlog_docker.Info("Start rollBack from version:" + rolleback.SelectRollBackVersion);
+                       this.tabControl_docker.SelectedIndex = 0;
+                       DoRollBack(serverList, ENTRYPOINT, SDKVersion, rolleback.SelectRollBackVersion);
+                   }
+               });
 
 
-            }).Start();
+           }).Start();
 
 
 
@@ -4010,166 +4467,166 @@ namespace AntDeployWinform.Winform
         {
 
 
-            new Task( () =>
-            {
+            new Task(() =>
+           {
 
-                this.nlog_docker.Info($"-----------------Rollback Start[Ver:{Vsix.VERSION}]-----------------");
-                try
-                {
-                    EnableForDocker(false, true);
-                    var allSuccess = true;
-                    var failCount = 0;
-                    foreach (var server in serverList)
-                    {
-                        this.nlog_docker.Info("ignore build...");
-                        BuildEnd(this.tabPage_docker, server.Host);
-                        this.nlog_docker.Info("ignore package...");
-                        UpdatePackageProgress(this.tabPage_docker, server.Host, 100);
+               this.nlog_docker.Info($"-----------------Rollback Start[Ver:{Vsix.VERSION}]-----------------");
+               try
+               {
+                   EnableForDocker(false, true);
+                   var allSuccess = true;
+                   var failCount = 0;
+                   foreach (var server in serverList)
+                   {
+                       this.nlog_docker.Info("ignore build...");
+                       BuildEnd(this.tabPage_docker, server.Host);
+                       this.nlog_docker.Info("ignore package...");
+                       UpdatePackageProgress(this.tabPage_docker, server.Host, 100);
 
-                        #region 参数Check
+                       #region 参数Check
 
-                        if (string.IsNullOrEmpty(server.Host))
-                        {
-                            this.nlog_docker.Error("Server Host is Empty");
-                            UploadError(this.tabPage_docker);
-                            allSuccess = false;
-                            failCount++;
-                            continue;
-                        }
+                       if (string.IsNullOrEmpty(server.Host))
+                       {
+                           this.nlog_docker.Error("Server Host is Empty");
+                           UploadError(this.tabPage_docker);
+                           allSuccess = false;
+                           failCount++;
+                           continue;
+                       }
 
-                        if (string.IsNullOrEmpty(server.UserName))
-                        {
-                            this.nlog_docker.Error("Server UserName is Empty");
-                            UploadError(this.tabPage_docker);
-                            allSuccess = false;
-                            failCount++;
-                            continue;
-                        }
+                       if (string.IsNullOrEmpty(server.UserName))
+                       {
+                           this.nlog_docker.Error("Server UserName is Empty");
+                           UploadError(this.tabPage_docker);
+                           allSuccess = false;
+                           failCount++;
+                           continue;
+                       }
 
-                        if (string.IsNullOrEmpty(server.Pwd))
-                        {
-                            this.nlog_docker.Error("Server Pwd is Empty");
-                            UploadError(this.tabPage_docker);
-                            allSuccess = false;
-                            failCount++;
-                            continue;
-                        }
+                       if (string.IsNullOrEmpty(server.Pwd))
+                       {
+                           this.nlog_docker.Error("Server Pwd is Empty");
+                           UploadError(this.tabPage_docker);
+                           allSuccess = false;
+                           failCount++;
+                           continue;
+                       }
 
-                        var pwd = CodingHelper.AESDecrypt(server.Pwd);
-                        if (string.IsNullOrEmpty(pwd))
-                        {
-                            this.nlog_docker.Error("Server Pwd is Empty");
-                            UploadError(this.tabPage_docker);
-                            allSuccess = false;
-                            failCount++;
-                            continue;
-                        }
+                       var pwd = CodingHelper.AESDecrypt(server.Pwd);
+                       if (string.IsNullOrEmpty(pwd))
+                       {
+                           this.nlog_docker.Error("Server Pwd is Empty");
+                           UploadError(this.tabPage_docker);
+                           allSuccess = false;
+                           failCount++;
+                           continue;
+                       }
 
-                        this.nlog_docker.Info("ignore upload...");
-                        UpdateUploadProgress(this.tabPage_docker, server.Host, 100);
+                       this.nlog_docker.Info("ignore upload...");
+                       UpdateUploadProgress(this.tabPage_docker, server.Host, 100);
 
-                        #endregion
+                       #endregion
 
-                        var hasError = false;
-                        using (SSHClient sshClient = new SSHClient(server.Host, server.UserName, pwd, (str, logLevel) =>
-                        {
-                            if (logLevel == NLog.LogLevel.Error)
-                            {
-                                hasError = true;
-                                allSuccess = false;
-                                this.nlog_docker.Error("【Server】" + str);
-                            }
-                            else
-                            {
-                                this.nlog_docker.Info("【Server】" + str);
-                            }
-                        }, (uploadValue) => { UpdateUploadProgress(this.tabPage_docker, server.Host, uploadValue); })
-                        {
-                            NetCoreENTRYPOINT = ENTRYPOINT,
-                            NetCoreVersion = SDKVersion,
-                            NetCorePort = DeployConfig.DockerConfig.Prot,
-                            NetCoreEnvironment = DeployConfig.DockerConfig.AspNetCoreEnv,
-                        })
-                        {
-                            var connectResult = sshClient.Connect();
-                            if (!connectResult)
-                            {
-                                this.nlog_docker.Error($"RollBack Host:{getHostDisplayName(server)} Fail: connect fail");
-                                UploadError(this.tabPage_docker);
-                                allSuccess = false;
-                                failCount++;
-                                continue;
-                            }
+                       var hasError = false;
+                       using (SSHClient sshClient = new SSHClient(server.Host, server.UserName, pwd, (str, logLevel) =>
+                       {
+                           if (logLevel == NLog.LogLevel.Error)
+                           {
+                               hasError = true;
+                               allSuccess = false;
+                               this.nlog_docker.Error("【Server】" + str);
+                           }
+                           else
+                           {
+                               this.nlog_docker.Info("【Server】" + str);
+                           }
+                       }, (uploadValue) => { UpdateUploadProgress(this.tabPage_docker, server.Host, uploadValue); })
+                       {
+                           NetCoreENTRYPOINT = ENTRYPOINT,
+                           NetCoreVersion = SDKVersion,
+                           NetCorePort = DeployConfig.DockerConfig.Prot,
+                           NetCoreEnvironment = DeployConfig.DockerConfig.AspNetCoreEnv,
+                       })
+                       {
+                           var connectResult = sshClient.Connect();
+                           if (!connectResult)
+                           {
+                               this.nlog_docker.Error($"RollBack Host:{getHostDisplayName(server)} Fail: connect fail");
+                               UploadError(this.tabPage_docker);
+                               allSuccess = false;
+                               failCount++;
+                               continue;
+                           }
 
-                            try
-                            {
-                                sshClient.RollBack(rollbackVersion);
-                                if (hasError)
-                                {
-                                    allSuccess = false;
-                                    failCount++;
-                                    UpdateDeployProgress(this.tabPage_docker, server.Host, false);
-                                }
-                                else
-                                {
-                                    //fire the website
-                                    if (!string.IsNullOrEmpty(server.DockerFireUrl))
-                                    {
-                                        LogEventInfo publisEvent22 = new LogEventInfo(LogLevel.Info, "", "Start to Fire Url,TimeOut：10senconds  ==> ");
-                                        publisEvent22.Properties["ShowLink"] = server.DockerFireUrl;
-                                        publisEvent22.LoggerName = "rich_docker_log";
-                                        this.nlog_docker.Log(publisEvent22);
+                           try
+                           {
+                               sshClient.RollBack(rollbackVersion);
+                               if (hasError)
+                               {
+                                   allSuccess = false;
+                                   failCount++;
+                                   UpdateDeployProgress(this.tabPage_docker, server.Host, false);
+                               }
+                               else
+                               {
+                                   //fire the website
+                                   if (!string.IsNullOrEmpty(server.DockerFireUrl))
+                                   {
+                                       LogEventInfo publisEvent22 = new LogEventInfo(LogLevel.Info, "", "Start to Fire Url,TimeOut：10senconds  ==> ");
+                                       publisEvent22.Properties["ShowLink"] = server.DockerFireUrl;
+                                       publisEvent22.LoggerName = "rich_docker_log";
+                                       this.nlog_docker.Log(publisEvent22);
 
-                                        var fireRt = WebUtil.IsHttpGetOk(server.DockerFireUrl, this.nlog_docker);
-                                        if (fireRt)
-                                        {
-                                            UpdateDeployProgress(this.tabPage_docker, server.Host, true);
-                                            this.nlog_docker.Info($"Host:{getHostDisplayName(server)},Success Fire Url");
-                                        }
-                                        else
-                                        {
-                                            UpdateDeployProgress(this.tabPage_docker, server.Host, false);
-                                            allSuccess = false;
-                                            failCount++;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        UpdateDeployProgress(this.tabPage_docker, server.Host, true);
-                                    }
-                                }
+                                       var fireRt = WebUtil.IsHttpGetOk(server.DockerFireUrl, this.nlog_docker);
+                                       if (fireRt)
+                                       {
+                                           UpdateDeployProgress(this.tabPage_docker, server.Host, true);
+                                           this.nlog_docker.Info($"Host:{getHostDisplayName(server)},Success Fire Url");
+                                       }
+                                       else
+                                       {
+                                           UpdateDeployProgress(this.tabPage_docker, server.Host, false);
+                                           allSuccess = false;
+                                           failCount++;
+                                       }
+                                   }
+                                   else
+                                   {
+                                       UpdateDeployProgress(this.tabPage_docker, server.Host, true);
+                                   }
+                               }
 
 
-                                this.nlog_docker.Info($"RollBack Host: {getHostDisplayName(server)} End");
-                            }
-                            catch (Exception ex)
-                            {
-                                allSuccess = false;
-                                failCount++;
-                                this.nlog_docker.Error($"RollBack Host:{getHostDisplayName(server)} Fail:" + ex.Message);
-                                UpdateDeployProgress(this.tabPage_docker, server.Host, false);
-                            }
-                        }
+                               this.nlog_docker.Info($"RollBack Host: {getHostDisplayName(server)} End");
+                           }
+                           catch (Exception ex)
+                           {
+                               allSuccess = false;
+                               failCount++;
+                               this.nlog_docker.Error($"RollBack Host:{getHostDisplayName(server)} Fail:" + ex.Message);
+                               UpdateDeployProgress(this.tabPage_docker, server.Host, false);
+                           }
+                       }
 
-                    }
+                   }
 
-                    if (allSuccess)
-                    {
-                        this.nlog_docker.Info("RollBack Version：" + rollbackVersion);
-                    }
+                   if (allSuccess)
+                   {
+                       this.nlog_docker.Info("RollBack Version：" + rollbackVersion);
+                   }
 
-                    this.nlog_docker.Info($"-----------------Rollback End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------"); ;
-                }
-                catch (Exception ex1)
-                {
-                    this.nlog_docker.Error(ex1);
-                }
-                finally
-                {
-                    EnableForDocker(true);
-                }
+                   this.nlog_docker.Info($"-----------------Rollback End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------"); ;
+               }
+               catch (Exception ex1)
+               {
+                   this.nlog_docker.Error(ex1);
+               }
+               finally
+               {
+                   EnableForDocker(true);
+               }
 
-            }).Start();
+           }).Start();
         }
 
         private void EnableForDocker(bool flag, bool ignore = false)
@@ -4459,5 +4916,7 @@ namespace AntDeployWinform.Winform
             ProcessStartInfo sInfo = new ProcessStartInfo("https://github.com/yuzd/AntDeployAgent/issues/16");
             Process.Start(sInfo);
         }
+
+
     }
 }

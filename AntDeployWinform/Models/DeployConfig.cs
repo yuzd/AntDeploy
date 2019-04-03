@@ -16,7 +16,9 @@ namespace AntDeployWinform.Models
     {
         public int LastTabIndex { get; set; }
         public bool IISEnableIncrement { get; set; }
+        public bool IISEnableSelectDeploy { get; set; }
         public bool WindowsServiceEnableIncrement { get; set; }
+        public bool WindowsServiceEnableSelectDeploy { get; set; }
         public string NetCorePublishMode { get; set; }
 
 

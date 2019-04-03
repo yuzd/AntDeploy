@@ -139,6 +139,12 @@
     <Compile Include="Winform\RollBack.Designer.cs">
       <DependentUpon>RollBack.cs</DependentUpon>
     </Compile>
+    <Compile Include="Winform\SelectFile.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Winform\SelectFile.designer.cs">
+      <DependentUpon>SelectFile.cs</DependentUpon>
+    </Compile>
     <Compile Include="Winform\SelectProject.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -178,6 +184,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Winform\RollBack.resx">
       <DependentUpon>RollBack.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Winform\SelectFile.resx">
+      <DependentUpon>SelectFile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Winform\SelectFile.zh-CN.resx">
+      <DependentUpon>SelectFile.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Winform\SelectProject.resx">
       <DependentUpon>SelectProject.cs</DependentUpon>
