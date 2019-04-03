@@ -1528,6 +1528,20 @@ namespace AntDeployWinform.Winform
                         }
                         gitChangeFileCount = fileList.Count;
                         this.nlog_iis.Info("【git】Increment package file count:" + gitChangeFileCount);
+
+                        if (this.PluginConfig.IISEnableSelectDeploy)
+                        {
+                            this.nlog_iis.Info("-----------------Select File Start-----------------");
+                            this.BeginInvokeLambda(() =>
+                            {
+                                var slectFileForm = new SelectFile(fileList, publishPath);
+                                slectFileForm.ShowDialog();
+                                // ReSharper disable once AccessToDisposedClosure
+                                DoSelectDeployIIS(slectFileForm.SelectedFileList, publishPath, serverList, backUpIgnoreList, Port, PoolName, PhysicalPath,gitModel);
+                            });
+                            return;
+                        }
+
                         try
                         {
                             zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, fileList, CompressionLevel.Optimal,
@@ -1551,7 +1565,7 @@ namespace AntDeployWinform.Winform
                         {
                             var slectFileForm = new SelectFile(publishPath);
                             slectFileForm.ShowDialog();
-                            DoSelectDeployIIS(slectFileForm.SelectedFileList, publishPath, serverList, backUpIgnoreList, Port, PoolName, PhysicalPath);
+                            DoSelectDeployIIS(slectFileForm.SelectedFileList, publishPath, serverList, backUpIgnoreList, Port, PoolName, PhysicalPath,  null);
                         });
 
 
@@ -1750,7 +1764,7 @@ namespace AntDeployWinform.Winform
 
         }
 
-        private void DoSelectDeployIIS(List<string> fileList, string publishPath, List<Server> serverList, List<string> backUpIgnoreList, string Port, string PoolName, string PhysicalPath)
+        private void DoSelectDeployIIS(List<string> fileList, string publishPath, List<Server> serverList, List<string> backUpIgnoreList, string Port, string PoolName, string PhysicalPath, GitClient gitModel)
         {
             new Task(async () =>
             {
@@ -1920,6 +1934,7 @@ namespace AntDeployWinform.Winform
                     if (allSuccess)
                     {
                         this.nlog_iis.Info("Deploy Version：" + dateTimeFolderName);
+                        if (gitModel != null) gitModel.SubmitSelectedChanges(fileList,publishPath);
                     }
 
                     LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local publish folder  ==> ");
@@ -1940,6 +1955,7 @@ namespace AntDeployWinform.Winform
                     ProgressPercentage = 0;
                     ProgressCurrentHost = null;
                     Enable(true);
+                    gitModel?.Dispose();
                 }
 
 
@@ -2467,20 +2483,20 @@ namespace AntDeployWinform.Winform
         private void checkBox_Increment_iis_CheckedChanged(object sender, EventArgs e)
         {
             PluginConfig.IISEnableIncrement = checkBox_Increment_iis.Checked;
-            if (PluginConfig.IISEnableIncrement)
-            {
-                checkBox_select_deploy_iis.Checked = false;
-                PluginConfig.IISEnableSelectDeploy = false;
-            }
+            //if (PluginConfig.IISEnableIncrement)
+            //{
+            //    checkBox_select_deploy_iis.Checked = false;
+            //    PluginConfig.IISEnableSelectDeploy = false;
+            //}
         }
         private void checkBox_selectDeplot_iis_CheckedChanged(object sender, EventArgs e)
         {
             PluginConfig.IISEnableSelectDeploy = checkBox_select_deploy_iis.Checked;
-            if (PluginConfig.IISEnableSelectDeploy)
-            {
-                checkBox_Increment_iis.Checked = false;
-                PluginConfig.IISEnableIncrement = false;
-            }
+            //if (PluginConfig.IISEnableSelectDeploy)
+            //{
+            //    checkBox_Increment_iis.Checked = false;
+            //    PluginConfig.IISEnableIncrement = false;
+            //}
         }
 
         #endregion
@@ -2899,6 +2915,21 @@ namespace AntDeployWinform.Winform
                         }
                         gitChangeFileCount = fileList.Count;
                         this.nlog_windowservice.Info("【git】Increment package file count:" + gitChangeFileCount);
+
+                        if (PluginConfig.WindowsServiceEnableSelectDeploy)
+                        {
+                            this.nlog_windowservice.Info("-----------------Select File Start-----------------");
+                            this.BeginInvokeLambda(() =>
+                            {
+                                var slectFileForm = new SelectFile(fileList, publishPath);
+                                slectFileForm.ShowDialog();
+                                // ReSharper disable once AccessToDisposedClosure
+                                DoWindowsServiceSelectDeploy(slectFileForm.SelectedFileList, publishPath, serverList, serviceName, isProjectInstallService, execFilePath, PhysicalPath, backUpIgnoreList, gitModel);
+                            });
+                            return;
+                        }
+                        
+
                         try
                         {
                             zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, fileList, CompressionLevel.Optimal,
@@ -2915,6 +2946,9 @@ namespace AntDeployWinform.Winform
                             PackageError(this.tabPage_windows_service);
                             return;
                         }
+
+
+
                     }
                     else if (PluginConfig.WindowsServiceEnableSelectDeploy)
                     {
@@ -2923,10 +2957,8 @@ namespace AntDeployWinform.Winform
                         {
                             var slectFileForm = new SelectFile(publishPath);
                             slectFileForm.ShowDialog();
-                            DoWindowsServiceSelectDeploy(slectFileForm.SelectedFileList, publishPath, serverList,serviceName,isProjectInstallService,execFilePath,PhysicalPath,backUpIgnoreList);
+                            DoWindowsServiceSelectDeploy(slectFileForm.SelectedFileList, publishPath, serverList,serviceName,isProjectInstallService,execFilePath,PhysicalPath,backUpIgnoreList,null);
                         });
-
-
                         return;
                     }
 
@@ -3123,7 +3155,7 @@ namespace AntDeployWinform.Winform
         }
 
 
-        private void DoWindowsServiceSelectDeploy(List<string> fileList,string publishPath,List<Server> serverList,string serviceName,bool isProjectInstallService,string execFilePath,string PhysicalPath,List<string> backUpIgnoreList)
+        private void DoWindowsServiceSelectDeploy(List<string> fileList,string publishPath,List<Server> serverList,string serviceName,bool isProjectInstallService,string execFilePath,string PhysicalPath,List<string> backUpIgnoreList, GitClient gitModel)
         {
             new Task(async () =>
             {
@@ -3295,6 +3327,7 @@ namespace AntDeployWinform.Winform
                     if (allSuccess)
                     {
                         this.nlog_windowservice.Info("Deploy Version：" + dateTimeFolderName);
+                        if (gitModel != null) gitModel.SubmitSelectedChanges(fileList,publishPath);
                     }
 
                     LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local publish folder  ==> ");
@@ -3312,6 +3345,7 @@ namespace AntDeployWinform.Winform
                     ProgressPercentageForWindowsService = 0;
                     ProgressCurrentHostForWindowsService = null;
                     EnableForWindowsService(true);
+                    gitModel?.Dispose();
                 }
             }).Start();
         }
@@ -3893,20 +3927,20 @@ namespace AntDeployWinform.Winform
         private void checkBox_Increment_window_service_CheckedChanged(object sender, EventArgs e)
         {
             PluginConfig.WindowsServiceEnableIncrement = checkBox_Increment_window_service.Checked;
-            if (PluginConfig.WindowsServiceEnableIncrement)
-            {
-                checkBox_select_deploy_service.Checked = false;
-                PluginConfig.WindowsServiceEnableSelectDeploy = false;
-            }
+            //if (PluginConfig.WindowsServiceEnableIncrement)
+            //{
+            //    checkBox_select_deploy_service.Checked = false;
+            //    PluginConfig.WindowsServiceEnableSelectDeploy = false;
+            //}
         }
         private void checkBox_SelectDeploy_window_service_CheckedChanged(object sender, EventArgs e)
         {
             PluginConfig.WindowsServiceEnableSelectDeploy = checkBox_select_deploy_service.Checked;
-            if (PluginConfig.WindowsServiceEnableSelectDeploy)
-            {
-                checkBox_Increment_window_service.Checked = false;
-                PluginConfig.WindowsServiceEnableIncrement = false;
-            }
+            //if (PluginConfig.WindowsServiceEnableSelectDeploy)
+            //{
+            //    checkBox_Increment_window_service.Checked = false;
+            //    PluginConfig.WindowsServiceEnableIncrement = false;
+            //}
         }
         #endregion
 

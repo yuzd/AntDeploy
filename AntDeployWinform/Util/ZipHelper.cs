@@ -496,7 +496,7 @@ namespace AntDeployWinform.Util
             }
         }
 
-        private static string EntryFromPath(string entry, int offset, int length)
+        public static string EntryFromPath(string entry, int offset, int length)
         {
             for (; length > 0 && ((int)entry[offset] == (int)Path.DirectorySeparatorChar || (int)entry[offset] == (int)Path.AltDirectorySeparatorChar); --length)
                 ++offset;

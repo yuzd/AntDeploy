@@ -188,6 +188,31 @@ namespace AntDeployWinform.Util
             _logger?.Info($"【git】commit success,file count:{count}");
         }
 
+        public void SubmitSelectedChanges(List<string> fileList,string dir)
+        {
+            _logger?.Info("【git】commit start");
+            try
+            {
+                //StageIgnoreFile();
+
+                //LibGit2Sharp.Commands.Stage(_repository, "*");
+
+                foreach (var file in fileList)
+                {
+                    int length = file.Length - dir.Length;
+                    var commitFile = ZipHelper.EntryFromPath(file, dir.Length, length);
+                    _repository.Index.Add(commitFile);
+                    _repository.Index.Write();
+                }
+            }
+            catch (Exception ex1)
+            {
+                _logger?.Warn("【git】stage err:" + ex1.Message);
+            }
+
+            CommitChanges(DateTime.Now.ToString("yyyyMMddHHmms"));
+            _logger?.Info($"【git】commit success,file count:{fileList.Count}");
+        }
         /// <summary>
         /// 提交被忽略的文件列表
         /// </summary>

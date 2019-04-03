@@ -16,7 +16,7 @@ namespace AntDeployWinform.Winform
     public partial class SelectFile : Form
     {
 
-        public SelectFile(string dir)
+        public SelectFile()
         {
             InitializeComponent();
             Assembly assembly = typeof(Deploy).Assembly;
@@ -25,7 +25,82 @@ namespace AntDeployWinform.Winform
                 if (stream != null) this.Icon = new Icon(stream);
             }
 
+            // Setting Inital Value of Progress Bar
+            progressBar1.Value = 0;
+            // Clear All Nodes if Already Exists
+            treeView1.Nodes.Clear();
+            treeView1.DrawMode = TreeViewDrawMode.OwnerDrawAll;
+            treeView1.CheckBoxes = true;
+            treeView1.Enabled = false;
+
+        }
+        public SelectFile(string dir) : this()
+        {
             LoadDirectory(dir);
+        }
+
+        public SelectFile(List<string> fileList,string dir) : this()
+        {
+            var list = fileList.Select(r => '/' + r).ToList();
+            progressBar1.Maximum = list.Count;
+            DirectoryInfo di = new DirectoryInfo(dir);
+            TreeNode tds = treeView1.Nodes.Add("/",di.Name);
+            tds.Tag = di.FullName;
+            tds.ImageIndex = 0;
+            tds.Expand();
+            //获取变更的文件路径列表
+            PopulateTreeView(this.treeView1, dir, list, tds);
+        }
+        private void PopulateTreeView(TreeView treeView,string projectPath, IEnumerable<string> paths, TreeNode lastNode)
+        {
+            string subPathAgg;
+            foreach (var path in paths)
+            {
+                UpdateProgress();
+                subPathAgg = string.Empty;
+                foreach (string subPath in path.Split('/'))
+                {
+                    subPathAgg += subPath + '/';
+                    TreeNode[] nodes = treeView.Nodes.Find(subPathAgg, true);
+                    if (nodes.Length == 0)
+                    {
+                        if (lastNode == null)
+                        {
+                            lastNode = treeView.Nodes.Add(subPathAgg, subPath);
+                        }
+                        else
+                        {
+                            lastNode = lastNode.Nodes.Add(subPathAgg, subPath);
+                        }
+
+                        var path2 = subPathAgg;
+                        if (path2.StartsWith("/"))
+                        {
+                            path2 = path2.Substring(1);
+                        }
+
+                        if (path2.EndsWith("/"))
+                        {
+                            path2 = path2.Substring(0, path2.Length - 1);
+                        }
+                        var fullPath = Path.Combine(projectPath, path2.Replace("/","\\"));
+                        if (File.Exists(fullPath))
+                        {
+                            lastNode.Tag = fullPath;
+                            lastNode.ImageIndex = 1;
+                        }
+                        else
+                        {
+                            lastNode.Tag = fullPath;
+                            lastNode.ImageIndex = 0;
+                        }
+                    }
+                    else
+                    {
+                        lastNode = nodes[0];
+                    }
+                }
+            }
         }
 
         public List<string> SelectedFileList { get; set; }
@@ -44,13 +119,6 @@ namespace AntDeployWinform.Winform
 
         private void LoadDirectory(string dir)
         {
-            // Setting Inital Value of Progress Bar
-            progressBar1.Value = 0;
-            // Clear All Nodes if Already Exists
-            treeView1.Nodes.Clear();
-            treeView1.DrawMode = TreeViewDrawMode.OwnerDrawAll;
-            treeView1.CheckBoxes = true;
-            treeView1.Enabled = false;
             DirectoryInfo di = new DirectoryInfo(dir);
             //Setting ProgressBar Maximum Value
             progressBar1.Maximum = Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories).Length + Directory.GetDirectories(dir, "**", SearchOption.AllDirectories).Length;
@@ -58,8 +126,8 @@ namespace AntDeployWinform.Winform
             var gitPath = Path.Combine(dir, ".git");
             if (Directory.Exists(gitPath))
             {
-               var gistFilecounts =  Directory.GetFiles(gitPath, "*.*", SearchOption.AllDirectories).Length + Directory.GetDirectories(gitPath, "**", SearchOption.AllDirectories).Length;
-               progressBar1.Maximum = progressBar1.Maximum - gistFilecounts-1;
+                var gistFilecounts = Directory.GetFiles(gitPath, "*.*", SearchOption.AllDirectories).Length + Directory.GetDirectories(gitPath, "**", SearchOption.AllDirectories).Length;
+                progressBar1.Maximum = progressBar1.Maximum - gistFilecounts - 1;
             }
             TreeNode tds = treeView1.Nodes.Add(di.Name);
             tds.Tag = di.FullName;
@@ -78,7 +146,7 @@ namespace AntDeployWinform.Winform
             // Loop through them to see if they have any other subdirectories
             foreach (string subdirectory in subdirectoryEntries)
             {
-                if(subdirectory.EndsWith(".git"))continue;
+                if (subdirectory.EndsWith(".git")) continue;
                 DirectoryInfo di = new DirectoryInfo(subdirectory);
                 TreeNode tds = td.Nodes.Add(di.Name);
                 tds.Tag = di.FullName;
@@ -196,6 +264,6 @@ namespace AntDeployWinform.Winform
             e.DrawDefault = true;
         }
 
-        
+
     }
 }
