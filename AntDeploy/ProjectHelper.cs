@@ -84,7 +84,6 @@ namespace yuzd.AntDeploy
         // https://www.mztools.com/articles/2014/MZ2014006.aspx
         private static bool IsCpsProject(IVsHierarchy hierarchy)
         {
-            Microsoft.Requires.NotNull(hierarchy, nameof(hierarchy));
             return hierarchy.IsCapabilityMatch("CPS");
         }
 
