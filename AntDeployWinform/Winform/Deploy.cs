@@ -1436,7 +1436,7 @@ namespace AntDeployWinform.Winform
                     {
                         //执行 publish
                         var isSuccess = CommandHelper.RunDotnetExe(ProjectPath, ProjectFolderPath, path.Replace("\\\\", "\\"),
-                            $"publish -c Release{PluginConfig.GetNetCorePublishRuntimeArg()}", this.nlog_iis);
+                            $"publish \"{ProjectPath}\" -c Release{PluginConfig.GetNetCorePublishRuntimeArg()}", this.nlog_iis);
 
                         if (!isSuccess)
                         {
@@ -2788,7 +2788,7 @@ namespace AntDeployWinform.Winform
                         }
                         //执行 publish
                         var isSuccess = CommandHelper.RunDotnetExe(ProjectPath, ProjectFolderPath, path.Replace("\\\\", "\\"),
-                    $"publish -c Release{runtime}", nlog_windowservice);
+                    $"publish \"{ProjectPath}\" -c Release{runtime}", nlog_windowservice);
 
                         if (!isSuccess)
                         {
@@ -4089,7 +4089,7 @@ namespace AntDeployWinform.Winform
                    var path = publishPath + "\\";
                    //执行 publish
                    var isSuccess = CommandHelper.RunDotnetExe(ProjectPath, ProjectFolderPath, path.Replace("\\\\", "\\"),
-              $"publish -c Release{PluginConfig.GetNetCorePublishRuntimeArg()}", nlog_docker);
+              $"publish \"{ProjectPath}\" -c Release{PluginConfig.GetNetCorePublishRuntimeArg()}", nlog_docker);
 
                    if (!isSuccess)
                    {

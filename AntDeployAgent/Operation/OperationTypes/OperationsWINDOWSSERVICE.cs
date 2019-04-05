@@ -5,13 +5,14 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using AntDeployAgent.Util;
 using AntDeployAgentWindows.Util;
 
 namespace AntDeployAgentWindows.Operation.OperationTypes
 {
     class OperationsWINDOWSSERVICE : OperationsBase
     {
-        
+        private int retryTimes = 0;
         public OperationsWINDOWSSERVICE(Arguments args,Action<string> log)
             : base(args,log)
         {
@@ -75,7 +76,38 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
 
         public override void Deploy()
         {
-            base.Deploy();
+            try
+            {
+                base.Deploy();
+            }
+            catch (Exception exception)
+            {
+                logger("Copy File Fail :" + exception.Message);
+                retryTimes++;
+                logger("Wait 5Senconds to Retry :" + retryTimes);
+                Thread.Sleep(5000);
+                if (retryTimes > 3)
+                {
+                    //执行终极方法 用sc命令执行
+                    var r1 = ProcessHepler.RuSCCmd($"stop \"{this.args.AppName}\"", logger);
+                    logger($"sc stop {this.args.AppName} ===> {(r1 ? "Success" : "Fail")}");
+                    logger("Wait 5Senconds to Try deploy again");
+                    Thread.Sleep(5000);
+                    try
+                    {
+                        base.Deploy();
+                        return;
+                    }
+                    catch (Exception)
+                    {
+                        logger("【Error】Retry Copy Limit ");
+                        throw;
+                    }
+
+                }
+
+                Deploy();
+            }
         }
 
         public override void Start()
@@ -132,6 +164,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
 
         public override void Execute()
         {
+            retryTimes = 0;
             base.Execute();
         }
 

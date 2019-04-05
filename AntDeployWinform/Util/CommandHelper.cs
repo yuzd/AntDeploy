@@ -85,7 +85,7 @@ namespace AntDeployWinform.Util
                 arguments += " -o \"" + publishPath + "\"";
             }
             logger.Info($"current project Path:{projectPath}");
-            return RunDotnetExternalExe(fileName, "dotnet", arguments, logger);
+            return RunDotnetExternalExe(string.Empty, $"dotnet", arguments, logger);
         }
 
         /// <summary>

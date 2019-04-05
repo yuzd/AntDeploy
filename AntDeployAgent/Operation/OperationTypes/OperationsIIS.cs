@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using AntDeployAgent.Util;
 using AntDeployAgentWindows.Util;
 using Microsoft.Web.Administration;
 
@@ -114,11 +115,11 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
                 if (retryTimes > 3)
                 {
                     //执行终极方法
-                    var r1 = IISHelper.RunAppCmd($"recycle apppool /apppool.name:\"{this.args.ApplicationPoolName}\"", logger);
+                    var r1 = ProcessHepler.RunAppCmd($"recycle apppool /apppool.name:\"{this.args.ApplicationPoolName}\"", logger);
                     logger($"recycle apppool /apppool.name:{this.args.ApplicationPoolName} ===> {(r1 ? "Success" : "Fail")}");
-                    var r2 = IISHelper.RunAppCmd($"stop apppool /apppool.name:\"{this.args.ApplicationPoolName}\"", logger);
+                    var r2 = ProcessHepler.RunAppCmd($"stop apppool /apppool.name:\"{this.args.ApplicationPoolName}\"", logger);
                     logger($"stop apppool /apppool.name:{this.args.ApplicationPoolName} ===> {(r2 ? "Success" : "Fail")}");
-                    var r3 = IISHelper.RunAppCmd($"stop site /site.name:\"{this.args.SiteName}\"", logger);
+                    var r3 = ProcessHepler.RunAppCmd($"stop site /site.name:\"{this.args.SiteName}\"", logger);
                     logger($"stop site /site.name:{this.args.SiteName} ===> {(r3 ? "Success" : "Fail")}");
 
                     logger("Wait 5Senconds to Try deploy again");
