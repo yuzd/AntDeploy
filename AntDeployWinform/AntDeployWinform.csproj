@@ -133,6 +133,12 @@
     <Compile Include="Winform\Deploy.Designer.cs">
       <DependentUpon>Deploy.cs</DependentUpon>
     </Compile>
+    <Compile Include="Winform\InputDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Winform\InputDialog.Designer.cs">
+      <DependentUpon>InputDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Winform\RollBack.cs">
       <SubType>Form</SubType>
     </Compile>
