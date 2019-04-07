@@ -19,7 +19,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
         public override string ProviderName => "windowService";
         public override string ProjectName => _serviceName;
-
+        public override string ProjectPublishFolder => _projectPublishFolder;
         public override string RollBack()
         {
             try

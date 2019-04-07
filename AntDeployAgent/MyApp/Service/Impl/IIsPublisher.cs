@@ -26,11 +26,10 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
         private bool _isIncrement;//是否增量
         private bool _isNoStopWebSite;//是否需要停止website
         private string _physicalPath;//指定的创建的时候用的服务器路径
-        private FormHandler _formHandler;
 
         public override string ProviderName => "iis";
         public override string ProjectName => _projectName;
-
+        public override string ProjectPublishFolder => _projectPublishFolder;
         public override string DeployExcutor(FormHandler.FormItem fileItem)
         {
             var projectPath = Path.Combine(Setting.PublishIIsPathFolder, _projectName);
@@ -323,7 +322,6 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
         public override string CheckData(FormHandler formHandler)
         {
-            _formHandler = formHandler;
             var sdkType = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("sdkType"));
             if (sdkType == null || string.IsNullOrEmpty(sdkType.TextValue))
             {

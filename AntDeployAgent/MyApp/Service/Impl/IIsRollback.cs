@@ -21,6 +21,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
         public override string ProviderName => "iis";
         public override string ProjectName => _projectName;
+        public override string ProjectPublishFolder => _projectPublishFolder;
 
         public override string RollBack()
         {

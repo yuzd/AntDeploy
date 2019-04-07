@@ -26,6 +26,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
         private string _physicalPath;//指定的创建的时候用的服务器路径
         public override string ProviderName => "windowService";
         public override string ProjectName => _serviceName;
+        public override string ProjectPublishFolder => _projectPublishFolder;
 
         public override string DeployExcutor(FormHandler.FormItem fileItem)
         {
