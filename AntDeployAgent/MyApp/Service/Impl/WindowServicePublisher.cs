@@ -15,6 +15,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
     {
         private string _sdkTypeName;
         private bool _isProjectInstallService;
+        private bool _isNoStopWebSite;
         private string _serviceName;
         private string _serviceExecName;
         private int _waitForServiceStopTimeOut = 15;
@@ -197,6 +198,12 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     BackUpIgnoreList = this._backUpIgnoreList
                 };
 
+                if (_isNoStopWebSite)
+                {
+                    args.NoStop = true;
+                    args.NoStart = true;
+                }
+
                 var ops = new OperationsWINDOWSSERVICE(args, Log);
 
                 try
@@ -310,6 +317,12 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 _isIncrement = true;
             }
 
+            var isNoStopWebSite = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("isNoStopWebSite"));
+            if (isNoStopWebSite != null && !string.IsNullOrEmpty(isNoStopWebSite.TextValue) && isNoStopWebSite.TextValue.ToLower().Equals("true"))
+            {
+                _isNoStopWebSite = true;
+            }  
+            
             var physicalPath = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("physicalPath"));
             if (physicalPath != null && !string.IsNullOrEmpty(physicalPath.TextValue))
             {

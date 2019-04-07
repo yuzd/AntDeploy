@@ -58,7 +58,6 @@ namespace AntDeployAgentWindows.Util
             {
                 return false;
             }
-
         }
 
         public static string ApplicationPoolStop(string applicationPoolName)
@@ -66,8 +65,16 @@ namespace AntDeployAgentWindows.Util
             try
             {
                 using (ServerManager iis = new ServerManager())
-                    iis.ApplicationPools[applicationPoolName].Stop();
+                {
+                    var pool = iis.ApplicationPools[applicationPoolName];
 
+                    if (pool == null || pool.State == ObjectState.Stopped)
+                    {
+                        return String.Empty;
+                    }
+
+                    pool.Stop();
+                }
                 return string.Empty;
             }
             catch (Exception ex)
@@ -87,7 +94,16 @@ namespace AntDeployAgentWindows.Util
             try
             {
                 using (ServerManager iis = new ServerManager())
-                    iis.ApplicationPools[applicationPoolName].Start();
+                {
+                    var pool = iis.ApplicationPools[applicationPoolName];
+
+                    if (pool == null || pool.State == ObjectState.Started)
+                    {
+                        return String.Empty;
+                    }
+
+                    pool.Start();
+                }
 
                 return string.Empty;
             }
@@ -102,7 +118,16 @@ namespace AntDeployAgentWindows.Util
             try
             {
                 using (ServerManager iis = new ServerManager())
-                    iis.Sites[siteName].Start();
+                {
+                    var site = iis.Sites[siteName];
+                    if (site == null || site.State == ObjectState.Started)
+                    {
+                        return string.Empty;
+                    }
+
+                    site.Start();
+                }
+
                 return string.Empty;
             }
             catch (Exception ex)
@@ -118,6 +143,10 @@ namespace AntDeployAgentWindows.Util
                 using (ServerManager iis = new ServerManager())
                 {
                     var site = iis.Sites[siteName];
+                    if (site == null || site.State == ObjectState.Stopped)
+                    {
+                        return string.Empty;
+                    }
                     site.Stop();
                     return string.Empty;
                 }
@@ -127,6 +156,7 @@ namespace AntDeployAgentWindows.Util
                 return ex.Message;
             }
         }
+
         public static bool IsWebsiteStop(string siteName)
         {
             using (ServerManager iis = new ServerManager())
@@ -142,7 +172,7 @@ namespace AntDeployAgentWindows.Util
         }
 
 
-        public static string InstallSite(string name, string siteLocation, string port = "80",string poolName=null,bool isnetcore = false)
+        public static string InstallSite(string name, string siteLocation, string port = "80", string poolName = null, bool isnetcore = false)
         {
             try
             {
@@ -161,6 +191,7 @@ namespace AntDeployAgentWindows.Util
                             newPool.ManagedPipelineMode = ManagedPipelineMode.Integrated;
                         }
                     }
+
                     mySite.ApplicationDefaults.ApplicationPoolName = string.IsNullOrEmpty(poolName) ? "DefaultAppPool" : poolName;
                     iisManager.CommitChanges();
                     return string.Empty;
@@ -172,7 +203,7 @@ namespace AntDeployAgentWindows.Util
             }
         }
 
-        public static string InstallVirtualSite(string sitename,string virtualPath, string siteLocation, string poolName = null,bool isnetcore=false)
+        public static string InstallVirtualSite(string sitename, string virtualPath, string siteLocation, string poolName = null, bool isnetcore = false)
         {
             try
             {
@@ -199,6 +230,7 @@ namespace AntDeployAgentWindows.Util
 
                         application.ApplicationPoolName = poolName;
                     }
+
                     //app.VirtualDirectories.Add(virtualPath, siteLocation);
                     iisManager.CommitChanges();
                     return string.Empty;
@@ -211,7 +243,7 @@ namespace AntDeployAgentWindows.Util
         }
 
 
-        public static Tuple<bool, bool,string> IsSiteExist(string name, string sitename)
+        public static Tuple<bool, bool, string> IsSiteExist(string name, string sitename)
         {
             try
             {
@@ -230,6 +262,7 @@ namespace AntDeployAgentWindows.Util
                 {
                     name = "Default Web Site";
                 }
+
                 var siteExist = false;
                 var visualExist = false;
                 using (ServerManager iis = new ServerManager())
@@ -245,17 +278,16 @@ namespace AntDeployAgentWindows.Util
                         {
                             visualExist = true;
                         }
-
                     }
-                    return new Tuple<bool, bool,string>(siteExist, visualExist,null);
+
+                    return new Tuple<bool, bool, string>(siteExist, visualExist, null);
                 }
             }
             catch (Exception ex)
             {
-                return new Tuple<bool, bool,string>(false, false,ex.Message);
+                return new Tuple<bool, bool, string>(false, false, ex.Message);
             }
         }
-
 
 
         public static Tuple<string, string, string> GetWebSiteLocationInIIS(string name, string sitename, Action<string> log)
@@ -285,6 +317,7 @@ namespace AntDeployAgentWindows.Util
                     {
                         return null;
                     }
+
                     if (site.Count > 1)
                     {
                         throw new Exception($"get website by name:{name} but found {site.Count} in iis.");
@@ -302,7 +335,6 @@ namespace AntDeployAgentWindows.Util
                         var virtualRoot = applicationRoot.VirtualDirectories.Single(v => v.Path == "/");
 
                         return new Tuple<string, string, string>(virtualRoot.PhysicalPath, target.Name, applicationRoot.ApplicationPoolName);
-
                     }
                 }
             }
@@ -320,12 +352,11 @@ namespace AntDeployAgentWindows.Util
             {
                 name = name.Replace(System.Char.ToString(c), "");
             }
+
             var aa = Regex.Replace(name, "[ \\[ \\] \\^ \\-_*×――(^)（^）$%~!@#$…&%￥—+=<>《》!！??？:：•`·、。，；,.;\"‘’“”-]", "");
             aa = aa.Replace(" ", "").Replace("　", "");
             aa = Regex.Replace(aa, @"[~!@#\$%\^&\*\(\)\+=\|\\\}\]\{\[:;<,>\?\/""]+", "");
             return aa;
         }
-
-        
     }
 }

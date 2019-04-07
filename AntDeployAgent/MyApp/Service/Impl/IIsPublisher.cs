@@ -24,6 +24,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
         private string _projectPublishFolder;
         private bool _isIncrement;//是否增量
+        private bool _isNoStopWebSite;//是否需要停止website
         private string _physicalPath;//指定的创建的时候用的服务器路径
         private FormHandler _formHandler;
 
@@ -256,9 +257,14 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     AppFolder = projectLocation.Item1,
                     DeployFolder = deployFolder,
                     SiteName = projectLocation.Item2,
-                    BackUpIgnoreList = this._backUpIgnoreList
+                    BackUpIgnoreList = this._backUpIgnoreList,
                 };
 
+                if (_isNoStopWebSite)
+                {
+                    args.NoStop = true;
+                    args.NoStart = true;
+                }
                 var ops = new OperationsIIS(args, Log);
 
                 try
@@ -375,6 +381,11 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 _isIncrement = true;
             }
 
+            var isNoStopWebSite = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("isNoStopWebSite"));
+            if (isNoStopWebSite != null && !string.IsNullOrEmpty(isNoStopWebSite.TextValue) && isNoStopWebSite.TextValue.ToLower().Equals("true"))
+            {
+                _isNoStopWebSite = true;
+            }   
             var physicalPath = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("physicalPath"));
             if (physicalPath != null && !string.IsNullOrEmpty(physicalPath.TextValue))
             {
