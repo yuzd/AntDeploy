@@ -188,6 +188,12 @@
     <EmbeddedResource Include="Winform\Deploy.zh.resx">
       <DependentUpon>Deploy.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Winform\InputDialog.resx">
+      <DependentUpon>InputDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Winform\InputDialog.zh-CN.resx">
+      <DependentUpon>InputDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Winform\RollBack.resx">
       <DependentUpon>RollBack.cs</DependentUpon>
     </EmbeddedResource>

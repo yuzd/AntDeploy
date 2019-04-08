@@ -1406,14 +1406,17 @@ namespace AntDeployWinform.Winform
 
             var serverHostList = string.Join(Environment.NewLine, serverList.Select(r => r.Host).ToList());
 
-            var confirmResult = MessageBox.Show(
-                "Are you sure to deploy to Server: " + Environment.NewLine + serverHostList,
-                "Confirm Deploy!!",
-                MessageBoxButtons.YesNo);
-            if (confirmResult != DialogResult.Yes)
+            var confirmResult = ShowInputMsgBox("Confirm Deploy!!",
+                "Are you sure to deploy to Server: " + Environment.NewLine + serverHostList);
+            //var confirmResult = MessageBox.Show(
+            //    "Are you sure to deploy to Server: " + Environment.NewLine + serverHostList,
+             //   "Confirm Deploy!!",
+             //   MessageBoxButtons.YesNo);
+            if (!confirmResult.Item1)
             {
                 return;
             }
+
 
             combo_iis_env_SelectedIndexChanged(null, null);
 
@@ -1537,7 +1540,7 @@ namespace AntDeployWinform.Winform
                                 var slectFileForm = new SelectFile(fileList, publishPath);
                                 slectFileForm.ShowDialog();
                                 // ReSharper disable once AccessToDisposedClosure
-                                DoSelectDeployIIS(slectFileForm.SelectedFileList, publishPath, serverList, backUpIgnoreList, Port, PoolName, PhysicalPath,gitModel);
+                                DoSelectDeployIIS(slectFileForm.SelectedFileList, publishPath, serverList, backUpIgnoreList, Port, PoolName, PhysicalPath,gitModel,confirmResult.Item2);
                             });
                             return;
                         }
@@ -1565,7 +1568,7 @@ namespace AntDeployWinform.Winform
                         {
                             var slectFileForm = new SelectFile(publishPath);
                             slectFileForm.ShowDialog();
-                            DoSelectDeployIIS(slectFileForm.SelectedFileList, publishPath, serverList, backUpIgnoreList, Port, PoolName, PhysicalPath,  null);
+                            DoSelectDeployIIS(slectFileForm.SelectedFileList, publishPath, serverList, backUpIgnoreList, Port, PoolName, PhysicalPath,  null, confirmResult.Item2);
                         });
 
 
@@ -1640,6 +1643,7 @@ namespace AntDeployWinform.Winform
                         httpRequestClient.SetFieldValue("webSiteName", DeployConfig.IIsConfig.WebSiteName);
                         httpRequestClient.SetFieldValue("deployFolderName", dateTimeFolderName);
                         httpRequestClient.SetFieldValue("Token", server.Token);
+                        httpRequestClient.SetFieldValue("remark", confirmResult.Item2);
                         httpRequestClient.SetFieldValue("backUpIgnore", (backUpIgnoreList != null && backUpIgnoreList.Any()) ? string.Join("@_@", backUpIgnoreList) : "");
                         httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream", zipBytes);
                         HttpLogger HttpLogger = new HttpLogger
@@ -1764,7 +1768,7 @@ namespace AntDeployWinform.Winform
 
         }
 
-        private void DoSelectDeployIIS(List<string> fileList, string publishPath, List<Server> serverList, List<string> backUpIgnoreList, string Port, string PoolName, string PhysicalPath, GitClient gitModel)
+        private void DoSelectDeployIIS(List<string> fileList, string publishPath, List<Server> serverList, List<string> backUpIgnoreList, string Port, string PoolName, string PhysicalPath, GitClient gitModel,string remark)
         {
             new Task(async () =>
             {
@@ -1837,6 +1841,7 @@ namespace AntDeployWinform.Winform
                         httpRequestClient.SetFieldValue("sdkType", DeployConfig.IIsConfig.SdkType);
                         httpRequestClient.SetFieldValue("port", Port);
                         httpRequestClient.SetFieldValue("id", loggerId);
+                        httpRequestClient.SetFieldValue("remark", remark);
                         httpRequestClient.SetFieldValue("poolName", PoolName);
                         httpRequestClient.SetFieldValue("physicalPath", PhysicalPath);
                         httpRequestClient.SetFieldValue("webSiteName", DeployConfig.IIsConfig.WebSiteName);
@@ -2738,11 +2743,14 @@ namespace AntDeployWinform.Winform
 
             var serverHostList = string.Join(Environment.NewLine, serverList.Select(r => r.Host).ToList());
 
-            var confirmResult = MessageBox.Show(
-                "Are you sure to deploy to Server: " + Environment.NewLine + serverHostList,
-                "Confirm Deploy!!",
-                MessageBoxButtons.YesNo);
-            if (confirmResult != DialogResult.Yes)
+            var confirmResult = ShowInputMsgBox("Confirm Deploy!!",
+                "Are you sure to deploy to Server: " + Environment.NewLine + serverHostList);
+
+            //var confirmResult = MessageBox.Show(
+            //    "Are you sure to deploy to Server: " + Environment.NewLine + serverHostList,
+            //    "Confirm Deploy!!",
+            //    MessageBoxButtons.YesNo);
+            if (confirmResult.Item1)
             {
                 return;
             }
@@ -2924,7 +2932,7 @@ namespace AntDeployWinform.Winform
                                 var slectFileForm = new SelectFile(fileList, publishPath);
                                 slectFileForm.ShowDialog();
                                 // ReSharper disable once AccessToDisposedClosure
-                                DoWindowsServiceSelectDeploy(slectFileForm.SelectedFileList, publishPath, serverList, serviceName, isProjectInstallService, execFilePath, PhysicalPath, backUpIgnoreList, gitModel);
+                                DoWindowsServiceSelectDeploy(slectFileForm.SelectedFileList, publishPath, serverList, serviceName, isProjectInstallService, execFilePath, PhysicalPath, backUpIgnoreList, gitModel,confirmResult.Item2);
                             });
                             return;
                         }
@@ -2957,7 +2965,7 @@ namespace AntDeployWinform.Winform
                         {
                             var slectFileForm = new SelectFile(publishPath);
                             slectFileForm.ShowDialog();
-                            DoWindowsServiceSelectDeploy(slectFileForm.SelectedFileList, publishPath, serverList,serviceName,isProjectInstallService,execFilePath,PhysicalPath,backUpIgnoreList,null);
+                            DoWindowsServiceSelectDeploy(slectFileForm.SelectedFileList, publishPath, serverList,serviceName,isProjectInstallService,execFilePath,PhysicalPath,backUpIgnoreList,null,confirmResult.Item2);
                         });
                         return;
                     }
@@ -3028,6 +3036,7 @@ namespace AntDeployWinform.Winform
                         httpRequestClient.SetFieldValue("isProjectInstallService",
                             isProjectInstallService ? "yes" : "no");
                         httpRequestClient.SetFieldValue("execFilePath", execFilePath);
+                        httpRequestClient.SetFieldValue("remark", confirmResult.Item2);
                         httpRequestClient.SetFieldValue("deployFolderName", dateTimeFolderName);
                         httpRequestClient.SetFieldValue("physicalPath", PhysicalPath);
                         httpRequestClient.SetFieldValue("Token", server.Token);
@@ -3155,7 +3164,7 @@ namespace AntDeployWinform.Winform
         }
 
 
-        private void DoWindowsServiceSelectDeploy(List<string> fileList,string publishPath,List<Server> serverList,string serviceName,bool isProjectInstallService,string execFilePath,string PhysicalPath,List<string> backUpIgnoreList, GitClient gitModel)
+        private void DoWindowsServiceSelectDeploy(List<string> fileList,string publishPath,List<Server> serverList,string serviceName,bool isProjectInstallService,string execFilePath,string PhysicalPath,List<string> backUpIgnoreList, GitClient gitModel,string remark)
         {
             new Task(async () =>
             {
@@ -3234,6 +3243,7 @@ namespace AntDeployWinform.Winform
                         httpRequestClient.SetFieldValue("deployFolderName", dateTimeFolderName);
                         httpRequestClient.SetFieldValue("physicalPath", PhysicalPath);
                         httpRequestClient.SetFieldValue("Token", server.Token);
+                        httpRequestClient.SetFieldValue("remark", remark);
                         httpRequestClient.SetFieldValue("backUpIgnore", (backUpIgnoreList != null && backUpIgnoreList.Any()) ? string.Join("@_@", backUpIgnoreList) : "");
                         httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream", zipBytes);
                         HttpLogger HttpLogger = new HttpLogger
@@ -4063,11 +4073,14 @@ namespace AntDeployWinform.Winform
 
             var serverHostList = string.Join(Environment.NewLine, serverList.Select(r => r.Host).ToList());
 
-            var confirmResult = MessageBox.Show(
-                "Are you sure to deploy to Linux Server: " + Environment.NewLine + serverHostList,
-                "Confirm Deploy!!",
-                MessageBoxButtons.YesNo);
-            if (confirmResult != DialogResult.Yes)
+            var confirmResult = ShowInputMsgBox("Confirm Deploy!!",
+                "Are you sure to deploy to Server: " + Environment.NewLine + serverHostList);
+
+            //var confirmResult = MessageBox.Show(
+            //    "Are you sure to deploy to Linux Server: " + Environment.NewLine + serverHostList,
+            //    "Confirm Deploy!!",
+            //    MessageBoxButtons.YesNo);
+            if (confirmResult.Item1)
             {
                 return;
             }
@@ -4219,7 +4232,8 @@ namespace AntDeployWinform.Winform
                            NetCoreEnvironment = DeployConfig.DockerConfig.AspNetCoreEnv,
                            ClientDateTimeFolderName = clientDateTimeFolderName,
                            RemoveDaysFromPublished = DeployConfig.DockerConfig.RemoveDaysFromPublished,
-                           Volume = DeployConfig.DockerConfig.Volume
+                           Volume = DeployConfig.DockerConfig.Volume,
+                           Remark = confirmResult.Item2
                        })
                        {
                            var connectResult = sshClient.Connect();
@@ -4951,6 +4965,16 @@ namespace AntDeployWinform.Winform
             Process.Start(sInfo);
         }
 
-
+        private Tuple<bool,string> ShowInputMsgBox(string title,string message,string defaultValue = null)
+        {
+            InputDialog dialog = new InputDialog(message,title,defaultValue);
+            dialog.SetInputLength(0,200);
+            var result = dialog.ShowDialog();
+            if (result == DialogResult.Cancel)
+            {
+                return new Tuple<bool, string>(false,string.Empty);
+            }
+            return new Tuple<bool, string>(true, dialog.Input);
+        }
     }
 }

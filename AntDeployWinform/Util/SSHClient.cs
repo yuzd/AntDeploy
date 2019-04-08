@@ -38,6 +38,7 @@ namespace AntDeployWinform.Util
         public string NetCoreENTRYPOINT { get; set; }
         public string ClientDateTimeFolderName { get; set; }
         public string RemoveDaysFromPublished { get; set; }
+        public string Remark { get; set; }
         public string Volume { get; set; }
         public string RootFolder { get; set; }
 
