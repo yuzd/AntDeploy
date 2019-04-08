@@ -2,7 +2,7 @@
 {
     public static class Vsix
     {
-        public const string VERSION = "3.84";
+        public const string VERSION = "3.9";
         public const string PRODUCT = "yuzd";
         public const string PACKAGE = "AntDeploy";
         public const string URL = "https://github.com/yuzd";

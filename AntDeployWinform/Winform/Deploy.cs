@@ -1547,6 +1547,7 @@ namespace AntDeployWinform.Winform
 
                         try
                         {
+                            this.nlog_iis.Info($"package ignoreList Count:{ignoreList.Count},backUp IgnoreList Count:{backUpIgnoreList.Count}");
                             zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, fileList, CompressionLevel.Optimal,
                                 true, ignoreList,
                                 (progressValue) =>
@@ -1579,6 +1580,7 @@ namespace AntDeployWinform.Winform
                     {
                         if (zipBytes == null)
                         {
+                            this.nlog_iis.Info($"package ignoreList Count:{ignoreList.Count},backUp IgnoreList Count:{backUpIgnoreList.Count}");
                             zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, CompressionLevel.Optimal, true,
                                 ignoreList,
                                 (progressValue) =>
@@ -1781,6 +1783,7 @@ namespace AntDeployWinform.Winform
                         return;
                     }
                     this.nlog_iis.Info("Select Files count:"+ fileList.Count);
+                    this.nlog_iis.Debug("ignore package ignoreList");
                     byte[] zipBytes = null;
                     List<string> ignoreList = new List<string>();
                     try
@@ -2941,6 +2944,7 @@ namespace AntDeployWinform.Winform
 
                         try
                         {
+                            this.nlog_windowservice.Info($"package ignoreList Count:{ignoreList.Count},backUp IgnoreList Count:{backUpIgnoreList.Count}");
                             zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, fileList, CompressionLevel.Optimal,
                                 true,
                                 ignoreList,
@@ -2975,6 +2979,7 @@ namespace AntDeployWinform.Winform
                     {
                         if (zipBytes == null)
                         {
+                            this.nlog_windowservice.Info($"package ignoreList Count:{ignoreList.Count},backUp IgnoreList Count:{backUpIgnoreList.Count}");
                             zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, CompressionLevel.Optimal, true,
                                 ignoreList,
                                 (progressValue) =>
@@ -3179,6 +3184,7 @@ namespace AntDeployWinform.Winform
                         return;
                     }
                     this.nlog_windowservice.Info("Select Files count:" + fileList.Count);
+                    this.nlog_windowservice.Debug("ignore package ignoreList");
                     List<string> ignoreList = new List<string>();
                     try
                     {
@@ -4135,6 +4141,7 @@ namespace AntDeployWinform.Winform
                    MemoryStream zipBytes;
                    try
                    {
+                       this.nlog_docker.Info($"package ignoreList Count:{ignoreList.Count}");
                        zipBytes = ZipHelper.DoCreateTarFromDirectory(publishPath,
                            ignoreList,
                            (progressValue) =>

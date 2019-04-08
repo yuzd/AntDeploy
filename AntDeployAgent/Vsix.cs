@@ -2,6 +2,6 @@
 {
     public static class Version
     {
-        public const string VERSION = "3.8";
+        public const string VERSION = "3.9";
     }
 }
