@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AntDeployWinform.Util;
 
 namespace AntDeployWinform.Winform
 {
@@ -24,10 +25,26 @@ namespace AntDeployWinform.Winform
                 if (stream != null) this.Icon = new Icon(stream);
             }
 
+
             this.listbox_rollback_list.Items.Clear();;
             foreach (var li in list)
             {
-                this.listbox_rollback_list.Items.Add(li);
+                var label = string.Empty;
+                var content = li.JsonToObject<RollBackVersion>();
+                if (!string.IsNullOrEmpty(content.Version))
+                {
+                    label = content.Version;
+                }
+
+                if (content.FormItemList != null && content.FormItemList.Any())
+                {
+                    var remark = content.FormItemList.FirstOrDefault(r => r.FieldName.Equals("remark"));
+                    if (remark != null&&!string.IsNullOrEmpty(remark.TextValue))
+                    {
+                        label += remark.TextValue;
+                    }
+                }
+                this.listbox_rollback_list.Items.Add(label);
             }
 
             SelectRollBackVersion = string.Empty;
@@ -63,4 +80,47 @@ namespace AntDeployWinform.Winform
             this.b_rollback_Rollback.Text = name;
         }
     }
+
+    class RollBackVersion
+    {
+
+        private string _args;
+        public string Version { get; set; }
+
+        public string Args
+        {
+            get { return this._args; }
+            set
+            {
+                _args = value;
+                if(!string.IsNullOrEmpty(value))this.FormItemList = value.JsonToObject<List<FormItem>>();
+            }
+        }
+
+        public List<FormItem> FormItemList { get; set; } = new List<FormItem>();
+    }
+
+    /// <summary>
+    /// 表单元素对象
+    /// </summary>
+    class FormItem
+    {
+        /// <summary>
+        /// 字段名(表单域名称)
+        /// </summary>
+        public string FieldName;
+
+        /// <summary>
+        /// 文件名
+        /// </summary>
+        public string FileName;
+
+       
+
+        /// <summary>
+        /// 文本内容
+        /// </summary>
+        public string TextValue;
+    }
+
 }

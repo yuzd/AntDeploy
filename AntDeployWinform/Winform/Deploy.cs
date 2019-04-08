@@ -2066,7 +2066,8 @@ namespace AntDeployWinform.Winform
                         {
                             Token = firstServer.Token,
                             Type = "iis",
-                            Name = DeployConfig.IIsConfig.WebSiteName
+                            Name = DeployConfig.IIsConfig.WebSiteName,
+                            WithArgs = true
                         }, nlog_iis);
 
                     if (getVersionResult == null)
@@ -3475,7 +3476,8 @@ namespace AntDeployWinform.Winform
                         {
                             Token = firstServer.Token,
                             Type = "winservice",
-                            Name = DeployConfig.WindowsServiveConfig.ServiceName
+                            Name = DeployConfig.WindowsServiveConfig.ServiceName,
+                            WithArgs = true
                         }, nlog_windowservice);
 
                     if (getVersionResult == null)
