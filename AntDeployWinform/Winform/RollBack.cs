@@ -1,21 +1,18 @@
-﻿using System;
+﻿using AntDeployWinform.Util;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using AntDeployWinform.Util;
 
 namespace AntDeployWinform.Winform
 {
     public partial class RollBack : Form
     {
-        public RollBack(List<string> list)
+        private readonly bool isRollBack = false;
+        public RollBack(List<string> list, bool isNotRollback = false)
         {
             InitializeComponent();
 
@@ -26,26 +23,52 @@ namespace AntDeployWinform.Winform
             }
 
 
-            this.listbox_rollback_list.Items.Clear();;
+            this.listbox_rollback_list.Items.Clear();
+            this.listView_rollback_version.Items.Clear();
+            
             foreach (var li in list)
             {
-                var label = string.Empty;
-                var content = li.JsonToObject<RollBackVersion>();
-                if (!string.IsNullOrEmpty(content.Version))
+                if (!isNotRollback)
                 {
-                    label = content.Version;
-                }
-
-                if (content.FormItemList != null && content.FormItemList.Any())
-                {
-                    var remark = content.FormItemList.FirstOrDefault(r => r.FieldName.Equals("remark"));
-                    if (remark != null&&!string.IsNullOrEmpty(remark.TextValue))
+                    var version = string.Empty;
+                    var remark = string.Empty;
+                    var content = li.JsonToObject<RollBackVersion>();
+                    if (content == null)
                     {
-                        label += remark.TextValue;
+                        version = li;
                     }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(content.Version))
+                        {
+                            version = content.Version;
+                        }
+                        if (content.FormItemList != null && content.FormItemList.Any())
+                        {
+                            var remarkItem = content.FormItemList.FirstOrDefault(r => r.FieldName.Equals("remark"));
+                            if (remarkItem != null && !string.IsNullOrEmpty(remarkItem.TextValue))
+                            {
+                                remark = remarkItem.TextValue;
+                            }
+                        }
+                    }
+
+                    if(string.IsNullOrEmpty(version)) continue;
+                    ListViewItem lv = new ListViewItem();
+                    lv.Text = version;
+                    lv.SubItems.Add(remark);
+                    this.listView_rollback_version.Items.Add(lv);
                 }
-                this.listbox_rollback_list.Items.Add(label);
+                else
+                {
+                    this.listbox_rollback_list.Items.Add(li);
+                }
             }
+
+
+            isRollBack = !isNotRollback;
+            this.listView_rollback_version.Visible = !isNotRollback;
+            this.listbox_rollback_list.Visible = isNotRollback;
 
             SelectRollBackVersion = string.Empty;
         }
@@ -59,25 +82,59 @@ namespace AntDeployWinform.Winform
             {
                 this.DialogResult = DialogResult.Cancel;
             }
-            
+
         }
 
         private void b_rollback_Rollback_Click(object sender, EventArgs e)
         {
-            var selectItem = this.listbox_rollback_list.SelectedItem as string;
-            if (string.IsNullOrEmpty(selectItem))
+            if (isRollBack)
             {
-                MessageBox.Show("please select rollback version!");
-                return;
-            }
+                if (lastItemChecked == null)
+                {
+                    MessageBox.Show("please select rollback version!");
+                    return;
+                }
 
-            SelectRollBackVersion = selectItem;
-            this.DialogResult = DialogResult.OK;
+                //var selectView = this.listView_rollback_version.SelectedItems[0];
+                SelectRollBackVersion = lastItemChecked.Text;
+                this.DialogResult = DialogResult.OK;
+            }
+            else
+            {
+                var selectItem = this.listbox_rollback_list.SelectedItem as string;
+                if (string.IsNullOrEmpty(selectItem))
+                {
+                    MessageBox.Show("please select one!");
+                    return;
+                }
+
+                SelectRollBackVersion = selectItem;
+                this.DialogResult = DialogResult.OK;
+            }
+           
         }
 
         public void SetButtonName(string name)
         {
             this.b_rollback_Rollback.Text = name;
+        }
+
+        // I need to know the last item checked
+        private ListViewItem lastItemChecked;
+
+        private void listView_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            // if we have the lastItem set as checked, and it is different
+            // item than the one that fired the event, uncheck it
+            if (lastItemChecked != null && lastItemChecked.Checked
+                                        && lastItemChecked != listView_rollback_version.Items[e.Index])
+            {
+                // uncheck the last item and store the new one
+                lastItemChecked.Checked = false;
+            }
+
+            // store current item
+            lastItemChecked = listView_rollback_version.Items[e.Index];
         }
     }
 
@@ -93,7 +150,7 @@ namespace AntDeployWinform.Winform
             set
             {
                 _args = value;
-                if(!string.IsNullOrEmpty(value))this.FormItemList = value.JsonToObject<List<FormItem>>();
+                if (!string.IsNullOrEmpty(value)) this.FormItemList = value.JsonToObject<List<FormItem>>();
             }
         }
 
@@ -115,7 +172,7 @@ namespace AntDeployWinform.Winform
         /// </summary>
         public string FileName;
 
-       
+
 
         /// <summary>
         /// 文本内容

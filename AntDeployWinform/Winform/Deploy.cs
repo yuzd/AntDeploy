@@ -2751,7 +2751,7 @@ namespace AntDeployWinform.Winform
             //    "Are you sure to deploy to Server: " + Environment.NewLine + serverHostList,
             //    "Confirm Deploy!!",
             //    MessageBoxButtons.YesNo);
-            if (confirmResult.Item1)
+            if (!confirmResult.Item1)
             {
                 return;
             }
@@ -4082,7 +4082,7 @@ namespace AntDeployWinform.Winform
             //    "Are you sure to deploy to Linux Server: " + Environment.NewLine + serverHostList,
             //    "Confirm Deploy!!",
             //    MessageBoxButtons.YesNo);
-            if (confirmResult.Item1)
+            if (!confirmResult.Item1)
             {
                 return;
             }
@@ -4832,7 +4832,7 @@ namespace AntDeployWinform.Winform
                 MessageBox.Show("no env have ignore value!");
                 return;
             }
-            RollBack rollBack = new RollBack(envList) { Text = "Select Env Name" };
+            RollBack rollBack = new RollBack(envList,true) { Text = "Select Env Name" };
             rollBack.SetButtonName("Copy");
             var r1 = rollBack.ShowDialog();
             if (r1 == DialogResult.Cancel)
@@ -4877,7 +4877,7 @@ namespace AntDeployWinform.Winform
                 MessageBox.Show("no env have ignore value!");
                 return;
             }
-            RollBack rollBack = new RollBack(envList) { Text = "Select Env Name" };
+            RollBack rollBack = new RollBack(envList,true) { Text = "Select Env Name" };
             rollBack.SetButtonName("Copy");
             var r1 = rollBack.ShowDialog();
             if (r1 == DialogResult.Cancel)
