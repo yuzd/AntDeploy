@@ -51,7 +51,7 @@ namespace AntDeployWinform.Winform
             InitializeComponent();
 
             Assembly assembly = typeof(Deploy).Assembly;
-            using (Stream stream = assembly.GetManifestResourceStream("AntDeployWinform.Resources.Logo1.ico"))
+            using (Stream stream = assembly.GetManifestResourceStream("AntDeployWinform.Resources.Logo12.ico"))
             {
                 if (stream != null) this.Icon = new Icon(stream);
             }
