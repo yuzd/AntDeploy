@@ -12,7 +12,51 @@ namespace AntDeployWinform.Winform
     public partial class RollBack : Form
     {
         private readonly bool isRollBack = false;
-        public RollBack(List<string> list, bool isNotRollback = false)
+
+        public RollBack()
+        {
+            InitializeComponent();
+
+            Assembly assembly = typeof(Deploy).Assembly;
+            using (Stream stream = assembly.GetManifestResourceStream("AntDeployWinform.Resources.Logo1.ico"))
+            {
+                if (stream != null) this.Icon = new Icon(stream);
+            }
+
+
+            this.listbox_rollback_list.Items.Clear();
+            this.listView_rollback_version.Items.Clear();
+        }
+        public RollBack(List<Tuple<string,string>> list, bool isNotRollback = false):this()
+        {
+
+            foreach (var li in list)
+            {
+                if (!isNotRollback)
+                {
+                    var version = li.Item1;
+                    var remark = li.Item2;
+                    if (string.IsNullOrEmpty(version)) continue;
+                    ListViewItem lv = new ListViewItem();
+                    lv.Text = version;
+                    lv.SubItems.Add(remark);
+                    this.listView_rollback_version.Items.Add(lv);
+                }
+                else
+                {
+                    this.listbox_rollback_list.Items.Add(li);
+                }
+            }
+
+
+            isRollBack = !isNotRollback;
+            this.listView_rollback_version.Visible = !isNotRollback;
+            this.listbox_rollback_list.Visible = isNotRollback;
+
+            SelectRollBackVersion = string.Empty;
+        }
+
+        public RollBack(List<string> list, bool isNotRollback = false) : this()
         {
             InitializeComponent();
 

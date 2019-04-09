@@ -138,6 +138,7 @@ namespace AntDeployWinform.Util
 
 
 
+
         }
 
         public void ChangeToFolder(string changeTo)
@@ -185,7 +186,7 @@ namespace AntDeployWinform.Util
         /// <param name="destinationFolder"></param>
         /// <param name="pageNumber">数量</param>
         /// <returns></returns>
-        public List<string> GetDeployHistory(string destinationFolder, int pageNumber = 0)
+        public List<string> GetDeployHistoryWithOutRemark(string destinationFolder, int pageNumber = 0)
         {
             var result = new List<Tuple<string, DateTime>>();
             try
@@ -231,11 +232,74 @@ namespace AntDeployWinform.Util
             return result.OrderByDescending(r => r.Item2).Select(r => r.Item1).ToList();
         }
 
+        /// <summary>
+        /// 获取发布的历史
+        /// </summary>
+        /// <param name="destinationFolder"></param>
+        /// <param name="pageNumber">数量</param>
+        /// <returns></returns>
+        public List<Tuple<string, string>> GetDeployHistory(string destinationFolder, int pageNumber = 0)
+        {
+            var result = new List<Tuple<string, string, DateTime>>();
+            try
+            {
+
+                if (!destinationFolder.EndsWith("/")) destinationFolder = destinationFolder + "/";
+
+                destinationFolder = destinationFolder + PorjectName + "/";
+
+
+                if (!_sftpClient.Exists(destinationFolder))
+                {
+                    return new List<Tuple<string, string>>();
+                }
+
+                //获取该目录下的所有日期文件夹
+                List<SftpFile> folderList;
+                if (pageNumber < 1)
+                {
+                    folderList = _sftpClient.ListDirectory(destinationFolder).Where(r => r.IsDirectory).
+                        OrderByDescending(r => r.LastWriteTime).ToList();
+                }
+                else
+                {
+                    folderList = _sftpClient.ListDirectory(destinationFolder).Where(r => r.IsDirectory).
+                        OrderByDescending(r => r.LastWriteTime).Take(pageNumber).ToList();
+                }
+
+                foreach (var folder in folderList)
+                {
+                    if ((folder.Name == ".") || (folder.Name == "..")) continue;
+                    if (DateTime.TryParseExact(folder.Name, "yyyyMMddHHmmss", null, DateTimeStyles.None, out DateTime d))
+                    {
+                        string remark = string.Empty;
+                        try
+                        {
+                            var path = folder.FullName + (folder.FullName.EndsWith("/") ? "antdeploy_args" : "/antdeploy_args");
+                            remark = _sftpClient.ReadAllText(path);
+                        }
+                        catch (Exception)
+                        {
+                            //ignore
+                        }
+                        result.Add(new Tuple<string, string, DateTime>(folder.Name, remark, d));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger(ex.Message, LogLevel.Error);
+            }
+
+            return result.OrderByDescending(r => r.Item3).Select(r => new Tuple<string, string>(r.Item1, r.Item2)).ToList();
+        }
+
         public void PublishZip(Stream stream, string destinationFolder, string destinationfileName)
         {
             if (!destinationFolder.EndsWith("/")) destinationFolder = destinationFolder + "/";
 
-            destinationFolder = destinationFolder + PorjectName + "/" + ClientDateTimeFolderName + "/";
+            var projectPath = destinationFolder + PorjectName + "/";
+            destinationFolder = projectPath + ClientDateTimeFolderName + "/";
 
             Upload(stream, destinationFolder, destinationfileName);
 
@@ -244,6 +308,10 @@ namespace AntDeployWinform.Util
                 _logger($"upload fail, {destinationfileName} not exist!", NLog.LogLevel.Error);
                 return;
             }
+
+            //创建args文件 antdeploy_args
+            var argsFilePath = destinationFolder + "antdeploy_args";
+            CreateArgsFile(argsFilePath);
 
             _logger($"tar -xf {destinationFolder + destinationfileName} -C publish", NLog.LogLevel.Info);
             var unzipresult = _sshClient.RunCommand($"cd {destinationFolder} && tar -xf {destinationfileName} -C publish");
@@ -346,7 +414,7 @@ namespace AntDeployWinform.Util
                     }
                     else
                     {
-                        if (!string.IsNullOrEmpty(NetCorePort) && !NetCorePort.Equals(newPort) )
+                        if (!string.IsNullOrEmpty(NetCorePort) && !NetCorePort.Equals(newPort))
                         {
                             _logger($"EXPOSE in dockerFile is defined,will use【{newPort}】replace【{NetCorePort}】", NLog.LogLevel.Warn);
                         }
@@ -435,7 +503,7 @@ namespace AntDeployWinform.Util
             {
 
             }
-            
+
 
             string port = NetCorePort;
             if (string.IsNullOrEmpty(port))
@@ -450,8 +518,8 @@ namespace AntDeployWinform.Util
 
             if (!dockerRunRt)
             {
-                 _logger($"docker run fail", NLog.LogLevel.Error);
-                 return;
+                _logger($"docker run fail", NLog.LogLevel.Error);
+                return;
             }
 
             //把旧的image给删除
@@ -512,7 +580,7 @@ namespace AntDeployWinform.Util
 
             _sftpClient.ChangeDirectory(RootFolder);
             var now = DateTime.Now.Date;
-            var histroryList = GetDeployHistory("antdeploy");
+            var histroryList = GetDeployHistoryWithOutRemark("antdeploy");
             if (histroryList.Count <= 10) return;
             var oldFolderList = new List<OldFolder>();
             foreach (var histroy in histroryList)
@@ -583,6 +651,24 @@ namespace AntDeployWinform.Util
         }
 
 
+        private bool CreateArgsFile(string path)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(Remark)) return true;
+                using (var writer = _sftpClient.CreateText(path))
+                {
+                    writer.WriteLine($"{Remark}");
+                    writer.Flush();
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger($"create deploy remark file fail: {path},err:{ex.Message}", NLog.LogLevel.Error);
+                return false;
+            }
+        }
 
 
         private bool CreateDockerFile(string path)
@@ -683,7 +769,7 @@ namespace AntDeployWinform.Util
 
             if (!string.IsNullOrEmpty(cmd.Error))
             {
-                if(cmd.Error.Contains("unable to resolve host 127.0.0.1localhost.localdomainlocalhost"))
+                if (cmd.Error.Contains("unable to resolve host 127.0.0.1localhost.localdomainlocalhost"))
                 {
                     _logger(cmd.Error, LogLevel.Warn);
                     return true;

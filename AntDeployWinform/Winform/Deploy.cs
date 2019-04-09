@@ -379,6 +379,8 @@ namespace AntDeployWinform.Winform
             this.txt_linux_host.Text = string.Empty;
             this.txt_linux_username.Text = string.Empty;
             this.txt_linux_pwd.Text = string.Empty;
+            this.txt_winserver_nickname.Text = string.Empty;
+            this.txt_linux_server_nickname.Text = string.Empty;
         }
 
         public void RichLogInit()
@@ -560,6 +562,8 @@ namespace AntDeployWinform.Winform
                 this.txt_linux_username.Text = string.Empty;
                 this.txt_linux_pwd.Text = string.Empty;
                 this.txt_env_name.Text = string.Empty;
+                this.txt_winserver_nickname.Text = string.Empty;
+                this.txt_linux_server_nickname.Text = string.Empty;
             }
         }
 
@@ -609,6 +613,7 @@ namespace AntDeployWinform.Winform
                 this.b_env_server_test.Enabled = false;
                 this.txt_env_server_host.Text = string.Empty;
                 this.txt_env_server_token.Text = string.Empty;
+                this.txt_winserver_nickname.Text = string.Empty;
 
                 this.b_linux_server_test.Enabled = false;
                 this.b_linux_server_remove.Enabled = false;
@@ -617,6 +622,7 @@ namespace AntDeployWinform.Winform
                 this.txt_linux_username.Text = string.Empty;
                 this.txt_linux_host.Text = string.Empty;
                 this.txt_linux_pwd.Text = string.Empty;
+                this.txt_linux_server_nickname.Text = string.Empty;
 
                 this.txt_env_ignore.Text = string.Empty;
                 this.txt_backUp_ignore.Text = string.Empty;
@@ -711,6 +717,7 @@ namespace AntDeployWinform.Winform
 
             this.txt_env_server_host.Text = string.Empty;
             this.txt_env_server_token.Text = string.Empty;
+            this.txt_winserver_nickname.Text = string.Empty;
             var seletedServer = this.combo_env_server_list.SelectedItem as string;
             if (string.IsNullOrEmpty(seletedServer))
             {
@@ -1188,6 +1195,7 @@ namespace AntDeployWinform.Winform
             this.txt_linux_host.Text = string.Empty;
             this.txt_linux_username.Text = string.Empty;
             this.txt_linux_pwd.Text = string.Empty;
+            this.txt_linux_server_nickname.Text = string.Empty;
 
             var seletedServer = this.combo_linux_server_list.SelectedItem as string;
             if (string.IsNullOrEmpty(seletedServer))
@@ -4407,7 +4415,7 @@ namespace AntDeployWinform.Winform
            {
 
 
-               var versionList = new List<string>();
+               var versionList = new List<Tuple<string,string>>();
 
                try
                {
