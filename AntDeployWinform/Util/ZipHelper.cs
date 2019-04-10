@@ -396,6 +396,9 @@ namespace AntDeployWinform.Util
             if (tarArchive.RootPath.EndsWith("/"))
                 tarArchive.RootPath = tarArchive.RootPath.Remove(tarArchive.RootPath.Length - 1);
 
+            TarEntry tarEntry2 = TarEntry.CreateEntryFromFile(sourceDirectory);
+            tarArchive.WriteEntry(tarEntry2, false);
+
             DirectoryInfo directoryInfo = new DirectoryInfo(sourceDirectory);
             string fullName = directoryInfo.FullName;
             if (directoryInfo.Parent != null)
