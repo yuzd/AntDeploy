@@ -16,6 +16,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Newtonsoft.Json;
+using Process = System.Diagnostics.Process;
 
 namespace yuzd.AntDeploy
 {
@@ -38,7 +39,7 @@ namespace yuzd.AntDeploy
     // This attribute is needed to let the shell know that this package exposes some menus.
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [Guid(GuidList.guidAntDeployPkgString)]
-    public sealed class AntDeployPackage : Package
+    public sealed class AntDeployPackage : Package,IDisposable
     {
         public static DTE2 DTE { get; private set; }
 
@@ -81,7 +82,12 @@ namespace yuzd.AntDeploy
                 MenuCommand menuItem = new MenuCommand(MenuItemCallback, menuCommandID);
                 mcs.AddCommand(menuItem);
             }
+
+            
         }
+
+       
+
         #endregion
 
         /// <summary>
@@ -121,6 +127,7 @@ namespace yuzd.AntDeploy
                     {
                         param.MsBuildPath = Path.Combine(param.MsBuildPath, "MSBuild.exe");
                     }
+
 
                     DoAntDeployProcess(projectFile, param);
                 }
@@ -197,30 +204,53 @@ namespace yuzd.AntDeploy
         private void DoAntDeployProcess(string projectPath, ProjectParam param)
         {
 
-            var md5 = MD5(projectPath);
-            var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var projectPram = JsonConvert.SerializeObject(param);
-            var projectPramPath = Path.Combine(path, md5 + "_param.json");
-            File.WriteAllText(projectPramPath, projectPram, Encoding.UTF8);
-
-            var assembly = Assembly.GetExecutingAssembly();
-            var codeBase = assembly.Location;
-            var codeBaseDirectory = Path.GetDirectoryName(codeBase);
-            var ant = Path.Combine(codeBaseDirectory, "AntDeployApp.exe");
-            using (var process = new System.Diagnostics.Process())
+            try
             {
-                process.StartInfo.FileName = ant;
-                process.StartInfo.Arguments = $"\"{projectPramPath}\"";
-                process.StartInfo.CreateNoWindow = false;
-                process.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
-                process.StartInfo.UseShellExecute = false;
-                process.StartInfo.Verb = "runas";
+                StartListeningForWindowChanges();
 
-                process.Start();
+                var md5 = MD5(projectPath);
+                var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                var projectPram = JsonConvert.SerializeObject(param);
+                var projectPramPath = Path.Combine(path, md5 + "_param.json");
+                File.WriteAllText(projectPramPath, projectPram, Encoding.UTF8);
 
-                process.WaitForExit();
+                var assembly = Assembly.GetExecutingAssembly();
+                var codeBase = assembly.Location;
+                var codeBaseDirectory = Path.GetDirectoryName(codeBase);
+                var ant = Path.Combine(codeBaseDirectory, "AntDeployApp.exe");
+                using (var process = new Process())
+                {
+                    process.StartInfo.FileName = ant;
+                    process.StartInfo.Arguments = $"\"{projectPramPath}\"";
+                    process.StartInfo.CreateNoWindow = false;
+                    process.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
+                    process.StartInfo.UseShellExecute = false;
+                    process.StartInfo.Verb = "runas";
+                   
+                    process.Start();
+                    processHIntPtrGet = () =>
+                    {
+                        try
+                        {
+                            return process.MainWindowHandle;
+                        }
+                        catch (Exception e)
+                        {
+                            return new IntPtr(0);
+                        }
+                    };
+                    //var hwndMainWindow = (IntPtr)DTE.MainWindow.HWnd;
+                    //SetParent(processHIntPtr, hwndMainWindow);
+                    process.WaitForExit();
+
+                  
+                }
             }
-
+            finally
+            {
+               StopListeningForWindowChanges();
+            }
+       
         }
 
         /// <summary>
@@ -240,6 +270,65 @@ namespace yuzd.AntDeploy
             return ret;
         }
 
+        //[DllImport("User32.dll")]
+        //private static extern int SetParent(IntPtr hwndChild, IntPtr hwndParent);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        internal static extern IntPtr SetWinEventHook(uint eventMin, uint eventMax, IntPtr hmodWinEventProc, WinEventProc lpfnWinEventProc, int idProcess, int idThread, uint dwflags);
+        [DllImport("user32.dll")]
+        internal static extern int UnhookWinEvent(IntPtr hWinEventHook);
+        internal delegate void WinEventProc(IntPtr hWinEventHook, uint iEvent, IntPtr hWnd, int idObject, int idChild, int dwEventThread, int dwmsEventTime);
+        [DllImport("user32.dll")]
+        static extern bool SetForegroundWindow(IntPtr hWnd);
+        const uint WINEVENT_OUTOFCONTEXT = 0;
+        const uint EVENT_SYSTEM_FOREGROUND = 3;
+        private IntPtr winHook;
+        private static Func<IntPtr> processHIntPtrGet ;
+        private  WinEventProc listener;
+
+        public void StartListeningForWindowChanges()
+        {
+            try
+            {
+                listener = new WinEventProc(EventCallback);
+                //setting the window hook
+                winHook = SetWinEventHook(EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND, IntPtr.Zero, listener, 0, 0, WINEVENT_OUTOFCONTEXT);
+            }
+            catch (Exception)
+            {
+                //Ignore
+            }
+        }
+
+        public void StopListeningForWindowChanges()
+        {
+            try
+            {
+                UnhookWinEvent(winHook);
+            }
+            catch (Exception)
+            {
+                //Ignore
+            }
+        }
+
+        private static void EventCallback(IntPtr hWinEventHook, uint iEvent, IntPtr hWnd, int idObject, int idChild, int dwEventThread, int dwmsEventTime)
+        {
+            // handle active window changed!
+            var handler = processHIntPtrGet();
+            if (handler == new IntPtr(0)) return;
+            var hwndMainWindow = (IntPtr)DTE.MainWindow.HWnd;
+            if (hWnd == hwndMainWindow)
+            {
+                SetForegroundWindow(handler);
+            }
+        }
+
+        public void Dispose()
+        {
+            StopListeningForWindowChanges();
+            CommandService?.Dispose();
+        }
     }
 
 
