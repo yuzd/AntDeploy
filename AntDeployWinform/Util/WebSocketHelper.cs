@@ -158,7 +158,7 @@ namespace AntDeployWinform.Util
         }
 
 
-        public void ReceiveHttpAction()
+        public void ReceiveHttpAction(bool isLast = false)
         {
             var client = new WebClient();
             try
@@ -177,7 +177,12 @@ namespace AntDeployWinform.Util
                         var receiveMsg = "**" + li.Msg;
                         if (!string.IsNullOrEmpty(receiveMsg))
                         {
-                            if (receiveMsg.Contains("【Error】"))
+                            if (receiveMsg.Contains("agent version ==>"))
+                            {
+                                this.receiveAction.Info($"【Server】{receiveMsg}");
+                                AgentCheckVersion(receiveMsg);
+                            }
+                            else if (receiveMsg.Contains("【Error】"))
                             {
                                 this.receiveAction.Warn($"【Server】{receiveMsg}");
                                 HasError = true;
@@ -197,8 +202,42 @@ namespace AntDeployWinform.Util
             }
             finally
             {
+              
                 client.Dispose();
             }
+
+            if (isLast)
+            {
+                LogAgentCheckVersion();
+            }
+        }
+
+        private string _agentVersion;
+        private void AgentCheckVersion(string receiveMsg)
+        {
+            _agentVersion = receiveMsg;
+            var agentVersionArr = receiveMsg.Split(new string[] { "=>" }, StringSplitOptions.None);
+            if (agentVersionArr.Length == 2)
+            {
+                var agentVersion = agentVersionArr[1];
+                if (!agentVersion.Equals(Vsix.AGENTVERSION))
+                {
+                    _agentVersion = agentVersion;
+                }
+            }
+        }
+
+        private void LogAgentCheckVersion()
+        {
+            if (string.IsNullOrEmpty(_agentVersion))
+            {
+                return;
+            }
+            this.receiveAction.Warn($"【Server】You need update agent version To :【{Vsix.AGENTVERSION}】");
+            LogEventInfo theEvent = new LogEventInfo(LogLevel.Warn, "", "【Server】Download Agent Url:");
+            theEvent.LoggerName = receiveAction.Name;
+            theEvent.Properties["ShowLink"] = "https://github.com/yuzd/AntDeployAgent/issues/1";
+            this.receiveAction.Log(theEvent);
         }
 
         /// <summary>
@@ -243,7 +282,12 @@ namespace AntDeployWinform.Util
                             var receiveMsg = "*" + arr[0];
                             if (!string.IsNullOrEmpty(receiveMsg))
                             {
-                                if (receiveMsg.Contains("【Error】"))
+                                if (receiveMsg.Contains("agent version ==>"))
+                                {
+                                    this.receiveAction.Info($"【Server】{receiveMsg}");
+                                    AgentCheckVersion(receiveMsg);
+                                }
+                                else if (receiveMsg.Contains("【Error】"))
                                 {
                                     this.receiveAction.Warn($"【Server】{receiveMsg}");
                                     HasError = true;

@@ -1676,7 +1676,7 @@ namespace AntDeployWinform.Winform
                             if (ProgressPercentage > 0 && ProgressPercentage < 100)
                                 UpdateUploadProgress(this.tabPage_progress, ProgressCurrentHost, 100); //结束上传
 
-                            webSocket.ReceiveHttpAction();
+                            webSocket.ReceiveHttpAction(true);
                             haveError = webSocket.HasError;
                             if (haveError)
                             {
@@ -1880,7 +1880,7 @@ namespace AntDeployWinform.Winform
                             if (ProgressPercentage > 0 && ProgressPercentage < 100)
                                 UpdateUploadProgress(this.tabPage_progress, ProgressCurrentHost, 100); //结束上传
 
-                            webSocket.ReceiveHttpAction();
+                            webSocket.ReceiveHttpAction(true);
                             haveError = webSocket.HasError;
                             if (haveError)
                             {
@@ -2184,7 +2184,7 @@ namespace AntDeployWinform.Winform
 
                             var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/rollback",
                                 (client) => { });
-                            webSocket.ReceiveHttpAction();
+                            webSocket.ReceiveHttpAction(true);
                             haveError = webSocket.HasError;
                             if (haveError)
                             {
@@ -3075,7 +3075,7 @@ namespace AntDeployWinform.Winform
                             if (ProgressPercentageForWindowsService > 0 && ProgressPercentageForWindowsService < 100)
                                 UpdateUploadProgress(this.tabPage_windows_service, ProgressCurrentHostForWindowsService,
                                     100); //结束上传
-                            webSocket.ReceiveHttpAction();
+                            webSocket.ReceiveHttpAction(true);
                             haveError = webSocket.HasError;
                             if (haveError)
                             {
@@ -3280,7 +3280,7 @@ namespace AntDeployWinform.Winform
                             if (ProgressPercentageForWindowsService > 0 && ProgressPercentageForWindowsService < 100)
                                 UpdateUploadProgress(this.tabPage_windows_service, ProgressCurrentHostForWindowsService,
                                     100); //结束上传
-                            webSocket.ReceiveHttpAction();
+                            webSocket.ReceiveHttpAction(true);
                             haveError = webSocket.HasError;
                             if (haveError)
                             {
@@ -3596,7 +3596,7 @@ namespace AntDeployWinform.Winform
 
                             var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/rollback",
                                 (client) => { });
-                            webSocket.ReceiveHttpAction();
+                            webSocket.ReceiveHttpAction(true);
                             haveError = webSocket.HasError;
                             if (haveError)
                             {
