@@ -1680,6 +1680,16 @@ namespace AntDeployWinform.Winform
                         }
                         else if (!checkIisResult.Data.Level1Exist)
                         {
+                            if (this.PluginConfig.IISEnableIncrement)
+                            {
+                                //网站还不存在不能选择指定的文件发布 
+                                this.nlog_iis.Error($"Website Is Not Exist In Remote IIS,Can not use [Increment deplpoy]");
+                                UploadError(this.tabPage_progress, server.Host);
+                                allSuccess = false;
+                                failCount++;
+                                continue;
+                            }
+
                             this.BeginInvokeLambda(() =>
                             {
                                 //级别一不存在
@@ -1713,6 +1723,15 @@ namespace AntDeployWinform.Winform
                         }
                         else if (!checkIisResult.Data.Level2Exist)
                         {
+                            if (this.PluginConfig.IISEnableIncrement)
+                            {
+                                //网站还不存在不能选择指定的文件发布 
+                                this.nlog_iis.Error($"Website Is Not Exist In Remote IIS,Can not use [Increment deplpoy]");
+                                UploadError(this.tabPage_progress, server.Host);
+                                allSuccess = false;
+                                failCount++;
+                                continue;
+                            }
                             this.BeginInvokeLambda(() =>
                             {
                                 //级别二不存在
@@ -1984,71 +2003,14 @@ namespace AntDeployWinform.Winform
                         {
 
                         }
-                        else if (!checkIisResult.Data.Level1Exist)
+                        else if (!checkIisResult.Data.Level1Exist || !checkIisResult.Data.Level2Exist)
                         {
-                            this.BeginInvokeLambda(() =>
-                            {
-                                //级别一不存在
-                                FirstCreate creatFrom = new FirstCreate(true);
-                                var data = creatFrom.ShowDialog();
-                                if (data == DialogResult.Cancel)
-                                {
-                                    _iiCreateParam = null;
-                                }
-                                else
-                                {
-                                    _iiCreateParam = creatFrom.IsCreateParam;
-                                }
-                                Condition.Set();
-                            });
-                            Condition.WaitOne();
-                            if (_iiCreateParam == null)
-                            {
-                                this.nlog_iis.Error($"Create Website Param Required!");
-                                UploadError(this.tabPage_progress, server.Host);
-                                allSuccess = false;
-                                failCount++;
-                                continue;
-                            }
-                            else
-                            {
-                                Port = _iiCreateParam.Port;
-                                PhysicalPath = _iiCreateParam.PhysicalPath;
-                                PoolName = _iiCreateParam.PoolName;
-                            }
-                        }
-                        else if (!checkIisResult.Data.Level2Exist)
-                        {
-                            this.BeginInvokeLambda(() =>
-                            {
-                                //级别二不存在
-                                FirstCreate creatFrom = new FirstCreate(false);
-                                var data = creatFrom.ShowDialog();
-                                if (data == DialogResult.Cancel)
-                                {
-                                    _iiCreateParam = null;
-                                }
-                                else
-                                {
-                                    _iiCreateParam = creatFrom.IsCreateParam;
-                                }
-                                Condition.Set();
-                            });
-                            Condition.WaitOne();
-                            if (_iiCreateParam == null)
-                            {
-                                this.nlog_iis.Error($"Create Website Param Required!");
-                                UploadError(this.tabPage_progress, server.Host);
-                                allSuccess = false;
-                                failCount++;
-                                continue;
-                            }
-                            else
-                            {
-                                Port = _iiCreateParam.Port;
-                                PhysicalPath = _iiCreateParam.PhysicalPath;
-                                PoolName = _iiCreateParam.PoolName;
-                            }
+                            //网站还不存在不能选择指定的文件发布 
+                            this.nlog_iis.Error($"Website Is Not Exist In Remote IIS,Can not use [select file deplpoy]");
+                            UploadError(this.tabPage_progress, server.Host);
+                            allSuccess = false;
+                            failCount++;
+                            continue;
                         }
 
                         ProgressPercentage = 0;
