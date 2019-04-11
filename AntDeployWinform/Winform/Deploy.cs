@@ -1677,7 +1677,7 @@ namespace AntDeployWinform.Winform
 
                         if (checkIisResult.Data.Success)
                         {
-                            this.nlog_iis.Info($"Website Is Exist In Remote IIS");
+                            this.nlog_iis.Info($"Website Is Exist In Remote IIS:" + server.Host);
                         }
                         else if (!checkIisResult.Data.Level1Exist)
                         {
@@ -2002,7 +2002,7 @@ namespace AntDeployWinform.Winform
 
                         if (checkIisResult.Data.Success)
                         {
-
+                            this.nlog_iis.Info($"Website Is Exist In Remote IIS:" + server.Host);
                         }
                         else if (!checkIisResult.Data.Level1Exist || !checkIisResult.Data.Level2Exist)
                         {
