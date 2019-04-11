@@ -1720,6 +1720,7 @@ namespace AntDeployWinform.Winform
                                 Port = _iiCreateParam.Port;
                                 PhysicalPath = _iiCreateParam.PhysicalPath;
                                 PoolName = _iiCreateParam.PoolName;
+                                this.nlog_iis.Info($"Website Create Port:{Port},PoolName:{PoolName},PhysicalPath:{PhysicalPath}");
                             }
                         }
                         else if (!checkIisResult.Data.Level2Exist)
@@ -1762,6 +1763,7 @@ namespace AntDeployWinform.Winform
                                 Port = _iiCreateParam.Port;
                                 PhysicalPath = _iiCreateParam.PhysicalPath;
                                 PoolName = _iiCreateParam.PoolName;
+                                this.nlog_iis.Info($"Website Create Port:{Port},PoolName:{PoolName},PhysicalPath:{PhysicalPath}");
                             }
                         }
 
