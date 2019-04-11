@@ -133,6 +133,12 @@
     <Compile Include="Winform\Deploy.Designer.cs">
       <DependentUpon>Deploy.cs</DependentUpon>
     </Compile>
+    <Compile Include="Winform\FirstCreate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Winform\FirstCreate.Designer.cs">
+      <DependentUpon>FirstCreate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Winform\InputDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -188,6 +194,12 @@
     <EmbeddedResource Include="Winform\Deploy.zh.resx">
       <DependentUpon>Deploy.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Winform\FirstCreate.resx">
+      <DependentUpon>FirstCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Winform\FirstCreate.zh-CN.resx">
+      <DependentUpon>FirstCreate.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Winform\InputDialog.resx">
       <DependentUpon>InputDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -204,6 +216,9 @@
       <DependentUpon>SelectFile.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Winform\SelectProject.resx">
+      <DependentUpon>SelectProject.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Winform\SelectProject.zh-CN.resx">
       <DependentUpon>SelectProject.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Winform\SelectProject.zh-Hans.resx">

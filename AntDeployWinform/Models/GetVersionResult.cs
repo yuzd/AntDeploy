@@ -13,4 +13,28 @@ namespace AntDeployWinform.Models
         public List<string> Data { get; set; }
     }
 
+    public class IIsSiteCheck
+    {
+        public bool Success { get; set; }
+        public string Msg { get; set; }
+        public IIsSiteCheckResult Data { get; set; }
+    }
+    public class IIsSiteCheckResult
+    {
+
+        public string WebSiteName { get; set; }
+
+        public string Level1Name { get; set; }
+        public bool Level1Exist { get; set; }
+        public bool Success { get; set; }
+
+        public bool Level2Exist { get; set; }
+    }
+
+    public class IIsCreateParam
+    {
+        public string Port { get; set; }
+        public string PoolName { get; set; }
+        public string PhysicalPath { get; set; }
+    }
 }

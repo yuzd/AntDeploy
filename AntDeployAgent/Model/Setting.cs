@@ -134,7 +134,7 @@ namespace AntDeployAgentWindows.Model
                     {
                         var folder = new DirectoryInfo(subFolder);
                         var folderName = folder.Name;
-                        folderName = folderName.Replace("Backup", "").Replace("_", "");
+                        folderName = folderName.Replace("Backup", "").Replace("Err","").Replace("_", "");
                         if (!DateTime.TryParseExact(folderName, "yyyyMMddHHmmss", null, DateTimeStyles.None, out DateTime createDate))
                         {
                             continue;

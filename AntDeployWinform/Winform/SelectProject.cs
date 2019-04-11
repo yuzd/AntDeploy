@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace AntDeployWinform.Winform
@@ -10,6 +12,11 @@ namespace AntDeployWinform.Winform
         public SelectProject(List<string> projectList = null)
         {
             InitializeComponent();
+            Assembly assembly = typeof(Deploy).Assembly;
+            using (Stream stream = assembly.GetManifestResourceStream("AntDeployWinform.Resources.Logo1.ico"))
+            {
+                if (stream != null) this.Icon = new Icon(stream);
+            }
 
             if (projectList != null)
             {

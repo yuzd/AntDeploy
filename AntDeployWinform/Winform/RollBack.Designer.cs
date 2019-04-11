@@ -40,11 +40,6 @@
             this.listbox_rollback_list.Dock = System.Windows.Forms.DockStyle.Top;
             this.listbox_rollback_list.FormattingEnabled = true;
             this.listbox_rollback_list.ItemHeight = 12;
-            this.listbox_rollback_list.Items.AddRange(new object[] {
-            "1111",
-            "222",
-            "333",
-            "2222"});
             this.listbox_rollback_list.Location = new System.Drawing.Point(0, 0);
             this.listbox_rollback_list.Name = "listbox_rollback_list";
             this.listbox_rollback_list.Size = new System.Drawing.Size(217, 232);

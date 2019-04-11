@@ -61,11 +61,10 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.listBox_project);
             this.Controls.Add(this.btn_select_project);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "SelectProject";
-            this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.ResumeLayout(false);
             this.PerformLayout();

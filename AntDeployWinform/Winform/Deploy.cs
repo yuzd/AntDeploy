@@ -14,6 +14,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Process = System.Diagnostics.Process;
@@ -23,7 +24,7 @@ namespace AntDeployWinform.Winform
     [Serializable]
     public partial class Deploy : Form
     {
-
+        private AutoResetEvent Condition { get; set; }
         private string ProjectConfigPath;
         private string ProjectFolderPath;
         private string ProjectName;
@@ -31,6 +32,7 @@ namespace AntDeployWinform.Winform
         private string PluginConfigPath;//这个是按照项目来的
         private string ConfigPath;//这个是全局配置
         private ProjectParam _project;
+        private IIsCreateParam _iiCreateParam = new IIsCreateParam();
         private NLog.Logger nlog_iis;
         private NLog.Logger nlog_windowservice;
         private NLog.Logger nlog_docker;
@@ -59,6 +61,8 @@ namespace AntDeployWinform.Winform
             Init(projectPath, project);
 
             NlogConfig();
+
+            Condition = new AutoResetEvent(false);
         }
 
 
@@ -1399,9 +1403,9 @@ namespace AntDeployWinform.Winform
             var ignoreList = DeployConfig.Env.First(r => r.Name.Equals(envName)).IgnoreList;
             var backUpIgnoreList = DeployConfig.Env.First(r => r.Name.Equals(envName)).WindowsBackUpIgnoreList;
 
-            var Port = this.txt_iis_port.Text.Trim();
-            var PoolName = this.txt_pool_name.Text.Trim();
-            var PhysicalPath = this.txt_iis_PhysicalPath.Text.Trim();
+            var Port = "";
+            var PoolName = "";
+            var PhysicalPath = "";
 
             var serverList = DeployConfig.Env.Where(r => r.Name.Equals(envName)).Select(r => r.ServerList)
                 .FirstOrDefault();
@@ -1432,6 +1436,10 @@ namespace AntDeployWinform.Winform
             DeployConfig.IIsConfig.WebSiteName = websiteName;
             new Task(async () =>
             {
+
+
+
+
                 this.nlog_iis.Info($"-----------------Start publish[Ver:{Vsix.VERSION}]-----------------");
                 PrintCommonLog(this.nlog_iis);
                 Enable(false); //第一台开始编译
@@ -1638,6 +1646,107 @@ namespace AntDeployWinform.Winform
                         }
 
 
+
+                        this.nlog_iis.Info("Start Check Website IsExist In Remote IIS:" + server.Host);
+                        var checkIisResult = await WebUtil.HttpPostAsync<IIsSiteCheck>(
+                            $"http://{server.Host}/version", new
+                            {
+                                Token = server.Token,
+                                Type = "checkiis",
+                                Name = DeployConfig.IIsConfig.WebSiteName
+                            }, nlog_iis);
+
+                        if (checkIisResult == null || checkIisResult.Data == null)
+                        {
+                            this.nlog_iis.Error($"Check Website IsExist In Remote IIS Fail");
+                            UploadError(this.tabPage_progress, server.Host);
+                            allSuccess = false;
+                            failCount++;
+                            continue;
+                        }
+
+                        if (!string.IsNullOrEmpty(checkIisResult.Msg))
+                        {
+                            this.nlog_iis.Error($"Check Website IsExist In Remote IIS Fail：" + checkIisResult.Msg);
+                            UploadError(this.tabPage_progress, server.Host);
+                            allSuccess = false;
+                            failCount++;
+                            continue;
+                        }
+
+                        if (checkIisResult.Data.Success)
+                        {
+
+                        }
+                        else if (!checkIisResult.Data.Level1Exist)
+                        {
+                            this.BeginInvokeLambda(() =>
+                            {
+                                //级别一不存在
+                                FirstCreate creatFrom = new FirstCreate(true);
+                                var data = creatFrom.ShowDialog();
+                                if (data == DialogResult.Cancel)
+                                {
+                                    _iiCreateParam = null;
+                                }
+                                else
+                                {
+                                    _iiCreateParam = creatFrom.IsCreateParam;
+                                }
+                                Condition.Set();
+                            });
+                            Condition.WaitOne();
+                            if (_iiCreateParam == null)
+                            {
+                                this.nlog_iis.Error($"Create Website Param Required!");
+                                UploadError(this.tabPage_progress, server.Host);
+                                allSuccess = false;
+                                failCount++;
+                                continue;
+                            }
+                            else
+                            {
+                                Port = _iiCreateParam.Port;
+                                PhysicalPath = _iiCreateParam.PhysicalPath;
+                                PoolName = _iiCreateParam.PoolName;
+                            }
+                        }
+                        else if (!checkIisResult.Data.Level2Exist)
+                        {
+                            this.BeginInvokeLambda(() =>
+                            {
+                                //级别二不存在
+                                FirstCreate creatFrom = new FirstCreate(false);
+                                var data = creatFrom.ShowDialog();
+                                if (data == DialogResult.Cancel)
+                                {
+                                    _iiCreateParam = null;
+                                }
+                                else
+                                {
+                                    _iiCreateParam = creatFrom.IsCreateParam;
+                                }
+                                Condition.Set();
+                            });
+                            Condition.WaitOne();
+                            if (_iiCreateParam == null)
+                            {
+                                this.nlog_iis.Error($"Create Website Param Required!");
+                                UploadError(this.tabPage_progress, server.Host);
+                                allSuccess = false;
+                                failCount++;
+                                continue;
+                            }
+                            else
+                            {
+                                Port = _iiCreateParam.Port;
+                                PhysicalPath = _iiCreateParam.PhysicalPath;
+                                PoolName = _iiCreateParam.PoolName;
+                            }
+                        }
+
+
+                        
                         ProgressPercentage = 0;
                         ProgressCurrentHost = server.Host;
                         this.nlog_iis.Info($"Start Uppload,Host:{getHostDisplayName(server)}");
@@ -2296,13 +2405,10 @@ namespace AntDeployWinform.Winform
                     }
                 }
 
-                this.txt_iis_PhysicalPath.Enabled = flag;
                 this.b_iis_rollback.Enabled = flag;
                 this.b_iis_deploy.Enabled = flag;
                 this.checkBox_Increment_iis.Enabled = flag;
                 this.txt_iis_web_site_name.Enabled = flag;
-                this.txt_iis_port.Enabled = flag;
-                this.txt_pool_name.Enabled = flag;
                 this.combo_iis_env.Enabled = flag;
                 this.combo_iis_sdk_type.Enabled = flag;
                 this.page_set.Enabled = flag;

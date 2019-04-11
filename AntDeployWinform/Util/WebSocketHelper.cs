@@ -215,8 +215,7 @@ namespace AntDeployWinform.Util
         private string _agentVersion;
         private void AgentCheckVersion(string receiveMsg)
         {
-            _agentVersion = receiveMsg;
-            var agentVersionArr = receiveMsg.Split(new string[] { "=>" }, StringSplitOptions.None);
+            var agentVersionArr = receiveMsg.Split(new string[] { "=>" }, StringSplitOptions.RemoveEmptyEntries);
             if (agentVersionArr.Length == 2)
             {
                 var agentVersion = agentVersionArr[1];

@@ -8,6 +8,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using AntDeployAgent.Model;
 using AntDeployAgent.Util;
 
 namespace AntDeployAgentWindows.MyApp
@@ -54,6 +55,9 @@ namespace AntDeployAgentWindows.MyApp
                     case "iis":
                         GetIisVersionList(request);
                         break;
+                    case "checkiis":
+                        CheckIIs(request);
+                        break;
                     case "winservice":
                         GetWindowsServiceVersionList(request);
                         break;
@@ -66,6 +70,66 @@ namespace AntDeployAgentWindows.MyApp
             {
                 WriteError(ex.Message);
             }
+        }
+
+
+        /// <summary>
+        /// 检查IIS中是否存在指定网站
+        /// </summary>
+        /// <param name="request"></param>
+        private void CheckIIs(GetVersionVm request)
+        {
+            if (string.IsNullOrEmpty(request.Name))
+            {
+                WriteError("web site name required!");
+                return;
+            }
+
+            var webSiteName = request.Name.Trim();
+            var siteNameArr = webSiteName.Split('/');
+            if (siteNameArr.Length > 2)
+            {
+                WriteError("webSiteName level limit is 2");
+                return;
+            }
+
+            var level1 = siteNameArr[0];
+            var level2 = siteNameArr.Length == 2 ? siteNameArr[1] : string.Empty;
+
+            var isSiteExistResult = IISHelper.IsSiteExist(level1, level2);
+            if (!string.IsNullOrEmpty(isSiteExistResult.Item3))
+            {
+                WriteError(isSiteExistResult.Item3);
+                return;
+            }
+
+            var iisVersion = IISHelper.GetIISVersion();
+            if (iisVersion <= 6)
+            {
+                WriteError($"remote iis verison is too low!");
+                return;
+            }
+
+            IIsSiteCheckResult result = new IIsSiteCheckResult();
+            result.WebSiteName = webSiteName;
+            result.Level1Name = level1;
+            result.Level1Exist = isSiteExistResult.Item1;
+            if (!isSiteExistResult.Item1)
+            {
+                //一级不存在 那肯定要输入了 端口号必填
+                result.Level1Exist = false;
+            }
+            else if (isSiteExistResult.Item1 && !isSiteExistResult.Item2 && !string.IsNullOrEmpty(level2))
+            {
+                //一级存在二级不存在 不用填端口号
+                result.Level2Exist =false;
+            }
+            else
+            {
+                result.Success = true;
+            }
+
+            WriteSuccess(result);
         }
 
         private void GetWindowsServiceVersionList(GetVersionVm request)
@@ -204,6 +268,15 @@ namespace AntDeployAgentWindows.MyApp
             DeployResult<List<string>> obj = new DeployResult<List<string>>();
             obj.Success = true;
             obj.Data = data ?? new List<string>();
+            Response.ContentType = "application/json";
+            Response.Write(JsonConvert.SerializeObject(obj));
+        }
+
+        private void WriteSuccess<T>(T data)
+        {
+            DeployResult<T> obj = new DeployResult<T>();
+            obj.Success = true;
+            obj.Data = data;
             Response.ContentType = "application/json";
             Response.Write(JsonConvert.SerializeObject(obj));
         }

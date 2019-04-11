@@ -22,10 +22,6 @@ namespace AntDeployWinform.Winform
             {
                 if (stream != null) this.Icon = new Icon(stream);
             }
-
-
-            this.listbox_rollback_list.Items.Clear();
-            this.listView_rollback_version.Items.Clear();
         }
         public RollBack(List<Tuple<string,string>> list, bool isNotRollback = false):this()
         {
@@ -58,17 +54,6 @@ namespace AntDeployWinform.Winform
 
         public RollBack(List<string> list, bool isNotRollback = false) : this()
         {
-            InitializeComponent();
-
-            Assembly assembly = typeof(Deploy).Assembly;
-            using (Stream stream = assembly.GetManifestResourceStream("AntDeployWinform.Resources.Logo1.ico"))
-            {
-                if (stream != null) this.Icon = new Icon(stream);
-            }
-
-
-            this.listbox_rollback_list.Items.Clear();
-            this.listView_rollback_version.Items.Clear();
             
             foreach (var li in list)
             {
@@ -133,14 +118,14 @@ namespace AntDeployWinform.Winform
         {
             if (isRollBack)
             {
-                if (lastItemChecked == null)
+                if (listView_rollback_version.CheckedItems.Count<1)
                 {
                     MessageBox.Show("please select rollback version!");
                     return;
                 }
 
                 //var selectView = this.listView_rollback_version.SelectedItems[0];
-                SelectRollBackVersion = lastItemChecked.Text;
+                SelectRollBackVersion = listView_rollback_version.CheckedItems[0].Text;
                 this.DialogResult = DialogResult.OK;
             }
             else

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using AntDeployAgentWindows.Model;
 using Newtonsoft.Json;
 
@@ -74,16 +75,30 @@ namespace AntDeployAgentWindows.MyApp.Service
                 {
                     return re;
                 }
+
                 if (!string.IsNullOrEmpty(re))
                 {
+                    //发布出错了 删除此次版本号
+                    //new Task(() =>
+                    //{
+                    //    try
+                    //    {
+                    //        Directory.Delete(ProjectPublishFolder, true);
+                    //    }
+                    //    catch (Exception)
+                    //    {
+                    //        //ignore
+                    //    }
+                    //}).Start();
+                   
                     return re;
                 }
-                
+
                 if (string.IsNullOrEmpty(ProjectPublishFolder) || !Directory.Exists(ProjectPublishFolder))
                 {
                     return re;
                 }
-                
+
                 //保存参数
                 var formArgs = _formHandler.FormItems.Where(r => r.FileBody == null || r.FileBody.Length < 1).ToList();
                 if (formArgs.Any())
