@@ -127,7 +127,7 @@
     <value>端口:</value>
   </data>
   <data name="label1.Text" xml:space="preserve">
-    <value>您填写的网站名称在远程服务器的IIS没有找到，如果您想要新创建的话，请填写下面的值(*号表示必填)：</value>
+    <value>您填写的网站名称在远程服务器的IIS没有找到，如果您想要新创建的话，请填写下面的值：</value>
   </data>
   <data name="label2.Text" xml:space="preserve">
     <value>注意:一旦该网站创建后您想修改以上的参数需要自己在服务器上的IIS进行修改</value>
@@ -138,10 +138,6 @@
   </data>
   <data name="label4.Text" xml:space="preserve">
     <value>=&gt;不填会默认使用你指定的网站名称</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>网站不存在需要创建</value>
