@@ -1659,7 +1659,7 @@ namespace AntDeployWinform.Winform
 
                         if (checkIisResult == null || checkIisResult.Data == null)
                         {
-                            this.nlog_iis.Error($"Check Website IsExist In Remote IIS Fail");
+                            this.nlog_iis.Error($"Check Website IsExist In Remote IIS Fail,Please update agent!");
                             UploadError(this.tabPage_progress, server.Host);
                             allSuccess = false;
                             failCount++;
@@ -1986,7 +1986,7 @@ namespace AntDeployWinform.Winform
 
                         if (checkIisResult == null || checkIisResult.Data == null)
                         {
-                            this.nlog_iis.Error($"Check Website IsExist In Remote IIS Fail");
+                            this.nlog_iis.Error($"Check Website IsExist In Remote IIS Fail,Please update agent!");
                             UploadError(this.tabPage_progress, server.Host);
                             allSuccess = false;
                             failCount++;
