@@ -1952,6 +1952,105 @@ namespace AntDeployWinform.Winform
                         }
 
 
+
+                        this.nlog_iis.Info("Start Check Website IsExist In Remote IIS:" + server.Host);
+                        var checkIisResult = await WebUtil.HttpPostAsync<IIsSiteCheck>(
+                            $"http://{server.Host}/version", new
+                            {
+                                Token = server.Token,
+                                Type = "checkiis",
+                                Name = DeployConfig.IIsConfig.WebSiteName
+                            }, nlog_iis);
+
+                        if (checkIisResult == null || checkIisResult.Data == null)
+                        {
+                            this.nlog_iis.Error($"Check Website IsExist In Remote IIS Fail");
+                            UploadError(this.tabPage_progress, server.Host);
+                            allSuccess = false;
+                            failCount++;
+                            continue;
+                        }
+
+                        if (!string.IsNullOrEmpty(checkIisResult.Msg))
+                        {
+                            this.nlog_iis.Error($"Check Website IsExist In Remote IIS Fail：" + checkIisResult.Msg);
+                            UploadError(this.tabPage_progress, server.Host);
+                            allSuccess = false;
+                            failCount++;
+                            continue;
+                        }
+
+                        if (checkIisResult.Data.Success)
+                        {
+
+                        }
+                        else if (!checkIisResult.Data.Level1Exist)
+                        {
+                            this.BeginInvokeLambda(() =>
+                            {
+                                //级别一不存在
+                                FirstCreate creatFrom = new FirstCreate(true);
+                                var data = creatFrom.ShowDialog();
+                                if (data == DialogResult.Cancel)
+                                {
+                                    _iiCreateParam = null;
+                                }
+                                else
+                                {
+                                    _iiCreateParam = creatFrom.IsCreateParam;
+                                }
+                                Condition.Set();
+                            });
+                            Condition.WaitOne();
+                            if (_iiCreateParam == null)
+                            {
+                                this.nlog_iis.Error($"Create Website Param Required!");
+                                UploadError(this.tabPage_progress, server.Host);
+                                allSuccess = false;
+                                failCount++;
+                                continue;
+                            }
+                            else
+                            {
+                                Port = _iiCreateParam.Port;
+                                PhysicalPath = _iiCreateParam.PhysicalPath;
+                                PoolName = _iiCreateParam.PoolName;
+                            }
+                        }
+                        else if (!checkIisResult.Data.Level2Exist)
+                        {
+                            this.BeginInvokeLambda(() =>
+                            {
+                                //级别二不存在
+                                FirstCreate creatFrom = new FirstCreate(false);
+                                var data = creatFrom.ShowDialog();
+                                if (data == DialogResult.Cancel)
+                                {
+                                    _iiCreateParam = null;
+                                }
+                                else
+                                {
+                                    _iiCreateParam = creatFrom.IsCreateParam;
+                                }
+                                Condition.Set();
+                            });
+                            Condition.WaitOne();
+                            if (_iiCreateParam == null)
+                            {
+                                this.nlog_iis.Error($"Create Website Param Required!");
+                                UploadError(this.tabPage_progress, server.Host);
+                                allSuccess = false;
+                                failCount++;
+                                continue;
+                            }
+                            else
+                            {
+                                Port = _iiCreateParam.Port;
+                                PhysicalPath = _iiCreateParam.PhysicalPath;
+                                PoolName = _iiCreateParam.PoolName;
+                            }
+                        }
+
                         ProgressPercentage = 0;
                         ProgressCurrentHost = server.Host;
                         this.nlog_iis.Info($"Start Uppload,Host:{getHostDisplayName(server)}");
