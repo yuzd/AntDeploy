@@ -1636,6 +1636,7 @@ namespace AntDeployWinform.Winform
                             UpdatePackageProgress(this.tabPage_progress, server.Host, 100);
                         }
 
+                        index++;
                         if (string.IsNullOrEmpty(server.Token))
                         {
                             this.nlog_iis.Warn($"{server.Host} Deploy skip,Token is null or empty!");
@@ -1676,7 +1677,7 @@ namespace AntDeployWinform.Winform
 
                         if (checkIisResult.Data.Success)
                         {
-
+                            this.nlog_iis.Info($"Website Is Exist In Remote IIS");
                         }
                         else if (!checkIisResult.Data.Level1Exist)
                         {
@@ -1867,7 +1868,6 @@ namespace AntDeployWinform.Winform
                             await webSocket?.Dispose();
                         }
 
-                        index++;
                     }
 
                     //交互
@@ -1961,6 +1961,7 @@ namespace AntDeployWinform.Winform
                             UpdatePackageProgress(this.tabPage_progress, server.Host, 100);
                         }
 
+                        index++;
                         if (string.IsNullOrEmpty(server.Token))
                         {
                             this.nlog_iis.Warn($"{server.Host} Deploy skip,Token is null or empty!");
@@ -2113,7 +2114,6 @@ namespace AntDeployWinform.Winform
                             await webSocket?.Dispose();
                         }
 
-                        index++;
                     }
 
                     //交互
@@ -3194,6 +3194,7 @@ namespace AntDeployWinform.Winform
                             UpdatePackageProgress(this.tabPage_windows_service, server.Host, 100);
                         }
 
+                        index++;
                         if (string.IsNullOrEmpty(server.Token))
                         {
                             this.nlog_windowservice.Warn($"{server.Host} Deploy skip,Token is null or empty!");
@@ -3307,7 +3308,6 @@ namespace AntDeployWinform.Winform
                             await webSocket?.Dispose();
                         }
 
-                        index++;
                     }
 
                     //交互
@@ -3400,6 +3400,7 @@ namespace AntDeployWinform.Winform
                             UpdatePackageProgress(this.tabPage_windows_service, server.Host, 100);
                         }
 
+                        index++;
                         if (string.IsNullOrEmpty(server.Token))
                         {
                             this.nlog_windowservice.Warn($"{server.Host} Deploy skip,Token is null or empty!");
@@ -3512,7 +3513,6 @@ namespace AntDeployWinform.Winform
                             await webSocket?.Dispose();
                         }
 
-                        index++;
                     }
 
                     //交互
@@ -4352,6 +4352,7 @@ namespace AntDeployWinform.Winform
                            UpdatePackageProgress(this.tabPage_docker, server.Host, 100);
                        }
 
+                       index++;
                        #region 参数Check
 
                        if (string.IsNullOrEmpty(server.Host))
@@ -4483,7 +4484,6 @@ namespace AntDeployWinform.Winform
                            }
                        }
 
-                       index++;
                    }
 
                    zipBytes.Dispose();
