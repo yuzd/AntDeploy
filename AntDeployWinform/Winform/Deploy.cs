@@ -4146,16 +4146,41 @@ namespace AntDeployWinform.Winform
             var port = this.txt_docker_port.Text.Trim();
             if (!string.IsNullOrEmpty(port))
             {
-                int.TryParse(port, out var dockerPort);
-                if (dockerPort <= 0)
+                if (!port.Contains(":"))
                 {
-                    MessageBox.Show("please input right port value");
-                    return;
+                    int.TryParse(port, out var dockerPort);
+                    if (dockerPort <= 0)
+                    {
+                        MessageBox.Show("please input right port value");
+                        return;
+                    }
+                    else
+                    {
+                        DeployConfig.DockerConfig.Prot = port;
+                    }
                 }
                 else
                 {
+                    var arr = port.Split(':');
+                    if (arr.Length != 2)
+                    {
+                        MessageBox.Show("please input right port value");
+                        return;
+                    }
+
+                    foreach (var aPort in arr)
+                    {
+                        int.TryParse(aPort, out var dockerPort);
+                        if (dockerPort <= 0)
+                        {
+                            MessageBox.Show("please input right port value");
+                            return;
+                        }
+                    }
+
                     DeployConfig.DockerConfig.Prot = port;
                 }
+                
             }
             else
             {

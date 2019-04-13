@@ -124,11 +124,26 @@
   <data name="checkBox_select_deploy_iis.Text" xml:space="preserve">
     <value>选择指定文件发布</value>
   </data>
+  <data name="tabPage_docker_log.Size" type="System.Drawing.Size, System.Drawing">
+    <value>614, 266</value>
+  </data>
+  <data name="rich_docker_log.Size" type="System.Drawing.Size, System.Drawing">
+    <value>608, 260</value>
+  </data>
   <data name="checkBox_select_deploy_service.Size" type="System.Drawing.Size, System.Drawing">
     <value>120, 16</value>
   </data>
   <data name="checkBox_select_deploy_service.Text" xml:space="preserve">
     <value>选择指定文件发布</value>
+  </data>
+  <data name="groupBox2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>263, 11</value>
+  </data>
+  <data name="groupBox2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>285, 66</value>
+  </data>
+  <data name="groupBox2.Text" xml:space="preserve">
+    <value> (只有第一次创建服务可选填,若非首次不用填)</value>
   </data>
   <data name="label42.Location" type="System.Drawing.Point, System.Drawing">
     <value>440, 180</value>
@@ -156,5 +171,9 @@
   </data>
   <data name="label_without_vs.Location" type="System.Drawing.Point, System.Drawing">
     <value>362, 9</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
 </root>

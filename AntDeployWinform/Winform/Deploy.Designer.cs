@@ -36,7 +36,7 @@
             this.checkBox_Increment_iis = new System.Windows.Forms.CheckBox();
             this.label25 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
-            this.b_iis_deploy = new System.Windows.Forms.Button();
+            this.b_iis_deploy = new AltoControls.AltoButton();
             this.combo_iis_env = new System.Windows.Forms.ComboBox();
             this.label8 = new System.Windows.Forms.Label();
             this.txt_iis_web_site_name = new System.Windows.Forms.TextBox();
@@ -50,6 +50,7 @@
             this.tabPage_iis_log = new System.Windows.Forms.TabPage();
             this.rich_iis_log = new AntDeployWinform.ExRichTextBox();
             this.page_docker = new System.Windows.Forms.TabPage();
+            this.b_docker_deploy = new AltoControls.AltoButton();
             this.label13 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.t_docker_delete_days = new System.Windows.Forms.TextBox();
@@ -62,7 +63,6 @@
             this.txt_docker_envname = new System.Windows.Forms.TextBox();
             this.label23 = new System.Windows.Forms.Label();
             this.txt_docker_port = new System.Windows.Forms.TextBox();
-            this.b_docker_deploy = new System.Windows.Forms.Button();
             this.combo_docker_env = new System.Windows.Forms.ComboBox();
             this.label22 = new System.Windows.Forms.Label();
             this.label_docker_demo = new System.Windows.Forms.Label();
@@ -73,6 +73,7 @@
             this.rich_docker_log = new AntDeployWinform.ExRichTextBox();
             this.b_docker_rollback = new AltoControls.AltoButton();
             this.page_window_service = new System.Windows.Forms.TabPage();
+            this.b_windowservice_deploy = new AltoControls.AltoButton();
             this.checkBox_select_deploy_service = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label34 = new System.Windows.Forms.Label();
@@ -85,7 +86,6 @@
             this.label14 = new System.Windows.Forms.Label();
             this.combo_windowservice_sdk_type = new System.Windows.Forms.ComboBox();
             this.label11 = new System.Windows.Forms.Label();
-            this.b_windowservice_deploy = new System.Windows.Forms.Button();
             this.combo_windowservice_env = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
             this.tabControl_window_service = new System.Windows.Forms.TabControl();
@@ -259,8 +259,18 @@
             // b_iis_deploy
             // 
             resources.ApplyResources(this.b_iis_deploy, "b_iis_deploy");
+            this.b_iis_deploy.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
+            this.b_iis_deploy.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
+            this.b_iis_deploy.BackColor = System.Drawing.Color.Transparent;
+            this.b_iis_deploy.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.b_iis_deploy.ForeColor = System.Drawing.Color.Black;
+            this.b_iis_deploy.Inactive1 = System.Drawing.SystemColors.Control;
+            this.b_iis_deploy.Inactive2 = System.Drawing.SystemColors.ControlLight;
             this.b_iis_deploy.Name = "b_iis_deploy";
-            this.b_iis_deploy.UseVisualStyleBackColor = true;
+            this.b_iis_deploy.Radius = 10;
+            this.b_iis_deploy.Stroke = false;
+            this.b_iis_deploy.StrokeColor = System.Drawing.Color.Gray;
+            this.b_iis_deploy.Transparency = false;
             this.b_iis_deploy.Click += new System.EventHandler(this.b_iis_deploy_Click);
             // 
             // combo_iis_env
@@ -351,12 +361,12 @@
             // page_docker
             // 
             resources.ApplyResources(this.page_docker, "page_docker");
+            this.page_docker.Controls.Add(this.b_docker_deploy);
             this.page_docker.Controls.Add(this.label13);
             this.page_docker.Controls.Add(this.label12);
             this.page_docker.Controls.Add(this.t_docker_delete_days);
             this.page_docker.Controls.Add(this.label24);
             this.page_docker.Controls.Add(this.groupBox5);
-            this.page_docker.Controls.Add(this.b_docker_deploy);
             this.page_docker.Controls.Add(this.combo_docker_env);
             this.page_docker.Controls.Add(this.label22);
             this.page_docker.Controls.Add(this.label_docker_demo);
@@ -364,6 +374,23 @@
             this.page_docker.Controls.Add(this.b_docker_rollback);
             this.page_docker.Name = "page_docker";
             this.page_docker.UseVisualStyleBackColor = true;
+            // 
+            // b_docker_deploy
+            // 
+            resources.ApplyResources(this.b_docker_deploy, "b_docker_deploy");
+            this.b_docker_deploy.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
+            this.b_docker_deploy.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
+            this.b_docker_deploy.BackColor = System.Drawing.Color.Transparent;
+            this.b_docker_deploy.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.b_docker_deploy.ForeColor = System.Drawing.Color.Black;
+            this.b_docker_deploy.Inactive1 = System.Drawing.SystemColors.Control;
+            this.b_docker_deploy.Inactive2 = System.Drawing.SystemColors.ControlLight;
+            this.b_docker_deploy.Name = "b_docker_deploy";
+            this.b_docker_deploy.Radius = 10;
+            this.b_docker_deploy.Stroke = false;
+            this.b_docker_deploy.StrokeColor = System.Drawing.Color.Gray;
+            this.b_docker_deploy.Transparency = false;
+            this.b_docker_deploy.Click += new System.EventHandler(this.b_docker_deploy_Click);
             // 
             // label13
             // 
@@ -439,13 +466,6 @@
             // 
             resources.ApplyResources(this.txt_docker_port, "txt_docker_port");
             this.txt_docker_port.Name = "txt_docker_port";
-            // 
-            // b_docker_deploy
-            // 
-            resources.ApplyResources(this.b_docker_deploy, "b_docker_deploy");
-            this.b_docker_deploy.Name = "b_docker_deploy";
-            this.b_docker_deploy.UseVisualStyleBackColor = true;
-            this.b_docker_deploy.Click += new System.EventHandler(this.b_docker_deploy_Click);
             // 
             // combo_docker_env
             // 
@@ -525,6 +545,7 @@
             // page_window_service
             // 
             resources.ApplyResources(this.page_window_service, "page_window_service");
+            this.page_window_service.Controls.Add(this.b_windowservice_deploy);
             this.page_window_service.Controls.Add(this.checkBox_select_deploy_service);
             this.page_window_service.Controls.Add(this.groupBox2);
             this.page_window_service.Controls.Add(this.checkBox_Increment_window_service);
@@ -534,13 +555,29 @@
             this.page_window_service.Controls.Add(this.label14);
             this.page_window_service.Controls.Add(this.combo_windowservice_sdk_type);
             this.page_window_service.Controls.Add(this.label11);
-            this.page_window_service.Controls.Add(this.b_windowservice_deploy);
             this.page_window_service.Controls.Add(this.combo_windowservice_env);
             this.page_window_service.Controls.Add(this.label10);
             this.page_window_service.Controls.Add(this.tabControl_window_service);
             this.page_window_service.Controls.Add(this.b_windows_service_rollback);
             this.page_window_service.Name = "page_window_service";
             this.page_window_service.UseVisualStyleBackColor = true;
+            // 
+            // b_windowservice_deploy
+            // 
+            resources.ApplyResources(this.b_windowservice_deploy, "b_windowservice_deploy");
+            this.b_windowservice_deploy.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
+            this.b_windowservice_deploy.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
+            this.b_windowservice_deploy.BackColor = System.Drawing.Color.Transparent;
+            this.b_windowservice_deploy.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.b_windowservice_deploy.ForeColor = System.Drawing.Color.Black;
+            this.b_windowservice_deploy.Inactive1 = System.Drawing.SystemColors.Control;
+            this.b_windowservice_deploy.Inactive2 = System.Drawing.SystemColors.ControlLight;
+            this.b_windowservice_deploy.Name = "b_windowservice_deploy";
+            this.b_windowservice_deploy.Radius = 10;
+            this.b_windowservice_deploy.Stroke = false;
+            this.b_windowservice_deploy.StrokeColor = System.Drawing.Color.Gray;
+            this.b_windowservice_deploy.Transparency = false;
+            this.b_windowservice_deploy.Click += new System.EventHandler(this.b_windowservice_deploy_Click);
             // 
             // checkBox_select_deploy_service
             // 
@@ -619,13 +656,6 @@
             // 
             resources.ApplyResources(this.label11, "label11");
             this.label11.Name = "label11";
-            // 
-            // b_windowservice_deploy
-            // 
-            resources.ApplyResources(this.b_windowservice_deploy, "b_windowservice_deploy");
-            this.b_windowservice_deploy.Name = "b_windowservice_deploy";
-            this.b_windowservice_deploy.UseVisualStyleBackColor = true;
-            this.b_windowservice_deploy.Click += new System.EventHandler(this.b_windowservice_deploy_Click);
             // 
             // combo_windowservice_env
             // 
@@ -1251,14 +1281,14 @@
         private System.Windows.Forms.TextBox txt_iis_web_site_name;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ComboBox combo_iis_env;
-        private System.Windows.Forms.Button b_iis_deploy;
+        private AltoControls.AltoButton b_iis_deploy;
         private System.Windows.Forms.GroupBox groupBoxIgnore;
         private System.Windows.Forms.Button b_env_ignore_remove;
         private System.Windows.Forms.Button b_env_ignore_add;
         private System.Windows.Forms.TextBox txt_env_ignore;
         private System.Windows.Forms.ListBox list_env_ignore;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Button b_windowservice_deploy;
+        private AltoControls.AltoButton b_windowservice_deploy;
         private System.Windows.Forms.ComboBox combo_windowservice_env;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.ComboBox combo_windowservice_sdk_type;
@@ -1279,7 +1309,7 @@
         private System.Windows.Forms.Button b_linux_server_remove;
         private System.Windows.Forms.TextBox txt_linux_host;
         private System.Windows.Forms.Label label17;
-        private System.Windows.Forms.Button b_docker_deploy;
+        private AltoControls.AltoButton b_docker_deploy;
         private System.Windows.Forms.ComboBox combo_docker_env;
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.GroupBox groupBox5;

@@ -15,6 +15,7 @@ namespace AntDeployWinform.Util
     public class SSHClient : IDisposable
     {
         private string volumeProfix = "# volume@";
+        private string serverPortProfix = "# server_port@";
         public string Host { get; set; }
         public string UserName { get; set; }
         public string Pwd { get; set; }
@@ -34,6 +35,48 @@ namespace AntDeployWinform.Util
         }
 
         public string NetCorePort { get; set; }
+
+        /// <summary>
+        /// 宿主机开启的端口
+        /// </summary>
+        public string ServerPort
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(this.NetCorePort)) return "5000";
+
+                if (this.NetCorePort.Contains(":"))
+                {
+                    return this.NetCorePort.Split(':')[0];
+                }
+                else
+                {
+                    return NetCorePort;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 容器暴露的端口
+        /// </summary>
+        public string ContainerPort
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(this.NetCorePort)) return "5000";
+
+                if (this.NetCorePort.Contains(":"))
+                {
+                    return this.NetCorePort.Split(':')[1];
+                }
+                else
+                {
+                    return NetCorePort;
+                }
+            }
+        }
+
+
         public string NetCoreEnvironment { get; set; }
         public string NetCoreENTRYPOINT { get; set; }
         public string ClientDateTimeFolderName { get; set; }
@@ -360,6 +403,8 @@ namespace AntDeployWinform.Util
 
         public void DoDockerCommand(string publishFolder, bool isrollBack = false)
         {
+            string port = string.Empty;
+            string server_port = string.Empty;
             if (!publishFolder.EndsWith("/")) publishFolder = publishFolder + "/";
             //先查看本地是否有dockerFile
             var dockFilePath = publishFolder + "Dockerfile";
@@ -414,9 +459,9 @@ namespace AntDeployWinform.Util
                     }
                     else
                     {
-                        if (!string.IsNullOrEmpty(NetCorePort) && !NetCorePort.Equals(newPort))
+                        if (!string.IsNullOrEmpty(NetCorePort) && !this.ContainerPort.Equals(newPort))
                         {
-                            _logger($"EXPOSE in dockerFile is defined,will use【{newPort}】replace【{NetCorePort}】", NLog.LogLevel.Warn);
+                            _logger($"EXPOSE in dockerFile is defined,will use【{newPort}】replace【{ContainerPort}】", NLog.LogLevel.Warn);
                         }
                         else
                         {
@@ -425,7 +470,7 @@ namespace AntDeployWinform.Util
 
                     }
 
-                    NetCorePort = newPort;
+                    port = newPort;
 
                     var volumeInDockerFile = string.Empty;
                     var volumeExist = dockerFileText.Split(new string[] { volumeProfix }, StringSplitOptions.None);
@@ -451,6 +496,32 @@ namespace AntDeployWinform.Util
                         }
 
                         Volume = volumeInDockerFile;
+                    }
+
+                    var serverPostDockerFile = string.Empty;
+                    var serverPostDockerFileExist = dockerFileText.Split(new string[] { serverPortProfix }, StringSplitOptions.None);
+                    if (serverPostDockerFileExist.Length == 2)
+                    {
+                        var temp2 = serverPostDockerFileExist[1].Split('@');
+                        if (temp2.Length == 2)
+                        {
+                            serverPostDockerFile = temp2[0];
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(serverPostDockerFile))
+                    {
+                        //dockerFIle里面有配置 ServerPort
+                        if (!string.IsNullOrEmpty(NetCorePort) && !ServerPort.Equals(serverPostDockerFile))
+                        {
+                            _logger($"ServerPort in dockerFile is defined,will use【{serverPostDockerFile}】replace【{ServerPort}】", NLog.LogLevel.Warn);
+                        }
+                        else
+                        {
+                            _logger($"ServerPort in dockerFile is : 【{serverPostDockerFile}】", NLog.LogLevel.Info);
+                        }
+
+                        server_port = serverPostDockerFile;
                     }
                 }
                 catch (Exception)
@@ -505,16 +576,20 @@ namespace AntDeployWinform.Util
             }
 
 
-            string port = NetCorePort;
             if (string.IsNullOrEmpty(port))
             {
-                port = "5000";
+                port = ContainerPort;
+            }
+
+            if (string.IsNullOrEmpty(server_port))
+            {
+                server_port = ServerPort;
             }
 
             string volume = GetVolume();
 
             // 根据image启动一个容器
-            var dockerRunRt = RunSheell($"sudo docker run --name {continarName}{volume} -d --restart=always -p {port}:{port} {PorjectName}:{ClientDateTimeFolderName}");
+            var dockerRunRt = RunSheell($"sudo docker run --name {continarName}{volume} -d --restart=always -p {server_port}:{port} {PorjectName}:{ClientDateTimeFolderName}");
 
             if (!dockerRunRt)
             {
@@ -683,12 +758,7 @@ namespace AntDeployWinform.Util
                     sdkVersion = "2.1";
                 }
 
-                string port = NetCorePort;
-                if (string.IsNullOrEmpty(port))
-                {
-                    port = "5000";
-                }
-
+              
 
                 string environment = NetCoreEnvironment;
 
@@ -704,8 +774,8 @@ namespace AntDeployWinform.Util
                     writer.WriteLine($"WORKDIR /publish");
                     _logger($"WORKDIR /publish", NLog.LogLevel.Info);
 
-                    writer.WriteLine($"ENV ASPNETCORE_URLS=http://*:{port}");
-                    _logger($"ENV ASPNETCORE_URLS=http://*:{port}", NLog.LogLevel.Info);
+                    writer.WriteLine($"ENV ASPNETCORE_URLS=http://*:{this.ContainerPort}");
+                    _logger($"ENV ASPNETCORE_URLS=http://*:{this.ContainerPort}", NLog.LogLevel.Info);
 
                     if (!string.IsNullOrEmpty(environment))
                     {
@@ -713,8 +783,8 @@ namespace AntDeployWinform.Util
                         _logger($"ENV ASPNETCORE_ENVIRONMENT={environment}", NLog.LogLevel.Info);
                     }
 
-                    writer.WriteLine($"EXPOSE {port}");
-                    _logger($"EXPOSE {port}", NLog.LogLevel.Info);
+                    writer.WriteLine($"EXPOSE {this.ContainerPort}");
+                    _logger($"EXPOSE {this.ContainerPort}", NLog.LogLevel.Info);
 
                     var excuteLine = $"ENTRYPOINT [\"dotnet\", \"{dllName}\"]";
                     //var excuteCMDLine = $"CMD [\"--server.urls\", \"http://*:{port}\"";
@@ -728,6 +798,12 @@ namespace AntDeployWinform.Util
                     _logger(excuteLine, NLog.LogLevel.Info);
                     //writer.WriteLine(excuteCMDLine);
                     //_logger(excuteCMDLine);
+
+                    if (!string.IsNullOrEmpty(this.NetCorePort) && this.NetCorePort.Contains(":"))
+                    {
+                        writer.WriteLine(serverPortProfix + this.ServerPort + "@");
+                        _logger(serverPortProfix + this.ServerPort + "@", NLog.LogLevel.Info);
+                    }
 
                     if (!string.IsNullOrEmpty(this.Volume))
                     {
