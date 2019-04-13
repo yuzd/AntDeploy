@@ -104,8 +104,7 @@ namespace yuzd.AntDeploy
                 var projectFile = project.FullName;
                 try
                 {
-
-                    DTE.Documents.SaveAll();
+                    
                     Saveall();
 
                     ProjectParam param = new ProjectParam();
@@ -120,6 +119,7 @@ namespace yuzd.AntDeploy
                     }
                     catch (Exception)
                     {
+                        //ignore
                     }
 
                     param.ProjectPath = projectFile;
@@ -167,6 +167,14 @@ namespace yuzd.AntDeploy
         {
             try
             {
+                DTE.Documents.SaveAll();
+            }
+            catch (Exception)
+            {
+                //ignore
+            }
+            try
+            {
                 // Get the current solution.
                 var solution = DTE.Solution;
 
@@ -197,7 +205,7 @@ namespace yuzd.AntDeploy
             }
             catch (Exception)
             {
-
+                //ignore
             }
         }
 

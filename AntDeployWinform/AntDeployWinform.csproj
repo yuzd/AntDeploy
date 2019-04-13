@@ -209,6 +209,9 @@
     <EmbeddedResource Include="Winform\RollBack.resx">
       <DependentUpon>RollBack.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Winform\RollBack.zh-CN.resx">
+      <DependentUpon>RollBack.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Winform\SelectFile.resx">
       <DependentUpon>SelectFile.cs</DependentUpon>
     </EmbeddedResource>

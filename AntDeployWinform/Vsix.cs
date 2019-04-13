@@ -2,7 +2,7 @@
 {
     public static class Vsix
     {
-        public const string VERSION = "4.0";
+        public const string VERSION = "4.2";
         public const string AGENTVERSION = "4.0";
         public const string PRODUCT = "yuzd";
         public const string PACKAGE = "AntDeploy";

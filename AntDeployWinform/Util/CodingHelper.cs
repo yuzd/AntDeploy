@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using AntDeployWinform.Models;
+using AntDeployWinform.Winform;
 using Newtonsoft.Json;
 
 namespace AntDeployWinform.Util
@@ -118,6 +121,35 @@ namespace AntDeployWinform.Util
                 return value - 'A' + 10;
 
             return -1;
+        }
+
+
+        public static List<string> ParseVersionlist(List<string> list)
+        {
+            var result = new List<string>();
+
+            foreach (var li in list)
+            {
+                var version = string.Empty;
+                var content = li.JsonToObject<RollBackVersion>();
+                if (content == null)
+                {
+                    version = li;
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(content.Version))
+                    {
+                        version = content.Version;
+                    }
+                }
+
+                if (string.IsNullOrEmpty(version)) continue;
+
+                result.Add(version);
+            }
+
+            return result;
         }
     }
 }

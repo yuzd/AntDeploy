@@ -143,6 +143,11 @@ namespace AntDeployWinform.Winform
            
         }
 
+       
+        public void SetTitle(string name)
+        {
+            this.label_server_name.Text = name;
+        }
         public void SetButtonName(string name)
         {
             this.b_rollback_Rollback.Text = name;

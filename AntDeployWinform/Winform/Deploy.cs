@@ -33,6 +33,7 @@ namespace AntDeployWinform.Winform
         private string ConfigPath;//这个是全局配置
         private ProjectParam _project;
         private IIsCreateParam _iiCreateParam = new IIsCreateParam();
+        private RollBackVersion _rollBackVersion = new RollBackVersion();
         private NLog.Logger nlog_iis;
         private NLog.Logger nlog_windowservice;
         private NLog.Logger nlog_docker;
@@ -1422,8 +1423,8 @@ namespace AntDeployWinform.Winform
                 "Are you sure to deploy to Server: " + Environment.NewLine + serverHostList);
             //var confirmResult = MessageBox.Show(
             //    "Are you sure to deploy to Server: " + Environment.NewLine + serverHostList,
-             //   "Confirm Deploy!!",
-             //   MessageBoxButtons.YesNo);
+            //   "Confirm Deploy!!",
+            //   MessageBoxButtons.YesNo);
             if (!confirmResult.Item1)
             {
                 return;
@@ -1556,7 +1557,7 @@ namespace AntDeployWinform.Winform
                                 var slectFileForm = new SelectFile(fileList, publishPath);
                                 slectFileForm.ShowDialog();
                                 // ReSharper disable once AccessToDisposedClosure
-                                DoSelectDeployIIS(slectFileForm.SelectedFileList, publishPath, serverList, backUpIgnoreList, Port, PoolName, PhysicalPath,gitModel,confirmResult.Item2);
+                                DoSelectDeployIIS(slectFileForm.SelectedFileList, publishPath, serverList, backUpIgnoreList, Port, PoolName, PhysicalPath, gitModel, confirmResult.Item2);
                             });
                             return;
                         }
@@ -1585,7 +1586,7 @@ namespace AntDeployWinform.Winform
                         {
                             var slectFileForm = new SelectFile(publishPath);
                             slectFileForm.ShowDialog();
-                            DoSelectDeployIIS(slectFileForm.SelectedFileList, publishPath, serverList, backUpIgnoreList, Port, PoolName, PhysicalPath,  null, confirmResult.Item2);
+                            DoSelectDeployIIS(slectFileForm.SelectedFileList, publishPath, serverList, backUpIgnoreList, Port, PoolName, PhysicalPath, null, confirmResult.Item2);
                         });
 
 
@@ -1768,7 +1769,7 @@ namespace AntDeployWinform.Winform
                         }
 
 
-                        
+
                         ProgressPercentage = 0;
                         ProgressCurrentHost = server.Host;
                         this.nlog_iis.Info($"Start Uppload,Host:{getHostDisplayName(server)}");
@@ -1908,7 +1909,7 @@ namespace AntDeployWinform.Winform
 
         }
 
-        private void DoSelectDeployIIS(List<string> fileList, string publishPath, List<Server> serverList, List<string> backUpIgnoreList, string Port, string PoolName, string PhysicalPath, GitClient gitModel,string remark)
+        private void DoSelectDeployIIS(List<string> fileList, string publishPath, List<Server> serverList, List<string> backUpIgnoreList, string Port, string PoolName, string PhysicalPath, GitClient gitModel, string remark)
         {
             new Task(async () =>
             {
@@ -1920,7 +1921,7 @@ namespace AntDeployWinform.Winform
                         this.nlog_iis.Error("Please Select Files");
                         return;
                     }
-                    this.nlog_iis.Info("Select Files count:"+ fileList.Count);
+                    this.nlog_iis.Info("Select Files count:" + fileList.Count);
                     this.nlog_iis.Debug("ignore package ignoreList");
                     byte[] zipBytes = null;
                     List<string> ignoreList = new List<string>();
@@ -2122,7 +2123,7 @@ namespace AntDeployWinform.Winform
                     if (allSuccess)
                     {
                         this.nlog_iis.Info("Deploy Version：" + dateTimeFolderName);
-                        if (gitModel != null) gitModel.SubmitSelectedChanges(fileList,publishPath);
+                        if (gitModel != null) gitModel.SubmitSelectedChanges(fileList, publishPath);
                     }
 
                     LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local publish folder  ==> ");
@@ -2221,98 +2222,16 @@ namespace AntDeployWinform.Winform
 
             this.rich_iis_log.Text = "";
             DeployConfig.IIsConfig.WebSiteName = websiteName;
-            this.tab_iis.SelectedIndex = 1;
+            //this.tab_iis.SelectedIndex = 1;
+
+            PrintCommonLog(this.nlog_iis);
+
             new Task(async () =>
             {
-                var versionList = new List<string>();
                 try
                 {
                     Enable(false, true);
-                    var firstServer = serverList.First();
 
-                    if (string.IsNullOrEmpty(firstServer.Host))
-                    {
-                        this.nlog_iis.Error($"Server Host is Empty!");
-                        return;
-                    }
-
-                    if (string.IsNullOrEmpty(firstServer.Token))
-                    {
-                        this.nlog_iis.Error($"Server Token is Empty!");
-                        return;
-                    }
-
-                    this.nlog_iis.Info("Start get rollBack version list from first Server:" + firstServer.Host);
-
-                    var getVersionResult = await WebUtil.HttpPostAsync<GetVersionResult>(
-                        $"http://{firstServer.Host}/version", new
-                        {
-                            Token = firstServer.Token,
-                            Type = "iis",
-                            Name = DeployConfig.IIsConfig.WebSiteName,
-                            WithArgs = true
-                        }, nlog_iis);
-
-                    if (getVersionResult == null)
-                    {
-                        this.nlog_iis.Error($"get rollBack version list fail");
-                        return;
-                    }
-
-                    if (!string.IsNullOrEmpty(getVersionResult.Msg))
-                    {
-                        this.nlog_iis.Error($"get rollBack version list fail：" + getVersionResult.Msg);
-                        return;
-                    }
-
-                    versionList = getVersionResult.Data;
-                }
-                catch (Exception ex1)
-                {
-                    this.nlog_iis.Error(ex1);
-                    return;
-                }
-                finally
-                {
-                    Enable(true);
-                }
-
-                if (versionList == null || versionList.Count < 1)
-                {
-                    this.nlog_iis.Error($"get rollBack version list count = 0");
-                    return;
-                }
-
-                this.BeginInvokeLambda(() =>
-                {
-                    RollBack rolleback = new RollBack(versionList);
-                    var r = rolleback.ShowDialog();
-                    if (r == DialogResult.Cancel)
-                    {
-                        this.nlog_iis.Info($"rollback canceled!");
-                        return;
-                    }
-                    else
-                    {
-                        PrintCommonLog(this.nlog_iis);
-                        this.nlog_iis.Info("Start rollBack from version:" + rolleback.SelectRollBackVersion);
-                        this.tab_iis.SelectedIndex = 0;
-                        DoIIsRollback(serverList, rolleback.SelectRollBackVersion);
-                    }
-                });
-
-            }).Start();
-
-        }
-
-
-        private void DoIIsRollback(List<Server> serverList, string dateTimeFolderName)
-        {
-            new Task(async () =>
-            {
-                Enable(false, true);
-                try
-                {
 
                     var loggerId = Guid.NewGuid().ToString("N");
 
@@ -2325,21 +2244,105 @@ namespace AntDeployWinform.Winform
                         UpdatePackageProgress(this.tabPage_progress, server.Host, 100);
                         UpdateUploadProgress(this.tabPage_progress, server.Host, 100);
 
-
                         if (string.IsNullOrEmpty(server.Token))
                         {
-                            this.nlog_iis.Warn($"{server.Host} Rollback skip,Token is null or empty!");
+                            this.nlog_iis.Error($"Host:{getHostDisplayName(server)} Rollback skip,Token is null or empty!");
                             UpdateDeployProgress(this.tabPage_progress, server.Host, false);
                             allSuccess = false;
                             failCount++;
                             continue;
                         }
 
+
+                        if (string.IsNullOrEmpty(server.Host))
+                        {
+                            this.nlog_iis.Error($"Host:{getHostDisplayName(server)} Rollback fail,Server Host is Empty!");
+                            UpdateDeployProgress(this.tabPage_progress, server.Host, false);
+                            allSuccess = false;
+                            failCount++;
+                            continue;
+                        }
+
+
+                        this.nlog_iis.Info($"Host:{getHostDisplayName(server)} Start get rollBack version list");
+
+                        var getVersionResult = await WebUtil.HttpPostAsync<GetVersionResult>(
+                            $"http://{server.Host}/version", new
+                            {
+                                Token = server.Token,
+                                Type = "iis",
+                                Name = DeployConfig.IIsConfig.WebSiteName,
+                                WithArgs = true
+                            }, nlog_iis);
+
+                        if (getVersionResult == null)
+                        {
+                            this.nlog_iis.Error($"Host:{getHostDisplayName(server)} get rollBack version list fail");
+                            UpdateDeployProgress(this.tabPage_progress, server.Host, false);
+                            allSuccess = false;
+                            failCount++;
+                            continue;
+                        }
+
+                        if (!string.IsNullOrEmpty(getVersionResult.Msg))
+                        {
+                            this.nlog_iis.Error($"Host:{getHostDisplayName(server)} get rollBack version list fail：" + getVersionResult.Msg);
+                            UpdateDeployProgress(this.tabPage_progress, server.Host, false);
+                            allSuccess = false;
+                            failCount++;
+                            continue;
+                        }
+
+                        var versionList = getVersionResult.Data;
+                        if (versionList == null || versionList.Count < 1)
+                        {
+                            this.nlog_iis.Error($"Host:{getHostDisplayName(server)} get rollBack version list count:0");
+                            UpdateDeployProgress(this.tabPage_progress, server.Host, false);
+                            allSuccess = false;
+                            failCount++;
+                            continue;
+                        }
+
+                        this.nlog_iis.Info($"Host:{getHostDisplayName(server)} get rollBack version list count:{versionList.Count}");
+
+                        this.BeginInvokeLambda(() =>
+                        {
+                            RollBack rolleback = new RollBack(versionList);
+                            rolleback.SetTitle($"Current Server:{getHostDisplayName(server)}");
+                            var r = rolleback.ShowDialog();
+                            if (r == DialogResult.Cancel)
+                            {
+                                _rollBackVersion = null;
+                            }
+                            else
+                            {
+                                _rollBackVersion = new RollBackVersion
+                                {
+                                    Version = rolleback.SelectRollBackVersion
+                                };
+                            }
+                            Condition.Set();
+                        });
+
+                        Condition.WaitOne();
+
+                        if (_rollBackVersion == null || string.IsNullOrEmpty(_rollBackVersion.Version))
+                        {
+                            this.nlog_iis.Error($"Host:{getHostDisplayName(server)} Rollback canceled!");
+                            UpdateDeployProgress(this.tabPage_progress, server.Host, false);
+                            allSuccess = false;
+                            failCount++;
+                            continue;
+                        }
+
+
+                        this.nlog_iis.Info($"Host:{getHostDisplayName(server)} Start rollBack from version:" + _rollBackVersion.Version);
+
                         HttpRequestClient httpRequestClient = new HttpRequestClient();
                         httpRequestClient.SetFieldValue("publishType", "iis_rollback");
                         httpRequestClient.SetFieldValue("id", loggerId);
                         httpRequestClient.SetFieldValue("webSiteName", DeployConfig.IIsConfig.WebSiteName);
-                        httpRequestClient.SetFieldValue("deployFolderName", dateTimeFolderName);
+                        httpRequestClient.SetFieldValue("deployFolderName", _rollBackVersion.Version);
                         httpRequestClient.SetFieldValue("Token", server.Token);
                         HttpLogger HttpLogger = new HttpLogger
                         {
@@ -2400,8 +2403,7 @@ namespace AntDeployWinform.Winform
                                 {
                                     allSuccess = false;
                                     failCount++;
-                                    this.nlog_iis.Error(
-                                        $"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2},Skip to Next");
+                                    this.nlog_iis.Error($"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2},Skip to Next");
                                     UpdateDeployProgress(this.tabPage_progress, server.Host, false);
                                 }
                             }
@@ -2423,14 +2425,16 @@ namespace AntDeployWinform.Winform
 
                     if (allSuccess)
                     {
-                        this.nlog_iis.Info($"Rollback Version：" + dateTimeFolderName);
+
                     }
 
                     this.nlog_iis.Info($"-----------------Rollback End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
+
                 }
                 catch (Exception ex1)
                 {
                     this.nlog_iis.Error(ex1);
+                    return;
                 }
                 finally
                 {
@@ -2438,8 +2442,12 @@ namespace AntDeployWinform.Winform
                 }
 
 
+
             }).Start();
+
         }
+
+
 
 
         private void ClientOnUploadProgressChanged(object sender, UploadProgressChangedEventArgs e)
@@ -3113,11 +3121,11 @@ namespace AntDeployWinform.Winform
                                 var slectFileForm = new SelectFile(fileList, publishPath);
                                 slectFileForm.ShowDialog();
                                 // ReSharper disable once AccessToDisposedClosure
-                                DoWindowsServiceSelectDeploy(slectFileForm.SelectedFileList, publishPath, serverList, serviceName, isProjectInstallService, execFilePath, PhysicalPath, backUpIgnoreList, gitModel,confirmResult.Item2);
+                                DoWindowsServiceSelectDeploy(slectFileForm.SelectedFileList, publishPath, serverList, serviceName, isProjectInstallService, execFilePath, PhysicalPath, backUpIgnoreList, gitModel, confirmResult.Item2);
                             });
                             return;
                         }
-                        
+
 
                         try
                         {
@@ -3147,7 +3155,7 @@ namespace AntDeployWinform.Winform
                         {
                             var slectFileForm = new SelectFile(publishPath);
                             slectFileForm.ShowDialog();
-                            DoWindowsServiceSelectDeploy(slectFileForm.SelectedFileList, publishPath, serverList,serviceName,isProjectInstallService,execFilePath,PhysicalPath,backUpIgnoreList,null,confirmResult.Item2);
+                            DoWindowsServiceSelectDeploy(slectFileForm.SelectedFileList, publishPath, serverList, serviceName, isProjectInstallService, execFilePath, PhysicalPath, backUpIgnoreList, null, confirmResult.Item2);
                         });
                         return;
                     }
@@ -3338,7 +3346,7 @@ namespace AntDeployWinform.Winform
                         EnableForWindowsService(true);
                         gitModel?.Dispose();
                     }
-                   
+
                 }
 
 
@@ -3347,7 +3355,7 @@ namespace AntDeployWinform.Winform
         }
 
 
-        private void DoWindowsServiceSelectDeploy(List<string> fileList,string publishPath,List<Server> serverList,string serviceName,bool isProjectInstallService,string execFilePath,string PhysicalPath,List<string> backUpIgnoreList, GitClient gitModel,string remark)
+        private void DoWindowsServiceSelectDeploy(List<string> fileList, string publishPath, List<Server> serverList, string serviceName, bool isProjectInstallService, string execFilePath, string PhysicalPath, List<string> backUpIgnoreList, GitClient gitModel, string remark)
         {
             new Task(async () =>
             {
@@ -3370,7 +3378,7 @@ namespace AntDeployWinform.Winform
                             (progressValue) =>
                             {
                                 UpdatePackageProgress(this.tabPage_windows_service, null, progressValue); //打印打包记录
-                            },true);
+                            }, true);
                     }
                     catch (Exception ex)
                     {
@@ -3521,7 +3529,7 @@ namespace AntDeployWinform.Winform
                     if (allSuccess)
                     {
                         this.nlog_windowservice.Info("Deploy Version：" + dateTimeFolderName);
-                        if (gitModel != null) gitModel.SubmitSelectedChanges(fileList,publishPath);
+                        if (gitModel != null) gitModel.SubmitSelectedChanges(fileList, publishPath);
                     }
 
                     LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local publish folder  ==> ");
@@ -3631,101 +3639,18 @@ namespace AntDeployWinform.Winform
 
             this.rich_windowservice_log.Text = "";
             this.nlog_windowservice.Info($"windows Service exe name:{execFilePath.Replace(".dll", ".exe")}");
-            this.tabControl_window_service.SelectedIndex = 1;
+            //this.tabControl_window_service.SelectedIndex = 1;
+            PrintCommonLog(this.nlog_windowservice);
+
             new Task(async () =>
             {
-                var versionList = new List<string>();
                 try
                 {
                     EnableForWindowsService(false, true);
-                    var firstServer = serverList.First();
-
-                    if (string.IsNullOrEmpty(firstServer.Host))
-                    {
-                        this.nlog_windowservice.Error($"Server Host is Empty!");
-                        return;
-                    }
-
-                    if (string.IsNullOrEmpty(firstServer.Token))
-                    {
-                        this.nlog_windowservice.Error($"Server Token is Empty!");
-                        return;
-                    }
-
-                    this.nlog_windowservice.Info(
-                        "Start get rollBack version list from first Server:" + firstServer.Host);
-                    var getVersionResult = await WebUtil.HttpPostAsync<GetVersionResult>(
-                        $"http://{firstServer.Host}/version", new
-                        {
-                            Token = firstServer.Token,
-                            Type = "winservice",
-                            Name = DeployConfig.WindowsServiveConfig.ServiceName,
-                            WithArgs = true
-                        }, nlog_windowservice);
-
-                    if (getVersionResult == null)
-                    {
-                        this.nlog_windowservice.Error($"get rollBack version list fail");
-                        return;
-                    }
-
-                    if (!string.IsNullOrEmpty(getVersionResult.Msg))
-                    {
-                        this.nlog_windowservice.Error($"get rollBack version list fail：" + getVersionResult.Msg);
-                        return;
-                    }
-
-                    versionList = getVersionResult.Data;
-
-                }
-                catch (Exception ex1)
-                {
-                    this.nlog_windowservice.Error(ex1);
-                    return;
-                }
-                finally
-                {
-                    EnableForWindowsService(true);
-                }
-
-                if (versionList == null || versionList.Count < 1)
-                {
-                    this.nlog_windowservice.Error($"get rollBack version list count = 0");
-                    return;
-                }
-
-                this.BeginInvokeLambda(() =>
-                {
-                    RollBack rolleback = new RollBack(versionList);
-                    var r = rolleback.ShowDialog();
-                    if (r == DialogResult.Cancel)
-                    {
-                        this.nlog_windowservice.Info($"rollback canceled!");
-                        return;
-                    }
-                    else
-                    {
-                        PrintCommonLog(this.nlog_windowservice);
-                        this.nlog_windowservice.Info("Start rollBack from version:" + rolleback.SelectRollBackVersion);
-                        this.tabControl_window_service.SelectedIndex = 0;
-                        DoWindowsServiceRollback(serverList, rolleback.SelectRollBackVersion);
-                    }
-                });
-            }).Start();
-        }
-
-        private void DoWindowsServiceRollback(List<Server> serverList, string dateTimeFolderName)
-        {
-            new Task(async () =>
-            {
-                EnableForWindowsService(false, true);
-                try
-                {
 
                     var loggerId = Guid.NewGuid().ToString("N");
 
-                    this.nlog_windowservice.Info(
-                        $"-----------------Rollback Start[Ver:{Vsix.VERSION}]-----------------");
+                    this.nlog_windowservice.Info($"-----------------Rollback Start[Ver:{Vsix.VERSION}]-----------------");
                     var allSuccess = true;
                     var failCount = 0;
                     foreach (var server in serverList)
@@ -3737,18 +3662,95 @@ namespace AntDeployWinform.Winform
 
                         if (string.IsNullOrEmpty(server.Token))
                         {
-                            this.nlog_windowservice.Warn($"{server.Host} Rollback skip,Token is null or empty!");
+                            this.nlog_windowservice.Error($"Host:{getHostDisplayName(server)} Rollback skip,Token is null or empty!");
                             UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
                             allSuccess = false;
                             failCount++;
                             continue;
                         }
 
+                        if (string.IsNullOrEmpty(server.Host))
+                        {
+                            this.nlog_windowservice.Error($"Host:{getHostDisplayName(server)} Rollback fail,Server Host is Empty!");
+                            UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
+                            allSuccess = false;
+                            failCount++;
+                            continue;
+                        }
+
+                        this.nlog_windowservice.Info($"Host:{getHostDisplayName(server)} Start get rollBack version list");
+
+
+                        var getVersionResult = await WebUtil.HttpPostAsync<GetVersionResult>(
+                            $"http://{server.Host}/version", new
+                            {
+                                Token = server.Token,
+                                Type = "winservice",
+                                Name = DeployConfig.WindowsServiveConfig.ServiceName,
+                                WithArgs = true
+                            }, nlog_windowservice);
+
+                        if (getVersionResult == null)
+                        {
+                            this.nlog_windowservice.Error($"Host:{getHostDisplayName(server)} get rollBack version list fail");
+                            UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
+                            allSuccess = false;
+                            failCount++;
+                            continue;
+                        }
+
+                        if (!string.IsNullOrEmpty(getVersionResult.Msg))
+                        {
+                            this.nlog_windowservice.Error($"Host:{getHostDisplayName(server)} get rollBack version list fail：" + getVersionResult.Msg);
+                            UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
+                            allSuccess = false;
+                            failCount++;
+                            continue;
+                        }
+
+                        var versionList = getVersionResult.Data;
+
+                        if (versionList == null || versionList.Count < 1)
+                        {
+                            this.nlog_windowservice.Error($"Host:{getHostDisplayName(server)} get rollBack version list count:0");
+                            UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
+                            allSuccess = false;
+                            failCount++;
+                            continue;
+                        }
+                        this.nlog_windowservice.Info($"Host:{getHostDisplayName(server)} get rollBack version list count:{versionList.Count}");
+                        this.BeginInvokeLambda(() =>
+                        {
+                            RollBack rolleback = new RollBack(versionList);
+                            rolleback.SetTitle($"Current Server:{getHostDisplayName(server)}");
+                            var r = rolleback.ShowDialog();
+                            if (r == DialogResult.Cancel)
+                            {
+                                _rollBackVersion = null;
+                            }
+                            else
+                            {
+                                _rollBackVersion = new RollBackVersion
+                                {
+                                    Version = rolleback.SelectRollBackVersion
+                                };
+                            }
+                            Condition.Set();
+                        });
+                        Condition.WaitOne();
+                        if (_rollBackVersion == null || string.IsNullOrEmpty(_rollBackVersion.Version))
+                        {
+                            this.nlog_windowservice.Error($"Host:{getHostDisplayName(server)} Rollback canceled!");
+                            UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
+                            allSuccess = false;
+                            failCount++;
+                            continue;
+                        }
                         HttpRequestClient httpRequestClient = new HttpRequestClient();
                         httpRequestClient.SetFieldValue("publishType", "windowservice_rollback");
                         httpRequestClient.SetFieldValue("id", loggerId);
                         httpRequestClient.SetFieldValue("serviceName", DeployConfig.WindowsServiveConfig.ServiceName);
-                        httpRequestClient.SetFieldValue("deployFolderName", dateTimeFolderName);
+                        httpRequestClient.SetFieldValue("deployFolderName", _rollBackVersion.Version);
                         httpRequestClient.SetFieldValue("Token", server.Token);
                         HttpLogger HttpLogger = new HttpLogger
                         {
@@ -3809,8 +3811,7 @@ namespace AntDeployWinform.Winform
                                 {
                                     allSuccess = false;
                                     failCount++;
-                                    this.nlog_windowservice.Error(
-                                        $"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2},Skip to Next");
+                                    this.nlog_windowservice.Error($"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2},Skip to Next");
                                     UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
                                 }
                             }
@@ -3820,36 +3821,34 @@ namespace AntDeployWinform.Winform
                         {
                             allSuccess = false;
                             failCount++;
-                            this.nlog_windowservice.Error(
-                                $"Fail Rollback,Host:{getHostDisplayName(server)},Response:{ex.Message},Skip to Next");
+                            this.nlog_windowservice.Error($"Fail Rollback,Host:{getHostDisplayName(server)},Response:{ex.Message},Skip to Next");
                             UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
                         }
                         finally
                         {
                             await webSocket?.Dispose();
                         }
-
-                        if (allSuccess)
-                        {
-                            this.nlog_windowservice.Info($"Rollback Version：" + dateTimeFolderName);
-                        }
-
-                        this.nlog_windowservice.Info($"-----------------Rollback End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
                     }
 
+                    if (allSuccess)
+                    {
+                    }
+                    this.nlog_windowservice.Info($"-----------------Rollback End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
                 }
                 catch (Exception ex1)
                 {
                     this.nlog_windowservice.Error(ex1);
+                    return;
                 }
                 finally
                 {
                     EnableForWindowsService(true);
                 }
 
-
             }).Start();
         }
+
+
 
         #endregion
 
@@ -4579,289 +4578,242 @@ namespace AntDeployWinform.Winform
 
             this.rich_docker_log.Text = "";
             this.nlog_docker.Info($"The Porject ENTRYPOINT name:{ENTRYPOINT}");
-            this.tabControl_docker.SelectedIndex = 1;
+            //this.tabControl_docker.SelectedIndex = 1;
+            PrintCommonLog(this.nlog_docker);
             new Task(() =>
-           {
+            {
+
+                try
+                {
+
+                    EnableForDocker(false, true);
+
+                    this.nlog_docker.Info($"-----------------Rollback Start[Ver:{Vsix.VERSION}]-----------------");
 
 
-               var versionList = new List<Tuple<string,string>>();
+                    var allSuccess = true;
+                    var failCount = 0;
+                    foreach (var server in serverList)
+                    {
+                        BuildEnd(this.tabPage_docker, server.Host);
+                        UpdatePackageProgress(this.tabPage_docker, server.Host, 100);
+                        UpdateUploadProgress(this.tabPage_docker, server.Host, 100);
+                        #region 参数Check
 
-               try
-               {
+                        if (string.IsNullOrEmpty(server.Host))
+                        {
+                            this.nlog_docker.Error($"Host:{getHostDisplayName(server)} Rollback skip,Server Host is Empty");
+                            UpdateDeployProgress(this.tabPage_docker, server.Host, false);
+                            allSuccess = false;
+                            failCount++;
+                            continue;
+                        }
 
-                   EnableForDocker(false, true);
+                        if (string.IsNullOrEmpty(server.UserName))
+                        {
+                            this.nlog_docker.Error($"Host:{getHostDisplayName(server)} Rollback skip,Server UserName is Empty");
+                            UpdateDeployProgress(this.tabPage_docker, server.Host, false);
+                            allSuccess = false;
+                            failCount++;
+                            continue;
+                        }
 
-                   var firstServer = serverList.First();
+                        if (string.IsNullOrEmpty(server.Pwd))
+                        {
+                            this.nlog_docker.Error($"Host:{getHostDisplayName(server)} Rollback skip,Server Pwd is Empty");
+                            UpdateDeployProgress(this.tabPage_docker, server.Host, false);
+                            allSuccess = false;
+                            failCount++;
+                            continue;
+                        }
 
-                   #region 参数Check
+                        var pwd = CodingHelper.AESDecrypt(server.Pwd);
+                        if (string.IsNullOrEmpty(pwd))
+                        {
+                            this.nlog_docker.Error($"Host:{getHostDisplayName(server)} Rollback skip,Server Pwd is Empty");
+                            UpdateDeployProgress(this.tabPage_docker, server.Host, false);
+                            allSuccess = false;
+                            failCount++;
+                            continue;
+                        }
 
-                   if (string.IsNullOrEmpty(firstServer.Host))
-                   {
-                       this.nlog_docker.Error("Server Host is Empty");
-                       return;
-                   }
 
-                   if (string.IsNullOrEmpty(firstServer.UserName))
-                   {
-                       this.nlog_docker.Error("Server UserName is Empty");
-                       return;
-                   }
+                        #endregion
 
-                   if (string.IsNullOrEmpty(firstServer.Pwd))
-                   {
-                       this.nlog_docker.Error("Server Pwd is Empty");
-                       return;
-                   }
+                        this.nlog_docker.Info($"Host:{getHostDisplayName(server)} Start get rollBack version list");
+                        var versionList = new List<Tuple<string, string>>();
+                        using (SSHClient sshClient = new SSHClient(server.Host, server.UserName, pwd,
+                            (str, logLevel) =>
+                            {
+                                if (logLevel == NLog.LogLevel.Error)
+                                {
+                                    this.nlog_docker.Error("【Server】" + str);
+                                }
+                                else
+                                {
+                                    this.nlog_docker.Info("【Server】" + str);
+                                }
+                            }, (uploadValue) => { })
+                        {
+                            NetCoreENTRYPOINT = ENTRYPOINT,
+                            NetCoreVersion = SDKVersion,
+                            NetCorePort = DeployConfig.DockerConfig.Prot,
+                            NetCoreEnvironment = DeployConfig.DockerConfig.AspNetCoreEnv,
+                        })
+                        {
+                            var connectResult = sshClient.Connect();
+                            if (!connectResult)
+                            {
+                                this.nlog_docker.Error($"connect rollBack Host:{getHostDisplayName(server)} Fail");
+                                UpdateDeployProgress(this.tabPage_docker, server.Host, false);
+                                allSuccess = false;
+                                failCount++;
+                                continue;
+                            }
 
-                   var pwd1 = CodingHelper.AESDecrypt(firstServer.Pwd);
-                   if (string.IsNullOrEmpty(pwd1))
-                   {
-                       this.nlog_docker.Error("Server Pwd is Empty");
-                       return;
-                   }
+                            versionList = sshClient.GetDeployHistory("antdeploy", 11);
+                        }
 
-                   #endregion
+                        if (versionList.Count <= 1)
+                        {
+                            this.nlog_docker.Error($"Host:{getHostDisplayName(server)} get rollBack version list count:0");
+                            UpdateDeployProgress(this.tabPage_docker, server.Host, false);
+                            allSuccess = false;
+                            failCount++;
+                            continue;
+                        }
 
-                   this.nlog_docker.Info("Start get rollBack version list from first Server:" + firstServer.Host);
-
-                   using (SSHClient sshClient = new SSHClient(firstServer.Host, firstServer.UserName, pwd1,
-                       (str, logLevel) =>
+                        this.nlog_docker.Info($"Host:{getHostDisplayName(server)} get rollBack version list count:{versionList.Count}");
+                        this.BeginInvokeLambda(() =>
                        {
-                           if (logLevel == NLog.LogLevel.Error)
+                           RollBack rolleback = new RollBack(versionList);
+                           rolleback.SetTitle($"Current Server:{getHostDisplayName(server)}");
+                           var r = rolleback.ShowDialog();
+                           if (r == DialogResult.Cancel)
                            {
-                               this.nlog_docker.Error("【Server】" + str);
+                               _rollBackVersion = null;
                            }
                            else
                            {
-                               this.nlog_docker.Info("【Server】" + str);
+                               _rollBackVersion = new RollBackVersion
+                               {
+                                   Version = rolleback.SelectRollBackVersion
+                               };
                            }
-                       }, (uploadValue) => { })
-                   {
-                       NetCoreENTRYPOINT = ENTRYPOINT,
-                       NetCoreVersion = SDKVersion,
-                       NetCorePort = DeployConfig.DockerConfig.Prot,
-                       NetCoreEnvironment = DeployConfig.DockerConfig.AspNetCoreEnv,
-                   })
-                   {
-                       var connectResult = sshClient.Connect();
-                       if (!connectResult)
-                       {
-                           this.nlog_docker.Error($"connect rollBack Host:{getHostDisplayName(firstServer)} Fail");
-                           return;
-                       }
+                           Condition.Set();
+                       });
+                        Condition.WaitOne();
+                        if (_rollBackVersion == null || string.IsNullOrEmpty(_rollBackVersion.Version))
+                        {
+                            this.nlog_docker.Error($"Host:{getHostDisplayName(server)} Rollback canceled!");
+                            UpdateDeployProgress(this.tabPage_docker, server.Host, false);
+                            allSuccess = false;
+                            failCount++;
+                            continue;
+                        }
+                        var hasError = false;
+                        using (SSHClient sshClient = new SSHClient(server.Host, server.UserName, pwd, (str, logLevel) =>
+                        {
+                            if (logLevel == NLog.LogLevel.Error)
+                            {
+                                hasError = true;
+                                allSuccess = false;
+                                this.nlog_docker.Error("【Server】" + str);
+                            }
+                            else
+                            {
+                                this.nlog_docker.Info("【Server】" + str);
+                            }
+                        }, (uploadValue) => { UpdateUploadProgress(this.tabPage_docker, server.Host, uploadValue); })
+                        {
+                            NetCoreENTRYPOINT = ENTRYPOINT,
+                            NetCoreVersion = SDKVersion,
+                            NetCorePort = DeployConfig.DockerConfig.Prot,
+                            NetCoreEnvironment = DeployConfig.DockerConfig.AspNetCoreEnv,
+                        })
+                        {
+                            var connectResult = sshClient.Connect();
+                            if (!connectResult)
+                            {
+                                this.nlog_docker.Error($"RollBack Host:{getHostDisplayName(server)} Fail: connect fail");
+                                UpdateDeployProgress(this.tabPage_docker, server.Host, false);
+                                allSuccess = false;
+                                failCount++;
+                                continue;
+                            }
 
-                       versionList = sshClient.GetDeployHistory("antdeploy", 11);
-                   }
-               }
-               catch (Exception ex1)
-               {
-                   this.nlog_docker.Error(ex1);
-                   return;
-               }
-               finally
-               {
-                   EnableForDocker(true);
-               }
+                            try
+                            {
+                                sshClient.RollBack(_rollBackVersion.Version);
+                                if (hasError)
+                                {
+                                    allSuccess = false;
+                                    failCount++;
+                                    UpdateDeployProgress(this.tabPage_docker, server.Host, false);
+                                }
+                                else
+                                {
+                                    //fire the website
+                                    if (!string.IsNullOrEmpty(server.DockerFireUrl))
+                                    {
+                                        LogEventInfo publisEvent22 = new LogEventInfo(LogLevel.Info, "", "Start to Fire Url,TimeOut：10senconds  ==> ");
+                                        publisEvent22.Properties["ShowLink"] = server.DockerFireUrl;
+                                        publisEvent22.LoggerName = "rich_docker_log";
+                                        this.nlog_docker.Log(publisEvent22);
 
-               if (versionList.Count <= 1)
-               {
-                   this.nlog_docker.Error($"get rollBack version list count = 0");
-                   return;
-               }
-
-               this.BeginInvokeLambda(() =>
-               {
-                   RollBack rolleback = new RollBack(versionList);
-                   var r = rolleback.ShowDialog();
-                   if (r == DialogResult.Cancel)
-                   {
-                       this.nlog_docker.Info($"rollback canceled!");
-                       return;
-                   }
-                   else
-                   {
-                       PrintCommonLog(this.nlog_docker);
-                       this.nlog_docker.Info("Start rollBack from version:" + rolleback.SelectRollBackVersion);
-                       this.tabControl_docker.SelectedIndex = 0;
-                       DoRollBack(serverList, ENTRYPOINT, SDKVersion, rolleback.SelectRollBackVersion);
-                   }
-               });
-
-
-           }).Start();
+                                        var fireRt = WebUtil.IsHttpGetOk(server.DockerFireUrl, this.nlog_docker);
+                                        if (fireRt)
+                                        {
+                                            UpdateDeployProgress(this.tabPage_docker, server.Host, true);
+                                            this.nlog_docker.Info($"Host:{getHostDisplayName(server)},Success Fire Url");
+                                        }
+                                        else
+                                        {
+                                            UpdateDeployProgress(this.tabPage_docker, server.Host, false);
+                                            allSuccess = false;
+                                            failCount++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        UpdateDeployProgress(this.tabPage_docker, server.Host, true);
+                                    }
+                                }
 
 
+                                this.nlog_docker.Info($"RollBack Host: {getHostDisplayName(server)} End");
+                            }
+                            catch (Exception ex)
+                            {
+                                allSuccess = false;
+                                failCount++;
+                                this.nlog_docker.Error($"RollBack Host:{getHostDisplayName(server)} Fail:" + ex.Message);
+                                UpdateDeployProgress(this.tabPage_docker, server.Host, false);
+                            }
+                        }
 
+                    }
+
+                    if (allSuccess)
+                    {
+                    }
+
+                    this.nlog_docker.Info($"-----------------Rollback End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------"); ;
+                }
+                catch (Exception ex1)
+                {
+                    this.nlog_docker.Error(ex1);
+                    return;
+                }
+                finally
+                {
+                    EnableForDocker(true);
+                }
+
+            }).Start();
 
         }
 
-
-        private void DoRollBack(List<LinuxServer> serverList, string ENTRYPOINT, string SDKVersion,
-            string rollbackVersion)
-        {
-
-
-            new Task(() =>
-           {
-
-               this.nlog_docker.Info($"-----------------Rollback Start[Ver:{Vsix.VERSION}]-----------------");
-               try
-               {
-                   EnableForDocker(false, true);
-                   var allSuccess = true;
-                   var failCount = 0;
-                   foreach (var server in serverList)
-                   {
-                       this.nlog_docker.Info("ignore build...");
-                       BuildEnd(this.tabPage_docker, server.Host);
-                       this.nlog_docker.Info("ignore package...");
-                       UpdatePackageProgress(this.tabPage_docker, server.Host, 100);
-
-                       #region 参数Check
-
-                       if (string.IsNullOrEmpty(server.Host))
-                       {
-                           this.nlog_docker.Error("Server Host is Empty");
-                           UploadError(this.tabPage_docker);
-                           allSuccess = false;
-                           failCount++;
-                           continue;
-                       }
-
-                       if (string.IsNullOrEmpty(server.UserName))
-                       {
-                           this.nlog_docker.Error("Server UserName is Empty");
-                           UploadError(this.tabPage_docker);
-                           allSuccess = false;
-                           failCount++;
-                           continue;
-                       }
-
-                       if (string.IsNullOrEmpty(server.Pwd))
-                       {
-                           this.nlog_docker.Error("Server Pwd is Empty");
-                           UploadError(this.tabPage_docker);
-                           allSuccess = false;
-                           failCount++;
-                           continue;
-                       }
-
-                       var pwd = CodingHelper.AESDecrypt(server.Pwd);
-                       if (string.IsNullOrEmpty(pwd))
-                       {
-                           this.nlog_docker.Error("Server Pwd is Empty");
-                           UploadError(this.tabPage_docker);
-                           allSuccess = false;
-                           failCount++;
-                           continue;
-                       }
-
-                       this.nlog_docker.Info("ignore upload...");
-                       UpdateUploadProgress(this.tabPage_docker, server.Host, 100);
-
-                       #endregion
-
-                       var hasError = false;
-                       using (SSHClient sshClient = new SSHClient(server.Host, server.UserName, pwd, (str, logLevel) =>
-                       {
-                           if (logLevel == NLog.LogLevel.Error)
-                           {
-                               hasError = true;
-                               allSuccess = false;
-                               this.nlog_docker.Error("【Server】" + str);
-                           }
-                           else
-                           {
-                               this.nlog_docker.Info("【Server】" + str);
-                           }
-                       }, (uploadValue) => { UpdateUploadProgress(this.tabPage_docker, server.Host, uploadValue); })
-                       {
-                           NetCoreENTRYPOINT = ENTRYPOINT,
-                           NetCoreVersion = SDKVersion,
-                           NetCorePort = DeployConfig.DockerConfig.Prot,
-                           NetCoreEnvironment = DeployConfig.DockerConfig.AspNetCoreEnv,
-                       })
-                       {
-                           var connectResult = sshClient.Connect();
-                           if (!connectResult)
-                           {
-                               this.nlog_docker.Error($"RollBack Host:{getHostDisplayName(server)} Fail: connect fail");
-                               UploadError(this.tabPage_docker);
-                               allSuccess = false;
-                               failCount++;
-                               continue;
-                           }
-
-                           try
-                           {
-                               sshClient.RollBack(rollbackVersion);
-                               if (hasError)
-                               {
-                                   allSuccess = false;
-                                   failCount++;
-                                   UpdateDeployProgress(this.tabPage_docker, server.Host, false);
-                               }
-                               else
-                               {
-                                   //fire the website
-                                   if (!string.IsNullOrEmpty(server.DockerFireUrl))
-                                   {
-                                       LogEventInfo publisEvent22 = new LogEventInfo(LogLevel.Info, "", "Start to Fire Url,TimeOut：10senconds  ==> ");
-                                       publisEvent22.Properties["ShowLink"] = server.DockerFireUrl;
-                                       publisEvent22.LoggerName = "rich_docker_log";
-                                       this.nlog_docker.Log(publisEvent22);
-
-                                       var fireRt = WebUtil.IsHttpGetOk(server.DockerFireUrl, this.nlog_docker);
-                                       if (fireRt)
-                                       {
-                                           UpdateDeployProgress(this.tabPage_docker, server.Host, true);
-                                           this.nlog_docker.Info($"Host:{getHostDisplayName(server)},Success Fire Url");
-                                       }
-                                       else
-                                       {
-                                           UpdateDeployProgress(this.tabPage_docker, server.Host, false);
-                                           allSuccess = false;
-                                           failCount++;
-                                       }
-                                   }
-                                   else
-                                   {
-                                       UpdateDeployProgress(this.tabPage_docker, server.Host, true);
-                                   }
-                               }
-
-
-                               this.nlog_docker.Info($"RollBack Host: {getHostDisplayName(server)} End");
-                           }
-                           catch (Exception ex)
-                           {
-                               allSuccess = false;
-                               failCount++;
-                               this.nlog_docker.Error($"RollBack Host:{getHostDisplayName(server)} Fail:" + ex.Message);
-                               UpdateDeployProgress(this.tabPage_docker, server.Host, false);
-                           }
-                       }
-
-                   }
-
-                   if (allSuccess)
-                   {
-                       this.nlog_docker.Info("RollBack Version：" + rollbackVersion);
-                   }
-
-                   this.nlog_docker.Info($"-----------------Rollback End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------"); ;
-               }
-               catch (Exception ex1)
-               {
-                   this.nlog_docker.Error(ex1);
-               }
-               finally
-               {
-                   EnableForDocker(true);
-               }
-
-           }).Start();
-        }
 
         private void EnableForDocker(bool flag, bool ignore = false)
         {
@@ -4984,7 +4936,17 @@ namespace AntDeployWinform.Winform
                 log.Info("Visual Studio Version : " + vsVersion);
             }
 
-
+            if (!string.IsNullOrEmpty(ProjectPath))
+            {
+                var fileInfo = new FileInfo(ProjectPath);
+                if (fileInfo.Exists && !string.IsNullOrEmpty(fileInfo.DirectoryName))
+                {
+                    LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "CurrentProjectFolder:");
+                    publisEvent.Properties["ShowLink"] = "file://" + fileInfo.DirectoryName.Replace("\\", "\\\\");
+                    publisEvent.LoggerName = log.Name;
+                    log.Log(publisEvent);
+                }
+            }
         }
 
 
@@ -5016,8 +4978,9 @@ namespace AntDeployWinform.Winform
                 MessageBox.Show("no env have ignore value!");
                 return;
             }
-            RollBack rollBack = new RollBack(envList,true) { Text = "Select Env Name" };
+            RollBack rollBack = new RollBack(envList, true) { Text = "Select Env Name" };
             rollBack.SetButtonName("Copy");
+            rollBack.SetTitle($"Current Env:{current}");
             var r1 = rollBack.ShowDialog();
             if (r1 == DialogResult.Cancel)
             {
@@ -5061,8 +5024,9 @@ namespace AntDeployWinform.Winform
                 MessageBox.Show("no env have ignore value!");
                 return;
             }
-            RollBack rollBack = new RollBack(envList,true) { Text = "Select Env Name" };
+            RollBack rollBack = new RollBack(envList, true) { Text = "Select Env Name" };
             rollBack.SetButtonName("Copy");
+            rollBack.SetTitle($"Current Env:{current}");
             var r1 = rollBack.ShowDialog();
             if (r1 == DialogResult.Cancel)
             {
@@ -5151,14 +5115,14 @@ namespace AntDeployWinform.Winform
             Process.Start(sInfo);
         }
 
-        private Tuple<bool,string> ShowInputMsgBox(string title,string message,string defaultValue = null)
+        private Tuple<bool, string> ShowInputMsgBox(string title, string message, string defaultValue = null)
         {
-            InputDialog dialog = new InputDialog(message,title,defaultValue);
-            dialog.SetInputLength(0,200);
+            InputDialog dialog = new InputDialog(message, title, defaultValue);
+            dialog.SetInputLength(0, 200);
             var result = dialog.ShowDialog();
             if (result == DialogResult.Cancel)
             {
-                return new Tuple<bool, string>(false,string.Empty);
+                return new Tuple<bool, string>(false, string.Empty);
             }
             return new Tuple<bool, string>(true, dialog.Input);
         }

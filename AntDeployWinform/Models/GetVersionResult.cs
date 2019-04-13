@@ -37,4 +37,6 @@ namespace AntDeployWinform.Models
         public string PoolName { get; set; }
         public string PhysicalPath { get; set; }
     }
+
+   
 }
