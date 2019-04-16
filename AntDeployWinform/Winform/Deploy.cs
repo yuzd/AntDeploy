@@ -1447,6 +1447,7 @@ namespace AntDeployWinform.Winform
                 GitClient gitModel = null;
                 var gitPath = string.Empty;
                 var webFolderName = string.Empty;
+                var isRuningSelectDeploy = false;
                 try
                 {
                     var isNetcore = false;
@@ -1551,6 +1552,7 @@ namespace AntDeployWinform.Winform
 
                         if (this.PluginConfig.IISEnableSelectDeploy)
                         {
+                            isRuningSelectDeploy = true;
                             this.nlog_iis.Info("-----------------Select File Start-----------------");
                             this.BeginInvokeLambda(() =>
                             {
@@ -1581,6 +1583,7 @@ namespace AntDeployWinform.Winform
                     }
                     else if (this.PluginConfig.IISEnableSelectDeploy)
                     {
+                        isRuningSelectDeploy = true;
                         this.nlog_iis.Info("-----------------Select File Start-----------------");
                         this.BeginInvokeLambda(() =>
                         {
@@ -1894,7 +1897,7 @@ namespace AntDeployWinform.Winform
                 }
                 finally
                 {
-                    if (!this.PluginConfig.IISEnableSelectDeploy)
+                    if (!isRuningSelectDeploy)
                     {
                         ProgressPercentage = 0;
                         ProgressCurrentHost = null;
@@ -2966,6 +2969,7 @@ namespace AntDeployWinform.Winform
                 PrintCommonLog(this.nlog_windowservice);
                 EnableForWindowsService(false); //第一台开始编译
                 GitClient gitModel = null;
+                var isRuningSelectDeploy = true;
                 try
                 {
                     var isNetcore = false;
@@ -3115,6 +3119,7 @@ namespace AntDeployWinform.Winform
 
                         if (PluginConfig.WindowsServiceEnableSelectDeploy)
                         {
+                            isRuningSelectDeploy = true;
                             this.nlog_windowservice.Info("-----------------Select File Start-----------------");
                             this.BeginInvokeLambda(() =>
                             {
@@ -3150,6 +3155,7 @@ namespace AntDeployWinform.Winform
                     }
                     else if (PluginConfig.WindowsServiceEnableSelectDeploy)
                     {
+                        isRuningSelectDeploy = true;
                         this.nlog_windowservice.Info("-----------------Select File Start-----------------");
                         this.BeginInvokeLambda(() =>
                         {
@@ -3339,7 +3345,7 @@ namespace AntDeployWinform.Winform
                 }
                 finally
                 {
-                    if (!PluginConfig.WindowsServiceEnableSelectDeploy)
+                    if (!isRuningSelectDeploy)
                     {
                         ProgressPercentageForWindowsService = 0;
                         ProgressCurrentHostForWindowsService = null;

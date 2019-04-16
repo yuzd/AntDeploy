@@ -29,11 +29,12 @@ namespace AntDeployWinform.Winform
             progressBar1.Value = 0;
             // Clear All Nodes if Already Exists
             treeView1.Nodes.Clear();
-            treeView1.DrawMode = TreeViewDrawMode.OwnerDrawAll;
+            //treeView1.DrawMode = TreeViewDrawMode.OwnerDrawAll;
             treeView1.CheckBoxes = true;
-            treeView1.Enabled = false;
+            //treeView1.Enabled = false;
 
         }
+
         public SelectFile(string dir) : this()
         {
             LoadDirectory(dir);
@@ -44,12 +45,10 @@ namespace AntDeployWinform.Winform
             var list = fileList.Select(r => '/' + r).ToList();
             progressBar1.Maximum = list.Count;
             DirectoryInfo di = new DirectoryInfo(dir);
-            TreeNode tds = treeView1.Nodes.Add("/",di.Name);
-            tds.Tag = di.FullName;
-            tds.ImageIndex = 0;
-            tds.Expand();
+
+            parentNode = treeView1.AddNode(treeView1.Nodes, "/", di.Name, di.FullName);
             //获取变更的文件路径列表
-            PopulateTreeView(this.treeView1, dir, list, tds);
+            PopulateTreeView(this.treeView1, dir, list, parentNode);
         }
         private void PopulateTreeView(TreeView treeView,string projectPath, IEnumerable<string> paths, TreeNode lastNode)
         {
@@ -66,11 +65,11 @@ namespace AntDeployWinform.Winform
                     {
                         if (lastNode == null)
                         {
-                            lastNode = treeView.Nodes.Add(subPathAgg, subPath);
+                            lastNode = treeView1.AddNode(treeView.Nodes, subPathAgg, subPath,"");
                         }
                         else
                         {
-                            lastNode = lastNode.Nodes.Add(subPathAgg, subPath);
+                            lastNode = treeView1.AddNode(lastNode.Nodes, subPathAgg, subPath,"");
                         }
 
                         var path2 = subPathAgg;
@@ -87,12 +86,10 @@ namespace AntDeployWinform.Winform
                         if (File.Exists(fullPath))
                         {
                             lastNode.Tag = fullPath;
-                            lastNode.ImageIndex = 1;
                         }
                         else
                         {
                             lastNode.Tag = fullPath;
-                            lastNode.ImageIndex = 0;
                         }
                     }
                     else
@@ -117,6 +114,7 @@ namespace AntDeployWinform.Winform
             return fileList;
         }
 
+        private TreeNode parentNode;
         private void LoadDirectory(string dir)
         {
             DirectoryInfo di = new DirectoryInfo(dir);
@@ -129,12 +127,10 @@ namespace AntDeployWinform.Winform
                 var gistFilecounts = Directory.GetFiles(gitPath, "*.*", SearchOption.AllDirectories).Length + Directory.GetDirectories(gitPath, "**", SearchOption.AllDirectories).Length;
                 progressBar1.Maximum = progressBar1.Maximum - gistFilecounts - 1;
             }
-            TreeNode tds = treeView1.Nodes.Add(di.Name);
-            tds.Tag = di.FullName;
-            tds.ImageIndex = 0;
-            tds.Expand();
-            LoadFiles(dir, tds);
-            LoadSubDirectories(dir, tds);
+
+            parentNode = treeView1.AddNode(treeView1.Nodes,di.Name,"",di.FullName);
+            LoadFiles(dir, parentNode);
+            LoadSubDirectories(dir, parentNode);
 
 
         }
@@ -148,9 +144,7 @@ namespace AntDeployWinform.Winform
             {
                 if (subdirectory.EndsWith(".git")) continue;
                 DirectoryInfo di = new DirectoryInfo(subdirectory);
-                TreeNode tds = td.Nodes.Add(di.Name);
-                tds.Tag = di.FullName;
-                tds.ImageIndex = 0;
+                TreeNode tds = treeView1.AddNode(td.Nodes,di.Name,"",di.FullName);
                 LoadFiles(subdirectory, tds);
                 LoadSubDirectories(subdirectory, tds);
                 UpdateProgress();
@@ -166,9 +160,7 @@ namespace AntDeployWinform.Winform
             foreach (string file in Files)
             {
                 FileInfo fi = new FileInfo(file);
-                TreeNode tds = td.Nodes.Add(fi.Name);
-                tds.Tag = fi.FullName;
-                tds.ImageIndex = 1;
+                TreeNode tds = treeView1.AddNode(td.Nodes,fi.Name,"",fi.FullName);
                 UpdateProgress();
 
             }
@@ -193,6 +185,7 @@ namespace AntDeployWinform.Winform
                             {
                                 treeView1.Enabled = true;
                                 progressBar1.Visible = false;
+                                parentNode?.Expand();
                             };
                             System.Threading.Thread.Sleep(1000);
                             this.Invoke(action);
@@ -209,8 +202,9 @@ namespace AntDeployWinform.Winform
         {
             foreach (System.Windows.Forms.TreeNode aNode in nodes)
             {
+                TriStateTreeView.CheckBoxState state = treeView1.GetTreeNodeCheckBoxState(aNode);
                 //edit
-                if (aNode.Checked)
+                if (state == TriStateTreeView.CheckBoxState.Checked && aNode.Nodes.Count == 0)
                     fileList.Add(aNode.Tag as string);
 
                 if (aNode.Nodes.Count != 0)
@@ -263,7 +257,6 @@ namespace AntDeployWinform.Winform
                 HideCheckBox(treeView1, e.Node);
             e.DrawDefault = true;
         }
-
 
     }
 }
