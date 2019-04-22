@@ -58,10 +58,23 @@ namespace AntDeployWinform.Util
                 Thread.Sleep(1000);
 
                 ReceiveHttpAction();
-            }
-            catch (Exception)
-            {
 
+
+            }
+            catch
+            {
+                //ignore
+            }
+            finally
+            {
+                try
+                {
+                    client.Dispose();
+                }
+                catch 
+                {
+                    //ignore
+                }
             }
         }
 
@@ -167,6 +180,7 @@ namespace AntDeployWinform.Util
             {
                 
                 var rawData = client.DownloadData(new Uri(this.HttpLogger.Url));
+                if (rawData.Length < 1) return;
                 var encoding = WebUtil.GetEncodingFrom(client.ResponseHeaders, Encoding.UTF8);
                 var result = encoding.GetString(rawData);
 
@@ -201,11 +215,6 @@ namespace AntDeployWinform.Util
             catch (Exception)
             {
 
-            }
-            finally
-            {
-              
-                client.Dispose();
             }
 
             if (isLast)
