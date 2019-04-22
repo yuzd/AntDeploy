@@ -43,7 +43,7 @@ namespace AntDeployWinform.Util
             var buildArg = "\"" + path.Replace("\\\\", "\\") + "\"";
             if (isWeb)
             {
-                buildArg += " /verbosity:minimal /p:Configuration=Release /p:Platform=AnyCPU /t:WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=False /p:publishUrl=\"" + path2 + "\"";
+                buildArg += " /verbosity:minimal /p:Configuration=Release /p:DeployOnBuild=true /p:Platform=AnyCPU /t:WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=False /p:publishUrl=\"" + path2 + "\"";
             }
             else
             {
