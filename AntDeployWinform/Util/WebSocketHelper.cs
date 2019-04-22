@@ -32,10 +32,12 @@ namespace AntDeployWinform.Util
         public bool HasError { get; set; }
         private ClientWebSocket webSocket = null;
         private bool _dispose = false;
+        private WebClient client;
         public WebSocketClient(Logger _receiveAction, HttpLogger _loggerKey)
         {
             this.receiveAction = _receiveAction;
             this.HttpLogger = _loggerKey;
+            client = new WebClientExtended();
         }
 
 
@@ -160,7 +162,7 @@ namespace AntDeployWinform.Util
 
         public void ReceiveHttpAction(bool isLast = false)
         {
-            var client = new WebClient();
+           
             try
             {
                 
@@ -315,5 +317,17 @@ namespace AntDeployWinform.Util
         public DateTime Date { get; set; }
         public bool IsActive { get; set; }
 
+    }
+    
+    public class WebClientExtended : WebClient
+    {
+        protected override WebRequest GetWebRequest(Uri uri)
+        {
+            var w = (HttpWebRequest) base.GetWebRequest(uri);
+            w.Timeout = 5000;      // Set timeout
+            w.KeepAlive = true;    // Set keepalive true or false
+            w.ServicePoint.SetTcpKeepAlive(true, 1000, 5000);  // Set tcp keepalive
+            return w;
+        }
     }
 }
