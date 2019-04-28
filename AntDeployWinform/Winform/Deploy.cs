@@ -2969,7 +2969,7 @@ namespace AntDeployWinform.Winform
                 PrintCommonLog(this.nlog_windowservice);
                 EnableForWindowsService(false); //第一台开始编译
                 GitClient gitModel = null;
-                var isRuningSelectDeploy = true;
+                var isRuningSelectDeploy = false;
                 try
                 {
                     var isNetcore = false;
