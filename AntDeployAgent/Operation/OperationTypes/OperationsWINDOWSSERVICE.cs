@@ -100,10 +100,19 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
                     }
                     catch (Exception)
                     {
-                        logger("【Error】Retry Copy Limit ");
-                        throw;
+                        try
+                        {
+                            logger("Wait 5Senconds to Try deploy again+1");
+                            Thread.Sleep(5000);
+                            base.Deploy();
+                            return;
+                        }
+                        catch (Exception)
+                        {
+                            logger("【Error】Retry Copy Limit ");
+                            throw;
+                        }
                     }
-
                 }
 
                 Deploy();
