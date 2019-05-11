@@ -118,7 +118,7 @@ namespace AntDeployWinform.Util
         }
 
 
-        public static byte[] DoCreateFromDirectory(string sourceDirectoryName, List<string> fileList, CompressionLevel? compressionLevel, bool includeBaseDirectory, List<string> ignoreList = null, Action<int> progress = null,bool isSelectDeploy = false)
+        public static byte[] DoCreateFromDirectory(string sourceDirectoryName, List<string> fileList, CompressionLevel? compressionLevel, bool includeBaseDirectory, List<string> ignoreList = null, Func<int,bool> progress = null,bool isSelectDeploy = false)
         {
             //if (ignoreList != null)
             //{
@@ -141,7 +141,15 @@ namespace AntDeployWinform.Util
                     {
                         index++;
                         var lastProgressNumber = (((long)index * 100 / allFileLength));
-                        progress?.Invoke((int)lastProgressNumber);
+                        if (progress != null)
+                        {
+                            var r = progress.Invoke((int)lastProgressNumber);
+                            if (r)
+                            {
+                                throw new  Exception("deploy task was canceled!");
+                            }
+                        }
+                      
                         flag = false;
                         int length = enumerateFileSystemInfo.FullName.Length - fullName.Length;
                         string entryName = EntryFromPath(enumerateFileSystemInfo.FullName, fullName.Length, length);
@@ -213,7 +221,7 @@ namespace AntDeployWinform.Util
         /// <param name="compressionLevel"></param>
         /// <param name="includeBaseDirectory"></param>
         /// <returns></returns>
-        public static byte[] DoCreateFromDirectory(string sourceDirectoryName, CompressionLevel? compressionLevel, bool includeBaseDirectory, List<string> ignoreList = null, Action<int> progress = null)
+        public static byte[] DoCreateFromDirectory(string sourceDirectoryName, CompressionLevel? compressionLevel, bool includeBaseDirectory, List<string> ignoreList = null, Func<int,bool> progress = null)
         {
             //if (ignoreList != null)
             //{
@@ -236,7 +244,15 @@ namespace AntDeployWinform.Util
                     {
                         index++;
                         var lastProgressNumber = (((long)index * 100 / allFileLength));
-                        progress?.Invoke((int)lastProgressNumber);
+                        if (progress != null)
+                        {
+                           var r = progress.Invoke((int)lastProgressNumber);
+                           if (r)
+                           {
+                               throw new Exception("deploy task was canceled!");
+                           }
+                        }
+                        
                         flag = false;
                         int length = enumerateFileSystemInfo.FullName.Length - fullName.Length;
                         string entryName = EntryFromPath(enumerateFileSystemInfo.FullName, fullName.Length, length);
@@ -388,7 +404,7 @@ namespace AntDeployWinform.Util
             }
         }
 
-        public static MemoryStream DoCreateTarFromDirectory(string sourceDirectory, List<string> ignoreList = null, Action<int> progress = null)
+        public static MemoryStream DoCreateTarFromDirectory(string sourceDirectory, List<string> ignoreList = null, Func<int,bool> progress = null)
         {
             MemoryStream outputMemStream = new MemoryStream();
             TarArchive tarArchive = TarArchive.CreateOutputTarArchive(outputMemStream);
@@ -412,7 +428,15 @@ namespace AntDeployWinform.Util
             {
                 index++;
                 var lastProgressNumber = (((long)index * 100 / allFileLength));
-                progress?.Invoke((int)lastProgressNumber);
+                if (progress != null)
+                {
+                   var r = progress.Invoke((int)lastProgressNumber);
+                   if (r)
+                   {
+                       throw new Exception("deploy task was canceled!");
+                   }
+                }
+                
 
                 int length = enumerateFileSystemInfo.FullName.Length - fullName.Length;
                 string entryName = EntryFromPath(enumerateFileSystemInfo.FullName, fullName.Length, length);

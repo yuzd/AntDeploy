@@ -23,7 +23,7 @@ namespace AntDeployWinform.Util
         /// <param name="logger"></param>
         /// <param name="isWeb"></param>
         /// <returns></returns>
-        public static bool RunMsbuild(string path, string publishPath, NLog.Logger logger, bool isWeb = false)
+        public static bool RunMsbuild(string path, string publishPath, NLog.Logger logger, bool isWeb = false,Func<bool> checkCancel = null)
         {
             var msBuild = MsBuildPath;
             if (string.IsNullOrEmpty(msBuild))
@@ -54,7 +54,7 @@ namespace AntDeployWinform.Util
             //先清空目录
             ClearPublishFolder(path2);
             logger.Info($"current project Path:{path}");
-            return RunDotnetExternalExe(string.Empty, msbuildPath, buildArg, logger);
+            return RunDotnetExternalExe(string.Empty, msbuildPath, buildArg, logger, checkCancel);
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace AntDeployWinform.Util
         /// <param name="logger"></param>
         /// <returns></returns>
         public static bool RunDotnetExe(string projectPath,string fileName, string publishPath, string arguments,
-            NLog.Logger logger)
+            NLog.Logger logger, Func<bool> checkCancel = null)
         {
             if (!string.IsNullOrEmpty(publishPath))
             {
@@ -85,7 +85,7 @@ namespace AntDeployWinform.Util
                 arguments += " -o \"" + publishPath + "\"";
             }
             logger.Info($"current project Path:{projectPath}");
-            return RunDotnetExternalExe(string.Empty, $"dotnet", arguments, logger);
+            return RunDotnetExternalExe(string.Empty, $"dotnet", arguments, logger, checkCancel);
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace AntDeployWinform.Util
         /// <param name="arguments"></param>
         /// <param name="logger"></param>
         /// <returns></returns>
-        private static bool RunDotnetExternalExe(string projectPath, string fileName, string arguments, NLog.Logger logger)
+        private static bool RunDotnetExternalExe(string projectPath, string fileName, string arguments, NLog.Logger logger, Func<bool> checkCancel = null)
         {
             Process process = null;
             try
@@ -135,6 +135,31 @@ namespace AntDeployWinform.Util
 
                 process.OutputDataReceived += (sender, args) =>
                 {
+                    if (checkCancel != null)
+                    {
+                        var r = checkCancel();
+                        if (r)
+                        {
+
+                            try
+                            {
+                                process?.Dispose();
+                            }
+                            catch (Exception)
+                            {
+                                //ignore
+                            }
+                          
+                            try
+                            {
+                                process?.Kill();
+                            }
+                            catch (Exception)
+                            {
+                                //ignore
+                            }
+                        }
+                    }
                     if (!string.IsNullOrWhiteSpace(args.Data))
                     {
                         if (!args.Data.StartsWith(" ") && args.Data.Contains(": error"))
@@ -155,6 +180,32 @@ namespace AntDeployWinform.Util
 
                 process.ErrorDataReceived += (sender, data) =>
                 {
+
+                    if (checkCancel != null)
+                    {
+                        var r = checkCancel();
+                        if (r)
+                        {
+
+                            try
+                            {
+                                process?.Dispose();
+                            }
+                            catch (Exception)
+                            {
+                                //ignore
+                            }
+
+                            try
+                            {
+                                process?.Kill();
+                            }
+                            catch (Exception)
+                            {
+                                //ignore
+                            }
+                        }
+                    }
                     if (!string.IsNullOrWhiteSpace(data.Data)) logger?.Error(data.Data);
                 };
                 process.BeginErrorReadLine();
@@ -173,12 +224,38 @@ namespace AntDeployWinform.Util
             }
             catch (Exception ex)
             {
+                if (checkCancel != null)
+                {
+                    var r = checkCancel();
+                    if (r)
+                    {
+                        logger?.Error("deploy task was canceled!");
+                        return false;
+                    }
+                }
+               
                 logger?.Error(ex.Message);
                 return false;
             }
             finally
             {
-                process?.Dispose();
+                try
+                {
+                    process?.Kill();
+                }
+                catch (Exception)
+                {
+                    //ignore
+                }
+                try
+                {
+                    process?.Dispose();
+                }
+                catch (Exception)
+                {
+                    //ignore
+                }
+                
             }
         }
 

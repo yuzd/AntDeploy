@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace AntDeployWinform.Util
 {
@@ -85,14 +86,14 @@ namespace AntDeployWinform.Util
         public string Volume { get; set; }
         public string RootFolder { get; set; }
 
-        private readonly Action<string, NLog.LogLevel> _logger;
+        private readonly Func<string, NLog.LogLevel, bool> _logger;
         private readonly Action<int> _uploadLogger;
 
         private readonly SftpClient _sftpClient;
         private readonly SshClient _sshClient;
         private long _lastProgressNumber;
         private object lockObject = new object();
-        public SSHClient(string host, string userName, string pwd, Action<string, NLog.LogLevel> logger, Action<int> uploadLogger)
+        public SSHClient(string host, string userName, string pwd, Func<string, NLog.LogLevel,bool> logger, Action<int> uploadLogger)
         {
             this.UserName = userName;
             this.Pwd = pwd;
@@ -109,7 +110,25 @@ namespace AntDeployWinform.Util
             _sshClient = new SshClient(this.Host, hPort, userName, pwd);
             _sftpClient.BufferSize = 6 * 1024; // bypass Payload error large files
         }
-
+        public SSHClient(string host, string userName, string pwd)
+        {
+            this.UserName = userName;
+            this.Pwd = pwd;
+            _logger = (a,b) => { Console.WriteLine(a);
+                return false;
+            };
+            _uploadLogger = Console.WriteLine;
+            var harr = host.Split(':');
+            this.Host = harr[0];
+            var hPort = 22;
+            if (harr.Length == 2)
+            {
+                hPort = int.Parse(harr[1]);
+            }
+            _sftpClient = new SftpClient(this.Host, hPort, userName, pwd);
+            _sshClient = new SshClient(this.Host, hPort, userName, pwd);
+            _sftpClient.BufferSize = 6 * 1024; // bypass Payload error large files
+        }
 
         public bool Connect(bool ignoreLog = false)
         {
@@ -215,8 +234,11 @@ namespace AntDeployWinform.Util
                     return;
                 }
                 _lastProgressNumber = lastProgressNumber;
-                _logger($"uploaded {lastProgressNumber} %", NLog.LogLevel.Info);
-
+                var isCanceled = _logger($"uploaded {lastProgressNumber} %", NLog.LogLevel.Info);
+                if (isCanceled)
+                {
+                   this.Dispose();
+                }
                 _uploadLogger((int)lastProgressNumber);
 
             }
@@ -337,14 +359,30 @@ namespace AntDeployWinform.Util
             return result.OrderByDescending(r => r.Item3).Select(r => new Tuple<string, string>(r.Item1, r.Item2)).ToList();
         }
 
-        public void PublishZip(Stream stream, string destinationFolder, string destinationfileName)
+        public void PublishZip(Stream stream, string destinationFolder, string destinationfileName,Func<bool> continuetask = null)
         {
             if (!destinationFolder.EndsWith("/")) destinationFolder = destinationFolder + "/";
 
             var projectPath = destinationFolder + PorjectName + "/";
             destinationFolder = projectPath + ClientDateTimeFolderName + "/";
+            try
+            {
 
-            Upload(stream, destinationFolder, destinationfileName);
+                Upload(stream, destinationFolder, destinationfileName);
+            }
+            catch (Exception)
+            {
+                if (continuetask != null)
+                {
+                    var canContinue = continuetask();
+                    if (!canContinue)
+                    {
+                        return;
+                    }
+                }
+
+                throw;
+            }
 
             if (!_sftpClient.Exists(destinationfileName))
             {
@@ -352,6 +390,14 @@ namespace AntDeployWinform.Util
                 return;
             }
 
+            if (continuetask != null)
+            {
+                var canContinue = continuetask();
+                if (!canContinue)
+                {
+                    return;
+                }
+            }
             //创建args文件 antdeploy_args
             var argsFilePath = destinationFolder + "antdeploy_args";
             CreateArgsFile(argsFilePath);
