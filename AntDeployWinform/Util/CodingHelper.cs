@@ -151,5 +151,17 @@ namespace AntDeployWinform.Util
 
             return result;
         }
+
+
+        public static string AppendRetryStrings(this int retryTimes)
+        {
+            var str = "";
+            for (int i = 0; i < retryTimes; i++)
+            {
+                str += "_";
+            }
+
+            return str;
+        }
     }
 }

@@ -1360,6 +1360,7 @@ namespace AntDeployWinform.Winform
         private void b_iis_deploy_Click(object sender, EventArgs e)
         {
             stop_iis_cancel_token = false;
+            Condition = new AutoResetEvent(false);
             //判断当前项目是否是web项目
             bool isWeb = _project.IsWebProejct || _project.IsNetcorePorject;
 
@@ -1640,15 +1641,31 @@ namespace AntDeployWinform.Winform
                     var packageSize = (zipBytes.Length / 1024 / 1024);
                     this.nlog_iis.Info($"package success,package size:{(packageSize > 0 ? (packageSize + "") : "<1")}M");
                     var loggerId = Guid.NewGuid().ToString("N");
-                    var dateTimeFolderName = DateTime.Now.ToString("yyyyMMddHHmmss");
                     //执行 上传
                     this.nlog_iis.Info("-----------------Deploy Start-----------------");
+                    var dateTimeFolderNameParent = DateTime.Now.ToString("yyyyMMddHHmmss");
+                    var allfailServerList = new List<Server>();
+                    var retryTimes = 0;
+                    RETRY_IIS:
+                    var failServerList = new List<Server>();
                     var index = 0;
                     var allSuccess = true;
                     var failCount = 0;
-                    foreach (var server in serverList)
+                    var dateTimeFolderName = string.Empty;
+                    var isRetry = allfailServerList.Count > 0;
+                    if (isRetry)
                     {
-                        if (index != 0) //因为编译和打包只会占用第一台服务器的时间
+                        dateTimeFolderName = dateTimeFolderNameParent + (retryTimes.AppendRetryStrings());
+                    }
+                    else
+                    {
+                        dateTimeFolderName = dateTimeFolderNameParent;
+                    }
+                    foreach (var server in isRetry ? allfailServerList : serverList)
+                    {
+                        if(isRetry)UploadReset(this.tabPage_progress, server.Host);
+
+                        if (!isRetry && index != 0) //因为编译和打包只会占用第一台服务器的时间
                         {
                             BuildEnd(this.tabPage_progress, server.Host);
                             UpdatePackageProgress(this.tabPage_progress, server.Host, 100);
@@ -1666,6 +1683,7 @@ namespace AntDeployWinform.Winform
                             UploadError(this.tabPage_progress, server.Host);
                             allSuccess = false;
                             failCount++;
+                            failServerList.Add(server);
                             continue;
                         }
 
@@ -1686,6 +1704,7 @@ namespace AntDeployWinform.Winform
                             UploadError(this.tabPage_progress, server.Host);
                             allSuccess = false;
                             failCount++;
+                            failServerList.Add(server);
                             continue;
                         }
 
@@ -1695,6 +1714,7 @@ namespace AntDeployWinform.Winform
                             UploadError(this.tabPage_progress, server.Host);
                             allSuccess = false;
                             failCount++;
+                            failServerList.Add(server);
                             continue;
                         }
 
@@ -1711,6 +1731,7 @@ namespace AntDeployWinform.Winform
                                 UploadError(this.tabPage_progress, server.Host);
                                 allSuccess = false;
                                 failCount++;
+                                failServerList.Add(server);
                                 continue;
                             }
 
@@ -1736,6 +1757,7 @@ namespace AntDeployWinform.Winform
                                 UploadError(this.tabPage_progress, server.Host);
                                 allSuccess = false;
                                 failCount++;
+                                failServerList.Add(server);
                                 continue;
                             }
                             else
@@ -1755,6 +1777,7 @@ namespace AntDeployWinform.Winform
                                 UploadError(this.tabPage_progress, server.Host);
                                 allSuccess = false;
                                 failCount++;
+                                failServerList.Add(server);
                                 continue;
                             }
                             this.BeginInvokeLambda(() =>
@@ -1779,6 +1802,7 @@ namespace AntDeployWinform.Winform
                                 UploadError(this.tabPage_progress, server.Host);
                                 allSuccess = false;
                                 failCount++;
+                                failServerList.Add(server);
                                 continue;
                             }
                             else
@@ -1844,6 +1868,7 @@ namespace AntDeployWinform.Winform
                             {
                                 allSuccess = false;
                                 failCount++;
+                                failServerList.Add(server);
                                 this.nlog_iis.Error($"Host:{getHostDisplayName(server)},Deploy Fail,Skip to Next");
                                 UpdateDeployProgress(this.tabPage_progress, server.Host, false);
                             }
@@ -1871,6 +1896,7 @@ namespace AntDeployWinform.Winform
                                         {
                                             allSuccess = false;
                                             failCount++;
+                                            failServerList.Add(server);
                                             UpdateDeployProgress(this.tabPage_progress, server.Host, false);
                                         }
                                     }
@@ -1883,6 +1909,7 @@ namespace AntDeployWinform.Winform
                                 {
                                     allSuccess = false;
                                     failCount++;
+                                    failServerList.Add(server);
                                     this.nlog_iis.Error($"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2},Skip to Next");
                                     UpdateDeployProgress(this.tabPage_progress, server.Host, false);
                                 }
@@ -1893,6 +1920,7 @@ namespace AntDeployWinform.Winform
                         {
                             allSuccess = false;
                             failCount++;
+                            failServerList.Add(server);
                             this.nlog_iis.Error($"Fail Deploy,Host:{getHostDisplayName(server)},Response:{ex.Message},Skip to Next");
                             UpdateDeployProgress(this.tabPage_progress, server.Host, false);
                         }
@@ -1906,8 +1934,23 @@ namespace AntDeployWinform.Winform
                     //交互
                     if (allSuccess)
                     {
-                        this.nlog_iis.Info("Deploy Version：" + dateTimeFolderName);
+                        this.nlog_iis.Info("Deploy Version：" + dateTimeFolderNameParent);
                         if (gitModel != null) gitModel.SubmitChanges(gitChangeFileCount);
+                    }
+                    else
+                    {
+                        if (!stop_iis_cancel_token)
+                        {
+                            allfailServerList = failServerList;
+                            EnableIIsRetry(true);
+                            //看是否要重试
+                            Condition.WaitOne();
+                            if (!stop_iis_cancel_token)
+                            {
+                                retryTimes++;
+                                goto RETRY_IIS;
+                            }
+                        }
                     }
 
                     LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local publish folder  ==> ");
@@ -1989,15 +2032,31 @@ namespace AntDeployWinform.Winform
                         var packageSize = (zipBytes.Length / 1024 / 1024);
                         this.nlog_iis.Info($"package success,package size:{(packageSize > 0 ? (packageSize + "") : "<1")}M");
                         var loggerId = Guid.NewGuid().ToString("N");
-                        var dateTimeFolderName = DateTime.Now.ToString("yyyyMMddHHmmss");
                         //执行 上传
                         this.nlog_iis.Info("-----------------Deploy Start-----------------");
+                        var dateTimeFolderNameParent = DateTime.Now.ToString("yyyyMMddHHmmss");
+                        var allfailServerList = new List<Server>();
+                        var retryTimes = 0;
+                        RETRY_IIS2:
+                        var failServerList = new List<Server>();
                         var index = 0;
                         var allSuccess = true;
                         var failCount = 0;
-                        foreach (var server in serverList)
+                        var dateTimeFolderName = string.Empty;
+                        var isRetry = allfailServerList.Count > 0;
+                        if (isRetry)
                         {
-                            if (index != 0) //因为编译和打包只会占用第一台服务器的时间
+                            dateTimeFolderName = dateTimeFolderNameParent + (retryTimes.AppendRetryStrings());
+                        }
+                        else
+                        {
+                            dateTimeFolderName = dateTimeFolderNameParent;
+                        }
+                        foreach (var server in isRetry ? allfailServerList : serverList)
+                        {
+                            if(isRetry) UploadReset(this.tabPage_progress, server.Host);
+
+                            if (!isRetry && index != 0) //因为编译和打包只会占用第一台服务器的时间
                             {
                                 BuildEnd(this.tabPage_progress, server.Host);
                                 UpdatePackageProgress(this.tabPage_progress, server.Host, 100);
@@ -2015,6 +2074,7 @@ namespace AntDeployWinform.Winform
                                 UploadError(this.tabPage_progress, server.Host);
                                 allSuccess = false;
                                 failCount++;
+                                failServerList.Add(server);
                                 continue;
                             }
 
@@ -2035,6 +2095,7 @@ namespace AntDeployWinform.Winform
                                 UploadError(this.tabPage_progress, server.Host);
                                 allSuccess = false;
                                 failCount++;
+                                failServerList.Add(server);
                                 continue;
                             }
 
@@ -2044,6 +2105,7 @@ namespace AntDeployWinform.Winform
                                 UploadError(this.tabPage_progress, server.Host);
                                 allSuccess = false;
                                 failCount++;
+                                failServerList.Add(server);
                                 continue;
                             }
 
@@ -2058,6 +2120,7 @@ namespace AntDeployWinform.Winform
                                 UploadError(this.tabPage_progress, server.Host);
                                 allSuccess = false;
                                 failCount++;
+                                failServerList.Add(server);
                                 continue;
                             }
 
@@ -2112,6 +2175,7 @@ namespace AntDeployWinform.Winform
                                 {
                                     allSuccess = false;
                                     failCount++;
+                                    failServerList.Add(server);
                                     this.nlog_iis.Error($"Host:{getHostDisplayName(server)},Deploy Fail,Skip to Next");
                                     UpdateDeployProgress(this.tabPage_progress, server.Host, false);
                                 }
@@ -2139,6 +2203,7 @@ namespace AntDeployWinform.Winform
                                             {
                                                 allSuccess = false;
                                                 failCount++;
+                                                failServerList.Add(server);
                                                 UpdateDeployProgress(this.tabPage_progress, server.Host, false);
                                             }
                                         }
@@ -2151,6 +2216,7 @@ namespace AntDeployWinform.Winform
                                     {
                                         allSuccess = false;
                                         failCount++;
+                                        failServerList.Add(server);
                                         this.nlog_iis.Error($"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2},Skip to Next");
                                         UpdateDeployProgress(this.tabPage_progress, server.Host, false);
                                     }
@@ -2161,6 +2227,7 @@ namespace AntDeployWinform.Winform
                             {
                                 allSuccess = false;
                                 failCount++;
+                                failServerList.Add(server);
                                 this.nlog_iis.Error($"Fail Deploy,Host:{getHostDisplayName(server)},Response:{ex.Message},Skip to Next");
                                 UpdateDeployProgress(this.tabPage_progress, server.Host, false);
                             }
@@ -2174,8 +2241,23 @@ namespace AntDeployWinform.Winform
                         //交互
                         if (allSuccess)
                         {
-                            this.nlog_iis.Info("Deploy Version：" + dateTimeFolderName);
+                            this.nlog_iis.Info("Deploy Version：" + dateTimeFolderNameParent);
                             if (gitModel != null) gitModel.SubmitSelectedChanges(fileList, publishPath);
+                        }
+                        else
+                        {
+                            if (!stop_iis_cancel_token)
+                            {
+                                allfailServerList = failServerList;
+                                EnableIIsRetry(true);
+                                //看是否要重试
+                                Condition.WaitOne();
+                                if (!stop_iis_cancel_token)
+                                {
+                                    retryTimes++;
+                                    goto RETRY_IIS2;
+                                }
+                            }
                         }
 
                         LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local publish folder  ==> ");
@@ -2538,7 +2620,33 @@ namespace AntDeployWinform.Winform
                 this.nlog_iis.Info($"Upload {showValue} % complete...");
             }
         }
+        private void EnableDockerRetry(bool flag)
+        {
+            this.BeginInvokeLambda(() =>
+            {
 
+                btn_docker_retry.Visible = flag;//隐藏发布按钮
+
+            });
+        }
+        private void EnableIIsRetry(bool flag)
+        {
+            this.BeginInvokeLambda(() =>
+            {
+
+                btn_iis_retry.Visible = flag;//隐藏发布按钮
+               
+            });
+        }
+        private void EnableWindowsServiceRetry(bool flag)
+        {
+            this.BeginInvokeLambda(() =>
+            {
+
+                btn_windows_service_retry.Visible = flag;//隐藏发布按钮
+
+            });
+        }
         private void Enable(bool flag, bool ignore = false)
         {
             this.BeginInvokeLambda(() =>
@@ -2659,6 +2767,30 @@ namespace AntDeployWinform.Winform
                         if (box.Key.Equals(host))
                         {
                             box.Value.UploadError();
+                            break;
+                        }
+                    }
+                }
+            });
+        }
+
+        private void UploadReset(TabPage tabPage, string host = null)
+        {
+            this.BeginInvokeLambda(() =>
+            {
+                if (tabPage.Tag is Dictionary<string, ProgressBox> progressBoxList)
+                {
+                    foreach (var box in progressBoxList)
+                    {
+                        if (host == null)
+                        {
+                            box.Value.UploadReset();
+                            break;
+                        }
+
+                        if (box.Key.Equals(host))
+                        {
+                            box.Value.UploadReset();
                             break;
                         }
                     }
@@ -2941,6 +3073,7 @@ namespace AntDeployWinform.Winform
         private void b_windowservice_deploy_Click(object sender, EventArgs e)
         {
             stop_windows_cancel_token = false;
+            Condition = new AutoResetEvent(false);
             if (_project.IsWebProejct)
             {
                 MessageBox.Show("current project is not windows service project!");
@@ -3076,6 +3209,7 @@ namespace AntDeployWinform.Winform
                 EnableForWindowsService(false); //第一台开始编译
                 GitClient gitModel = null;
                 var isRuningSelectDeploy = false;
+                
                 try
                 {
                     var isNetcore = false;
@@ -3312,13 +3446,28 @@ namespace AntDeployWinform.Winform
                     var loggerId = Guid.NewGuid().ToString("N");
                     //执行 上传
                     this.nlog_windowservice.Info("-----------------Deploy Start-----------------");
+                    var dateTimeFolderNameParent = DateTime.Now.ToString("yyyyMMddHHmmss");
+                    var retryTimes = 0;
+                    var allfailServerList = new List<Server>();
+                    RETRY_WINDOWSSERVICE:
+                    var failServerList = new List<Server>();
                     var index = 0;
                     var allSuccess = true;
                     var failCount = 0;
-                    var dateTimeFolderName = DateTime.Now.ToString("yyyyMMddHHmmss");
-                    foreach (var server in serverList)
+                    var dateTimeFolderName = string.Empty;
+                    var isRetry = allfailServerList.Count > 0;
+                    if (isRetry)
                     {
-                        if (index != 0) //因为编译和打包只会占用第一台服务器的时间
+                        dateTimeFolderName = dateTimeFolderNameParent + (retryTimes.AppendRetryStrings());
+                    }
+                    else
+                    {
+                        dateTimeFolderName = dateTimeFolderNameParent;
+                    }
+                    foreach (var server in isRetry ? allfailServerList : serverList)
+                    {
+                        if (isRetry) UploadReset(this.tabPage_windows_service, server.Host);
+                        if (!isRetry && index != 0) //因为编译和打包只会占用第一台服务器的时间
                         {
                             BuildEnd(this.tabPage_windows_service, server.Host);
                             UpdatePackageProgress(this.tabPage_windows_service, server.Host, 100);
@@ -3336,6 +3485,7 @@ namespace AntDeployWinform.Winform
                             UploadError(this.tabPage_windows_service, server.Host);
                             allSuccess = false;
                             failCount++;
+                            failServerList.Add(server);
                             continue;
                         }
 
@@ -3392,6 +3542,7 @@ namespace AntDeployWinform.Winform
                             {
                                 allSuccess = false;
                                 failCount++;
+                                failServerList.Add(server);
                                 this.nlog_windowservice.Error($"Host:{getHostDisplayName(server)},Deploy Fail,Skip to Next");
                                 UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
                             }
@@ -3418,6 +3569,7 @@ namespace AntDeployWinform.Winform
                                         else
                                         {
                                             failCount++;
+                                            failServerList.Add(server);
                                             allSuccess = false;
                                             UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
                                         }
@@ -3431,6 +3583,7 @@ namespace AntDeployWinform.Winform
                                 {
                                     allSuccess = false;
                                     failCount++;
+                                    failServerList.Add(server);
                                     this.nlog_windowservice.Error(
                                         $"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2},Skip to Next");
                                     UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
@@ -3441,6 +3594,7 @@ namespace AntDeployWinform.Winform
                         catch (Exception ex)
                         {
                             failCount++;
+                            failServerList.Add(server);
                             allSuccess = false;
                             this.nlog_windowservice.Error(
                                 $"Fail Deploy,Host:{getHostDisplayName(server)},Response:{ex.Message},Skip to Next");
@@ -3456,10 +3610,27 @@ namespace AntDeployWinform.Winform
                     //交互
                     if (allSuccess)
                     {
-                        this.nlog_windowservice.Info("Deploy Version：" + dateTimeFolderName);
+                        this.nlog_windowservice.Info("Deploy Version：" + dateTimeFolderNameParent);
                         if (gitModel != null) gitModel.SubmitChanges(gitChangeFileCount);
                     }
+                    else
+                    {
+                        if (!stop_windows_cancel_token)
+                        {
+                            allfailServerList = failServerList;
+                            EnableWindowsServiceRetry(true);
+                            //看是否要重试
+                            Condition.WaitOne();
+                            if (!stop_windows_cancel_token)
+                            {
+                                retryTimes++;
+                                goto RETRY_WINDOWSSERVICE;
+                            }
+                        }
+                            
+                    }
 
+                    zipBytes = null;
                     LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local publish folder  ==> ");
                     publisEvent2.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
                     publisEvent2.LoggerName = "rich_windowservice_log";
@@ -3539,13 +3710,28 @@ namespace AntDeployWinform.Winform
                     var loggerId = Guid.NewGuid().ToString("N");
                     //执行 上传
                     this.nlog_windowservice.Info("-----------------Deploy Start-----------------");
+                    var dateTimeFolderNameParent = DateTime.Now.ToString("yyyyMMddHHmmss");
+                    var retryTimes = 0;
+                    var allfailServerList = new List<Server>();
+                    RETRY_WINDOWSSERVICE2:
+                    var failServerList = new List<Server>();
                     var index = 0;
                     var allSuccess = true;
                     var failCount = 0;
-                    var dateTimeFolderName = DateTime.Now.ToString("yyyyMMddHHmmss");
-                    foreach (var server in serverList)
+                    var dateTimeFolderName = string.Empty;
+                    var isRetry = allfailServerList.Count > 0;
+                    if (isRetry)
                     {
-                        if (index != 0) //因为编译和打包只会占用第一台服务器的时间
+                        dateTimeFolderName = dateTimeFolderNameParent + (retryTimes.AppendRetryStrings());
+                    }
+                    else
+                    {
+                        dateTimeFolderName = dateTimeFolderNameParent;
+                    }
+                    foreach (var server in isRetry ? allfailServerList : serverList)
+                    {
+                        if (isRetry) UploadReset(this.tabPage_windows_service, server.Host);
+                        if (!isRetry && index != 0) //因为编译和打包只会占用第一台服务器的时间
                         {
                             BuildEnd(this.tabPage_windows_service, server.Host);
                             UpdatePackageProgress(this.tabPage_windows_service, server.Host, 100);
@@ -3563,6 +3749,7 @@ namespace AntDeployWinform.Winform
                             UploadError(this.tabPage_windows_service, server.Host);
                             allSuccess = false;
                             failCount++;
+                            failServerList.Add(server);
                             continue;
                         }
 
@@ -3617,6 +3804,7 @@ namespace AntDeployWinform.Winform
                             {
                                 allSuccess = false;
                                 failCount++;
+                                failServerList.Add(server);
                                 this.nlog_windowservice.Error($"Host:{getHostDisplayName(server)},Deploy Fail,Skip to Next");
                                 UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
                             }
@@ -3643,6 +3831,7 @@ namespace AntDeployWinform.Winform
                                         else
                                         {
                                             failCount++;
+                                            failServerList.Add(server);
                                             allSuccess = false;
                                             UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
                                         }
@@ -3656,6 +3845,7 @@ namespace AntDeployWinform.Winform
                                 {
                                     allSuccess = false;
                                     failCount++;
+                                    failServerList.Add(server);
                                     this.nlog_windowservice.Error(
                                         $"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2},Skip to Next");
                                     UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
@@ -3666,6 +3856,7 @@ namespace AntDeployWinform.Winform
                         catch (Exception ex)
                         {
                             failCount++;
+                            failServerList.Add(server);
                             allSuccess = false;
                             this.nlog_windowservice.Error(
                                 $"Fail Deploy,Host:{getHostDisplayName(server)},Response:{ex.Message},Skip to Next");
@@ -3681,10 +3872,27 @@ namespace AntDeployWinform.Winform
                     //交互
                     if (allSuccess)
                     {
-                        this.nlog_windowservice.Info("Deploy Version：" + dateTimeFolderName);
+                        this.nlog_windowservice.Info("Deploy Version：" + dateTimeFolderNameParent);
                         if (gitModel != null) gitModel.SubmitSelectedChanges(fileList, publishPath);
                     }
+                    else
+                    {
+                        if (!stop_windows_cancel_token)
+                        {
+                            allfailServerList = failServerList;
+                            EnableWindowsServiceRetry(true);
+                            //看是否要重试
+                            Condition.WaitOne();
+                            if (!stop_windows_cancel_token)
+                            {
+                                retryTimes++;
+                                goto RETRY_WINDOWSSERVICE2;
+                            }
+                        }
+                            
+                    }
 
+                    zipBytes = null;
                     LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local publish folder  ==> ");
                     publisEvent2.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
                     publisEvent2.LoggerName = "rich_windowservice_log";
@@ -4297,6 +4505,7 @@ namespace AntDeployWinform.Winform
         private void b_docker_deploy_Click(object sender, EventArgs e)
         {
             stop_docker_cancel_token = false;
+            Condition = new AutoResetEvent(false);
             var port = this.txt_docker_port.Text.Trim();
             if (!string.IsNullOrEmpty(port))
             {
@@ -4452,7 +4661,7 @@ namespace AntDeployWinform.Winform
 
             this.rich_docker_log.Text = "";
             this.nlog_docker.Info($"The Porject ENTRYPOINT name:{ENTRYPOINT},DotNetSDK.Version:{_project.NetCoreSDKVersion}");
-            var clientDateTimeFolderName = DateTime.Now.ToString("yyyyMMddHHmmss");
+           
             new Task(() =>
            {
                this.nlog_docker.Info($"-----------------Start publish[Ver:{Vsix.VERSION}]-----------------");
@@ -4530,12 +4739,28 @@ namespace AntDeployWinform.Winform
                    this.nlog_docker.Info($"package success,package size:{(zipBytes.Length / 1024 / 1024)}M");
                    //执行 上传
                    this.nlog_docker.Info("-----------------Deploy Start-----------------");
+                   var clientDateTimeFolderNameParent = DateTime.Now.ToString("yyyyMMddHHmmss");
+                   var clientDateTimeFolderName =string.Empty;
+                   var retryTimes = 0;
+                   var allfailServerList = new List<LinuxServer>();
+                   RETRY_DOCKER:
+                   var failServerList = new List<LinuxServer>();
                    var index = 0;
                    var allSuccess = true;
                    var failCount = 0;
-                   foreach (var server in serverList)
+                   var isRetry = allfailServerList.Count > 0;
+                   if (isRetry)
                    {
-                       if (index != 0) //因为编译和打包只会占用第一台服务器的时间
+                       clientDateTimeFolderName = clientDateTimeFolderNameParent + (retryTimes.AppendRetryStrings());
+                   }
+                   else
+                   {
+                       clientDateTimeFolderName = clientDateTimeFolderNameParent;
+                   }
+                   foreach (var server in isRetry? allfailServerList:serverList)
+                   {
+                       if(isRetry) UploadReset(this.tabPage_docker,server.Host);
+                       if (!isRetry&& index != 0) //因为编译和打包只会占用第一台服务器的时间
                        {
                            BuildEnd(this.tabPage_docker, server.Host);
                            UpdatePackageProgress(this.tabPage_docker, server.Host, 100);
@@ -4555,6 +4780,7 @@ namespace AntDeployWinform.Winform
                            UploadError(this.tabPage_docker);
                            allSuccess = false;
                            failCount++;
+                           failServerList.Add(server);
                            continue;
                        }
 
@@ -4564,6 +4790,7 @@ namespace AntDeployWinform.Winform
                            UploadError(this.tabPage_docker);
                            allSuccess = false;
                            failCount++;
+                           failServerList.Add(server);
                            continue;
                        }
 
@@ -4573,6 +4800,7 @@ namespace AntDeployWinform.Winform
                            UploadError(this.tabPage_docker);
                            allSuccess = false;
                            failCount++;
+                           failServerList.Add(server);
                            continue;
                        }
 
@@ -4583,6 +4811,7 @@ namespace AntDeployWinform.Winform
                            UploadError(this.tabPage_docker);
                            allSuccess = false;
                            failCount++;
+                           failServerList.Add(server);
                            continue;
                        }
 
@@ -4625,6 +4854,7 @@ namespace AntDeployWinform.Winform
                                UploadError(this.tabPage_docker, server.Host);
                                allSuccess = false;
                                failCount++;
+                               failServerList.Add(server);
                                continue;
                            }
 
@@ -4643,6 +4873,7 @@ namespace AntDeployWinform.Winform
                                {
                                    allSuccess = false;
                                    failCount++;
+                                   failServerList.Add(server);
                                    sshClient.DeletePublishFolder("antdeploy");
                                    UpdateDeployProgress(this.tabPage_docker, server.Host, !hasError);
                                }
@@ -4666,6 +4897,7 @@ namespace AntDeployWinform.Winform
                                        {
                                            UpdateDeployProgress(this.tabPage_docker, server.Host, false);
                                            allSuccess = false;
+                                           failServerList.Add(server);
                                            failCount++;
                                        }
                                    }
@@ -4682,6 +4914,7 @@ namespace AntDeployWinform.Winform
                            {
                                allSuccess = false;
                                failCount++;
+                               failServerList.Add(server);
                                this.nlog_docker.Error($"Deploy Host:{getHostDisplayName(server)} Fail:" + ex.Message);
                                UpdateDeployProgress(this.tabPage_docker, server.Host, false);
                            }
@@ -4689,12 +4922,27 @@ namespace AntDeployWinform.Winform
 
                    }
 
-                   zipBytes.Dispose();
+                  
                    if (allSuccess)
                    {
-                       this.nlog_docker.Info("Deploy Version：" + clientDateTimeFolderName);
+                       this.nlog_docker.Info("Deploy Version：" + clientDateTimeFolderNameParent);
                    }
-
+                   else
+                   {
+                       if (!stop_docker_cancel_token)
+                       {
+                           allfailServerList = failServerList;
+                           EnableDockerRetry(true);
+                           //看是否要重试
+                           Condition.WaitOne();
+                           if (!stop_docker_cancel_token)
+                           {
+                               retryTimes++;
+                               goto RETRY_DOCKER;
+                           }
+                       }
+                   }
+                   zipBytes.Dispose();
                    LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local publish folder  ==> ");
                    publisEvent2.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
                    publisEvent2.LoggerName = "rich_docker_log";
@@ -5060,7 +5308,6 @@ namespace AntDeployWinform.Winform
                 }
                 else
                 {
-
                     tabcontrol.Tag = "1";
                     if (ignore) return;
                     if (this.tabPage_docker.Tag is Dictionary<string, ProgressBox> progressBoxList)
@@ -5347,6 +5594,8 @@ namespace AntDeployWinform.Winform
             btn_iis_stop.Text = "Stoping";
             btn_iis_stop.Enabled = false;
             stop_iis_cancel_token = true;
+            btn_iis_retry.Visible = false;
+            Condition.Set();
         }
 
         private void btn_windows_serivce_stop_Click(object sender, EventArgs e)
@@ -5354,6 +5603,8 @@ namespace AntDeployWinform.Winform
             btn_windows_serivce_stop.Text = "Stoping";
             btn_windows_serivce_stop.Enabled = false;
             stop_windows_cancel_token = true;
+            btn_windows_service_retry.Visible = false;
+            Condition.Set();
         }
 
         private void btn_docker_stop_Click(object sender, EventArgs e)
@@ -5361,6 +5612,26 @@ namespace AntDeployWinform.Winform
             btn_docker_stop.Text = "Stoping";
             btn_docker_stop.Enabled = false;
             stop_docker_cancel_token = true;
+            btn_docker_retry.Visible = false;
+            Condition.Set();
+        }
+
+        private void btn_iis_retry_Click(object sender, EventArgs e)
+        {
+            btn_iis_retry.Visible = false;
+            Condition.Set();
+        }
+
+        private void btn_docker_retry_Click(object sender, EventArgs e)
+        {
+            btn_docker_retry.Visible = false;
+            Condition.Set();
+        }
+
+        private void btn_windows_service_retry_Click(object sender, EventArgs e)
+        {
+            btn_windows_service_retry.Visible = false;
+            Condition.Set();
         }
     }
 }

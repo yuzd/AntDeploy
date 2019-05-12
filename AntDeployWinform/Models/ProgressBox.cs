@@ -391,6 +391,17 @@ namespace AntDeployWinform.Models
             progress_iis_upload.SuperscriptText = "Error";
             this.progress_iis_upload.ProgressColor = System.Drawing.Color.Red;
         }
+
+        public void UploadReset()
+        {
+            progress_iis_upload.Value = 20;
+            this.progress_iis_upload.SuperscriptText = "0%";
+            this.progress_iis_upload.ProgressColor  = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(99)))), ((int)(((byte)(180)))));
+            this.progress_iis_deploy.SuperscriptColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(99)))), ((int)(((byte)(180)))));
+            this.progress_iis_deploy.SuperscriptMargin = new System.Windows.Forms.Padding(-28, 0, 0, 0);
+            this.progress_iis_deploy.SuperscriptText = "Wait";
+        }
+
         public void PackageEnd()
         {
             b_package_end.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(99)))), ((int)(((byte)(180)))));

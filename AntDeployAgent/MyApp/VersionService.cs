@@ -208,7 +208,8 @@ namespace AntDeployAgentWindows.MyApp
             foreach (var item in all)
             {
                 var itemD = new DirectoryInfo(item);
-                if (DateTime.TryParseExact(itemD.Name, "yyyyMMddHHmmss", null, DateTimeStyles.None, out DateTime d))
+                var temp = itemD.Name.Replace("_", "");
+                if (DateTime.TryParseExact(temp, "yyyyMMddHHmmss", null, DateTimeStyles.None, out DateTime d))
                 {
                     if (request.WithArgs)
                     {

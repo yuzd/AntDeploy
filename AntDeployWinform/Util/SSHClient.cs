@@ -283,7 +283,8 @@ namespace AntDeployWinform.Util
                 foreach (var folder in folderList)
                 {
                     if ((folder.Name == ".") || (folder.Name == "..")) continue;
-                    if (DateTime.TryParseExact(folder.Name, "yyyyMMddHHmmss", null, DateTimeStyles.None, out DateTime d))
+                    var temp = folder.Name.Replace("_", "");
+                    if (DateTime.TryParseExact(temp, "yyyyMMddHHmmss", null, DateTimeStyles.None, out DateTime d))
                     {
                         result.Add(new Tuple<string, DateTime>(folder.Name, d));
                     }
@@ -335,7 +336,8 @@ namespace AntDeployWinform.Util
                 foreach (var folder in folderList)
                 {
                     if ((folder.Name == ".") || (folder.Name == "..")) continue;
-                    if (DateTime.TryParseExact(folder.Name, "yyyyMMddHHmmss", null, DateTimeStyles.None, out DateTime d))
+                    var temp = folder.Name.Replace("_", "");
+                    if (DateTime.TryParseExact(temp, "yyyyMMddHHmmss", null, DateTimeStyles.None, out DateTime d))
                     {
                         string remark = string.Empty;
                         try
@@ -706,7 +708,8 @@ namespace AntDeployWinform.Util
             var oldFolderList = new List<OldFolder>();
             foreach (var histroy in histroryList)
             {
-                if (!DateTime.TryParseExact(histroy, "yyyyMMddHHmmss", null, DateTimeStyles.None, out DateTime createDate))
+                var temp = histroy.Replace("_", "");
+                if (!DateTime.TryParseExact(temp, "yyyyMMddHHmmss", null, DateTimeStyles.None, out DateTime createDate))
                 {
                     continue;
                 }
