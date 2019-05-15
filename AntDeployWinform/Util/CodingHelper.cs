@@ -20,28 +20,35 @@ namespace AntDeployWinform.Util
         /// <returns></returns>
         public static string GetSdkInDepsJson(string depsJsonFile)
         {
-            var content = File.ReadAllText(depsJsonFile);
-            if (!content.Contains("runtimeTarget")) return string.Empty;
-            var temp1 = content.Split(new string[] {"runtimeTarget"}, StringSplitOptions.None);
-            var temp2 = temp1[1].Split(new string[] {"Version=v"}, StringSplitOptions.None)[1];
-            var ver = "";
-
-            foreach (var c in temp2)
+            try
             {
-                if (c == '.')
+                var content = File.ReadAllText(depsJsonFile);
+                if (!content.Contains("runtimeTarget")) return string.Empty;
+                var temp1 = content.Split(new string[] {"runtimeTarget"}, StringSplitOptions.None);
+                var temp2 = temp1[1].Split(new string[] {"Version=v"}, StringSplitOptions.None)[1];
+                var ver = "";
+
+                foreach (var c in temp2)
                 {
-                    ver += c;
-                    continue;
+                    if (c == '.')
+                    {
+                        ver += c;
+                        continue;
+                    }
+
+                    if (char.IsDigit(c))
+                    {
+                        ver += c;continue;
+                    }
+                    break;
                 }
 
-                if (char.IsDigit(c))
-                {
-                    ver += c;continue;
-                }
-                break;
+                return ver;
             }
-
-            return ver;
+            catch (Exception)
+            {
+                return string.Empty;
+            }
         }
 
         /// <summary>
