@@ -122,17 +122,38 @@ namespace AntDeployWinform.Winform
             }
             ProjectName = Path.GetFileNameWithoutExtension(projectPath);
             this.Text += $"(Version:{Vsix.VERSION})[{ProjectName}]";
-            ProjectPath = projectPath;
-            if (project == null)
+            if (File.Exists(projectPath))
             {
-                //读配置
-                project = ProjectHelper.GetNetCoreParamInCsprojectFile(projectPath);
+                ProjectPath = projectPath;
+                if (project == null)
+                {
+                    //读配置
+                    project = ProjectHelper.GetNetCoreParamInCsprojectFile(projectPath);
+                }
             }
+
+            if (Directory.Exists(projectPath))
+            {
+                ProjectFolderPath = projectPath;
+                project = new ProjectParam
+                {
+                    IsNetcorePorject = true,
+                    IsWebProejct = true
+                };
+
+                this.btn_choose_folder.Visible = false;
+                this.btn_folder_clear.Visible = false;
+            }
+            
             _project = project;
             CommandHelper.MsBuildPath = _project?.MsBuildPath;
             ReadPorjectConfig(projectPath);
             PluginConfigPath = ProjectHelper.GetPluginConfigPath(projectPath);
             ReadPluginConfig(PluginConfigPath);
+            if (Directory.Exists(projectPath))
+            {
+                PluginConfig.DeployFolderPath = projectPath;
+            }
             if (!isFirst)
             {
                 if (GlobalConfig.ProjectPathList == null) GlobalConfig.ProjectPathList = new List<string>();
@@ -382,7 +403,7 @@ namespace AntDeployWinform.Winform
             this.checkBox_Increment_window_service.Checked = PluginConfig.WindowsServiceEnableIncrement;
             this.checkBox_select_deploy_service.Checked = PluginConfig.WindowsServiceEnableSelectDeploy;
             this.checkBox_select_deploy_iis.Checked = PluginConfig.IISEnableSelectDeploy;
-
+            this.txt_folder_deploy.Text = PluginConfig.DeployFolderPath;
 
             this.txt_env_server_host.Text = string.Empty;
             this.txt_env_server_token.Text = string.Empty;
@@ -491,6 +512,7 @@ namespace AntDeployWinform.Winform
                 PluginConfig.WindowsServiceEnableIncrement = this.checkBox_Increment_window_service.Checked;
                 PluginConfig.IISEnableSelectDeploy = this.checkBox_select_deploy_iis.Checked;
                 PluginConfig.WindowsServiceEnableSelectDeploy = this.checkBox_select_deploy_service.Checked;
+                PluginConfig.DeployFolderPath = this.txt_folder_deploy.Text.Trim();
 
                 DeployConfig.IIsConfig.WebSiteName = this.txt_iis_web_site_name.Text.Trim();
 
@@ -882,11 +904,11 @@ namespace AntDeployWinform.Winform
                     {
                         if (result.Equals("success"))
                         {
-                            MessageBox.Show("Connect Sussess");
+                            MessageBox.Show("Connect Success");
                         }
                         else
                         {
-                            MessageBox.Show("Connect fail");
+                            MessageBox.Show("Connect Fail");
                         }
                     });
                 }
@@ -1456,35 +1478,37 @@ namespace AntDeployWinform.Winform
                 var isRuningSelectDeploy = false;
                 try
                 {
-                    var isNetcore = false;
-                    var publishPath = Path.Combine(ProjectFolderPath, "bin", "Release", "deploy_iis", envName);
-                    var path = publishPath + "\\";
-                    if (DeployConfig.IIsConfig.SdkType.Equals("netcore"))
+                    var isNetcore = DeployConfig.IIsConfig.SdkType.Equals("netcore");
+
+                    var publishPath = !string.IsNullOrEmpty(PluginConfig.DeployFolderPath)? PluginConfig.DeployFolderPath: Path.Combine(ProjectFolderPath, "bin", "Release", "deploy_iis", envName);
+                    if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath))
                     {
-                        //执行 publish
-                        var isSuccess = CommandHelper.RunDotnetExe(ProjectPath, ProjectFolderPath, path.Replace("\\\\", "\\"),
-                            $"publish \"{ProjectPath}\" -c Release{PluginConfig.GetNetCorePublishRuntimeArg()}", this.nlog_iis,()=>stop_iis_cancel_token);
-
-                        if (!isSuccess)
+                        var path = publishPath + "\\";
+                        if (isNetcore)
                         {
-                            this.nlog_iis.Error("publish error,please check build log");
-                            BuildError(this.tabPage_progress);
-                            return;
+                            //执行 publish
+                            var isSuccess = CommandHelper.RunDotnetExe(ProjectPath, ProjectFolderPath, path.Replace("\\\\", "\\"),
+                                $"publish \"{ProjectPath}\" -c Release{PluginConfig.GetNetCorePublishRuntimeArg()}", this.nlog_iis, () => stop_iis_cancel_token);
+
+                            if (!isSuccess)
+                            {
+                                this.nlog_iis.Error("publish error,please check build log");
+                                BuildError(this.tabPage_progress);
+                                return;
+                            }
                         }
-
-                        isNetcore = true;
-                    }
-                    else
-                    {
-                        var isSuccess = CommandHelper.RunMsbuild(ProjectPath, path, this.nlog_iis, true,()=>stop_iis_cancel_token);
-
-                        if (!isSuccess)
+                        else
                         {
-                            this.nlog_iis.Error("publish error,please check build log");
-                            BuildError(this.tabPage_progress);
-                            return;
-                        }
+                            var isSuccess = CommandHelper.RunMsbuild(ProjectPath, path, this.nlog_iis, true, () => stop_iis_cancel_token);
 
+                            if (!isSuccess)
+                            {
+                                this.nlog_iis.Error("publish error,please check build log");
+                                BuildError(this.tabPage_progress);
+                                return;
+                            }
+
+                        }
                     }
 
                     BuildEnd(this.tabPage_progress); //第一台结束编译
@@ -3074,14 +3098,14 @@ namespace AntDeployWinform.Winform
         {
             stop_windows_cancel_token = false;
             Condition = new AutoResetEvent(false);
-            if (_project.IsWebProejct)
+            if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath) && _project.IsWebProejct)
             {
                 MessageBox.Show("current project is not windows service project!");
                 return;
             }
 
             //检查工程文件里面是否含有 WebProjectProperties字样
-            if (ProjectHelper.IsWebProject(ProjectPath))
+            if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath) && ProjectHelper.IsWebProject(ProjectPath))
             {
                 MessageBox.Show("current project is not windows service project!");
                 return;
@@ -3096,7 +3120,7 @@ namespace AntDeployWinform.Winform
 
             if (sdkTypeName.Equals("netcore"))
             {
-                if (!_project.IsNetcorePorject)
+                if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath) && !_project.IsNetcorePorject)
                 {
                     MessageBox.Show("current project is not netcore project!");
                     return;
@@ -3144,6 +3168,18 @@ namespace AntDeployWinform.Winform
 #if DEBUG
             var execFilePath = this.ProjectName + ".exe";
 #else
+            //如果是特定文件夹发布 得选择一个exe
+            if (!string.IsNullOrEmpty(PluginConfig.DeployFolderPath))
+            {
+                var exePath = CodingHelper.GetWindowsServiceExe(PluginConfig.DeployFolderPath);
+                if (string.IsNullOrEmpty(exePath))
+                {
+                    MessageBox.Show("please select exe path");
+                    return;
+                }
+
+                _project.OutPutName = new FileInfo(exePath).Name;
+            }
             var execFilePath = _project.OutPutName;
             if (string.IsNullOrEmpty(execFilePath))
             {
@@ -3212,44 +3248,45 @@ namespace AntDeployWinform.Winform
                 
                 try
                 {
-                    var isNetcore = false;
-                    var publishPath = Path.Combine(ProjectFolderPath, "bin", "Release", "deploy_winservice", envName);
-                    var path = publishPath + "\\";
-                    if (DeployConfig.WindowsServiveConfig.SdkType.Equals("netcore"))
+                    var isNetcore = DeployConfig.WindowsServiveConfig.SdkType.Equals("netcore");
+                    var publishPath = !string.IsNullOrEmpty(PluginConfig.DeployFolderPath)? PluginConfig.DeployFolderPath: Path.Combine(ProjectFolderPath, "bin", "Release", "deploy_winservice", envName);
+                    if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath))
                     {
-                        isNetcore = true;
-                        var runtime = "";
-                        if (string.IsNullOrEmpty(PluginConfig.NetCorePublishMode))
+                        var path = publishPath + "\\";
+                        if (isNetcore)
                         {
-                            runtime = " --runtime win-x64";
+                            var runtime = "";
+                            if (string.IsNullOrEmpty(PluginConfig.NetCorePublishMode))
+                            {
+                                runtime = " --runtime win-x64";
+                            }
+                            else
+                            {
+                                runtime = PluginConfig.GetNetCorePublishRuntimeArg();
+                            }
+                            //执行 publish
+                            var isSuccess = CommandHelper.RunDotnetExe(ProjectPath, ProjectFolderPath, path.Replace("\\\\", "\\"),
+                                $"publish \"{ProjectPath}\" -c Release{runtime}", nlog_windowservice, () => stop_windows_cancel_token);
+
+                            if (!isSuccess)
+                            {
+                                this.nlog_windowservice.Error("publish error,please check build log");
+                                BuildError(this.tabPage_windows_service);
+                                return;
+                            }
                         }
                         else
                         {
-                            runtime = PluginConfig.GetNetCorePublishRuntimeArg();
-                        }
-                        //执行 publish
-                        var isSuccess = CommandHelper.RunDotnetExe(ProjectPath, ProjectFolderPath, path.Replace("\\\\", "\\"),
-                    $"publish \"{ProjectPath}\" -c Release{runtime}", nlog_windowservice,()=>stop_windows_cancel_token);
+                            //执行 publish
+                            var isSuccess = CommandHelper.RunMsbuild(ProjectPath, path, nlog_windowservice, false, () => stop_windows_cancel_token);
 
-                        if (!isSuccess)
-                        {
-                            this.nlog_windowservice.Error("publish error,please check build log");
-                            BuildError(this.tabPage_windows_service);
-                            return;
+                            if (!isSuccess)
+                            {
+                                this.nlog_windowservice.Error("publish error,please check build log");
+                                BuildError(this.tabPage_windows_service);
+                                return;
+                            }
                         }
-                    }
-                    else
-                    {
-                        //执行 publish
-                        var isSuccess = CommandHelper.RunMsbuild(ProjectPath, path, nlog_windowservice,false,()=>stop_windows_cancel_token);
-
-                        if (!isSuccess)
-                        {
-                            this.nlog_windowservice.Error("publish error,please check build log");
-                            BuildError(this.tabPage_windows_service);
-                            return;
-                        }
-
 
                     }
 
@@ -4341,29 +4378,34 @@ namespace AntDeployWinform.Winform
             {
                 var file = new FileInfo(projectPath);
                 ProjectFolderPath = file.DirectoryName;
+               
+            }
 
+            if (string.IsNullOrEmpty(ProjectFolderPath))
+            {
+                return;
+            }
 
-                ProjectConfigPath = Path.Combine(ProjectFolderPath, "AntDeploy.json");
-                if (File.Exists(ProjectConfigPath))
+            ProjectConfigPath = Path.Combine(ProjectFolderPath, "AntDeploy.json");
+            if (File.Exists(ProjectConfigPath))
+            {
+                var config = File.ReadAllText(ProjectConfigPath, Encoding.UTF8);
+                if (!string.IsNullOrEmpty(config))
                 {
-                    var config = File.ReadAllText(ProjectConfigPath, Encoding.UTF8);
-                    if (!string.IsNullOrEmpty(config))
+                    DeployConfig = JsonConvert.DeserializeObject<DeployConfig>(config);
+                    if (DeployConfig.Env == null)
                     {
-                        DeployConfig = JsonConvert.DeserializeObject<DeployConfig>(config);
-                        if (DeployConfig.Env == null)
-                        {
-                            DeployConfig.Env = new List<Env>();
-                        }
-                        else
-                        {
-                            foreach (var env in DeployConfig.Env)
-                            {
-                                if (env.IgnoreList == null) env.IgnoreList = new List<string>();
-                                if (env.WindowsBackUpIgnoreList == null) env.WindowsBackUpIgnoreList = new List<string>();
-                            }
-                        }
-                        if (DeployConfig.IIsConfig == null) DeployConfig.IIsConfig = new IIsConfig();
+                        DeployConfig.Env = new List<Env>();
                     }
+                    else
+                    {
+                        foreach (var env in DeployConfig.Env)
+                        {
+                            if (env.IgnoreList == null) env.IgnoreList = new List<string>();
+                            if (env.WindowsBackUpIgnoreList == null) env.WindowsBackUpIgnoreList = new List<string>();
+                        }
+                    }
+                    if (DeployConfig.IIsConfig == null) DeployConfig.IIsConfig = new IIsConfig();
                 }
             }
         }
@@ -4396,6 +4438,13 @@ namespace AntDeployWinform.Winform
                 {
                     if (PluginConfig == null) PluginConfig = new PluginConfig();
                 }
+            }
+            else if (Directory.Exists(projectPath))
+            {
+                PluginConfig = new PluginConfig
+                {
+                    DeployFolderPath = projectPath
+                };
             }
             else
             {
@@ -4620,6 +4669,27 @@ namespace AntDeployWinform.Winform
                 return;
             }
 
+            //如果是特定文件夹发布 得选择一个dll
+            if (!string.IsNullOrEmpty(PluginConfig.DeployFolderPath))
+            {
+                var exePath = CodingHelper.GetDockerServiceExe(PluginConfig.DeployFolderPath);
+                if (string.IsNullOrEmpty(exePath))
+                {
+                    MessageBox.Show("please select dll path");
+                    return;
+                }
+                var dllName = new FileInfo(exePath).Name;
+                var devopsJsonPath = exePath.Replace(".dll", ".deps.json");
+                if (!File.Exists(devopsJsonPath))
+                {
+                    MessageBox.Show(dllName.Replace(".dll", ".deps.json") + " not found!");
+                    return;
+                }
+
+                _project.NetCoreSDKVersion = CodingHelper.GetSdkInDepsJson(devopsJsonPath);
+                _project.OutPutName = dllName;
+            }
+
             var ENTRYPOINT = _project.OutPutName;
             if (string.IsNullOrEmpty(ENTRYPOINT))
             {
@@ -4670,18 +4740,22 @@ namespace AntDeployWinform.Winform
 
                try
                {
-                   var publishPath = Path.Combine(ProjectFolderPath, "bin", "Release", "deploy_docker", envName);
-                   var path = publishPath + "\\";
-                   //执行 publish
-                   var isSuccess = CommandHelper.RunDotnetExe(ProjectPath, ProjectFolderPath, path.Replace("\\\\", "\\"),
-              $"publish \"{ProjectPath}\" -c Release{PluginConfig.GetNetCorePublishRuntimeArg()}", nlog_docker,()=>stop_docker_cancel_token);
-
-                   if (!isSuccess)
+                   var publishPath = !string.IsNullOrEmpty(PluginConfig.DeployFolderPath)? PluginConfig.DeployFolderPath : Path.Combine(ProjectFolderPath, "bin", "Release", "deploy_docker", envName);
+                   if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath))
                    {
-                       this.nlog_docker.Error("publish error,please check build log");
-                       BuildError(this.tabPage_docker);
-                       return;
+                       var path = publishPath + "\\";
+                       //执行 publish
+                       var isSuccess = CommandHelper.RunDotnetExe(ProjectPath, ProjectFolderPath, path.Replace("\\\\", "\\"),
+                           $"publish \"{ProjectPath}\" -c Release{PluginConfig.GetNetCorePublishRuntimeArg()}", nlog_docker, () => stop_docker_cancel_token);
+
+                       if (!isSuccess)
+                       {
+                           this.nlog_docker.Error("publish error,please check build log");
+                           BuildError(this.tabPage_docker);
+                           return;
+                       }
                    }
+                  
 
                    var serviceFile = Path.Combine(publishPath, ENTRYPOINT);
                    if (!File.Exists(serviceFile))
@@ -5391,6 +5465,13 @@ namespace AntDeployWinform.Winform
 
         private void PrintCommonLog(Logger log)
         {
+            if (!string.IsNullOrEmpty(PluginConfig.DeployFolderPath))
+            {
+                log.Info("Special Folder Publish : " + PluginConfig.DeployFolderPath);
+                log.Info("ignore [Build] ");
+            }
+
+
             var vsVersion = _project.VsVersion;
             if (!string.IsNullOrEmpty(vsVersion))
             {
@@ -5632,6 +5713,27 @@ namespace AntDeployWinform.Winform
         {
             btn_windows_service_retry.Visible = false;
             Condition.Set();
+        }
+
+        private void btn_choose_folder_Click(object sender, EventArgs e)
+        {
+            using (var fbd = new FolderBrowserDialog())
+            {
+                DialogResult result = fbd.ShowDialog();
+
+                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                {
+                    var folder = fbd.SelectedPath;
+                    this.txt_folder_deploy.Text = folder;
+                    PluginConfig.DeployFolderPath = folder;
+                }
+            }
+        }
+
+        private void btn_folder_clear_Click(object sender, EventArgs e)
+        {
+            this.txt_folder_deploy.Text = string.Empty;
+            PluginConfig.DeployFolderPath = string.Empty;
         }
     }
 }

@@ -148,14 +148,23 @@
   <data name="groupBox2.Text" xml:space="preserve">
     <value> (只有第一次创建服务可选填,若非首次不用填)</value>
   </data>
+  <data name="label16.Text" xml:space="preserve">
+    <value>如果选择了指定特定文件夹,会过滤编译步骤！</value>
+  </data>
+  <data name="btn_folder_clear.Text" xml:space="preserve">
+    <value>清除</value>
+  </data>
+  <data name="btn_choose_folder.Text" xml:space="preserve">
+    <value>选择</value>
+  </data>
   <data name="label42.Location" type="System.Drawing.Point, System.Drawing">
-    <value>440, 180</value>
+    <value>440, 256</value>
   </data>
   <data name="label41.Location" type="System.Drawing.Point, System.Drawing">
-    <value>416, 196</value>
+    <value>416, 272</value>
   </data>
   <data name="label38.Location" type="System.Drawing.Point, System.Drawing">
-    <value>333, 161</value>
+    <value>333, 237</value>
   </data>
   <data name="label38.Size" type="System.Drawing.Size, System.Drawing">
     <value>293, 12</value>
@@ -164,7 +173,7 @@
     <value>NetCore发布模式如果没有设置采用以下默认值:      </value>
   </data>
   <data name="combo_netcore_publish_mode.Location" type="System.Drawing.Point, System.Drawing">
-    <value>166, 158</value>
+    <value>168, 234</value>
   </data>
   <data name="label37.Size" type="System.Drawing.Size, System.Drawing">
     <value>107, 12</value>
@@ -174,5 +183,21 @@
   </data>
   <data name="label_without_vs.Location" type="System.Drawing.Point, System.Drawing">
     <value>362, 9</value>
+  </data>
+  <data name="btn_choose_msbuild.Location" type="System.Drawing.Point, System.Drawing">
+    <value>523, 167</value>
+  </data>
+  <data name="label36.Location" type="System.Drawing.Point, System.Drawing">
+    <value>49, 174</value>
+  </data>
+  <data name="txt_msbuild_path.Location" type="System.Drawing.Point, System.Drawing">
+    <value>168, 160</value>
+  </data>
+  <data name="label15.Text" xml:space="preserve">
+    <value>指定特定文件夹发布：</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
 </root>

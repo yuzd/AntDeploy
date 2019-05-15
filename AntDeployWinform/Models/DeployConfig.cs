@@ -5,6 +5,7 @@ namespace AntDeployWinform.Models
     public class GlobalConfig
     {
         public string MsBuildPath { get; set; }
+        //public string DeployFolderPath { get; set; }
         public bool IsChinease { get; set; }
         public List<string> ProjectPathList  { get; set; }
     }
@@ -14,6 +15,7 @@ namespace AntDeployWinform.Models
     /// </summary>
     public class PluginConfig
     {
+        public string DeployFolderPath { get; set; }
         public int LastTabIndex { get; set; }
         public bool IISEnableIncrement { get; set; }
         public bool IISEnableSelectDeploy { get; set; }

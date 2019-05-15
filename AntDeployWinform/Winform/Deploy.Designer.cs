@@ -153,6 +153,10 @@
             this.b_env_add_by_name = new System.Windows.Forms.Button();
             this.combo_env_list = new System.Windows.Forms.ComboBox();
             this.pag_advance_setting = new System.Windows.Forms.TabPage();
+            this.label16 = new System.Windows.Forms.Label();
+            this.btn_folder_clear = new System.Windows.Forms.Button();
+            this.btn_choose_folder = new System.Windows.Forms.Button();
+            this.txt_folder_deploy = new System.Windows.Forms.TextBox();
             this.label42 = new System.Windows.Forms.Label();
             this.label41 = new System.Windows.Forms.Label();
             this.label39 = new System.Windows.Forms.Label();
@@ -164,6 +168,7 @@
             this.btn_choose_msbuild = new System.Windows.Forms.Button();
             this.label36 = new System.Windows.Forms.Label();
             this.txt_msbuild_path = new System.Windows.Forms.TextBox();
+            this.label15 = new System.Windows.Forms.Label();
             this.tabcontrol.SuspendLayout();
             this.page_web_iis.SuspendLayout();
             this.tab_iis.SuspendLayout();
@@ -1224,6 +1229,10 @@
             // pag_advance_setting
             // 
             resources.ApplyResources(this.pag_advance_setting, "pag_advance_setting");
+            this.pag_advance_setting.Controls.Add(this.label16);
+            this.pag_advance_setting.Controls.Add(this.btn_folder_clear);
+            this.pag_advance_setting.Controls.Add(this.btn_choose_folder);
+            this.pag_advance_setting.Controls.Add(this.txt_folder_deploy);
             this.pag_advance_setting.Controls.Add(this.label42);
             this.pag_advance_setting.Controls.Add(this.label41);
             this.pag_advance_setting.Controls.Add(this.label39);
@@ -1235,8 +1244,36 @@
             this.pag_advance_setting.Controls.Add(this.btn_choose_msbuild);
             this.pag_advance_setting.Controls.Add(this.label36);
             this.pag_advance_setting.Controls.Add(this.txt_msbuild_path);
+            this.pag_advance_setting.Controls.Add(this.label15);
             this.pag_advance_setting.Name = "pag_advance_setting";
             this.pag_advance_setting.UseVisualStyleBackColor = true;
+            // 
+            // label16
+            // 
+            resources.ApplyResources(this.label16, "label16");
+            this.label16.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.label16.ForeColor = System.Drawing.Color.RoyalBlue;
+            this.label16.Name = "label16";
+            // 
+            // btn_folder_clear
+            // 
+            resources.ApplyResources(this.btn_folder_clear, "btn_folder_clear");
+            this.btn_folder_clear.ForeColor = System.Drawing.Color.Red;
+            this.btn_folder_clear.Name = "btn_folder_clear";
+            this.btn_folder_clear.UseVisualStyleBackColor = true;
+            this.btn_folder_clear.Click += new System.EventHandler(this.btn_folder_clear_Click);
+            // 
+            // btn_choose_folder
+            // 
+            resources.ApplyResources(this.btn_choose_folder, "btn_choose_folder");
+            this.btn_choose_folder.Name = "btn_choose_folder";
+            this.btn_choose_folder.UseVisualStyleBackColor = true;
+            this.btn_choose_folder.Click += new System.EventHandler(this.btn_choose_folder_Click);
+            // 
+            // txt_folder_deploy
+            // 
+            resources.ApplyResources(this.txt_folder_deploy, "txt_folder_deploy");
+            this.txt_folder_deploy.Name = "txt_folder_deploy";
             // 
             // label42
             // 
@@ -1312,6 +1349,11 @@
             // 
             resources.ApplyResources(this.txt_msbuild_path, "txt_msbuild_path");
             this.txt_msbuild_path.Name = "txt_msbuild_path";
+            // 
+            // label15
+            // 
+            resources.ApplyResources(this.label15, "label15");
+            this.label15.Name = "label15";
             // 
             // Deploy
             // 
@@ -1503,5 +1545,10 @@
         private AltoControls.AltoButton btn_windows_serivce_stop;
         private AltoControls.AltoButton btn_docker_retry;
         private AltoControls.AltoButton btn_docker_stop;
+        private System.Windows.Forms.Button btn_choose_folder;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.TextBox txt_folder_deploy;
+        private System.Windows.Forms.Button btn_folder_clear;
+        private System.Windows.Forms.Label label16;
     }
 }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Windows.Forms;
 using AntDeployWinform.Models;
 using AntDeployWinform.Winform;
 using Newtonsoft.Json;
@@ -11,6 +13,91 @@ namespace AntDeployWinform.Util
 {
     public static class CodingHelper
     {
+        /// <summary>
+        /// 根据deps json文件解析runtime 里面配置的netcore 版本
+        /// </summary>
+        /// <param name="depsJsonFile"></param>
+        /// <returns></returns>
+        public static string GetSdkInDepsJson(string depsJsonFile)
+        {
+            var content = File.ReadAllText(depsJsonFile);
+            if (!content.Contains("runtimeTarget")) return string.Empty;
+            var temp1 = content.Split(new string[] {"runtimeTarget"}, StringSplitOptions.None);
+            var temp2 = temp1[1].Split(new string[] {"Version=v"}, StringSplitOptions.None)[1];
+            var ver = "";
+
+            foreach (var c in temp2)
+            {
+                if (c == '.')
+                {
+                    ver += c;
+                    continue;
+                }
+
+                if (char.IsDigit(c))
+                {
+                    ver += c;continue;
+                }
+                break;
+            }
+
+            return ver;
+        }
+
+        /// <summary>
+        /// 选择一个dll文件
+        /// </summary>
+        /// <param name="folderName"></param>
+        /// <returns></returns>
+        public static string GetDockerServiceExe(string folderName)
+        {
+            OpenFileDialog fdlg = new OpenFileDialog();
+            fdlg.Title = "Choose DLL";
+            fdlg.Filter = "(.dll)|*.dll";
+            fdlg.FilterIndex = 1;
+            fdlg.RestoreDirectory = true;
+            fdlg.InitialDirectory = folderName;
+            if (fdlg.ShowDialog() == DialogResult.OK)
+            {
+                if (!fdlg.FileName.ToLower().EndsWith(".dll"))
+                {
+                    return string.Empty;
+                }
+
+                return fdlg.FileName;
+
+            }
+
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// 选择一个exe文件
+        /// </summary>
+        /// <param name="folderName"></param>
+        /// <returns></returns>
+        public static string GetWindowsServiceExe(string folderName)
+        {
+            OpenFileDialog fdlg = new OpenFileDialog();
+            fdlg.Title = "Choose Exe";
+            fdlg.Filter = "(.exe)|*.exe";
+            fdlg.FilterIndex = 1;
+            fdlg.RestoreDirectory = true;
+            fdlg.InitialDirectory = folderName;
+            if (fdlg.ShowDialog() == DialogResult.OK)
+            {
+                if (!fdlg.FileName.ToLower().EndsWith(".exe") )
+                {
+                    return string.Empty;
+                }
+
+                return fdlg.FileName;
+
+            }
+
+            return string.Empty;
+        }
+
         /// <summary>
         /// MD5函数
         /// </summary>

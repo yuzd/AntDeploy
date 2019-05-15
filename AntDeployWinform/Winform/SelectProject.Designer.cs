@@ -32,6 +32,9 @@
             this.btn_select_project = new System.Windows.Forms.Button();
             this.listBox_project = new System.Windows.Forms.ListBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.btn_select_folder = new System.Windows.Forms.Button();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // btn_select_project
@@ -54,18 +57,33 @@
             this.label1.ForeColor = System.Drawing.Color.Blue;
             this.label1.Name = "label1";
             // 
+            // btn_select_folder
+            // 
+            resources.ApplyResources(this.btn_select_folder, "btn_select_folder");
+            this.btn_select_folder.Name = "btn_select_folder";
+            this.btn_select_folder.UseVisualStyleBackColor = true;
+            this.btn_select_folder.Click += new System.EventHandler(this.btn_select_folder_Click);
+            // 
+            // panel1
+            // 
+            resources.ApplyResources(this.panel1, "panel1");
+            this.panel1.Controls.Add(this.btn_select_project);
+            this.panel1.Controls.Add(this.btn_select_folder);
+            this.panel1.Name = "panel1";
+            // 
             // SelectProject
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.listBox_project);
-            this.Controls.Add(this.btn_select_project);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "SelectProject";
             this.ShowInTaskbar = false;
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -75,5 +93,7 @@
         private System.Windows.Forms.Button btn_select_project;
         private System.Windows.Forms.ListBox listBox_project;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button btn_select_folder;
+        private System.Windows.Forms.Panel panel1;
     }
 }

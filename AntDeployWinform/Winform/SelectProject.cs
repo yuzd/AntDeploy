@@ -28,6 +28,11 @@ namespace AntDeployWinform.Winform
                         this.listBox_project.Items.Add(fileInfo.Name + "<==>" + item);
                     }
 
+                    if (Directory.Exists(item))
+                    {
+                        this.listBox_project.Items.Add("[Folder Deploy]<==>" + item);
+                    }
+
                 }
             }
 
@@ -36,10 +41,24 @@ namespace AntDeployWinform.Winform
 
         public string SelectProjectPath { get; set; }
 
+        private void btn_select_folder_Click(object sender, EventArgs e)
+        {
+            using (var fbd = new FolderBrowserDialog())
+            {
+                DialogResult result = fbd.ShowDialog();
+
+                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                {
+                    var folder = fbd.SelectedPath;
+                    this.SelectProjectPath = folder;
+                    this.DialogResult = DialogResult.OK;
+                }
+            }
+        }
         private void btn_select_project_Click(object sender, EventArgs e)
         {
             OpenFileDialog fdlg = new OpenFileDialog();
-            fdlg.Title = "Choose MSBuild.exe";
+            fdlg.Title = "Choose Project";
             fdlg.Filter = "(.csproj)|*.csproj|(.vsproj)|*.vsproj";
             fdlg.FilterIndex = 1;
             fdlg.RestoreDirectory = true;
@@ -76,6 +95,13 @@ namespace AntDeployWinform.Winform
                 this.SelectProjectPath = path;
                 this.DialogResult = DialogResult.OK;
             }
+
+            if (Directory.Exists(path))
+            {
+                this.SelectProjectPath = path;
+                this.DialogResult = DialogResult.OK;
+            }
         }
+
     }
 }
