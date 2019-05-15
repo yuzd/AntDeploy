@@ -224,6 +224,7 @@ namespace AntDeployWinform.Util
         }
 
         private string _agentVersion;
+        private bool _needUpdate;
         private void AgentCheckVersion(string receiveMsg)
         {
             var agentVersionArr = receiveMsg.Split(new string[] { "=>" }, StringSplitOptions.RemoveEmptyEntries);
@@ -232,6 +233,20 @@ namespace AntDeployWinform.Util
                 var agentVersion = agentVersionArr[1];
                 if (!agentVersion.Equals(Vsix.AGENTVERSION))
                 {
+                    var versionTemp = Vsix.AGENTVERSION.Replace(".", "");
+                    if(int.TryParse(versionTemp,out int versionTempInt))
+                    {
+                        var temp = agentVersion.Replace(".", "");
+                        if (int.TryParse(temp, out int _tempInt))
+                        {
+                            //如果服务端的agent 大于 本地的版本号 说明 客户端是旧的
+                            if (_tempInt > versionTempInt)
+                            {
+                                _needUpdate = true;
+                                return;
+                            }
+                        }
+                    }
                     _agentVersion = agentVersion;
                 }
             }
@@ -239,6 +254,16 @@ namespace AntDeployWinform.Util
 
         private void LogAgentCheckVersion()
         {
+            if (_needUpdate)
+            {
+                this.receiveAction.Warn($"【Server】You need update AntDeploy!");
+                LogEventInfo theEvent2 = new LogEventInfo(LogLevel.Warn, "", "【Server】Download AntDeploy Url:");
+                theEvent2.LoggerName = receiveAction.Name;
+                theEvent2.Properties["ShowLink"] = "https://marketplace.visualstudio.com/items?itemName=nainaigu.AntDeploy";
+                this.receiveAction.Log(theEvent2);
+                return;
+            }
+
             if (string.IsNullOrEmpty(_agentVersion))
             {
                 return;
