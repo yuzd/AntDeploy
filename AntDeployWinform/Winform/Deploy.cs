@@ -4697,7 +4697,11 @@ namespace AntDeployWinform.Winform
                 ENTRYPOINT = this.ProjectName + ".dll";
             }
 #endif
-            var SDKVersion = !string.IsNullOrEmpty(_project.NetCoreSDKVersion) ? _project.NetCoreSDKVersion : ProjectHelper.GetProjectSkdInNetCoreProject(ProjectPath);
+            if (string.IsNullOrEmpty(_project.NetCoreSDKVersion))
+            {
+                _project.NetCoreSDKVersion = ProjectHelper.GetProjectSkdInNetCoreProject(ProjectPath);
+            }
+            var SDKVersion = _project.NetCoreSDKVersion;
             if (string.IsNullOrEmpty(SDKVersion))
             {
                 MessageBox.Show("get current project skd version error");
@@ -5070,7 +5074,11 @@ namespace AntDeployWinform.Winform
                 ENTRYPOINT = this.ProjectName + ".dll";//MessageBox.Show("get current project property:outputfilename error");
             }
 #endif
-            var SDKVersion = !string.IsNullOrEmpty(_project.NetCoreSDKVersion) ? _project.NetCoreSDKVersion : ProjectHelper.GetProjectSkdInNetCoreProject(ProjectPath);
+            if (string.IsNullOrEmpty(_project.NetCoreSDKVersion))
+            {
+                _project.NetCoreSDKVersion = ProjectHelper.GetProjectSkdInNetCoreProject(ProjectPath);
+            }
+            var SDKVersion = _project.NetCoreSDKVersion;
             if (string.IsNullOrEmpty(SDKVersion))
             {
                 MessageBox.Show("get current project skd version error");
@@ -5101,7 +5109,7 @@ namespace AntDeployWinform.Winform
             }
 
             this.rich_docker_log.Text = "";
-            this.nlog_docker.Info($"The Porject ENTRYPOINT name:{ENTRYPOINT}");
+            this.nlog_docker.Info($"The Porject ENTRYPOINT name:{ENTRYPOINT},DotNetSDK.Version:{_project.NetCoreSDKVersion}");
             //this.tabControl_docker.SelectedIndex = 1;
             PrintCommonLog(this.nlog_docker);
             new Task(() =>
