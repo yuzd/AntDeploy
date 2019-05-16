@@ -333,8 +333,12 @@ namespace AntDeployAgentWindows.Util
                         }
 
                         var virtualRoot = applicationRoot.VirtualDirectories.Single(v => v.Path == "/");
-
-                        return new Tuple<string, string, string>(virtualRoot.PhysicalPath, target.Name, applicationRoot.ApplicationPoolName);
+                        var path = virtualRoot.PhysicalPath;
+                        if (path.StartsWith("%"))
+                        {
+                            path = Environment.ExpandEnvironmentVariables(path);
+                        }
+                        return new Tuple<string, string, string>(path, target.Name, applicationRoot.ApplicationPoolName);
                     }
                 }
             }

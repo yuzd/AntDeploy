@@ -173,7 +173,7 @@ namespace AntDeployAgentWindows.MyApp
                 }
             }
 
-            var result = list.OrderByDescending(r => r.Item2).Select(r => r.Item1).Skip(1).Take(10).ToList();
+            var result = list.OrderByDescending(r => r.Item2).Select(r => r.Item1).Take(11).ToList();
             WriteSuccess(result);
         }
 
@@ -230,7 +230,7 @@ namespace AntDeployAgentWindows.MyApp
             }
 
             //排除掉当前版本 然后拿最近的10条发布记录
-            var result = list.OrderByDescending(r => r.Item2).Select(r => r.Item1).Skip(1).Take(10).ToList();
+            var result = list.OrderByDescending(r => r.Item2).Select(r => r.Item1).Take(11).ToList();
             WriteSuccess(result);
         }
 

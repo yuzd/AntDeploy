@@ -12,7 +12,7 @@ namespace AntDeployWinform.Winform
     public partial class RollBack : Form
     {
         private readonly bool isRollBack = false;
-
+        private string _lang = string.Empty;
         public RollBack()
         {
             InitializeComponent();
@@ -22,6 +22,8 @@ namespace AntDeployWinform.Winform
             {
                 if (stream != null) this.Icon = new Icon(stream);
             }
+
+            _lang = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
         }
         public RollBack(List<Tuple<string,string>> list, bool isNotRollback = false):this()
         {
@@ -147,6 +149,17 @@ namespace AntDeployWinform.Winform
         public void SetTitle(string name)
         {
             this.label_server_name.Text = name;
+        }
+
+        public void ShowAsHistory(string name)
+        {
+            this.Text = (!string.IsNullOrEmpty(_lang) && _lang.Equals("zh-CN") ?"[发布历史]": "[History]") +name;
+            this.label_server_name.Visible = false;
+            this.b_rollback_Rollback.Visible = false;
+            listView_rollback_version.Dock = DockStyle.Fill;
+            //this.Text = "Deploy History：";
+            this.ShowDialog();
+           
         }
         public void SetButtonName(string name)
         {

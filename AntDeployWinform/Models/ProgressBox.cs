@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using AltoControls;
+using AntDeployWinform.Util;
 
 namespace AntDeployWinform.Models
 {
@@ -20,10 +23,11 @@ namespace AntDeployWinform.Models
         private System.Windows.Forms.Button b_upload_end;
         private System.Windows.Forms.Label label29;
         private System.Windows.Forms.TextBox FireUrlText;
+        private AltoControls.AltoButton HostoryButton;
 
         public ServerType ServerType { get; set; }
         public BaseServer Server { get; set; }
-        public ProgressBox(System.Drawing.Point location, BaseServer server, ServerType serverType)
+        public ProgressBox(System.Drawing.Point location, BaseServer server, ServerType serverType,Action<ServerType,BaseServer> LoadHistoryAction)
         {
 
             this.ServerType = serverType;
@@ -44,6 +48,7 @@ namespace AntDeployWinform.Models
             this.b_package_end = new System.Windows.Forms.Button();
             this.b_upload_end = new System.Windows.Forms.Button();
             this.FireUrlText = new System.Windows.Forms.TextBox();
+            HostoryButton = new AltoButton();
             // 
             // label29
             // 
@@ -228,12 +233,29 @@ namespace AntDeployWinform.Models
             this.b_upload_end.TabIndex = 19;
             this.b_upload_end.UseVisualStyleBackColor = true;
 
+            this.HostoryButton.Location = new System.Drawing.Point(this.FireUrlText.Location.X+ this.FireUrlText.Width+20, Progressheight - 20);
+            this.HostoryButton.Size = new System.Drawing.Size(60, 20);
+            this.HostoryButton.Text = "Histroy";
+            this.HostoryButton.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
+            this.HostoryButton.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
+            this.HostoryButton.BackColor = System.Drawing.Color.Transparent;
+            this.HostoryButton.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.HostoryButton.ForeColor = System.Drawing.Color.Black;
+            this.HostoryButton.Inactive1 = System.Drawing.Color.LightGray;
+            this.HostoryButton.Inactive2 = System.Drawing.Color.LightGray;
+            this.HostoryButton.Name = "b_windows_service_rollback";
+            this.HostoryButton.Radius = 10;
+            this.HostoryButton.Stroke = false;
+            this.HostoryButton.StrokeColor = System.Drawing.Color.Gray;
+            this.HostoryButton.Transparency = false;
+            this.HostoryButton.Click += (sender, args) => { LoadHistoryAction(this.ServerType,this.Server); };
 
             // 
             // groupBox_iis_progress
             // 
             this.Controls.Add(this.label29);
             this.Controls.Add(this.FireUrlText);
+            this.Controls.Add(this.HostoryButton);
             this.Controls.Add(this.progress_iis_build);
             this.Controls.Add(this.b_build_end);
 
@@ -250,6 +272,8 @@ namespace AntDeployWinform.Models
             this.b_upload_end.SendToBack();
 
         }
+
+      
 
         protected override void Dispose(bool disposing)
         {
@@ -275,6 +299,7 @@ namespace AntDeployWinform.Models
                     progress_iis_package.Dispose();
                     progress_iis_upload.Dispose();
                     progress_iis_deploy.Dispose();
+                    HostoryButton.Dispose();
                     base.Dispose(disposing);
                 }
                 catch (Exception)
@@ -397,9 +422,14 @@ namespace AntDeployWinform.Models
             progress_iis_upload.Value = 20;
             this.progress_iis_upload.SuperscriptText = "0%";
             this.progress_iis_upload.ProgressColor  = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(99)))), ((int)(((byte)(180)))));
-            this.progress_iis_deploy.SuperscriptColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(99)))), ((int)(((byte)(180)))));
+
             this.progress_iis_deploy.SuperscriptMargin = new System.Windows.Forms.Padding(-28, 0, 0, 0);
             this.progress_iis_deploy.SuperscriptText = "Wait";
+
+
+            progress_iis_deploy.Value = 0;
+            this.b_upload_end.BackColor = System.Drawing.Color.LightGray;
+            this.progress_iis_deploy.ProgressColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(99)))), ((int)(((byte)(180)))));
         }
 
         public void PackageEnd()
@@ -416,6 +446,7 @@ namespace AntDeployWinform.Models
         public void Enable(bool flag)
         {
             this.FireUrlText.Enabled = flag;
+            this.HostoryButton.Enabled = flag;
         }
 
         public bool CheckFireUrl()
