@@ -143,7 +143,7 @@ namespace AntDeployAgentWindows.MyApp
             }
 
             var all = Directory.GetDirectories(projectPath).ToList();
-            if (all.Count < 2)
+            if (all.Count < 1)
             {
                 WriteError("there is no rollback version yet in publisher folder:" + projectPath);
                 return;
@@ -196,7 +196,7 @@ namespace AntDeployAgentWindows.MyApp
             }
 
             var all = Directory.GetDirectories(projectPath).ToList();
-            if (all.Count < 2)
+            if (all.Count < 1)
             {
                 //只有当前版本
                 WriteError("there is no rollback version yet in publisher folder:" + projectPath);

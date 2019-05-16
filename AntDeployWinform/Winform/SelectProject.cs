@@ -50,7 +50,7 @@ namespace AntDeployWinform.Winform
         {
             using (var fsd = new FolderSelectDialog())
             {
-                fsd.Title = !string.IsNullOrEmpty(_lang) && _lang.Equals("zh-CN")? "选择指定的文件夹发布" : "Select Folder To Deploy";
+                fsd.Title = !string.IsNullOrEmpty(_lang) && _lang.StartsWith("zh-")? "选择指定的文件夹发布" : "Select Folder To Deploy";
                 if (fsd.ShowDialog(this.Handle))
                 {
                     var folder = fsd.FileName;
@@ -77,7 +77,7 @@ namespace AntDeployWinform.Winform
         private void btn_select_project_Click(object sender, EventArgs e)
         {
             OpenFileDialog fdlg = new OpenFileDialog();
-            fdlg.Title = !string.IsNullOrEmpty(_lang) && _lang.Equals("zh-CN") ? "选择指定的项目发布" : "Choose Project";
+            fdlg.Title = !string.IsNullOrEmpty(_lang) && _lang.StartsWith("zh-") ? "选择指定的项目发布" : "Choose Project";
             fdlg.Filter = "(.csproj)|*.csproj|(.vsproj)|*.vsproj";
             fdlg.FilterIndex = 1;
             fdlg.RestoreDirectory = true;

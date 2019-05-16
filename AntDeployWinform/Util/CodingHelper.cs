@@ -58,8 +58,9 @@ namespace AntDeployWinform.Util
         /// <returns></returns>
         public static string GetDockerServiceExe(string folderName)
         {
+            var lang = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
             OpenFileDialog fdlg = new OpenFileDialog();
-            fdlg.Title = "Choose DLL";
+            fdlg.Title = !string.IsNullOrEmpty(lang) && lang.StartsWith("zh-") ?"选择程序运行的入口DLL": "Choose ENTRYPOINT DLL";
             fdlg.Filter = "(.dll)|*.dll";
             fdlg.FilterIndex = 1;
             fdlg.RestoreDirectory = true;
@@ -85,8 +86,9 @@ namespace AntDeployWinform.Util
         /// <returns></returns>
         public static string GetWindowsServiceExe(string folderName)
         {
+            var lang = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
             OpenFileDialog fdlg = new OpenFileDialog();
-            fdlg.Title = "Choose Exe";
+            fdlg.Title = !string.IsNullOrEmpty(lang) && lang.StartsWith("zh-")?"选择服务的运行程序Exe": "Choose Service EXE";
             fdlg.Filter = "(.exe)|*.exe";
             fdlg.FilterIndex = 1;
             fdlg.RestoreDirectory = true;
@@ -103,6 +105,14 @@ namespace AntDeployWinform.Util
             }
 
             return string.Empty;
+        }
+
+
+        public static string FindDepsJsonFile(string folderName)
+        {
+            var fileList = Directory.GetFiles(folderName, "*.deps.json").Where(r=>!r.ToLower().Contains(".runtimeconfig.")).ToList();
+            if (fileList.Count != 1) return string.Empty;
+            return fileList[0];
         }
 
         /// <summary>

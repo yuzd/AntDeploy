@@ -3175,13 +3175,28 @@ namespace AntDeployWinform.Winform
             var execFilePath = this.ProjectName + ".exe";
 #else
             //如果是特定文件夹发布 得选择一个exe
-            if (!string.IsNullOrEmpty(PluginConfig.DeployFolderPath))
+            if (!string.IsNullOrEmpty(PluginConfig.DeployFolderPath) && string.IsNullOrEmpty(_project.OutPutName))
             {
-                var exePath = CodingHelper.GetWindowsServiceExe(PluginConfig.DeployFolderPath);
+                var exePath = string.Empty;
+                //找当前根目录下 有没有 .deps.json 文件
+                var depsJsonFile = CodingHelper.FindDepsJsonFile(PluginConfig.DeployFolderPath);
+                if (!string.IsNullOrEmpty(depsJsonFile))
+                {
+                    var exeTempName = depsJsonFile.Replace(".deps.json", ".exe");
+                    if (File.Exists(exeTempName))
+                    {
+                        exePath = exeTempName;
+                    }
+                }
+
                 if (string.IsNullOrEmpty(exePath))
                 {
-                    MessageBox.Show("please select exe path");
-                    return;
+                    exePath = CodingHelper.GetWindowsServiceExe(PluginConfig.DeployFolderPath);
+                    if (string.IsNullOrEmpty(exePath))
+                    {
+                        MessageBox.Show("please select exe path");
+                        return;
+                    }
                 }
 
                 _project.OutPutName = new FileInfo(exePath).Name;
@@ -3340,12 +3355,11 @@ namespace AntDeployWinform.Winform
                         {
                             if (!serviceNameByFile.Equals(serviceName))
                             {
-                                this.nlog_windowservice.Warn($"windowsService name is {serviceNameByFile} in file: {serviceFile} ,but input name is {serviceName} ,will install service by [{serviceNameByFile}] ! ");
+                                this.nlog_windowservice.Warn($"windowsService name is {serviceNameByFile} in file: {serviceFile} ,but input name is {serviceName} !");
+                                BuildError(this.tabPage_windows_service);
+                                return;
                             }
-
-                            //return;
                             isProjectInstallService = true;
-                            serviceName = serviceNameByFile;
                         }
 
                     }
@@ -3958,7 +3972,7 @@ namespace AntDeployWinform.Winform
 
         private void b_windows_service_rollback_Click(object sender, EventArgs e)
         {
-            if (_project.IsWebProejct)
+            if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath) && _project.IsWebProejct)
             {
                 MessageBox.Show("current project is not windows service project!");
                 return;
@@ -3966,7 +3980,7 @@ namespace AntDeployWinform.Winform
 
 
             //检查工程文件里面是否含有 WebProjectProperties字样
-            if (ProjectHelper.IsWebProject(ProjectPath))
+            if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath) && ProjectHelper.IsWebProject(ProjectPath))
             {
                 MessageBox.Show("current project is not windows service project!");
                 return;
@@ -3998,27 +4012,6 @@ namespace AntDeployWinform.Winform
                 return;
             }
 
-#if DEBUG
-            var execFilePath = this.ProjectName + ".exe";
-#else
-            var execFilePath = _project.OutPutName;
-            if (string.IsNullOrEmpty(execFilePath))
-            {
-                execFilePath = this.ProjectName + ".exe";// MessageBox.Show("get current project property:outputfilename error");
-            }
-
-            if (!DeployConfig.WindowsServiveConfig.SdkType.Equals("netcore") && !execFilePath.Trim().ToLower().EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
-            {
-                MessageBox.Show("current project out file name is not exe!");
-                return;
-            }
-
-
-#endif
-
-
-
-
             var serverList = DeployConfig.Env.Where(r => r.Name.Equals(envName)).Select(r => r.ServerList)
                 .FirstOrDefault();
 
@@ -4042,7 +4035,7 @@ namespace AntDeployWinform.Winform
             combo_windowservice_env_SelectedIndexChanged(null, null);
 
             this.rich_windowservice_log.Text = "";
-            this.nlog_windowservice.Info($"windows Service exe name:{execFilePath.Replace(".dll", ".exe")}");
+            this.nlog_windowservice.Info($"windows Service name:{DeployConfig.WindowsServiveConfig.ServiceName}");
             //this.tabControl_window_service.SelectedIndex = 1;
             PrintCommonLog(this.nlog_windowservice);
 
@@ -4676,25 +4669,7 @@ namespace AntDeployWinform.Winform
             }
 
             //如果是特定文件夹发布 得选择一个dll
-            if (!string.IsNullOrEmpty(PluginConfig.DeployFolderPath))
-            {
-                var exePath = CodingHelper.GetDockerServiceExe(PluginConfig.DeployFolderPath);
-                if (string.IsNullOrEmpty(exePath))
-                {
-                    MessageBox.Show("please select dll path");
-                    return;
-                }
-                var dllName = new FileInfo(exePath).Name;
-                var devopsJsonPath = exePath.Replace(".dll", ".deps.json");
-                if (!File.Exists(devopsJsonPath))
-                {
-                    MessageBox.Show(dllName.Replace(".dll", ".deps.json") + " not found!");
-                    return;
-                }
-
-                _project.NetCoreSDKVersion = CodingHelper.GetSdkInDepsJson(devopsJsonPath);
-                _project.OutPutName = dllName;
-            }
+            CheckIsDockerSpecialFolderDeploy();
 
             var ENTRYPOINT = _project.OutPutName;
             if (string.IsNullOrEmpty(ENTRYPOINT))
@@ -5074,12 +5049,17 @@ namespace AntDeployWinform.Winform
                 return;
             }
 
+            //如果是特定文件夹发布 得选择一个dll
+            CheckIsDockerSpecialFolderDeploy();
+
             var ENTRYPOINT = _project.OutPutName;
             if (string.IsNullOrEmpty(ENTRYPOINT))
             {
                 ENTRYPOINT = this.ProjectName + ".dll";//MessageBox.Show("get current project property:outputfilename error");
             }
 #endif
+
+
             if (string.IsNullOrEmpty(_project.NetCoreSDKVersion))
             {
                 _project.NetCoreSDKVersion = ProjectHelper.GetProjectSkdInNetCoreProject(ProjectPath);
@@ -5226,7 +5206,7 @@ namespace AntDeployWinform.Winform
                         this.nlog_docker.Info($"Host:{getHostDisplayName(server)} get rollBack version list count:{versionList.Count}");
                         this.BeginInvokeLambda(() =>
                        {
-                           RollBack rolleback = new RollBack(versionList);
+                           RollBack rolleback = new RollBack(versionList.Skip(1).ToList());
                            rolleback.SetTitle($"Current Server:{getHostDisplayName(server)}");
                            var r = rolleback.ShowDialog();
                            if (r == DialogResult.Cancel)
@@ -5773,6 +5753,48 @@ namespace AntDeployWinform.Winform
             about.ShowDialog();
         }
 
+        private void CheckIsDockerSpecialFolderDeploy()
+        {
+            if (!string.IsNullOrEmpty(PluginConfig.DeployFolderPath) && string.IsNullOrEmpty(_project.OutPutName))
+            {
+                var exePath = string.Empty;
+                //找当前根目录下 有没有 .deps.json 文件
+                var depsJsonFile = CodingHelper.FindDepsJsonFile(PluginConfig.DeployFolderPath);
+                if (!string.IsNullOrEmpty(depsJsonFile))
+                {
+                    var exeTempName = depsJsonFile.Replace(".deps.json", ".dll");
+                    if (File.Exists(exeTempName))
+                    {
+                        exePath = exeTempName;
+                        _project.NetCoreSDKVersion = CodingHelper.GetSdkInDepsJson(depsJsonFile);
+                    }
+                }
+
+                if (string.IsNullOrEmpty(exePath))
+                {
+                    exePath = CodingHelper.GetDockerServiceExe(PluginConfig.DeployFolderPath);
+                    if (string.IsNullOrEmpty(exePath))
+                    {
+                        MessageBox.Show("please select dll path");
+                        return;
+                    }
+                }
+
+                var dllName = new FileInfo(exePath).Name;
+                if (string.IsNullOrEmpty(_project.NetCoreSDKVersion))
+                {
+                    var devopsJsonPath = exePath.Replace(".dll", ".deps.json");
+                    if (!File.Exists(devopsJsonPath))
+                    {
+                        MessageBox.Show(dllName.Replace(".dll", ".deps.json") + " not found!");
+                        return;
+                    }
+                    _project.NetCoreSDKVersion = CodingHelper.GetSdkInDepsJson(devopsJsonPath);
+                }
+
+                _project.OutPutName = dllName;
+            }
+        }
 
         /// <summary>
         /// 查看发布历史
@@ -5818,6 +5840,15 @@ namespace AntDeployWinform.Winform
 
                 #endregion
 
+                //如果是特定文件夹发布 得选择一个dll
+
+                CheckIsDockerSpecialFolderDeploy();
+                var ENTRYPOINT = _project.OutPutName;
+                if (string.IsNullOrEmpty(ENTRYPOINT))
+                {
+                    ENTRYPOINT = this.ProjectName + ".dll";//MessageBox.Show("get current project property:outputfilename error");
+                }
+
                 new Task(async () =>
                 {
                     try
@@ -5827,6 +5858,7 @@ namespace AntDeployWinform.Winform
                         using (SSHClient sshClient = new SSHClient(server.Host, server.UserName, pwd,
                             (str, logLevel) => { return false; }, (uploadValue) => { })
                         {
+                            NetCoreENTRYPOINT = ENTRYPOINT,
                             NetCorePort = DeployConfig.DockerConfig.Prot,
                             NetCoreEnvironment = DeployConfig.DockerConfig.AspNetCoreEnv,
                         })

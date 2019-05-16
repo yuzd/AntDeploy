@@ -153,7 +153,7 @@ namespace AntDeployWinform.Winform
 
         public void ShowAsHistory(string name)
         {
-            this.Text = (!string.IsNullOrEmpty(_lang) && _lang.Equals("zh-CN") ?"[发布历史]": "[History]") +name;
+            this.Text = (!string.IsNullOrEmpty(_lang) && _lang.StartsWith("zh-") ?"[发布历史]": "[History]") +name;
             this.label_server_name.Visible = false;
             this.b_rollback_Rollback.Visible = false;
             listView_rollback_version.Dock = DockStyle.Fill;
