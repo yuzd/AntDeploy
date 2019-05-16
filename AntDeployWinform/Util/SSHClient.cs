@@ -10,6 +10,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using AntDeployWinform.Models;
+using Newtonsoft.Json;
 
 namespace AntDeployWinform.Util
 {
@@ -779,10 +781,16 @@ namespace AntDeployWinform.Util
         {
             try
             {
-                if (string.IsNullOrEmpty(Remark)) return true;
                 using (var writer = _sftpClient.CreateText(path))
                 {
-                    writer.WriteLine($"{Remark}");
+                    var obj = new LinuxArgModel
+                    {
+                        Remark = Remark??string.Empty,
+                        Mac = CodingHelper.GetMacAddress(),
+                        Ip = CodingHelper.GetLocalIPAddress(),
+                        Pc = Environment.MachineName
+                    };
+                    writer.WriteLine(JsonConvert.SerializeObject(obj));
                     writer.Flush();
                 }
                 return true;

@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using AntDeployWinform.Models;
 
 namespace AntDeployWinform.Winform
 {
@@ -37,7 +38,26 @@ namespace AntDeployWinform.Winform
                     if (string.IsNullOrEmpty(version)) continue;
                     ListViewItem lv = new ListViewItem();
                     lv.Text = version;
-                    lv.SubItems.Add(remark);
+                    if (string.IsNullOrEmpty(remark))
+                    {
+                        lv.SubItems.Add(remark);
+                    }
+                    else
+                    {
+                        var linuxRemark = remark.JsonToObject<LinuxArgModel>();
+                        if (linuxRemark == null)
+                        {
+                            lv.SubItems.Add(remark);
+                        }
+                        else
+                        {
+                            lv.SubItems.Add(linuxRemark.Remark);
+                            lv.SubItems.Add(linuxRemark.Pc);
+                            lv.SubItems.Add(linuxRemark.Mac);
+                            lv.SubItems.Add(linuxRemark.Ip);
+                        }
+                    }
+                    
                     this.listView_rollback_version.Items.Add(lv);
                 }
                 else
@@ -61,8 +81,12 @@ namespace AntDeployWinform.Winform
             {
                 if (!isNotRollback)
                 {
+                    
                     var version = string.Empty;
                     var remark = string.Empty;
+                    var pc = string.Empty;
+                    var mac = string.Empty;
+                    var ip = string.Empty;
                     var content = li.JsonToObject<RollBackVersion>();
                     if (content == null)
                     {
@@ -81,6 +105,24 @@ namespace AntDeployWinform.Winform
                             {
                                 remark = remarkItem.TextValue;
                             }
+
+                            var pcItem = content.FormItemList.FirstOrDefault(r => r.FieldName.Equals("pc"));
+                            if (pcItem != null && !string.IsNullOrEmpty(pcItem.TextValue))
+                            {
+                                pc = pcItem.TextValue;
+                            }
+
+                            var macItem = content.FormItemList.FirstOrDefault(r => r.FieldName.Equals("mac"));
+                            if (macItem != null && !string.IsNullOrEmpty(macItem.TextValue))
+                            {
+                                mac = macItem.TextValue;
+                            }
+
+                            var ipItem = content.FormItemList.FirstOrDefault(r => r.FieldName.Equals("localIp"));
+                            if (ipItem != null && !string.IsNullOrEmpty(ipItem.TextValue))
+                            {
+                                ip = ipItem.TextValue;
+                            }
                         }
                     }
 
@@ -88,6 +130,9 @@ namespace AntDeployWinform.Winform
                     ListViewItem lv = new ListViewItem();
                     lv.Text = version;
                     lv.SubItems.Add(remark);
+                    lv.SubItems.Add(pc);
+                    lv.SubItems.Add(mac);
+                    lv.SubItems.Add(ip);
                     this.listView_rollback_version.Items.Add(lv);
                 }
                 else

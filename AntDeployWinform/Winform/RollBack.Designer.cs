@@ -34,6 +34,9 @@
             this.listView_rollback_version = new System.Windows.Forms.ListView();
             this.version = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.remark = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.pc = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.mac = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.ip = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.label_server_name = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
@@ -66,7 +69,10 @@
             this.listView_rollback_version.CheckBoxes = true;
             this.listView_rollback_version.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.version,
-            this.remark});
+            this.remark,
+            this.pc,
+            this.mac,
+            this.ip});
             this.listView_rollback_version.Cursor = System.Windows.Forms.Cursors.Hand;
             this.listView_rollback_version.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.listView_rollback_version.MultiSelect = false;
@@ -83,6 +89,18 @@
             // remark
             // 
             resources.ApplyResources(this.remark, "remark");
+            // 
+            // pc
+            // 
+            resources.ApplyResources(this.pc, "pc");
+            // 
+            // mac
+            // 
+            resources.ApplyResources(this.mac, "mac");
+            // 
+            // ip
+            // 
+            resources.ApplyResources(this.ip, "ip");
             // 
             // label_server_name
             // 
@@ -117,5 +135,8 @@
         private System.Windows.Forms.ColumnHeader version;
         private System.Windows.Forms.ColumnHeader remark;
         private System.Windows.Forms.Label label_server_name;
+        private System.Windows.Forms.ColumnHeader pc;
+        private System.Windows.Forms.ColumnHeader mac;
+        private System.Windows.Forms.ColumnHeader ip;
     }
 }

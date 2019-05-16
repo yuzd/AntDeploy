@@ -1862,6 +1862,9 @@ namespace AntDeployWinform.Winform
                         httpRequestClient.SetFieldValue("deployFolderName", dateTimeFolderName);
                         httpRequestClient.SetFieldValue("Token", server.Token);
                         httpRequestClient.SetFieldValue("remark", confirmResult.Item2);
+                        httpRequestClient.SetFieldValue("mac", CodingHelper.GetMacAddress());
+                        httpRequestClient.SetFieldValue("pc", System.Environment.MachineName);
+                        httpRequestClient.SetFieldValue("localIp", CodingHelper.GetLocalIPAddress());
                         httpRequestClient.SetFieldValue("backUpIgnore", (backUpIgnoreList != null && backUpIgnoreList.Any()) ? string.Join("@_@", backUpIgnoreList) : "");
                         httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream", zipBytes);
                         HttpLogger HttpLogger = new HttpLogger
@@ -2164,6 +2167,9 @@ namespace AntDeployWinform.Winform
                             httpRequestClient.SetFieldValue("port", Port);
                             httpRequestClient.SetFieldValue("id", loggerId);
                             httpRequestClient.SetFieldValue("remark", remark);
+                            httpRequestClient.SetFieldValue("mac", CodingHelper.GetMacAddress());
+                            httpRequestClient.SetFieldValue("pc", System.Environment.MachineName);
+                            httpRequestClient.SetFieldValue("localIp", CodingHelper.GetLocalIPAddress());
                             httpRequestClient.SetFieldValue("poolName", PoolName);
                             httpRequestClient.SetFieldValue("physicalPath", PhysicalPath);
                             httpRequestClient.SetFieldValue("webSiteName", DeployConfig.IIsConfig.WebSiteName);
@@ -3561,6 +3567,9 @@ namespace AntDeployWinform.Winform
                             isProjectInstallService ? "yes" : "no");
                         httpRequestClient.SetFieldValue("execFilePath", execFilePath);
                         httpRequestClient.SetFieldValue("remark", confirmResult.Item2);
+                        httpRequestClient.SetFieldValue("mac", CodingHelper.GetMacAddress());
+                        httpRequestClient.SetFieldValue("pc", System.Environment.MachineName);
+                        httpRequestClient.SetFieldValue("localIp", CodingHelper.GetLocalIPAddress());
                         httpRequestClient.SetFieldValue("deployFolderName", dateTimeFolderName);
                         httpRequestClient.SetFieldValue("physicalPath", PhysicalPath);
                         httpRequestClient.SetFieldValue("Token", server.Token);
@@ -3827,6 +3836,9 @@ namespace AntDeployWinform.Winform
                         httpRequestClient.SetFieldValue("physicalPath", PhysicalPath);
                         httpRequestClient.SetFieldValue("Token", server.Token);
                         httpRequestClient.SetFieldValue("remark", remark);
+                        httpRequestClient.SetFieldValue("mac", CodingHelper.GetMacAddress());
+                        httpRequestClient.SetFieldValue("pc", System.Environment.MachineName);
+                        httpRequestClient.SetFieldValue("localIp", CodingHelper.GetLocalIPAddress());
                         httpRequestClient.SetFieldValue("backUpIgnore", (backUpIgnoreList != null && backUpIgnoreList.Any()) ? string.Join("@_@", backUpIgnoreList) : "");
                         httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream", zipBytes);
                         HttpLogger HttpLogger = new HttpLogger
@@ -4657,9 +4669,7 @@ namespace AntDeployWinform.Winform
                 DeployConfig.DockerConfig.RemoveDaysFromPublished = "";
             }
 
-#if DEBUG
-            var ENTRYPOINT = this.ProjectName + ".dll";
-#else
+
             //必须是netcore应用
             var isNetcoreProject = _project.IsNetcorePorject;
             if (!isNetcoreProject)
@@ -4677,7 +4687,7 @@ namespace AntDeployWinform.Winform
                 //MessageBox.Show("get current project property:outputfilename error");
                 ENTRYPOINT = this.ProjectName + ".dll";
             }
-#endif
+
             if (string.IsNullOrEmpty(_project.NetCoreSDKVersion))
             {
                 _project.NetCoreSDKVersion = ProjectHelper.GetProjectSkdInNetCoreProject(ProjectPath);

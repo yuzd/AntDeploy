@@ -119,7 +119,7 @@
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="b_rollback_Rollback.Location" type="System.Drawing.Point, System.Drawing">
-    <value>178, 251</value>
+    <value>429, 254</value>
   </data>
   <data name="b_rollback_Rollback.Size" type="System.Drawing.Size, System.Drawing">
     <value>66, 37</value>
@@ -133,8 +133,24 @@
   <data name="remark.Text" xml:space="preserve">
     <value>备注</value>
   </data>
+  <data name="pc.Text" xml:space="preserve">
+    <value>发布者Pc</value>
+  </data>
+  <data name="mac.Text" xml:space="preserve">
+    <value>发布者Mac地址</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="mac.Width" type="System.Int32, mscorlib">
+    <value>90</value>
+  </data>
+  <data name="ip.Text" xml:space="preserve">
+    <value>发布者IP</value>
+  </data>
+  <data name="ip.Width" type="System.Int32, mscorlib">
+    <value>90</value>
+  </data>
   <data name="label_server_name.Size" type="System.Drawing.Size, System.Drawing">
-    <value>171, 46</value>
+    <value>422, 46</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>请选择要回滚的版本</value>

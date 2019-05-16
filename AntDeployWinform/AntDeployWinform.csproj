@@ -102,6 +102,7 @@
     <Compile Include="Models\Helpers\ExtensionMethods.cs" />
     <Compile Include="Models\Helpers\RoundedRectangleF.cs" />
     <Compile Include="Models\Helpers\Transparenter.cs" />
+    <Compile Include="Models\LinuxArgModel.cs" />
     <Compile Include="Models\ProgressBox.cs">
       <SubType>Component</SubType>
     </Compile>
