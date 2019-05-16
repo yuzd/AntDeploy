@@ -97,6 +97,7 @@
     <Compile Include="Models\ExRichTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Models\FolderSelectDialog.cs" />
     <Compile Include="Models\GetVersionResult.cs" />
     <Compile Include="Models\Helpers\ExtensionMethods.cs" />
     <Compile Include="Models\Helpers\RoundedRectangleF.cs" />
@@ -253,6 +254,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Logo12.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\zan.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

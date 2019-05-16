@@ -121,6 +121,21 @@
   <data name="btn_select_project.Size" type="System.Drawing.Size, System.Drawing">
     <value>202, 64</value>
   </data>
+  <data name="contextMenuStrip.Size" type="System.Drawing.Size, System.Drawing">
+    <value>125, 48</value>
+  </data>
+  <data name="selectToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>124, 22</value>
+  </data>
+  <data name="selectToolStripMenuItem.Text" xml:space="preserve">
+    <value>选择&amp;发布</value>
+  </data>
+  <data name="openLocationToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>124, 22</value>
+  </data>
+  <data name="openLocationToolStripMenuItem.Text" xml:space="preserve">
+    <value>打开位置</value>
+  </data>
   <data name="btn_select_folder.Text" xml:space="preserve">
     <value>点我选择文件夹
 过滤编译直接发布</value>

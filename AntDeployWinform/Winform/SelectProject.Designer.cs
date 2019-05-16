@@ -28,12 +28,17 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SelectProject));
             this.btn_select_project = new System.Windows.Forms.Button();
             this.listBox_project = new System.Windows.Forms.ListBox();
+            this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.selectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openLocationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label1 = new System.Windows.Forms.Label();
             this.btn_select_folder = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.contextMenuStrip.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -50,6 +55,27 @@
             this.listBox_project.FormattingEnabled = true;
             this.listBox_project.Name = "listBox_project";
             this.listBox_project.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listBox_project_MouseDoubleClick);
+            this.listBox_project.MouseUp += new System.Windows.Forms.MouseEventHandler(this.listBox_project_MouseUp);
+            // 
+            // contextMenuStrip
+            // 
+            this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.selectToolStripMenuItem,
+            this.openLocationToolStripMenuItem});
+            this.contextMenuStrip.Name = "contextMenuStrip";
+            resources.ApplyResources(this.contextMenuStrip, "contextMenuStrip");
+            // 
+            // selectToolStripMenuItem
+            // 
+            this.selectToolStripMenuItem.Name = "selectToolStripMenuItem";
+            resources.ApplyResources(this.selectToolStripMenuItem, "selectToolStripMenuItem");
+            this.selectToolStripMenuItem.Click += new System.EventHandler(this.selectToolStripMenuItem_Click);
+            // 
+            // openLocationToolStripMenuItem
+            // 
+            this.openLocationToolStripMenuItem.Name = "openLocationToolStripMenuItem";
+            resources.ApplyResources(this.openLocationToolStripMenuItem, "openLocationToolStripMenuItem");
+            this.openLocationToolStripMenuItem.Click += new System.EventHandler(this.openLocationToolStripMenuItem_Click);
             // 
             // label1
             // 
@@ -66,9 +92,9 @@
             // 
             // panel1
             // 
-            resources.ApplyResources(this.panel1, "panel1");
             this.panel1.Controls.Add(this.btn_select_project);
             this.panel1.Controls.Add(this.btn_select_folder);
+            resources.ApplyResources(this.panel1, "panel1");
             this.panel1.Name = "panel1";
             // 
             // SelectProject
@@ -83,6 +109,7 @@
             this.MinimizeBox = false;
             this.Name = "SelectProject";
             this.ShowInTaskbar = false;
+            this.contextMenuStrip.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -95,5 +122,8 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btn_select_folder;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem selectToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openLocationToolStripMenuItem;
     }
 }

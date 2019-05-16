@@ -34,6 +34,13 @@ namespace AntDeployWinform.Winform
                     pictureBox1.Image = Image.FromStream(stream);
                 }
             }
+            using (Stream stream = assembly.GetManifestResourceStream("AntDeployWinform.Resources.zan.png"))
+            {
+                if (stream != null)
+                {
+                    pictureBox2.Image = Image.FromStream(stream);
+                }
+            }
         }
     }
 }

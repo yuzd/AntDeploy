@@ -121,7 +121,7 @@ namespace AntDeployWinform.Winform
                 if (!isFirst) return;
             }
             ProjectName = Path.GetFileNameWithoutExtension(projectPath);
-            this.Text += $"(Version:{Vsix.VERSION})[{ProjectName}]";
+            
             if (File.Exists(projectPath))
             {
                 ProjectPath = projectPath;
@@ -143,6 +143,12 @@ namespace AntDeployWinform.Winform
 
                 this.btn_choose_folder.Visible = false;
                 this.btn_folder_clear.Visible = false;
+
+                this.Text += $"(Version:{Vsix.VERSION})[FolderDeploy:{ProjectName}]";
+            }
+            else
+            {
+                this.Text += $"(Version:{Vsix.VERSION})[{ProjectName}]";
             }
             
             _project = project;
@@ -5725,23 +5731,46 @@ namespace AntDeployWinform.Winform
 
         private void btn_choose_folder_Click(object sender, EventArgs e)
         {
-            using (var fbd = new FolderBrowserDialog())
+            using (var fsd = new FolderSelectDialog())
             {
-                DialogResult result = fbd.ShowDialog();
-
-                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                
+                fsd.Title = GlobalConfig.IsChinease?"选择指定的文件夹发布":"Select Folder To Deploy";
+                if (fsd.ShowDialog(this.Handle))
                 {
-                    var folder = fbd.SelectedPath;
-                    this.txt_folder_deploy.Text = folder;
-                    PluginConfig.DeployFolderPath = folder;
+                    var folder = fsd.FileName;
+                    if (!string.IsNullOrWhiteSpace(folder) && Directory.Exists(folder))
+                    {
+                        this.txt_folder_deploy.Text = folder;
+                        PluginConfig.DeployFolderPath = folder;
+                    }
                 }
             }
+
+           
+
+            //using (var fbd = new FolderBrowserDialog())
+            //{
+            //    DialogResult result = fbd.ShowDialog();
+
+            //    if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+            //    {
+            //        var folder = fbd.SelectedPath;
+            //        this.txt_folder_deploy.Text = folder;
+            //        PluginConfig.DeployFolderPath = folder;
+            //    }
+            //}
         }
 
         private void btn_folder_clear_Click(object sender, EventArgs e)
         {
             this.txt_folder_deploy.Text = string.Empty;
             PluginConfig.DeployFolderPath = string.Empty;
+        }
+
+        private void btn_shang_Click(object sender, EventArgs e)
+        {
+            About about = new About();
+            about.ShowDialog();
         }
     }
 }
