@@ -124,6 +124,7 @@ namespace AntDeployWinform.Util
             //{
             //    ignoreList.Add("/.git?");
             //}
+            var haveFile = false;
             sourceDirectoryName = Path.GetFullPath(sourceDirectoryName);
             using (var outStream = new MemoryStream())
             {
@@ -137,6 +138,7 @@ namespace AntDeployWinform.Util
                     var allFile = isSelectDeploy? GetSelectDeployFiles(fileList) : GetFullFileInfo(fileList, sourceDirectoryName);
                     var allFileLength = allFile.Count();
                     var index = 0;
+
                     foreach (FileSystemInfo enumerateFileSystemInfo in allFile)
                     {
                         index++;
@@ -194,6 +196,7 @@ namespace AntDeployWinform.Util
                         }
                         if (enumerateFileSystemInfo is FileInfo)
                         {
+                            haveFile = true;
                             DoCreateEntryFromFile(destination, enumerateFileSystemInfo.FullName, entryName, compressionLevel);
                         }
                         else
@@ -209,6 +212,10 @@ namespace AntDeployWinform.Util
                         string str = directoryInfo.Name;
                         destination.CreateEntry(str + s_pathSeperator.ToString());
                     }
+                }
+                if (!haveFile)
+                {
+                    throw new Exception("no file was packaged!");
                 }
                 return outStream.GetBuffer();
             }
@@ -227,6 +234,7 @@ namespace AntDeployWinform.Util
             //{
             //    ignoreList.Add("/.git?");
             //}
+            var haveFile = false;
             sourceDirectoryName = Path.GetFullPath(sourceDirectoryName);
             using (var outStream = new MemoryStream())
             {
@@ -297,6 +305,7 @@ namespace AntDeployWinform.Util
                         }
                         if (enumerateFileSystemInfo is FileInfo)
                         {
+                            haveFile = true;
                             DoCreateEntryFromFile(destination, enumerateFileSystemInfo.FullName, entryName, compressionLevel);
                         }
                         else
@@ -312,6 +321,10 @@ namespace AntDeployWinform.Util
                         string str = directoryInfo.Name;
                         destination.CreateEntry(str + s_pathSeperator.ToString());
                     }
+                }
+                if (!haveFile)
+                {
+                    throw new Exception("no file was packaged!");
                 }
                 return outStream.GetBuffer();
             }
@@ -423,7 +436,7 @@ namespace AntDeployWinform.Util
             var allFile = FindFileDir(sourceDirectory);
             var allFileLength = allFile.Count();
             var index = 0;
-
+            var haveFile = false;
             foreach (FileSystemInfo enumerateFileSystemInfo in allFile)
             {
                 index++;
@@ -482,6 +495,7 @@ namespace AntDeployWinform.Util
 
                 if (enumerateFileSystemInfo is FileInfo)
                 {
+                    haveFile = true;
                     TarEntry tarEntry = TarEntry.CreateEntryFromFile(enumerateFileSystemInfo.FullName);
                     tarArchive.WriteEntry(tarEntry, true);
                 }
@@ -494,6 +508,10 @@ namespace AntDeployWinform.Util
             tarArchive.IsStreamOwner = false;
             tarArchive.Close();
             outputMemStream.Position = 0;
+            if (!haveFile)
+            {
+                throw new Exception("no file was packaged!");
+            }
             return outputMemStream;
         }
 
