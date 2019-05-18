@@ -41,6 +41,7 @@ namespace AntDeployWinform.Winform
                     if (string.IsNullOrEmpty(remark))
                     {
                         lv.SubItems.Add(remark);
+                        lv.ForeColor = Color.Red;
                     }
                     else
                     {
@@ -48,6 +49,7 @@ namespace AntDeployWinform.Winform
                         if (linuxRemark == null)
                         {
                             lv.SubItems.Add(remark);
+                            lv.ForeColor = Color.Red;
                         }
                         else
                         {
@@ -87,6 +89,7 @@ namespace AntDeployWinform.Winform
                     var pc = string.Empty;
                     var mac = string.Empty;
                     var ip = string.Empty;
+                    var isFail = false;
                     var content = li.JsonToObject<RollBackVersion>();
                     if (content == null)
                     {
@@ -97,6 +100,12 @@ namespace AntDeployWinform.Winform
                         if (!string.IsNullOrEmpty(content.Version))
                         {
                             version = content.Version;
+                        }
+
+                        if (string.IsNullOrWhiteSpace(content.Args))
+                        {
+                            //可能是失败的
+                            isFail = true;
                         }
                         if (content.FormItemList != null && content.FormItemList.Any())
                         {
@@ -133,6 +142,7 @@ namespace AntDeployWinform.Winform
                     lv.SubItems.Add(pc);
                     lv.SubItems.Add(mac);
                     lv.SubItems.Add(ip);
+                    if(isFail)lv.ForeColor = Color.Red;
                     this.listView_rollback_version.Items.Add(lv);
                 }
                 else

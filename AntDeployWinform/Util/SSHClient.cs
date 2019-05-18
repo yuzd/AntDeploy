@@ -248,7 +248,7 @@ namespace AntDeployWinform.Util
         }
 
         /// <summary>
-        /// 获取发布的历史
+        /// 获取发布的历史 删除过期的
         /// </summary>
         /// <param name="destinationFolder"></param>
         /// <param name="pageNumber">数量</param>
@@ -301,14 +301,14 @@ namespace AntDeployWinform.Util
         }
 
         /// <summary>
-        /// 获取发布的历史
+        /// 获取发布的历史 用来展示给用户的
         /// </summary>
         /// <param name="destinationFolder"></param>
         /// <param name="pageNumber">数量</param>
         /// <returns></returns>
         public List<Tuple<string, string>> GetDeployHistory(string destinationFolder, int pageNumber = 0)
         {
-            var result = new List<Tuple<string, string, DateTime>>();
+            var dic = new Dictionary<string,Tuple<string,string,DateTime>>();
             try
             {
 
@@ -351,7 +351,19 @@ namespace AntDeployWinform.Util
                         {
                             //ignore
                         }
-                        result.Add(new Tuple<string, string, DateTime>(folder.Name, remark, d));
+
+                        if (dic.ContainsKey(temp))
+                        {
+                            var value = dic[temp];
+                            if (value.Item1.Length < folder.Name.Length)
+                            {
+                                dic[temp] = new Tuple<string, string, DateTime>(folder.Name,remark,d);
+                            }
+                        }
+                        else
+                        {
+                            dic.Add(temp,new Tuple<string, string, DateTime>(folder.Name,remark,d));
+                        }
                     }
                 }
             }
@@ -360,7 +372,7 @@ namespace AntDeployWinform.Util
                 _logger(ex.Message, LogLevel.Error);
             }
 
-            return result.OrderByDescending(r => r.Item3).Select(r => new Tuple<string, string>(r.Item1, r.Item2)).ToList();
+            return dic.Values.ToList().OrderByDescending(r => r.Item3).Select(r => new Tuple<string, string>(r.Item1, r.Item2)).ToList();
         }
 
         public void PublishZip(Stream stream, string destinationFolder, string destinationfileName,Func<bool> continuetask = null)

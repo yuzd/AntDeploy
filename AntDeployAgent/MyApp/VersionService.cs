@@ -149,11 +149,12 @@ namespace AntDeployAgentWindows.MyApp
                 return;
             }
 
-            var list = new List<Tuple<string, DateTime>>();
+            var dic = new Dictionary<string,Tuple<string,DateTime,string>>();
             foreach (var item in all)
             {
                 var itemD = new DirectoryInfo(item);
-                if (DateTime.TryParseExact(itemD.Name, "yyyyMMddHHmmss", null, DateTimeStyles.None, out DateTime d))
+                var temp = itemD.Name.Replace("_", "");
+                if (DateTime.TryParseExact(temp, "yyyyMMddHHmmss", null, DateTimeStyles.None, out DateTime d))
                 {
                     if (request.WithArgs)
                     {
@@ -164,16 +165,30 @@ namespace AntDeployAgentWindows.MyApp
                             Args = args
                         };
                         var dataInfo = JsonConvert.SerializeObject(data);
-                        list.Add(new Tuple<string, DateTime>(dataInfo, d));
+                        if (dic.ContainsKey(temp))
+                        {
+                            //是重试版本 看下已存在的length是否
+                            var infoValue = dic[temp];
+                            if (infoValue.Item3.Length < itemD.Name.Length)
+                            {
+                                //是旧的 替换掉
+                                dic[temp] = new Tuple<string, DateTime, string>(dataInfo, d, itemD.Name);
+                            }
+                        }
+                        else
+                        {
+                            //添加
+                            dic.Add(temp,new Tuple<string, DateTime,string>(dataInfo, d,itemD.Name));
+                        }
                     }
                     else
                     {
-                        list.Add(new Tuple<string, DateTime>(itemD.Name, d));
+                        dic.Add(temp,new Tuple<string, DateTime,string>(itemD.Name, d,itemD.Name));
                     }
                 }
             }
 
-            var result = list.OrderByDescending(r => r.Item2).Select(r => r.Item1).Take(11).ToList();
+            var result = dic.Values.ToList().OrderByDescending(r => r.Item2).Select(r => r.Item1).Take(11).ToList();
             WriteSuccess(result);
         }
 
@@ -203,8 +218,7 @@ namespace AntDeployAgentWindows.MyApp
                 return;
             }
 
-
-            var list = new List<Tuple<string, DateTime>>();
+            var dic = new Dictionary<string,Tuple<string,DateTime,string>>();
             foreach (var item in all)
             {
                 var itemD = new DirectoryInfo(item);
@@ -220,17 +234,31 @@ namespace AntDeployAgentWindows.MyApp
                             Args = args
                         };
                         var dataInfo = JsonConvert.SerializeObject(data);
-                        list.Add(new Tuple<string, DateTime>(dataInfo, d));
+                        if (dic.ContainsKey(temp))
+                        {
+                            //是重试版本 看下已存在的length是否
+                            var infoValue = dic[temp];
+                            if (infoValue.Item3.Length < itemD.Name.Length)
+                            {
+                                //是旧的 替换掉
+                                dic[temp] = new Tuple<string, DateTime, string>(dataInfo, d, itemD.Name);
+                            }
+                        }
+                        else
+                        {
+                            //添加
+                            dic.Add(temp,new Tuple<string, DateTime,string>(dataInfo, d,itemD.Name));
+                        }
                     }
                     else
                     {
-                        list.Add(new Tuple<string, DateTime>(itemD.Name, d));
+                        dic.Add(temp,new Tuple<string, DateTime,string>(itemD.Name, d,itemD.Name));
                     }
                 }
             }
 
             //排除掉当前版本 然后拿最近的10条发布记录
-            var result = list.OrderByDescending(r => r.Item2).Select(r => r.Item1).Take(11).ToList();
+            var result = dic.Values.ToList().OrderByDescending(r => r.Item2).Select(r => r.Item1).Take(11).ToList();
             WriteSuccess(result);
         }
 
