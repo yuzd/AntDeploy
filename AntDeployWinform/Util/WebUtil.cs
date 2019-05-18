@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using AntDeployWinform.Models;
 
 namespace AntDeployWinform.Util
 {
@@ -193,8 +194,31 @@ namespace AntDeployWinform.Util
                 }
                 if (!string.IsNullOrEmpty(result))
                 {
-                    return JsonConvert.DeserializeObject<T>(result);
+                    try
+                    {
+                        var rt = JsonConvert.DeserializeObject<T>(result);
+                        return rt;
+                    }
+                    catch (Exception)
+                    {
+                        try
+                        {
+                            var rr = JsonConvert.DeserializeObject<GetVersionResult>(result);
+                            if (rr != null && !string.IsNullOrEmpty(rr.Msg))
+                            {
+                                logger.Error(rr.Msg);
+                                return default(T);
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            
+                        }
+                        logger.Error(result);
+                    }
                 }
+
+                return default(T);
             }
             catch (Exception ex1)
             {

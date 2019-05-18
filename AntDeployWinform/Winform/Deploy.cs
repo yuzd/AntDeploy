@@ -1403,35 +1403,35 @@ namespace AntDeployWinform.Winform
 
             if (!isWeb)
             {
-                MessageBox.Show("current project is not web project!");
+                MessageBox.Show(Strings.NotWebProject);
                 return;
             }
 
             var websiteName = this.txt_iis_web_site_name.Text.Trim();
             if (websiteName.Length < 1)
             {
-                MessageBox.Show("please input web site name");
+                MessageBox.Show(Strings.WebSiteNameRequired);
                 return;
             }
 
             var sdkTypeName = this.combo_iis_sdk_type.SelectedItem as string;
             if (string.IsNullOrWhiteSpace(sdkTypeName))
             {
-                MessageBox.Show("please select sdk type");
+                MessageBox.Show(Strings.SelectSdkType);
                 return;
             }
 
             var envName = this.combo_iis_env.SelectedItem as string;
             if (string.IsNullOrEmpty(envName))
             {
-                MessageBox.Show("please select env");
+                MessageBox.Show(Strings.SelectEnv);
                 return;
             }
 
             //fire url
             if (CheckFireUri(ServerType.IIS))
             {
-                MessageBox.Show("fire url is not correct!");
+                MessageBox.Show(Strings.FireUrlInvaid);
                 return;
             }
 
@@ -1447,14 +1447,14 @@ namespace AntDeployWinform.Winform
 
             if (serverList == null || !serverList.Any())
             {
-                MessageBox.Show("selected env have no server set yet!");
+                MessageBox.Show(Strings.EnvHaveNoServer);
                 return;
             }
 
             var serverHostList = string.Join(Environment.NewLine, serverList.Select(r => r.Host).ToList());
 
-            var confirmResult = ShowInputMsgBox("Confirm Deploy!!",
-                "Are you sure to deploy to Server: " + Environment.NewLine + serverHostList);
+            var confirmResult = ShowInputMsgBox(Strings.ConfirmDeploy,
+                Strings.DeployServerConfim + Environment.NewLine + serverHostList);
             //var confirmResult = MessageBox.Show(
             //    "Are you sure to deploy to Server: " + Environment.NewLine + serverHostList,
             //   "Confirm Deploy!!",
@@ -1730,7 +1730,7 @@ namespace AntDeployWinform.Winform
 
                         if (checkIisResult == null || checkIisResult.Data == null)
                         {
-                            this.nlog_iis.Error($"Check Website IsExist In Remote IIS Fail,Please update agent!");
+                            this.nlog_iis.Error($"Check Website IsExist In Remote IIS Fail!");
                             UploadError(this.tabPage_progress, server.Host);
                             allSuccess = false;
                             failCount++;
@@ -2124,7 +2124,7 @@ namespace AntDeployWinform.Winform
 
                             if (checkIisResult == null || checkIisResult.Data == null)
                             {
-                                this.nlog_iis.Error($"Check Website IsExist In Remote IIS Fail,Please update agent!");
+                                this.nlog_iis.Error($"Check Website IsExist In Remote IIS Fail!");
                                 UploadError(this.tabPage_progress, server.Host);
                                 allSuccess = false;
                                 failCount++;
@@ -2351,14 +2351,14 @@ namespace AntDeployWinform.Winform
 
             if (!isWeb)
             {
-                MessageBox.Show("current project is not web project!");
+                MessageBox.Show(Strings.NotWebProject);
                 return;
             }
 
             var websiteName = this.txt_iis_web_site_name.Text.Trim();
             if (websiteName.Length < 1)
             {
-                MessageBox.Show("please input web site name");
+                MessageBox.Show(Strings.WebSiteNameRequired);
                 return;
             }
 
@@ -2366,7 +2366,7 @@ namespace AntDeployWinform.Winform
             var envName = this.combo_iis_env.SelectedItem as string;
             if (string.IsNullOrEmpty(envName))
             {
-                MessageBox.Show("please select env");
+                MessageBox.Show(Strings.SelectEnv);
                 return;
             }
 
@@ -2375,22 +2375,22 @@ namespace AntDeployWinform.Winform
 
             if (serverList == null || !serverList.Any())
             {
-                MessageBox.Show("selected env have no server set yet!");
+                MessageBox.Show(Strings.EnvHaveNoServer);
                 return;
             }
 
             //fire url
             if (CheckFireUri(ServerType.IIS))
             {
-                MessageBox.Show("fire url is not correct!");
+                MessageBox.Show(Strings.FireUrlInvaid);
                 return;
             }
 
             var serverHostList = string.Join(Environment.NewLine, serverList.Select(r => r.Host).ToList());
 
             var confirmResult = MessageBox.Show(
-                "Are you sure to rollback to Server: " + Environment.NewLine + serverHostList,
-                "Confirm Deploy!!",
+                Strings.DeployRollBackConfirm + Environment.NewLine + serverHostList,
+                Strings.RollBackConfirm,
                 MessageBoxButtons.YesNo);
             if (confirmResult != DialogResult.Yes)
             {
@@ -3112,21 +3112,21 @@ namespace AntDeployWinform.Winform
             Condition = new AutoResetEvent(false);
             if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath) && _project.IsWebProejct)
             {
-                MessageBox.Show("current project is not windows service project!");
+                MessageBox.Show(Strings.NotServiceProject);
                 return;
             }
 
             //检查工程文件里面是否含有 WebProjectProperties字样
             if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath) && ProjectHelper.IsWebProject(ProjectPath))
             {
-                MessageBox.Show("current project is not windows service project!");
+                MessageBox.Show(Strings.NotServiceProject);
                 return;
             }
 
             var sdkTypeName = this.combo_windowservice_sdk_type.SelectedItem as string;
             if (string.IsNullOrWhiteSpace(sdkTypeName))
             {
-                MessageBox.Show("please select sdk type");
+                MessageBox.Show(Strings.SelectSdkType);
                 return;
             }
 
@@ -3134,7 +3134,7 @@ namespace AntDeployWinform.Winform
             {
                 if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath) && !_project.IsNetcorePorject)
                 {
-                    MessageBox.Show("current project is not netcore project!");
+                    MessageBox.Show(Strings.NowNetcoreProject);
                     return;
                 }
 
@@ -3143,7 +3143,7 @@ namespace AntDeployWinform.Winform
                 if (!string.IsNullOrEmpty(PluginConfig.NetCorePublishMode) &&
                     PluginConfig.NetCorePublishMode.Contains("runtime"))
                 {
-                    MessageBox.Show("netcore project can not use [FDD(runtime)] mode!");
+                    MessageBox.Show(Strings.NetcoreProjectPublishModeError);
                     return;
                 }
             }
@@ -3151,7 +3151,7 @@ namespace AntDeployWinform.Winform
             var serviceName = this.txt_windowservice_name.Text.Trim();
             if (serviceName.Length < 1)
             {
-                MessageBox.Show("please input serviceName");
+                MessageBox.Show(Strings.ServiceNameRequired);
                 return;
             }
 
@@ -3162,14 +3162,14 @@ namespace AntDeployWinform.Winform
             var envName = this.combo_windowservice_env.SelectedItem as string;
             if (string.IsNullOrEmpty(envName))
             {
-                MessageBox.Show("please select env");
+                MessageBox.Show(Strings.SelectEnv);
                 return;
             }
 
             //fire url
             if (CheckFireUri(ServerType.WINSERVICE))
             {
-                MessageBox.Show("fire url is not correct!");
+                MessageBox.Show(Strings.FireUrlInvaid);
                 return;
             }
 
@@ -3231,14 +3231,14 @@ namespace AntDeployWinform.Winform
 
             if (serverList == null || !serverList.Any())
             {
-                MessageBox.Show("selected env have no server set yet!");
+                MessageBox.Show(Strings.EnvHaveNoServer);
                 return;
             }
 
             var serverHostList = string.Join(Environment.NewLine, serverList.Select(r => r.Host).ToList());
 
-            var confirmResult = ShowInputMsgBox("Confirm Deploy!!",
-                "Are you sure to deploy to Server: " + Environment.NewLine + serverHostList);
+            var confirmResult = ShowInputMsgBox(Strings.ConfirmDeploy,
+                Strings.DeployServerConfim + Environment.NewLine + serverHostList);
 
             //var confirmResult = MessageBox.Show(
             //    "Are you sure to deploy to Server: " + Environment.NewLine + serverHostList,
@@ -3986,7 +3986,7 @@ namespace AntDeployWinform.Winform
         {
             if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath) && _project.IsWebProejct)
             {
-                MessageBox.Show("current project is not windows service project!");
+                MessageBox.Show(Strings.NotServiceProject);
                 return;
             }
 
@@ -3994,7 +3994,7 @@ namespace AntDeployWinform.Winform
             //检查工程文件里面是否含有 WebProjectProperties字样
             if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath) && ProjectHelper.IsWebProject(ProjectPath))
             {
-                MessageBox.Show("current project is not windows service project!");
+                MessageBox.Show(Strings.NotServiceProject);
                 return;
             }
 
@@ -4002,7 +4002,7 @@ namespace AntDeployWinform.Winform
             var serviceName = this.txt_windowservice_name.Text.Trim();
             if (serviceName.Length < 1)
             {
-                MessageBox.Show("please input serviceName");
+                MessageBox.Show(Strings.ServiceNameRequired);
                 return;
             }
 
@@ -4013,14 +4013,14 @@ namespace AntDeployWinform.Winform
             var envName = this.combo_windowservice_env.SelectedItem as string;
             if (string.IsNullOrEmpty(envName))
             {
-                MessageBox.Show("please select env");
+                MessageBox.Show(Strings.SelectEnv);
                 return;
             }
 
             //fire url
             if (CheckFireUri(ServerType.WINSERVICE))
             {
-                MessageBox.Show("fire url is not correct!");
+                MessageBox.Show(Strings.FireUrlInvaid);
                 return;
             }
 
@@ -4029,15 +4029,15 @@ namespace AntDeployWinform.Winform
 
             if (serverList == null || !serverList.Any())
             {
-                MessageBox.Show("selected env have no server set yet!");
+                MessageBox.Show(Strings.EnvHaveNoServer);
                 return;
             }
 
             var serverHostList = string.Join(Environment.NewLine, serverList.Select(r => r.Host).ToList());
 
             var confirmResult = MessageBox.Show(
-                "Are you sure to deploy to Server: " + Environment.NewLine + serverHostList,
-                "Confirm Deploy!!",
+                Strings.DeployRollBackConfirm + Environment.NewLine + serverHostList,
+                Strings.RollBackConfirm,
                 MessageBoxButtons.YesNo);
             if (confirmResult != DialogResult.Yes)
             {
@@ -4574,7 +4574,7 @@ namespace AntDeployWinform.Winform
                     int.TryParse(port, out var dockerPort);
                     if (dockerPort <= 0)
                     {
-                        MessageBox.Show("please input right port value");
+                        MessageBox.Show(Strings.PortValueInvaid);
                         return;
                     }
                     else
@@ -4587,7 +4587,7 @@ namespace AntDeployWinform.Winform
                     var arr = port.Split(':');
                     if (arr.Length != 2)
                     {
-                        MessageBox.Show("please input right port value");
+                        MessageBox.Show(Strings.PortValueInvaid);
                         return;
                     }
 
@@ -4596,7 +4596,7 @@ namespace AntDeployWinform.Winform
                         int.TryParse(aPort, out var dockerPort);
                         if (dockerPort <= 0)
                         {
-                            MessageBox.Show("please input right port value");
+                            MessageBox.Show(Strings.PortValueInvaid);
                             return;
                         }
                     }
@@ -4627,7 +4627,7 @@ namespace AntDeployWinform.Winform
                 {
                     if (!item.Contains(':'))
                     {
-                        MessageBox.Show("volume is not correct!");
+                        MessageBox.Show(Strings.VolumeInvaid);
                         return;
                     }
                 }
@@ -4637,14 +4637,14 @@ namespace AntDeployWinform.Winform
             var envName = this.combo_docker_env.SelectedItem as string;
             if (string.IsNullOrEmpty(envName))
             {
-                MessageBox.Show("please select env");
+                MessageBox.Show(Strings.SelectEnv);
                 return;
             }
 
             //fire url
             if (CheckFireUri(ServerType.DOCKER))
             {
-                MessageBox.Show("fire url is not correct!");
+                MessageBox.Show(Strings.FireUrlInvaid);
                 return;
             }
 
@@ -4656,7 +4656,7 @@ namespace AntDeployWinform.Winform
                 int.TryParse(removeDays, out var _removeDays);
                 if (_removeDays <= 0)
                 {
-                    MessageBox.Show("please input right days value");
+                    MessageBox.Show(Strings.DaysInvaild);
                     return;
                 }
                 else
@@ -4674,7 +4674,7 @@ namespace AntDeployWinform.Winform
             var isNetcoreProject = _project.IsNetcorePorject;
             if (!isNetcoreProject)
             {
-                MessageBox.Show("current project is not netcore");
+                MessageBox.Show(Strings.NowNetcoreProject);
                 return;
             }
 
@@ -4695,7 +4695,7 @@ namespace AntDeployWinform.Winform
             var SDKVersion = _project.NetCoreSDKVersion;
             if (string.IsNullOrEmpty(SDKVersion))
             {
-                MessageBox.Show("get current project skd version error");
+                MessageBox.Show(Strings.GetNetCoreSdkVersionError);
                 return;
             }
 
@@ -4704,19 +4704,16 @@ namespace AntDeployWinform.Winform
 
             if (serverList == null || !serverList.Any())
             {
-                MessageBox.Show("selected env have no linux server set yet!");
+                MessageBox.Show(Strings.NoLinuxServer);
                 return;
             }
 
             var serverHostList = string.Join(Environment.NewLine, serverList.Select(r => r.Host).ToList());
 
-            var confirmResult = ShowInputMsgBox("Confirm Deploy!!",
-                "Are you sure to deploy to Server: " + Environment.NewLine + serverHostList);
+            var confirmResult = ShowInputMsgBox(Strings.ConfirmDeploy,
+                Strings.DeployServerConfim + Environment.NewLine + serverHostList);
 
-            //var confirmResult = MessageBox.Show(
-            //    "Are you sure to deploy to Linux Server: " + Environment.NewLine + serverHostList,
-            //    "Confirm Deploy!!",
-            //    MessageBoxButtons.YesNo);
+         
             if (!confirmResult.Item1)
             {
                 return;
@@ -5037,14 +5034,14 @@ namespace AntDeployWinform.Winform
             var envName = this.combo_docker_env.SelectedItem as string;
             if (string.IsNullOrEmpty(envName))
             {
-                MessageBox.Show("please select env");
+                MessageBox.Show(Strings.SelectEnv);
                 return;
             }
 
             //fire url
             if (CheckFireUri(ServerType.DOCKER))
             {
-                MessageBox.Show("fire url is not correct!");
+                MessageBox.Show(Strings.FireUrlInvaid);
                 return;
             }
 
@@ -5055,7 +5052,7 @@ namespace AntDeployWinform.Winform
             var isNetcoreProject = _project.IsNetcorePorject;
             if (!isNetcoreProject)
             {
-                MessageBox.Show("current project is not netcore");
+                MessageBox.Show(Strings.NowNetcoreProject);
                 return;
             }
 
@@ -5089,15 +5086,15 @@ namespace AntDeployWinform.Winform
 
             if (serverList == null || !serverList.Any())
             {
-                MessageBox.Show("selected env have no linux server set yet!");
+                MessageBox.Show(Strings.NoLinuxServer);
                 return;
             }
 
             var serverHostList = string.Join(Environment.NewLine, serverList.Select(r => r.Host).ToList());
 
             var confirmResult = MessageBox.Show(
-                "Are you sure to rollBack to Linux Server: " + Environment.NewLine + serverHostList,
-                "Confirm Deploy!!",
+                Strings.DeployRollBackConfirm + Environment.NewLine + serverHostList,
+                Strings.RollBackConfirm,
                 MessageBoxButtons.YesNo);
             if (confirmResult != DialogResult.Yes)
             {

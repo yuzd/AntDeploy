@@ -1,5 +1,7 @@
 using System;
 using System.Drawing;
+using System.IO;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace AntDeployWinform.Winform
@@ -84,6 +86,14 @@ namespace AntDeployWinform.Winform
         /// <param name="defaultInput">The default value for the input textbox.</param>
         public InputDialog(string question, string caption = "", string defaultInput = "") {
             InitializeComponent();
+            this.ShowIcon = true;
+            Assembly assembly = typeof(Deploy).Assembly;
+            using (Stream stream = assembly.GetManifestResourceStream("AntDeployWinform.Resources.Logo1.ico"))
+            {
+                if (stream != null) this.Icon = new Icon(stream);
+            }
+
+            this.btnCancel.ForeColor = Color.Red;
             lblQuestion.Text = question;
             Text = caption;
             txtInput.Text = defaultInput;
