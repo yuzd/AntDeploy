@@ -37,6 +37,7 @@ namespace AntDeployAgentWindowsService
         protected override void OnStart(string[] args)
         {
             var port = System.Configuration.ConfigurationManager.AppSettings["Port"];
+            TinyFoxService.IpAddress = TyeIpAddress.Any;
             TinyFoxService.Port = string.IsNullOrEmpty(port) ? 8088 : int.Parse(port);
             _startup = new AntDeployAgentWindows.Startup();
             TinyFoxService.Start(_startup.OwinMain);
