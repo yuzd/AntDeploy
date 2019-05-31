@@ -47,8 +47,8 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Xml" />
-    <Reference Include="TinyFox, Version=4.0.1.20, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\TinyFox.4.0.1.20\lib\net451\TinyFox.dll</HintPath>
+    <Reference Include="TinyFox, Version=4.0.1.26, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TinyFox.4.0.1.26\lib\net451\TinyFox.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

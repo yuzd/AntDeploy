@@ -1725,6 +1725,7 @@ namespace AntDeployWinform.Winform
                             {
                                 Token = server.Token,
                                 Type = "checkiis",
+                                Mac = CodingHelper.GetMacAddress(),
                                 Name = DeployConfig.IIsConfig.WebSiteName
                             }, nlog_iis);
 
@@ -2119,6 +2120,7 @@ namespace AntDeployWinform.Winform
                                 {
                                     Token = server.Token,
                                     Type = "checkiis",
+                                    Mac = CodingHelper.GetMacAddress(),
                                     Name = DeployConfig.IIsConfig.WebSiteName
                                 }, nlog_iis);
 
@@ -2450,6 +2452,7 @@ namespace AntDeployWinform.Winform
                             {
                                 Token = server.Token,
                                 Type = "iis",
+                                Mac = CodingHelper.GetMacAddress(),
                                 Name = DeployConfig.IIsConfig.WebSiteName,
                                 WithArgs = true
                             }, nlog_iis);
@@ -4095,6 +4098,7 @@ namespace AntDeployWinform.Winform
                             {
                                 Token = server.Token,
                                 Type = "winservice",
+                                Mac = CodingHelper.GetMacAddress(),
                                 Name = DeployConfig.WindowsServiveConfig.ServiceName,
                                 WithArgs = true
                             }, nlog_windowservice);
@@ -5955,6 +5959,7 @@ namespace AntDeployWinform.Winform
                             $"http://{server.Host}/version", new
                             {
                                 Token = server.Token,
+                                Mac = CodingHelper.GetMacAddress(),
                                 Type = ServerType == ServerType.IIS ? "iis" : "winservice",
                                 Name = ServerType == ServerType.IIS ? DeployConfig.IIsConfig.WebSiteName : DeployConfig.WindowsServiveConfig.ServiceName,
                                 WithArgs = true

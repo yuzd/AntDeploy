@@ -257,6 +257,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     DeployFolder = deployFolder,
                     SiteName = projectLocation.Item2,
                     BackUpIgnoreList = this._backUpIgnoreList,
+                    NoBackup = !Setting.NeedBackUp
                 };
 
                 if (_isNoStopWebSite)

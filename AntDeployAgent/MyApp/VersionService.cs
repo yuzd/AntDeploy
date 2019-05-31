@@ -85,6 +85,12 @@ namespace AntDeployAgentWindows.MyApp
                 return;
             }
 
+            if (!string.IsNullOrEmpty(request.Mac) && !Setting.CheckIsInWhiteMacList(request.Mac))
+            {
+                WriteError($"macAddress:[{request.Mac}] invalid");
+                return;
+            }
+
             var webSiteName = request.Name.Trim();
             var siteNameArr = webSiteName.Split('/');
             if (siteNameArr.Length > 2)
@@ -134,6 +140,12 @@ namespace AntDeployAgentWindows.MyApp
 
         private void GetWindowsServiceVersionList(GetVersionVm request)
         {
+            if (!string.IsNullOrEmpty(request.Mac) && !Setting.CheckIsInWhiteMacList(request.Mac))
+            {
+                WriteError($"macAddress:[{request.Mac}] invalid");
+                return;
+            }
+
             string requestName = request.Name;
             var projectPath = Path.Combine(Setting.PublishWindowServicePathFolder, requestName);
             if (!Directory.Exists(projectPath))

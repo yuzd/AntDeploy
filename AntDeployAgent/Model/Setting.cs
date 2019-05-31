@@ -10,7 +10,12 @@ namespace AntDeployAgentWindows.Model
     {
         private static readonly System.Threading.Timer mDetectionTimer;
         private static readonly int _clearOldPublishFolderOverDays = 10;
-
+        private static readonly List<string> MacWhiteList = new List<string>();
+        /// <summary>
+        /// 是否开启备份
+        /// </summary>
+        /// <returns></returns>
+        public static bool NeedBackUp = true;
         static Setting()
         {
 #if DEBUG
@@ -23,6 +28,18 @@ namespace AntDeployAgentWindows.Model
             if (int.TryParse(clearOldPublishFolderOverDaysStr, out int value) && value>0)
             {
                 _clearOldPublishFolderOverDays = value;
+            }
+
+            var _whiteMacList = System.Configuration.ConfigurationManager.AppSettings["MacWhiteList"];
+            if (!string.IsNullOrEmpty(_whiteMacList))
+            {
+                MacWhiteList = _whiteMacList.Split(',').Distinct().ToList();
+            }
+
+            var needBackUp = System.Configuration.ConfigurationManager.AppSettings["NeedBackUp"];
+            if (!string.IsNullOrEmpty(needBackUp) && needBackUp.ToLower().Equals("false"))
+            {
+                NeedBackUp = false;
             }
         }
 
@@ -189,6 +206,18 @@ namespace AntDeployAgentWindows.Model
         {
             mDetectionTimer.Change(-1, -1);
             mDetectionTimer.Dispose();
+        }
+
+        /// <summary>
+        /// 检查是否mac地址白名单
+        /// </summary>
+        /// <param name="macAddress"></param>
+        /// <returns></returns>
+        public static bool CheckIsInWhiteMacList(string macAddress)
+        {
+            if (!MacWhiteList.Any()) return true;
+
+            return MacWhiteList.Contains(macAddress);
         }
 
     }

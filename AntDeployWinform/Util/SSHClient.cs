@@ -585,6 +585,10 @@ namespace AntDeployWinform.Util
 
                         server_port = serverPostDockerFile;
                     }
+                    else
+                    {
+                        server_port = port;
+                    }
                 }
                 catch (Exception)
                 {

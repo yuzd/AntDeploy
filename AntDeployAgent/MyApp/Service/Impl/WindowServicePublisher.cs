@@ -196,7 +196,8 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     AppFolder = projectLocationFolder,
                     DeployFolder = deployFolder,
                     WaitForWindowsServiceStopTimeOut = _waitForServiceStopTimeOut,
-                    BackUpIgnoreList = this._backUpIgnoreList
+                    BackUpIgnoreList = this._backUpIgnoreList,
+                    NoBackup = !Setting.NeedBackUp
                 };
 
                 if (_isNoStopWebSite)

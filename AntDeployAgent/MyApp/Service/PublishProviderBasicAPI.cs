@@ -131,6 +131,15 @@ namespace AntDeployAgentWindows.MyApp.Service
                 }
             }
 
+            var macValue = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("mac"));
+            if (macValue != null && !string.IsNullOrEmpty(macValue.TextValue))
+            {
+                if (!Setting.CheckIsInWhiteMacList(macValue.TextValue))
+                {
+                    return $"macAddress:[{macValue.TextValue}] invaild";
+                }
+            }
+
             return CheckData(formHandler);
         }
 
