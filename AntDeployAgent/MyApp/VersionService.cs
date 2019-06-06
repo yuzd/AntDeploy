@@ -27,7 +27,8 @@ namespace AntDeployAgentWindows.MyApp
 
                 if (string.IsNullOrEmpty(body))
                 {
-                    WriteError("request body is empty");
+                    Response.ContentType = "text/plain";
+                    Response.Write(Version.VERSION);
                     return;
                 }
 

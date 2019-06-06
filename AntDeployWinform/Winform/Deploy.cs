@@ -3159,7 +3159,7 @@ namespace AntDeployWinform.Winform
             }
 
             DeployConfig.WindowsServiveConfig.ServiceName = serviceName;
-
+            var isAgentUpdate = DeployConfig.WindowsServiveConfig.ServiceName.ToLower().Equals("antdeployagentwindowsservice");
             var PhysicalPath = this.txt_windows_service_PhysicalPath.Text.Trim();
 
             var envName = this.combo_windowservice_env.SelectedItem as string;
@@ -3187,24 +3187,36 @@ namespace AntDeployWinform.Winform
             if (!string.IsNullOrEmpty(PluginConfig.DeployFolderPath) && string.IsNullOrEmpty(_project.OutPutName))
             {
                 var exePath = string.Empty;
-                //找当前根目录下 有没有 .deps.json 文件
-                var depsJsonFile = CodingHelper.FindDepsJsonFile(PluginConfig.DeployFolderPath);
-                if (!string.IsNullOrEmpty(depsJsonFile))
+                if (isAgentUpdate)
                 {
-                    var exeTempName = depsJsonFile.Replace(".deps.json", ".exe");
-                    if (File.Exists(exeTempName))
+                    exePath = Path.Combine(PluginConfig.DeployFolderPath, "AntDeployAgentWindowsService.exe");
+                    if (!File.Exists(exePath))
                     {
-                        exePath = exeTempName;
+                        MessageBox.Show("AntDeployAgentWindowsService.exe not exist");
+                        return;
                     }
                 }
-
-                if (string.IsNullOrEmpty(exePath))
+                else
                 {
-                    exePath = CodingHelper.GetWindowsServiceExe(PluginConfig.DeployFolderPath);
+                    //找当前根目录下 有没有 .deps.json 文件
+                    var depsJsonFile = CodingHelper.FindDepsJsonFile(PluginConfig.DeployFolderPath);
+                    if (!string.IsNullOrEmpty(depsJsonFile))
+                    {
+                        var exeTempName = depsJsonFile.Replace(".deps.json", ".exe");
+                        if (File.Exists(exeTempName))
+                        {
+                            exePath = exeTempName;
+                        }
+                    }
+
                     if (string.IsNullOrEmpty(exePath))
                     {
-                        MessageBox.Show("please select exe path");
-                        return;
+                        exePath = CodingHelper.GetWindowsServiceExe(PluginConfig.DeployFolderPath);
+                        if (string.IsNullOrEmpty(exePath))
+                        {
+                            MessageBox.Show("please select exe path");
+                            return;
+                        }
                     }
                 }
 
@@ -3225,7 +3237,13 @@ namespace AntDeployWinform.Winform
 
 
 #endif
-
+            var agentNewVersion = string.Empty;
+            if (isAgentUpdate)
+            {
+                var agentDll = Path.Combine(PluginConfig.DeployFolderPath, "AntDeployAgent.dll");
+                FileVersionInfo myFileVersionInfo = FileVersionInfo.GetVersionInfo(agentDll);
+                agentNewVersion = myFileVersionInfo.FileVersion;
+            }
 
 
 
@@ -3271,6 +3289,11 @@ namespace AntDeployWinform.Winform
             new Task(async () =>
             {
                 this.nlog_windowservice.Info($"-----------------Start publish[Ver:{Vsix.VERSION}]-----------------");
+                if (!string.IsNullOrEmpty(agentNewVersion))
+                {
+                    this.nlog_windowservice.Info($"-----------------Update Agent To [Ver:{agentNewVersion}]-----------------");
+                }
+               
                 PrintCommonLog(this.nlog_windowservice);
                 EnableForWindowsService(false); //第一台开始编译
                 GitClient gitModel = null;
@@ -3329,7 +3352,7 @@ namespace AntDeployWinform.Winform
                     }
 
                     var isProjectInstallService = false;
-                    if (!isNetcore)
+                    if (!isNetcore && string.IsNullOrEmpty(PluginConfig.DeployFolderPath))
                     {
                         //判断是否是windows PorjectInstall的服务
                         var serviceFile = Path.Combine(publishPath, execFilePath);
@@ -3404,7 +3427,7 @@ namespace AntDeployWinform.Winform
                     }
 
                     //查看是否开启了增量
-                    if (this.PluginConfig.WindowsServiceEnableIncrement)
+                    if (this.PluginConfig.WindowsServiceEnableIncrement && !isAgentUpdate)
                     {
                         this.nlog_windowservice.Info("Enable Increment Deploy:true");
                         gitModel = new GitClient(publishPath, this.nlog_windowservice);
@@ -3466,7 +3489,7 @@ namespace AntDeployWinform.Winform
 
 
                     }
-                    else if (PluginConfig.WindowsServiceEnableSelectDeploy)
+                    else if (PluginConfig.WindowsServiceEnableSelectDeploy && !isAgentUpdate)
                     {
                         isRuningSelectDeploy = true;
                         this.nlog_windowservice.Info("-----------------Select File Start-----------------");
@@ -3562,7 +3585,7 @@ namespace AntDeployWinform.Winform
                         HttpRequestClient httpRequestClient = new HttpRequestClient();
                         httpRequestClient.SetFieldValue("publishType", "windowservice");
                         httpRequestClient.SetFieldValue("isIncrement",
-                            this.PluginConfig.WindowsServiceEnableIncrement ? "true" : "");
+                            this.PluginConfig.WindowsServiceEnableIncrement && !isAgentUpdate ? "true" : "");
                         httpRequestClient.SetFieldValue("serviceName", serviceName);
                         httpRequestClient.SetFieldValue("id", loggerId);
                         httpRequestClient.SetFieldValue("sdkType", DeployConfig.WindowsServiveConfig.SdkType);
@@ -3607,7 +3630,7 @@ namespace AntDeployWinform.Winform
                                     100); //结束上传
                             webSocket.ReceiveHttpAction(true);
                             haveError = webSocket.HasError;
-                            if (haveError)
+                            if (haveError && !isAgentUpdate)
                             {
                                 allSuccess = false;
                                 failCount++;
@@ -3617,7 +3640,30 @@ namespace AntDeployWinform.Winform
                             }
                             else
                             {
-                                if (uploadResult.Item1)
+                                if(isAgentUpdate)
+                                {
+                                    var checkAgentUrl =$"http://{server.Host}/version";
+                                    LogEventInfo publisEvent22 = new LogEventInfo(LogLevel.Info, "", "Start to Check AgetVersion,TimeOut：10senconds  ==> ");
+                                    publisEvent22.Properties["ShowLink"] = checkAgentUrl;
+                                    publisEvent22.LoggerName = "rich_windowservice_log";
+                                    this.nlog_windowservice.Log(publisEvent22);
+
+                                    var fireRt = WebUtil.IsHttpGetOk(checkAgentUrl, this.nlog_windowservice, agentNewVersion);
+                                    if (fireRt)
+                                    {
+                                        UpdateDeployProgress(this.tabPage_windows_service, server.Host, true);
+                                        this.nlog_windowservice.Info($"Host:{getHostDisplayName(server)},Agent Update Success");
+                                    }
+                                    else
+                                    {
+                                        failCount++;
+                                        failServerList.Add(server);
+                                        allSuccess = false;
+                                        UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
+                                        this.nlog_windowservice.Error($"Host:{getHostDisplayName(server)},Agent Update Error");
+                                    }
+                                }
+                                else if (uploadResult.Item1)
                                 {
                                     this.nlog_windowservice.Info($"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2}");
 
