@@ -16,6 +16,7 @@ namespace AntDeployWinform.Models
     public class PluginConfig
     {
         public string DeployFolderPath { get; set; }
+        public string DeployHttpProxy { get; set; }
         public int LastTabIndex { get; set; }
         public bool IISEnableIncrement { get; set; }
         public bool IISEnableSelectDeploy { get; set; }

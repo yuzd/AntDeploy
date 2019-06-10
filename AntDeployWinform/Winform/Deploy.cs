@@ -410,6 +410,7 @@ namespace AntDeployWinform.Winform
             this.checkBox_select_deploy_service.Checked = PluginConfig.WindowsServiceEnableSelectDeploy;
             this.checkBox_select_deploy_iis.Checked = PluginConfig.IISEnableSelectDeploy;
             this.txt_folder_deploy.Text = PluginConfig.DeployFolderPath;
+            this.txt_http_proxy.Text = PluginConfig.DeployHttpProxy;
 
             this.txt_env_server_host.Text = string.Empty;
             this.txt_env_server_token.Text = string.Empty;
@@ -519,6 +520,7 @@ namespace AntDeployWinform.Winform
                 PluginConfig.IISEnableSelectDeploy = this.checkBox_select_deploy_iis.Checked;
                 PluginConfig.WindowsServiceEnableSelectDeploy = this.checkBox_select_deploy_service.Checked;
                 PluginConfig.DeployFolderPath = this.txt_folder_deploy.Text.Trim();
+                PluginConfig.DeployHttpProxy = this.txt_http_proxy.Text.Trim();
 
                 DeployConfig.IIsConfig.WebSiteName = this.txt_iis_web_site_name.Text.Trim();
 
@@ -1173,7 +1175,7 @@ namespace AntDeployWinform.Winform
                 try
                 {
                     using (SSHClient sshClient =
-                        new SSHClient(serverHost, userName, pwd))
+                        new SSHClient(serverHost, userName, pwd,this.PluginConfig.DeployHttpProxy))
                     {
                         var r = sshClient.Connect(true);
                         this.BeginInvokeLambda(() =>
@@ -1890,7 +1892,11 @@ namespace AntDeployWinform.Winform
                             httpRequestClient.SetFieldValue("wsKey", hostKey);
 
                             var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/publish",
-                                (client) => { client.UploadProgressChanged += ClientOnUploadProgressChanged; });
+                                (client) =>
+                                {
+                                    client.Proxy = GetProxy(this.nlog_iis);
+                                    client.UploadProgressChanged += ClientOnUploadProgressChanged;
+                                });
 
                             if (ProgressPercentage == 0) UploadError(this.tabPage_progress, server.Host);
                             if (ProgressPercentage > 0 && ProgressPercentage < 100)
@@ -2201,7 +2207,11 @@ namespace AntDeployWinform.Winform
                                 httpRequestClient.SetFieldValue("wsKey", hostKey);
 
                                 var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/publish",
-                                    (client) => { client.UploadProgressChanged += ClientOnUploadProgressChanged; });
+                                    (client) =>
+                                    {
+                                        client.Proxy = GetProxy(this.nlog_iis);
+                                        client.UploadProgressChanged += ClientOnUploadProgressChanged;
+                                    });
 
                                 if (ProgressPercentage == 0) UploadError(this.tabPage_progress, server.Host);
                                 if (ProgressPercentage > 0 && ProgressPercentage < 100)
@@ -2540,7 +2550,10 @@ namespace AntDeployWinform.Winform
                             httpRequestClient.SetFieldValue("wsKey", hostKey);
 
                             var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/rollback",
-                                (client) => { });
+                                (client) =>
+                                {
+                                    client.Proxy = GetProxy(this.nlog_iis);
+                                });
                             webSocket.ReceiveHttpAction(true);
                             haveError = webSocket.HasError;
                             if (haveError)
@@ -3622,7 +3635,11 @@ namespace AntDeployWinform.Winform
                             httpRequestClient.SetFieldValue("wsKey", hostKey);
 
                             var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/publish",
-                                (client) => { client.UploadProgressChanged += ClientOnUploadProgressChanged2; });
+                                (client) =>
+                                {
+                                    client.Proxy = GetProxy(this.nlog_windowservice);
+                                    client.UploadProgressChanged += ClientOnUploadProgressChanged2;
+                                });
                             if (ProgressPercentageForWindowsService == 0)
                                 UploadError(this.tabPage_windows_service, server.Host);
                             if (ProgressPercentageForWindowsService > 0 && ProgressPercentageForWindowsService < 100)
@@ -3910,7 +3927,11 @@ namespace AntDeployWinform.Winform
                             httpRequestClient.SetFieldValue("wsKey", hostKey);
 
                             var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/publish",
-                                (client) => { client.UploadProgressChanged += ClientOnUploadProgressChanged2; });
+                                (client) =>
+                                {
+                                    client.Proxy = GetProxy(this.nlog_windowservice);
+                                    client.UploadProgressChanged += ClientOnUploadProgressChanged2;
+                                });
                             if (ProgressPercentageForWindowsService == 0)
                                 UploadError(this.tabPage_windows_service, server.Host);
                             if (ProgressPercentageForWindowsService > 0 && ProgressPercentageForWindowsService < 100)
@@ -4225,7 +4246,7 @@ namespace AntDeployWinform.Winform
                             httpRequestClient.SetFieldValue("wsKey", hostKey);
 
                             var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/rollback",
-                                (client) => { });
+                                (client) => { client.Proxy = GetProxy(this.nlog_windowservice); });
                             webSocket.ReceiveHttpAction(true);
                             haveError = webSocket.HasError;
                             if (haveError)
@@ -4936,7 +4957,7 @@ namespace AntDeployWinform.Winform
                        var hasError = false;
 
                        zipBytes.Seek(0, SeekOrigin.Begin);
-                       using (SSHClient sshClient = new SSHClient(server.Host, server.UserName, pwd, (str, logLevel) =>
+                       using (SSHClient sshClient = new SSHClient(server.Host, server.UserName, pwd,PluginConfig.DeployHttpProxy, (str, logLevel) =>
                        {
 
                            if (logLevel == NLog.LogLevel.Error)
@@ -5217,7 +5238,7 @@ namespace AntDeployWinform.Winform
 
                         this.nlog_docker.Info($"Host:{getHostDisplayName(server)} Start get rollBack version list");
                         var versionList = new List<Tuple<string, string>>();
-                        using (SSHClient sshClient = new SSHClient(server.Host, server.UserName, pwd,
+                        using (SSHClient sshClient = new SSHClient(server.Host, server.UserName, pwd, PluginConfig.DeployHttpProxy,
                             (str, logLevel) =>
                             {
                                 if (logLevel == NLog.LogLevel.Error)
@@ -5289,7 +5310,7 @@ namespace AntDeployWinform.Winform
                             continue;
                         }
                         var hasError = false;
-                        using (SSHClient sshClient = new SSHClient(server.Host, server.UserName, pwd, (str, logLevel) =>
+                        using (SSHClient sshClient = new SSHClient(server.Host, server.UserName, pwd, PluginConfig.DeployHttpProxy, (str, logLevel) =>
                         {
                             if (logLevel == NLog.LogLevel.Error)
                             {
@@ -5912,7 +5933,7 @@ namespace AntDeployWinform.Winform
                     {
                         EnableForDocker(false, true);
                         var versionList = new List<Tuple<string, string>>();
-                        using (SSHClient sshClient = new SSHClient(server.Host, server.UserName, pwd,
+                        using (SSHClient sshClient = new SSHClient(server.Host, server.UserName, pwd, PluginConfig.DeployHttpProxy,
                             (str, logLevel) => { return false; }, (uploadValue) => { })
                         {
                             NetCoreENTRYPOINT = ENTRYPOINT,
@@ -6062,6 +6083,27 @@ namespace AntDeployWinform.Winform
             {
                 MessageBox.Show(message);
             });
+        }
+
+        private IWebProxy GetProxy(Logger logger)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(PluginConfig.DeployHttpProxy)) return null;
+                var proxy = new WebProxy(PluginConfig.DeployHttpProxy);
+                logger.Warn($"UseProxy:【{PluginConfig.DeployHttpProxy}】");
+                return proxy;
+            }
+            catch (Exception e)
+            {
+                logger.Warn("UseProxy Fail:" + PluginConfig.DeployHttpProxy + ",Err:" + e.Message);
+                return null;
+            }
+        }
+
+        private void txt_http_proxy_TextChanged(object sender, EventArgs e)
+        {
+            PluginConfig.DeployHttpProxy = this.txt_http_proxy.Text.Trim();
         }
     }
 }

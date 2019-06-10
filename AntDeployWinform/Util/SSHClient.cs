@@ -95,7 +95,7 @@ namespace AntDeployWinform.Util
         private readonly SshClient _sshClient;
         private long _lastProgressNumber;
         private object lockObject = new object();
-        public SSHClient(string host, string userName, string pwd, Func<string, NLog.LogLevel,bool> logger, Action<int> uploadLogger)
+        public SSHClient(string host, string userName, string pwd,string proxy ,Func<string, NLog.LogLevel,bool> logger, Action<int> uploadLogger)
         {
             this.UserName = userName;
             this.Pwd = pwd;
@@ -108,11 +108,28 @@ namespace AntDeployWinform.Util
             {
                 hPort = int.Parse(harr[1]);
             }
-            _sftpClient = new SftpClient(this.Host, hPort, userName, pwd);
-            _sshClient = new SshClient(this.Host, hPort, userName, pwd);
+            var useProxy = false;
+            if (!string.IsNullOrEmpty(proxy))
+            {
+                var arr = proxy.Split(':');
+                if (arr.Length == 2)
+                {
+                    ConnectionInfo infoConnection = new ConnectionInfo(this.Host, hPort, userName, ProxyTypes.Http, arr[0], int.Parse(arr[1]), null, null, new PasswordAuthenticationMethod(userName, pwd));
+                    _sftpClient = new SftpClient(infoConnection);
+                    _sshClient = new SshClient(infoConnection);
+                    useProxy = true;
+                }
+            }
+
+            if (!useProxy)
+            {
+                _sftpClient = new SftpClient(this.Host, hPort, userName, pwd);
+                _sshClient = new SshClient(this.Host, hPort, userName, pwd);
+            }
+
             _sftpClient.BufferSize = 6 * 1024; // bypass Payload error large files
         }
-        public SSHClient(string host, string userName, string pwd)
+        public SSHClient(string host, string userName, string pwd,string proxy = null)
         {
             this.UserName = userName;
             this.Pwd = pwd;
@@ -127,9 +144,27 @@ namespace AntDeployWinform.Util
             {
                 hPort = int.Parse(harr[1]);
             }
-            _sftpClient = new SftpClient(this.Host, hPort, userName, pwd);
-            _sshClient = new SshClient(this.Host, hPort, userName, pwd);
+
+            var useProxy = false;
+            if (!string.IsNullOrEmpty(proxy))
+            {
+                var arr = proxy.Split(':');
+                if (arr.Length == 2)
+                {
+                    ConnectionInfo infoConnection = new ConnectionInfo(this.Host, hPort, userName, ProxyTypes.Http, arr[0], int.Parse(arr[1]), null, null, new PasswordAuthenticationMethod(userName, pwd));
+                    _sftpClient = new SftpClient(infoConnection);
+                    _sshClient = new SshClient(infoConnection);
+                    useProxy = true;
+                }
+            }
+            
+            if (!useProxy)
+            {
+                _sftpClient = new SftpClient(this.Host, hPort, userName, pwd);
+                _sshClient = new SshClient(this.Host, hPort, userName, pwd);
+            }
             _sftpClient.BufferSize = 6 * 1024; // bypass Payload error large files
+
         }
 
         public bool Connect(bool ignoreLog = false)
