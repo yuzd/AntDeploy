@@ -48,6 +48,8 @@ namespace AntDeployWinform.Winform
         private volatile bool stop_windows_cancel_token;
         private volatile bool stop_docker_cancel_token;
 
+        private string _webSiteName = string.Empty;
+        private string _windowsServiceName = string.Empty;
         public Deploy(string projectPath = null, ProjectParam project = null)
         {
 
@@ -69,9 +71,64 @@ namespace AntDeployWinform.Winform
             NlogConfig();
 
             Condition = new AutoResetEvent(false);
+
+            this.txt_iis_web_site_name.DataBindings.Add("Text", this, "BindWebSiteName", false,DataSourceUpdateMode.OnPropertyChanged);
+            this.txt_windowservice_name.DataBindings.Add("Text", this, "BindWindowsServiceName", false,DataSourceUpdateMode.OnPropertyChanged);
         }
 
+        public string BindWebSiteName
+        {
+            get { return _webSiteName; }
+            set
+            {
+                _webSiteName = value;
 
+                var selectName = this.combo_iis_env.SelectedItem as string;
+                if (string.IsNullOrEmpty(selectName)) return;
+                if (DeployConfig.IIsConfig != null && DeployConfig.IIsConfig.EnvPairList != null)
+                {
+                    var first = DeployConfig.IIsConfig.EnvPairList.FirstOrDefault(r => r.EnvName.Equals(selectName));
+                    if (first != null)
+                    {
+                        first.ConfigName = _webSiteName;
+                    }
+                    else
+                    {
+                        DeployConfig.IIsConfig.EnvPairList.Add(new EnvPairConfig
+                        {
+                            EnvName = selectName,
+                            ConfigName = _webSiteName
+                        });
+                    }
+                }
+            }
+        }
+        public string BindWindowsServiceName
+        {
+            get { return _windowsServiceName; }
+            set
+            {
+                _windowsServiceName = value;
+                var selectName = this.combo_windowservice_env.SelectedItem as string;
+                if (string.IsNullOrEmpty(selectName)) return;
+                if (DeployConfig.WindowsServiveConfig != null && DeployConfig.WindowsServiveConfig.EnvPairList != null)
+                {
+                    var first = DeployConfig.WindowsServiveConfig.EnvPairList.FirstOrDefault(r => r.EnvName.Equals(selectName));
+                    if (first != null)
+                    {
+                        first.ConfigName = _windowsServiceName;
+                    }
+                    else
+                    {
+                        DeployConfig.WindowsServiveConfig.EnvPairList.Add(new EnvPairConfig
+                        {
+                            EnvName = selectName,
+                            ConfigName = _windowsServiceName
+                        });
+                    }
+                }
+            }
+        }
 
         public DeployConfig DeployConfig { get; set; } = new DeployConfig();
         public PluginConfig PluginConfig { get; set; } = new PluginConfig();
@@ -325,7 +382,7 @@ namespace AntDeployWinform.Winform
 
                 if (!string.IsNullOrEmpty(DeployConfig.IIsConfig.WebSiteName))
                 {
-                    this.txt_iis_web_site_name.Text = DeployConfig.IIsConfig.WebSiteName;
+                   _webSiteName = this.txt_iis_web_site_name.Text = DeployConfig.IIsConfig.WebSiteName;
                 }
 
 
@@ -359,7 +416,7 @@ namespace AntDeployWinform.Winform
 
                 if (!string.IsNullOrEmpty(DeployConfig.WindowsServiveConfig.ServiceName))
                 {
-                    this.txt_windowservice_name.Text = DeployConfig.WindowsServiveConfig.ServiceName;
+                    _windowsServiceName = this.txt_windowservice_name.Text = DeployConfig.WindowsServiveConfig.ServiceName;
                 }
 
 
@@ -512,6 +569,8 @@ namespace AntDeployWinform.Winform
                     }
                 }
 
+               
+
                 GlobalConfig.MsBuildPath = this.txt_msbuild_path.Text.Trim();
                 GlobalConfig.ProjectPathList = GlobalConfig.ProjectPathList.Take(10).ToList();
                 PluginConfig.LastTabIndex = this.tabcontrol.SelectedIndex;
@@ -522,9 +581,9 @@ namespace AntDeployWinform.Winform
                 PluginConfig.DeployFolderPath = this.txt_folder_deploy.Text.Trim();
                 PluginConfig.DeployHttpProxy = this.txt_http_proxy.Text.Trim();
 
-                DeployConfig.IIsConfig.WebSiteName = this.txt_iis_web_site_name.Text.Trim();
+                this.BindWebSiteName = DeployConfig.IIsConfig.WebSiteName = this.txt_iis_web_site_name.Text.Trim();
 
-                DeployConfig.WindowsServiveConfig.ServiceName = this.txt_windowservice_name.Text.Trim();
+                this.BindWindowsServiceName = DeployConfig.WindowsServiveConfig.ServiceName = this.txt_windowservice_name.Text.Trim();
 
                 DeployConfig.DockerConfig.Prot = this.txt_docker_port.Text.Trim();
                 DeployConfig.DockerConfig.AspNetCoreEnv = this.txt_docker_envname.Text.Trim();
@@ -1330,6 +1389,16 @@ namespace AntDeployWinform.Winform
             if (!string.IsNullOrEmpty(selectName))
             {
                 DeployConfig.IIsConfig.LastEnvName = selectName;
+
+                //设置对应的websitename
+                if (DeployConfig.IIsConfig.EnvPairList != null && DeployConfig.IIsConfig.EnvPairList.Any())
+                {
+                    var target = DeployConfig.IIsConfig.EnvPairList.FirstOrDefault(r => r.EnvName.Equals(selectName));
+                    if (target != null && !string.IsNullOrEmpty(target.ConfigName))
+                    {
+                        this.txt_iis_web_site_name.Text = target.ConfigName;
+                    }
+                }
 
                 //生成进度
                 if (this.tabPage_progress.Tag is Dictionary<string, ProgressBox> progressBoxList)
@@ -2982,6 +3051,17 @@ namespace AntDeployWinform.Winform
             if (!string.IsNullOrEmpty(selectName))
             {
                 DeployConfig.WindowsServiveConfig.LastEnvName = selectName;
+
+                //设置对应的websitename
+                if (DeployConfig.WindowsServiveConfig.EnvPairList != null && DeployConfig.WindowsServiveConfig.EnvPairList.Any())
+                {
+                    var target = DeployConfig.WindowsServiveConfig.EnvPairList.FirstOrDefault(r => r.EnvName.Equals(selectName));
+                    if (target != null && !string.IsNullOrEmpty(target.ConfigName))
+                    {
+                        this.txt_windowservice_name.Text = target.ConfigName;
+                    }
+                }
+
                 //生成进度
                 if (this.tabPage_windows_service.Tag is Dictionary<string, ProgressBox> progressBoxList)
                 {
@@ -4371,7 +4451,7 @@ namespace AntDeployWinform.Winform
             }
         }
 
-        private void DeployConfigOnEnvChangeEvent(Env changeEnv, bool isServerChange)
+        private void DeployConfigOnEnvChangeEvent(Env changeEnv, bool isServerChange,bool isRemove)
         {
 
             var item1 = this.combo_iis_env.SelectedItem as string;
@@ -4396,6 +4476,97 @@ namespace AntDeployWinform.Winform
                 }
 
                 return;
+            }
+            else
+            {
+                #region 说明环境有新增或者减少
+
+                if (isRemove)
+                {
+                    if (DeployConfig.IIsConfig != null && DeployConfig.IIsConfig.EnvPairList != null)
+                    {
+                        var toRemove =DeployConfig.IIsConfig.EnvPairList.FirstOrDefault(r => r.EnvName.Equals(changeEnv.Name));
+                        if (toRemove != null) DeployConfig.IIsConfig.EnvPairList.Remove(toRemove);
+                    }
+
+                    if (DeployConfig.WindowsServiveConfig != null && DeployConfig.WindowsServiveConfig.EnvPairList != null)
+                    {
+                        var toRemove = DeployConfig.WindowsServiveConfig.EnvPairList.FirstOrDefault(r => r.EnvName.Equals(changeEnv.Name));
+                        if (toRemove != null) DeployConfig.WindowsServiveConfig.EnvPairList.Remove(toRemove);
+                    }
+                }
+                else
+                {
+                    if (DeployConfig.IIsConfig == null )
+                    {
+                        DeployConfig.IIsConfig = new IIsConfig
+                        {
+                            EnvPairList = new List<EnvPairConfig>
+                            {
+                                new EnvPairConfig
+                                {
+                                    EnvName = changeEnv.Name,
+                                    ConfigName = this.txt_iis_web_site_name.Text
+                                }
+                            }
+                        };
+                    }
+                    else if (DeployConfig.IIsConfig.EnvPairList == null)
+                    {
+                        DeployConfig.IIsConfig.EnvPairList =new List<EnvPairConfig>
+                        {
+                            new EnvPairConfig
+                            {
+                                EnvName = changeEnv.Name,
+                                ConfigName = this.txt_iis_web_site_name.Text
+                            }
+                        };
+                    }
+                    else if (!DeployConfig.IIsConfig.EnvPairList.Exists(r=>r.EnvName.Equals(changeEnv.Name)))
+                    {
+                        DeployConfig.IIsConfig.EnvPairList.Add(new EnvPairConfig
+                        {
+                            EnvName = changeEnv.Name,
+                            ConfigName = this.txt_iis_web_site_name.Text
+                        });
+                    }
+
+                    if (DeployConfig.WindowsServiveConfig == null)
+                    {
+                        DeployConfig.WindowsServiveConfig = new WindowsServiveConfig
+                        {
+                            EnvPairList = new List<EnvPairConfig>
+                            {
+                                new EnvPairConfig
+                                {
+                                    EnvName = changeEnv.Name,
+                                    ConfigName = this.txt_windowservice_name.Text
+                                }
+                            }
+                        };
+                    }
+                    else if (DeployConfig.WindowsServiveConfig.EnvPairList == null)
+                    {
+                        DeployConfig.WindowsServiveConfig.EnvPairList = new List<EnvPairConfig>
+                        {
+                            new EnvPairConfig
+                            {
+                                EnvName = changeEnv.Name,
+                                ConfigName = this.txt_windowservice_name.Text
+                            }
+                        };
+                    }
+                    else if (!DeployConfig.WindowsServiveConfig.EnvPairList.Exists(r => r.EnvName.Equals(changeEnv.Name)))
+                    {
+                        DeployConfig.WindowsServiveConfig.EnvPairList.Add(new EnvPairConfig
+                        {
+                            EnvName = changeEnv.Name,
+                            ConfigName = this.txt_windowservice_name.Text
+                        });
+                    }
+                }
+
+                #endregion
             }
 
             this.combo_iis_env.Items.Clear();

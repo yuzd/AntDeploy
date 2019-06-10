@@ -45,7 +45,7 @@ namespace AntDeployWinform.Models
         }
     }
 
-    public delegate void EnvChange(Env env, bool isServerChange);
+    public delegate void EnvChange(Env env, bool isServerChange,bool isRemove);
     public class DeployConfig
     {
         public event EnvChange EnvChangeEvent;
@@ -54,19 +54,19 @@ namespace AntDeployWinform.Models
         public void AddEnv(Env env)
         {
             this.Env.Add(env);
-            EnvChangeEvent?.Invoke(env, false);
+            EnvChangeEvent?.Invoke(env, false,false);
         }
 
         public void RemoveEnv(int index)
         {
             var env = this.Env[index];
             this.Env.RemoveAt(index);
-            EnvChangeEvent?.Invoke(env, false);
+            EnvChangeEvent?.Invoke(env, false,true);
         }
 
         public void EnvServerChange(Env env)
         {
-            EnvChangeEvent?.Invoke(env, true);
+            EnvChangeEvent?.Invoke(env, true,false);
         }
 
 
@@ -89,8 +89,23 @@ namespace AntDeployWinform.Models
 
         public string LastEnvName { get; set; }
 
+        public List<EnvPairConfig> EnvPairList { get; set; } = new List<EnvPairConfig>();
+
     }
 
+
+    public class EnvPairConfig
+    {
+        /// <summary>
+        /// 环境名称
+        /// </summary>
+        public string EnvName { get; set; }
+
+        /// <summary>
+        /// iis名称和环境走 windows服务名称和环境走
+        /// </summary>
+        public string ConfigName { get; set; }
+    }
 
     /// <summary>
     /// 如果是netcore的话 需要 dotnet publish -c Release --runtime win-x64 （第一次会需要很长时间）
@@ -107,6 +122,8 @@ namespace AntDeployWinform.Models
         public string SdkType { get; set; }
 
         public string LastEnvName { get; set; }
+
+        public List<EnvPairConfig> EnvPairList { get; set; } = new List<EnvPairConfig>();
     }
 
 
