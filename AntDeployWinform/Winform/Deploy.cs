@@ -5028,7 +5028,7 @@ namespace AntDeployWinform.Winform
                            {
                                UpdatePackageProgress(this.tabPage_docker, null, progressValue); //打印打包记录
                                return stop_docker_cancel_token;
-                           });
+                           }, nlog_docker);
                    }
                    catch (Exception ex)
                    {

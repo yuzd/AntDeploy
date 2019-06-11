@@ -6,6 +6,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
 using ICSharpCode.SharpZipLib.Zip;
+using NLog;
 
 namespace AntDeployWinform.Util
 {
@@ -417,7 +418,7 @@ namespace AntDeployWinform.Util
             }
         }
 
-        public static MemoryStream DoCreateTarFromDirectory(string sourceDirectory, List<string> ignoreList = null, Func<int,bool> progress = null)
+        public static MemoryStream DoCreateTarFromDirectory(string sourceDirectory, List<string> ignoreList = null, Func<int,bool> progress = null,Logger logger = null)
         {
             MemoryStream outputMemStream = new MemoryStream();
             TarArchive tarArchive = TarArchive.CreateOutputTarArchive(outputMemStream);
@@ -495,6 +496,10 @@ namespace AntDeployWinform.Util
 
                 if (enumerateFileSystemInfo is FileInfo)
                 {
+                    if (entryName.Contains("Dockerfile"))
+                    {
+                        logger?.Info($"Find Dockerfile In Package: {entryName}");
+                    }
                     haveFile = true;
                     TarEntry tarEntry = TarEntry.CreateEntryFromFile(enumerateFileSystemInfo.FullName);
                     tarArchive.WriteEntry(tarEntry, true);

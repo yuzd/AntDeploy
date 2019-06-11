@@ -509,6 +509,7 @@ namespace AntDeployWinform.Util
             var isExistDockFile = _sftpClient.Exists(dockFilePath2);
             //如果本地存在dockerfile 那么就根据此创建image
             //如果不存在的话 就根据当前的netcore sdk的版本 进行创建相对应的 dockfile
+
             if (!isExistDockFile)
             {
                 if (isrollBack)
@@ -516,6 +517,7 @@ namespace AntDeployWinform.Util
                     _logger($"dockerFile is not exist: {dockFilePath}", NLog.LogLevel.Error);
                     return;
                 }
+                _logger($"dockerFile not found in: [{dockFilePath}],will create default Dockerfile!", NLog.LogLevel.Info);
                 var createDockerFileResult = CreateDockerFile(dockFilePath);
                 if (!createDockerFileResult) return;
             }
@@ -874,7 +876,7 @@ namespace AntDeployWinform.Util
                 using (var writer = _sftpClient.CreateText(path))
                 {
                     writer.WriteLine($"FROM microsoft/dotnet:{sdkVersion}-aspnetcore-runtime");
-                    _logger($"FROM microsoft/dotnet:{sdkVersion}-aspnetcore-runtime", NLog.LogLevel.Info);
+                    _logger($"FROM mcr.microsoft.com/dotnet/core/runtime:{sdkVersion}", NLog.LogLevel.Info);// microsoft/dotnet:{sdkVersion}-aspnetcore-runtime
 
                     writer.WriteLine($"COPY . /publish");
                     _logger($"COPY . /publish", NLog.LogLevel.Info);
