@@ -2716,22 +2716,7 @@ namespace AntDeployWinform.Winform
 
         private void ClientOnUploadProgressChanged(object sender, UploadProgressChangedEventArgs e)
         {
-            if (stop_iis_cancel_token)
-            {
-                try
-                {
-                    var client = sender as WebClient;
-                    if (client != null)
-                    {
-
-                        client.CancelAsync();
-                    }
-                }
-                catch (Exception)
-                {
-
-                }
-            }
+           
             if (e.ProgressPercentage > ProgressPercentage && e.ProgressPercentage != 100)
             {
                 ProgressPercentage = e.ProgressPercentage;
@@ -2739,6 +2724,28 @@ namespace AntDeployWinform.Winform
                 if (!string.IsNullOrEmpty(ProgressCurrentHost))
                     UpdateUploadProgress(this.tabPage_progress, ProgressCurrentHost, showValue);
                 this.nlog_iis.Info($"Upload {showValue} % complete...");
+            }
+
+            if (ProgressPercentage > 95)
+            {
+                //如果上传进度已经到了100 了 在取消已经没有意义了
+                return;
+            }
+
+            if (stop_iis_cancel_token)
+            {
+                try
+                {
+                    var client = sender as WebClient;
+                    if (client != null)
+                    {
+                        client.CancelAsync();
+                    }
+                }
+                catch (Exception)
+                {
+                    //ignore
+                }
             }
         }
         private void EnableDockerRetry(bool flag)
@@ -2973,6 +2980,15 @@ namespace AntDeployWinform.Winform
         {
             this.BeginInvokeLambda(() =>
             {
+                if (tabPage != tabPage_docker && value >= 100)
+                {
+                    //针对iis 和 windows服务发布 上传超过100的话  隐藏 Stop
+                    this.btn_iis_stop.Visible = false;
+                    this.btn_windows_serivce_stop.Visible = false;
+                    stop_iis_cancel_token = false;
+                    stop_windows_cancel_token = false;
+                }
+
                 if (tabPage.Tag is Dictionary<string, ProgressBox> progressBoxList)
                 {
                     foreach (var box in progressBoxList)
@@ -3118,6 +3134,21 @@ namespace AntDeployWinform.Winform
 
         private void ClientOnUploadProgressChanged2(object sender, UploadProgressChangedEventArgs e)
         {
+           
+            if (e.ProgressPercentage > ProgressPercentageForWindowsService && e.ProgressPercentage != 100)
+            {
+                ProgressPercentageForWindowsService = e.ProgressPercentage;
+                var showValue = (e.ProgressPercentage != 100 ? e.ProgressPercentage * 2 : e.ProgressPercentage);
+                if (!string.IsNullOrEmpty(ProgressCurrentHostForWindowsService))
+                    UpdateUploadProgress(this.tabPage_windows_service, ProgressCurrentHostForWindowsService, showValue);
+                this.nlog_windowservice.Info($"Upload {showValue} % complete...");
+            }
+
+            if (ProgressPercentageForWindowsService > 95)
+            {
+                return;
+            }
+
             if (stop_windows_cancel_token)
             {
                 try
@@ -3131,16 +3162,8 @@ namespace AntDeployWinform.Winform
                 }
                 catch (Exception)
                 {
-
+                    //ignore
                 }
-            }
-            if (e.ProgressPercentage > ProgressPercentageForWindowsService && e.ProgressPercentage != 100)
-            {
-                ProgressPercentageForWindowsService = e.ProgressPercentage;
-                var showValue = (e.ProgressPercentage != 100 ? e.ProgressPercentage * 2 : e.ProgressPercentage);
-                if (!string.IsNullOrEmpty(ProgressCurrentHostForWindowsService))
-                    UpdateUploadProgress(this.tabPage_windows_service, ProgressCurrentHostForWindowsService, showValue);
-                this.nlog_windowservice.Info($"Upload {showValue} % complete...");
             }
         }
 
