@@ -201,9 +201,6 @@
     <Content Include="CircularProgressBar.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="CircularProgressBar.xml">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <Content Include="en\AntDeployWinform.resources.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -213,16 +210,10 @@
     <Content Include="ICSharpCode.SharpZipLib.pdb">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="ICSharpCode.SharpZipLib.xml">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <Content Include="LibGit2Sharp.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="LibGit2Sharp.pdb">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="LibGit2Sharp.xml">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="lib\win32\x64\git2-572e4d8.dll">
@@ -249,9 +240,6 @@
     <Content Include="Renci.SshNet.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Renci.SshNet.xml">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <Resource Include="Resources\ant.ico" />
     <Resource Include="Resources\Logo.ico" />
     <Resource Include="Resources\Logo1.ico" />
@@ -267,19 +255,22 @@
     <Content Include="System.Buffers.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="System.Buffers.xml">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <Content Include="System.Net.WebSockets.Client.Managed.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="System.Net.WebSockets.Client.Managed.xml">
+    <Content Include="System.Reactive.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="System.Runtime.CompilerServices.Unsafe.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="System.Threading.Tasks.Extensions.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="System.ValueTuple.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="WinFormAnimation.dll">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="WinFormAnimation.xml">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="zh-CN\AntDeployWinform.resources.dll">

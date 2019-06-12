@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -23,6 +24,8 @@ namespace AntDeployWinform.Util
         public string UserName { get; set; }
         public string Pwd { get; set; }
         public string NetCoreVersion { get; set; }
+
+        public event EventHandler<UploadEventArgs> UploadEvent;
 
         public string PorjectName
         {
@@ -128,7 +131,19 @@ namespace AntDeployWinform.Util
             }
 
             _sftpClient.BufferSize = 6 * 1024; // bypass Payload error large files
+
+
+            System.Reactive.Linq.Observable
+                .FromEventPattern<UploadEventArgs>(this, "UploadEvent")
+                .Sample(TimeSpan.FromMilliseconds(50))
+                .Subscribe(arg => { OnUploadEvent(arg.Sender, arg.EventArgs); });
         }
+
+        private void OnUploadEvent(object sender, UploadEventArgs e)
+        {
+            this.uploadProgress(e.size,e.uploadedSize);
+        }
+
         public SSHClient(string host, string userName, string pwd,string proxy = null)
         {
             this.UserName = userName;
@@ -164,6 +179,11 @@ namespace AntDeployWinform.Util
                 _sshClient = new SshClient(this.Host, hPort, userName, pwd);
             }
             _sftpClient.BufferSize = 6 * 1024; // bypass Payload error large files
+
+            System.Reactive.Linq.Observable
+                .FromEventPattern<UploadEventArgs>(this, "UploadEvent")
+                .Sample(TimeSpan.FromMilliseconds(100))
+                .Subscribe(arg => { OnUploadEvent(arg.Sender, arg.EventArgs); });
 
         }
 
@@ -205,7 +225,7 @@ namespace AntDeployWinform.Util
         {
             if (!destinationFolder.EndsWith("/")) destinationFolder = destinationFolder + "/";
 
-
+           
 
             //创建文件夹
             CreateServerDirectoryIfItDoesntExist(destinationFolder);
@@ -233,10 +253,28 @@ namespace AntDeployWinform.Util
             ChangeToFolder(destinationFolder);
 
             var fileSize = stream.Length;
-            _sftpClient.UploadFile(stream, fileName, (uploaded) => { uploadProgress(fileSize, uploaded); });
+            _lastProgressNumber = 0;
 
+            _sftpClient.UploadFile(stream, fileName, (uploaded) =>
+            {
+                if (UploadEvent != null)
+                {
+                    UploadEvent(this, new UploadEventArgs
+                    {
+                        size = fileSize,
+                        uploadedSize = uploaded
+                    });
+                }
+                else
+                {
+                    uploadProgress(fileSize, uploaded);
+                }
+            });
 
-
+            if (_lastProgressNumber != 100)
+            {
+                _uploadLogger(100);
+            }
 
         }
 
@@ -252,7 +290,7 @@ namespace AntDeployWinform.Util
 
         private void uploadProgress(long size, ulong uploadedSize)
         {
-            lock (lockObject)
+           // lock (lockObject)
             {
                 var lastProgressNumber = (((long)uploadedSize * 100 / size));
 
@@ -266,17 +304,18 @@ namespace AntDeployWinform.Util
                     return;
                 }
 
-                if (lastProgressNumber.ToString().Length == 2 && _lastProgressNumber.ToString().First() == lastProgressNumber.ToString().First())
-                {
-                    return;
-                }
+                //if (lastProgressNumber.ToString().Length == 2 && _lastProgressNumber.ToString().First() == lastProgressNumber.ToString().First())
+                //{
+                //    return;
+                //}
+
                 _lastProgressNumber = lastProgressNumber;
                 var isCanceled = _logger($"uploaded {lastProgressNumber} %", NLog.LogLevel.Info);
                 if (isCanceled)
                 {
                    this.Dispose();
                 }
-                _uploadLogger((int)lastProgressNumber);
+                _uploadLogger((int)_lastProgressNumber);
 
             }
 
@@ -1099,6 +1138,13 @@ namespace AntDeployWinform.Util
         public double DiffDays { get; set; }
     }
 
+    public class UploadEventArgs: EventArgs
+    {
+        //long size, ulong uploadedSize
 
+        public long size { get; set; }
+        public ulong uploadedSize { get; set; }
+        
+    }
 
 }

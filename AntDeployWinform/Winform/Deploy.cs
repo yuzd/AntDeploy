@@ -12,6 +12,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Reactive.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -1964,7 +1965,11 @@ namespace AntDeployWinform.Winform
                                 (client) =>
                                 {
                                     client.Proxy = GetProxy(this.nlog_iis);
-                                    client.UploadProgressChanged += ClientOnUploadProgressChanged;
+                                    System.Reactive.Linq.Observable
+                                        .FromEventPattern<UploadProgressChangedEventArgs>(client, "UploadProgressChanged")
+                                        .Sample(TimeSpan.FromMilliseconds(100))
+                                        .Subscribe(arg => { ClientOnUploadProgressChanged(arg.Sender,arg.EventArgs); });
+                                    //client.UploadProgressChanged += ClientOnUploadProgressChanged;
                                 });
 
                             if (ProgressPercentage == 0) UploadError(this.tabPage_progress, server.Host);
@@ -2087,7 +2092,7 @@ namespace AntDeployWinform.Winform
                 }
 
 
-            }).Start();
+            }, System.Threading.Tasks.TaskCreationOptions.LongRunning).Start();
 
         }
 
@@ -2279,7 +2284,11 @@ namespace AntDeployWinform.Winform
                                     (client) =>
                                     {
                                         client.Proxy = GetProxy(this.nlog_iis);
-                                        client.UploadProgressChanged += ClientOnUploadProgressChanged;
+                                        System.Reactive.Linq.Observable
+                                            .FromEventPattern<UploadProgressChangedEventArgs>(client, "UploadProgressChanged")
+                                            .Sample(TimeSpan.FromMilliseconds(100))
+                                            .Subscribe(arg => { ClientOnUploadProgressChanged(arg.Sender, arg.EventArgs); });
+                                        //client.UploadProgressChanged += ClientOnUploadProgressChanged;
                                     });
 
                                 if (ProgressPercentage == 0) UploadError(this.tabPage_progress, server.Host);
@@ -2399,9 +2408,9 @@ namespace AntDeployWinform.Winform
                     }
 
 
-                }).Start();
+                }, System.Threading.Tasks.TaskCreationOptions.LongRunning).Start();
             }
-            catch (Exception e)
+            catch (Exception )
             {
                 ProgressPercentage = 0;
                 ProgressCurrentHost = null;
@@ -2707,7 +2716,7 @@ namespace AntDeployWinform.Winform
 
 
 
-            }).Start();
+            }, System.Threading.Tasks.TaskCreationOptions.LongRunning).Start();
 
         }
 
@@ -2716,17 +2725,21 @@ namespace AntDeployWinform.Winform
 
         private void ClientOnUploadProgressChanged(object sender, UploadProgressChangedEventArgs e)
         {
-           
+            var showValue = 0;
             if (e.ProgressPercentage > ProgressPercentage && e.ProgressPercentage != 100)
             {
                 ProgressPercentage = e.ProgressPercentage;
-                var showValue = (e.ProgressPercentage != 100 ? e.ProgressPercentage * 2 : e.ProgressPercentage);
+                showValue = (e.ProgressPercentage != 100 ? e.ProgressPercentage * 2 : e.ProgressPercentage);
                 if (!string.IsNullOrEmpty(ProgressCurrentHost))
+                {
                     UpdateUploadProgress(this.tabPage_progress, ProgressCurrentHost, showValue);
+                }
                 this.nlog_iis.Info($"Upload {showValue} % complete...");
+
             }
 
-            if (ProgressPercentage > 95)
+
+            if (showValue > 95)
             {
                 //如果上传进度已经到了100 了 在取消已经没有意义了
                 return;
@@ -2747,6 +2760,7 @@ namespace AntDeployWinform.Winform
                     //ignore
                 }
             }
+
         }
         private void EnableDockerRetry(bool flag)
         {
@@ -2984,7 +2998,9 @@ namespace AntDeployWinform.Winform
                 {
                     //针对iis 和 windows服务发布 上传超过100的话  隐藏 Stop
                     this.btn_iis_stop.Visible = false;
+                    this.btn_iis_stop.Tag = "false";
                     this.btn_windows_serivce_stop.Visible = false;
+                    this.btn_windows_serivce_stop.Tag = "false";
                     stop_iis_cancel_token = false;
                     stop_windows_cancel_token = false;
                 }
@@ -3023,6 +3039,20 @@ namespace AntDeployWinform.Winform
                             box.Value.UpdateDeployProgress(value);
                             break;
                         }
+                    }
+
+                    if (progressBoxList.Count == 1) return;
+                    if (tabPage == this.tabPage_progress)
+                    {
+                        //针对iis 和 windows服务发布 上传超过100的话  会隐藏 Stop
+                        //在结束第四个圈圈的时候在释放
+                        var flag = this.btn_iis_stop.Tag as string;
+                        if (!string.IsNullOrEmpty(flag) && flag == "false") this.btn_iis_stop.Visible = true;
+                    }
+                    else if (tabPage == this.tabPage_windows_service)
+                    {
+                        var flag = this.btn_windows_serivce_stop.Tag as string;
+                        if (!string.IsNullOrEmpty(flag) && flag == "false") this.btn_windows_serivce_stop.Visible = true;
                     }
                 }
             });
@@ -3741,7 +3771,11 @@ namespace AntDeployWinform.Winform
                                 (client) =>
                                 {
                                     client.Proxy = GetProxy(this.nlog_windowservice);
-                                    client.UploadProgressChanged += ClientOnUploadProgressChanged2;
+                                    System.Reactive.Linq.Observable
+                                        .FromEventPattern<UploadProgressChangedEventArgs>(client, "UploadProgressChanged")
+                                        .Sample(TimeSpan.FromMilliseconds(100))
+                                        .Subscribe(arg => { ClientOnUploadProgressChanged2(arg.Sender, arg.EventArgs); });
+                                    //client.UploadProgressChanged += ClientOnUploadProgressChanged2;
                                 });
                             if (ProgressPercentageForWindowsService == 0)
                                 UploadError(this.tabPage_windows_service, server.Host);
@@ -3890,7 +3924,7 @@ namespace AntDeployWinform.Winform
 
 
 
-            }).Start();
+            }, System.Threading.Tasks.TaskCreationOptions.LongRunning).Start();
         }
 
 
@@ -4033,7 +4067,11 @@ namespace AntDeployWinform.Winform
                                 (client) =>
                                 {
                                     client.Proxy = GetProxy(this.nlog_windowservice);
-                                    client.UploadProgressChanged += ClientOnUploadProgressChanged2;
+                                    System.Reactive.Linq.Observable
+                                        .FromEventPattern<UploadProgressChangedEventArgs>(client, "UploadProgressChanged")
+                                        .Sample(TimeSpan.FromMilliseconds(100))
+                                        .Subscribe(arg => { ClientOnUploadProgressChanged2(arg.Sender, arg.EventArgs); });
+                                    //client.UploadProgressChanged += ClientOnUploadProgressChanged2;
                                 });
                             if (ProgressPercentageForWindowsService == 0)
                                 UploadError(this.tabPage_windows_service, server.Host);
@@ -4152,7 +4190,7 @@ namespace AntDeployWinform.Winform
                     EnableForWindowsService(true);
                     gitModel?.Dispose();
                 }
-            }).Start();
+            }, System.Threading.Tasks.TaskCreationOptions.LongRunning).Start();
         }
 
         private void b_windows_service_rollback_Click(object sender, EventArgs e)
@@ -4428,7 +4466,7 @@ namespace AntDeployWinform.Winform
                     EnableForWindowsService(true);
                 }
 
-            }).Start();
+            }, System.Threading.Tasks.TaskCreationOptions.LongRunning).Start();
         }
 
 
@@ -5291,7 +5329,7 @@ namespace AntDeployWinform.Winform
 
 
 
-           }).Start();
+           }, System.Threading.Tasks.TaskCreationOptions.LongRunning).Start();
         }
 
         private void btn_docker_rollback_Click(object sender, EventArgs e)
@@ -5604,7 +5642,7 @@ namespace AntDeployWinform.Winform
                     EnableForDocker(true);
                 }
 
-            }).Start();
+            }, System.Threading.Tasks.TaskCreationOptions.LongRunning).Start();
 
         }
 
@@ -6121,7 +6159,7 @@ namespace AntDeployWinform.Winform
                     ENTRYPOINT = this.ProjectName + ".dll";//MessageBox.Show("get current project property:outputfilename error");
                 }
 
-                new Task(async () =>
+                new Task( () =>
                 {
                     try
                     {

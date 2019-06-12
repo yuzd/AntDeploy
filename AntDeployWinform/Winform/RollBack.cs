@@ -267,19 +267,19 @@ namespace AntDeployWinform.Winform
         /// <summary>
         /// 字段名(表单域名称)
         /// </summary>
-        public string FieldName;
+        public string FieldName { get; set; }
 
         /// <summary>
         /// 文件名
         /// </summary>
-        public string FileName;
+        public string FileName { get; set; }
 
 
 
         /// <summary>
         /// 文本内容
         /// </summary>
-        public string TextValue;
+        public string TextValue { get; set; }
     }
 
 }

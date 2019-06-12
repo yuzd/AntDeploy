@@ -119,7 +119,7 @@ namespace AntDeployWinform.Util
                    }
                }).Start();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //ignore
                 receiveAction.Debug($"WebSocket Connect Fail,Server excute logs will accept from http request");
