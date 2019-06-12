@@ -3047,12 +3047,20 @@ namespace AntDeployWinform.Winform
                         //针对iis 和 windows服务发布 上传超过100的话  会隐藏 Stop
                         //在结束第四个圈圈的时候在释放
                         var flag = this.btn_iis_stop.Tag as string;
-                        if (!string.IsNullOrEmpty(flag) && flag == "false") this.btn_iis_stop.Visible = true;
+                        if (!string.IsNullOrEmpty(flag) && flag == "false")
+                        {
+                            this.btn_iis_stop.Tag = null;
+                            this.btn_iis_stop.Visible = true;
+                        }
                     }
                     else if (tabPage == this.tabPage_windows_service)
                     {
                         var flag = this.btn_windows_serivce_stop.Tag as string;
-                        if (!string.IsNullOrEmpty(flag) && flag == "false") this.btn_windows_serivce_stop.Visible = true;
+                        if (!string.IsNullOrEmpty(flag) && flag == "false")
+                        {
+                            this.btn_windows_serivce_stop.Tag = null;
+                            this.btn_windows_serivce_stop.Visible = true;
+                        }
                     }
                 }
             });
