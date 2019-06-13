@@ -994,7 +994,7 @@ namespace AntDeployWinform.Util
 
             if (!string.IsNullOrEmpty(cmd.Error))
             {
-                if (cmd.Error.Contains("unable to resolve host 127.0.0.1localhost.localdomainlocalhost"))
+                if (cmd.Error.Contains("unable to resolve host"))
                 {
                     _logger(cmd.Error, LogLevel.Warn);
                     return true;
