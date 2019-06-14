@@ -98,6 +98,7 @@ namespace AntDeployWinform.Util
         private readonly SshClient _sshClient;
         private long _lastProgressNumber;
         private object lockObject = new object();
+        private IDisposable _subscribe;
         public SSHClient(string host, string userName, string pwd,string proxy ,Func<string, NLog.LogLevel,bool> logger, Action<int> uploadLogger)
         {
             this.UserName = userName;
@@ -133,7 +134,7 @@ namespace AntDeployWinform.Util
             _sftpClient.BufferSize = 6 * 1024; // bypass Payload error large files
 
 
-            System.Reactive.Linq.Observable
+            _subscribe = System.Reactive.Linq.Observable
                 .FromEventPattern<UploadEventArgs>(this, "UploadEvent")
                 .Sample(TimeSpan.FromMilliseconds(50))
                 .Subscribe(arg => { OnUploadEvent(arg.Sender, arg.EventArgs); });
@@ -180,7 +181,7 @@ namespace AntDeployWinform.Util
             }
             _sftpClient.BufferSize = 6 * 1024; // bypass Payload error large files
 
-            System.Reactive.Linq.Observable
+            _subscribe = System.Reactive.Linq.Observable
                 .FromEventPattern<UploadEventArgs>(this, "UploadEvent")
                 .Sample(TimeSpan.FromMilliseconds(100))
                 .Subscribe(arg => { OnUploadEvent(arg.Sender, arg.EventArgs); });
@@ -1038,6 +1039,15 @@ namespace AntDeployWinform.Util
 
         public void Dispose()
         {
+            try
+            {
+                _subscribe.Dispose();
+            }
+            catch (Exception)
+            {
+
+            }
+          
             try
             {
                 _sftpClient.Disconnect();

@@ -3,6 +3,8 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reactive.Linq;
+using NLog;
 
 namespace AntDeployWinform.Util
 {
@@ -12,6 +14,8 @@ namespace AntDeployWinform.Util
     /// </summary>
     public class CommandHelper
     {
+  
+
 
         public static string MsBuildPath = "";
 
@@ -99,6 +103,7 @@ namespace AntDeployWinform.Util
         private static bool RunDotnetExternalExe(string projectPath, string fileName, string arguments, NLog.Logger logger, Func<bool> checkCancel = null)
         {
             Process process = null;
+            BuildProgress pr = null;
             try
             {
                 try
@@ -115,6 +120,7 @@ namespace AntDeployWinform.Util
                 }
 
                 //执行dotnet命令如果 projectdir路径含有空格 或者 outDir 路径含有空格 都是没有问题的
+                pr = new BuildProgress(logger);
 
                 process = new Process();
 
@@ -164,15 +170,27 @@ namespace AntDeployWinform.Util
                     {
                         if (!args.Data.StartsWith(" ") && args.Data.Contains(": error"))
                         {
-                            logger?.Warn(args.Data);
+                            pr.Log(new BuildEventArgs
+                            {
+                                level = LogLevel.Warn,
+                                message = args.Data
+                            });
                         }
                         else if (args.Data.Contains(".csproj : error"))
                         {
-                            logger?.Error(args.Data);
+                            pr.Log(new BuildEventArgs
+                            {
+                                level = LogLevel.Error,
+                                message = args.Data
+                            });
                         }
                         else
                         {
-                            logger?.Info(args.Data);
+                            pr.Log(new BuildEventArgs
+                            {
+                                level = LogLevel.Info,
+                                message = args.Data
+                            });
                         }
                     }
                 };
@@ -206,7 +224,15 @@ namespace AntDeployWinform.Util
                             }
                         }
                     }
-                    if (!string.IsNullOrWhiteSpace(data.Data)) logger?.Error(data.Data);
+
+                    if (!string.IsNullOrWhiteSpace(data.Data))
+                    {
+                        pr.Log(new BuildEventArgs
+                        {
+                            level = LogLevel.Error,
+                            message = data.Data
+                        });
+                    }
                 };
                 process.BeginErrorReadLine();
 
@@ -242,6 +268,14 @@ namespace AntDeployWinform.Util
                 try
                 {
                     process?.Kill();
+                }
+                catch (Exception)
+                {
+                    //ignore
+                }
+                try
+                {
+                    pr?.Dispose();
                 }
                 catch (Exception)
                 {
@@ -330,6 +364,65 @@ namespace AntDeployWinform.Util
 
             return string.Empty;
         }
+
+    }
+
+    public class BuildProgress:IDisposable
+    {
+        public event EventHandler<BuildEventArgs> BuildEvent;
+
+        private readonly Logger _logger;
+
+        private readonly IDisposable _subscribe;
+        public BuildProgress(Logger logger)
+        {
+            _logger = logger;
+
+            _subscribe = System.Reactive.Linq.Observable
+                .FromEventPattern<BuildEventArgs>(this, "BuildEvent")
+                .Sample(TimeSpan.FromMilliseconds(100))
+                .Subscribe(arg => { OnBuildEvent(arg.Sender, arg.EventArgs); });
+        }
+
+        private void OnBuildEvent(object objSender, BuildEventArgs objEventArgs)
+        {
+            if (objEventArgs.level == LogLevel.Warn)
+            {
+                _logger.Warn(objEventArgs.message);
+                return;
+            }
+
+            if (objEventArgs.level == LogLevel.Error)
+            {
+                _logger.Error(objEventArgs.message);
+                return;
+            }
+
+            _logger.Info(objEventArgs.message);
+        }
+
+        public void Log(BuildEventArgs ar)
+        {
+            if (BuildEvent == null)
+            {
+                OnBuildEvent(null, ar);
+            }
+            else
+            {
+                BuildEvent(this, ar);
+            }
+        }
+
+        public void Dispose()
+        {
+            _subscribe?.Dispose();
+        }
+    }
+
+    public class BuildEventArgs : EventArgs
+    {
+        public LogLevel level { get; set; }
+        public string message { get; set; }
 
     }
 }

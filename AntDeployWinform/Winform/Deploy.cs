@@ -1763,6 +1763,8 @@ namespace AntDeployWinform.Winform
                     {
                         dateTimeFolderName = dateTimeFolderNameParent;
                     }
+                    //重试了 但是没有发现错误的Server List
+                    if (retryTimes > 0 && allfailServerList.Count == 0) return;
                     foreach (var server in isRetry ? allfailServerList : serverList)
                     {
                         if (isRetry) UploadReset(this.tabPage_progress, server.Host);
@@ -1945,6 +1947,7 @@ namespace AntDeployWinform.Winform
                             Key = loggerId,
                             Url = $"http://{server.Host}/logger?key=" + loggerId
                         };
+                        IDisposable _subcribe = null;
                         WebSocketClient webSocket = new WebSocketClient(this.nlog_iis, HttpLogger);
                         var haveError = false;
                         try
@@ -1960,12 +1963,12 @@ namespace AntDeployWinform.Winform
                             var hostKey = await webSocket.Connect($"ws://{server.Host}/socket");
 
                             httpRequestClient.SetFieldValue("wsKey", hostKey);
-
+                           
                             var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/publish",
                                 (client) =>
                                 {
                                     client.Proxy = GetProxy(this.nlog_iis);
-                                    System.Reactive.Linq.Observable
+                                    _subcribe =System.Reactive.Linq.Observable
                                         .FromEventPattern<UploadProgressChangedEventArgs>(client, "UploadProgressChanged")
                                         .Sample(TimeSpan.FromMilliseconds(100))
                                         .Subscribe(arg => { ClientOnUploadProgressChanged(arg.Sender,arg.EventArgs); });
@@ -2041,6 +2044,8 @@ namespace AntDeployWinform.Winform
                         finally
                         {
                             await webSocket?.Dispose();
+
+                            _subcribe?.Dispose();
                         }
 
                     }
@@ -2050,12 +2055,14 @@ namespace AntDeployWinform.Winform
                     {
                         this.nlog_iis.Info("Deploy Version：" + dateTimeFolderNameParent);
                         if (gitModel != null) gitModel.SubmitChanges(gitChangeFileCount);
+                        allfailServerList=new List<Server>();
                     }
                     else
                     {
                         if (!stop_iis_cancel_token)
                         {
-                            allfailServerList = failServerList;
+                            allfailServerList = new List<Server>();
+                            allfailServerList.AddRange(failServerList); 
                             EnableIIsRetry(true);
                             //看是否要重试
                             Condition.WaitOne();
@@ -2166,6 +2173,8 @@ namespace AntDeployWinform.Winform
                         {
                             dateTimeFolderName = dateTimeFolderNameParent;
                         }
+                        //重试了 但是没有发现错误的Server List
+                        if (retryTimes > 0 && allfailServerList.Count == 0) return;
                         foreach (var server in isRetry ? allfailServerList : serverList)
                         {
                             if (isRetry) UploadReset(this.tabPage_progress, server.Host);
@@ -2264,6 +2273,7 @@ namespace AntDeployWinform.Winform
                                 Key = loggerId,
                                 Url = $"http://{server.Host}/logger?key=" + loggerId
                             };
+                            IDisposable _subcribe = null;
                             WebSocketClient webSocket = new WebSocketClient(this.nlog_iis, HttpLogger);
                             var haveError = false;
                             try
@@ -2284,7 +2294,7 @@ namespace AntDeployWinform.Winform
                                     (client) =>
                                     {
                                         client.Proxy = GetProxy(this.nlog_iis);
-                                        System.Reactive.Linq.Observable
+                                        _subcribe = System.Reactive.Linq.Observable
                                             .FromEventPattern<UploadProgressChangedEventArgs>(client, "UploadProgressChanged")
                                             .Sample(TimeSpan.FromMilliseconds(100))
                                             .Subscribe(arg => { ClientOnUploadProgressChanged(arg.Sender, arg.EventArgs); });
@@ -2360,6 +2370,7 @@ namespace AntDeployWinform.Winform
                             finally
                             {
                                 await webSocket?.Dispose();
+                                _subcribe?.Dispose();
                             }
 
                         }
@@ -2369,12 +2380,14 @@ namespace AntDeployWinform.Winform
                         {
                             this.nlog_iis.Info("Deploy Version：" + dateTimeFolderNameParent);
                             if (gitModel != null) gitModel.SubmitSelectedChanges(fileList, publishPath);
+                            allfailServerList=new List<Server>();
                         }
                         else
                         {
                             if (!stop_iis_cancel_token)
                             {
-                                allfailServerList = failServerList;
+                                allfailServerList = new List<Server>();
+                                allfailServerList.AddRange(failServerList);
                                 EnableIIsRetry(true);
                                 //看是否要重试
                                 Condition.WaitOne();
@@ -3707,6 +3720,9 @@ namespace AntDeployWinform.Winform
                     {
                         dateTimeFolderName = dateTimeFolderNameParent;
                     }
+
+                    //重试了 但是没有发现错误的Server List
+                    if (retryTimes > 0 && allfailServerList.Count == 0) return;
                     foreach (var server in isRetry ? allfailServerList : serverList)
                     {
                         if (isRetry) UploadReset(this.tabPage_windows_service, server.Host);
@@ -3759,7 +3775,8 @@ namespace AntDeployWinform.Winform
                         {
                             Key = loggerId,
                             Url = $"http://{server.Host}/logger?key=" + loggerId
-                        }; ;
+                        };
+                        IDisposable _subcribe = null;
                         WebSocketClient webSocket = new WebSocketClient(this.nlog_windowservice, HttpLogger);
                         var haveError = false;
                         try
@@ -3779,7 +3796,7 @@ namespace AntDeployWinform.Winform
                                 (client) =>
                                 {
                                     client.Proxy = GetProxy(this.nlog_windowservice);
-                                    System.Reactive.Linq.Observable
+                                    _subcribe =System.Reactive.Linq.Observable
                                         .FromEventPattern<UploadProgressChangedEventArgs>(client, "UploadProgressChanged")
                                         .Sample(TimeSpan.FromMilliseconds(100))
                                         .Subscribe(arg => { ClientOnUploadProgressChanged2(arg.Sender, arg.EventArgs); });
@@ -3880,6 +3897,7 @@ namespace AntDeployWinform.Winform
                         finally
                         {
                             await webSocket?.Dispose();
+                            _subcribe?.Dispose();
                         }
 
                     }
@@ -3889,12 +3907,14 @@ namespace AntDeployWinform.Winform
                     {
                         this.nlog_windowservice.Info("Deploy Version：" + dateTimeFolderNameParent);
                         if (gitModel != null) gitModel.SubmitChanges(gitChangeFileCount);
+                        allfailServerList = new List<Server>();
                     }
                     else
                     {
                         if (!stop_windows_cancel_token)
                         {
-                            allfailServerList = failServerList;
+                            allfailServerList = new List<Server>();
+                            allfailServerList.AddRange(failServerList); 
                             EnableWindowsServiceRetry(true);
                             //看是否要重试
                             Condition.WaitOne();
@@ -4005,6 +4025,8 @@ namespace AntDeployWinform.Winform
                     {
                         dateTimeFolderName = dateTimeFolderNameParent;
                     }
+                    //重试了 但是没有发现错误的Server List
+                    if (retryTimes > 0 && allfailServerList.Count == 0) return;
                     foreach (var server in isRetry ? allfailServerList : serverList)
                     {
                         if (isRetry) UploadReset(this.tabPage_windows_service, server.Host);
@@ -4056,7 +4078,8 @@ namespace AntDeployWinform.Winform
                         {
                             Key = loggerId,
                             Url = $"http://{server.Host}/logger?key=" + loggerId
-                        }; ;
+                        };
+                        IDisposable _subcribe = null;
                         WebSocketClient webSocket = new WebSocketClient(this.nlog_windowservice, HttpLogger);
                         var haveError = false;
                         try
@@ -4075,7 +4098,7 @@ namespace AntDeployWinform.Winform
                                 (client) =>
                                 {
                                     client.Proxy = GetProxy(this.nlog_windowservice);
-                                    System.Reactive.Linq.Observable
+                                    _subcribe = System.Reactive.Linq.Observable
                                         .FromEventPattern<UploadProgressChangedEventArgs>(client, "UploadProgressChanged")
                                         .Sample(TimeSpan.FromMilliseconds(100))
                                         .Subscribe(arg => { ClientOnUploadProgressChanged2(arg.Sender, arg.EventArgs); });
@@ -4153,6 +4176,7 @@ namespace AntDeployWinform.Winform
                         finally
                         {
                             await webSocket?.Dispose();
+                            _subcribe?.Dispose();
                         }
 
                     }
@@ -4162,12 +4186,14 @@ namespace AntDeployWinform.Winform
                     {
                         this.nlog_windowservice.Info("Deploy Version：" + dateTimeFolderNameParent);
                         if (gitModel != null) gitModel.SubmitSelectedChanges(fileList, publishPath);
+                        allfailServerList = new List<Server>();
                     }
                     else
                     {
                         if (!stop_windows_cancel_token)
                         {
-                            allfailServerList = failServerList;
+                            allfailServerList = new List<Server>();
+                            allfailServerList.AddRange(failServerList);
                             EnableWindowsServiceRetry(true);
                             //看是否要重试
                             Condition.WaitOne();
@@ -5134,6 +5160,8 @@ namespace AntDeployWinform.Winform
                    {
                        clientDateTimeFolderName = clientDateTimeFolderNameParent;
                    }
+                   //重试了 但是没有发现错误的Server List
+                   if (retryTimes > 0 && allfailServerList.Count == 0) return;
                    foreach (var server in isRetry ? allfailServerList : serverList)
                    {
                        if (isRetry) UploadReset(this.tabPage_docker, server.Host);
@@ -5251,7 +5279,7 @@ namespace AntDeployWinform.Winform
                                    allSuccess = false;
                                    failCount++;
                                    failServerList.Add(server);
-                                   sshClient.DeletePublishFolder("antdeploy");
+                                   //sshClient.DeletePublishFolder("antdeploy");
                                    UpdateDeployProgress(this.tabPage_docker, server.Host, !hasError);
                                }
                                else
@@ -5303,12 +5331,14 @@ namespace AntDeployWinform.Winform
                    if (allSuccess)
                    {
                        this.nlog_docker.Info("Deploy Version：" + clientDateTimeFolderNameParent);
+                       allfailServerList = new List<LinuxServer>();
                    }
                    else
                    {
                        if (!stop_docker_cancel_token)
                        {
-                           allfailServerList = failServerList;
+                           allfailServerList = new List<LinuxServer>();
+                           allfailServerList.AddRange(failServerList);
                            EnableDockerRetry(true);
                            //看是否要重试
                            Condition.WaitOne();
