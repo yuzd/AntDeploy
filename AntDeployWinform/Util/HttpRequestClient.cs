@@ -68,18 +68,14 @@ namespace AntDeployWinform.Util
         /// <returns></returns>
         public async Task<Tuple<bool, string>> Upload(String requestUrl, Action<WebClient> config)
         {
-            WebClient webClient = new WebClient();
-            //{
-            //    Timeout = 1000*60*30
-            //};//设置超时为20分钟
-
+            WebClient webClient = new AntDeplopyWebClient();
+           
             webClient.Proxy = null;
-#if DEBUG
-           //webClient.Proxy = new WebProxy("127.0.0.1:5389");
-#endif
             webClient.Headers.Add("Content-Type", "multipart/form-data; boundary=" + boundary);
             webClient.Headers.Add("User-Agent", "antdeploy");
             config?.Invoke(webClient);
+
+
             byte[] responseBytes;
             byte[] bytes = MergeContent();
 
@@ -177,18 +173,15 @@ namespace AntDeployWinform.Util
 
     public class AntDeplopyWebClient : System.Net.WebClient
     {
-        public int Timeout { get; set; }
 
         protected override WebRequest GetWebRequest(Uri uri)
         {
             WebRequest lWebRequest = base.GetWebRequest(uri);
-            lWebRequest.Timeout = Timeout;
             if (lWebRequest is HttpWebRequest)
             {
                
                 ((HttpWebRequest)lWebRequest).KeepAlive = false;
                 ((HttpWebRequest)lWebRequest).ServicePoint.Expect100Continue = false;
-                ((HttpWebRequest)lWebRequest).ReadWriteTimeout = Timeout;
             }
             return lWebRequest;
         }

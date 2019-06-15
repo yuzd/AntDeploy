@@ -53,6 +53,7 @@ namespace AntDeployAgentWindows.MyApp
                             if (result.Any())
                             {
                                 result.ForEach(r => r.IsActive = true);
+                                Response.StatusCode = 200;
                                 Response.Write(JsonConvert.SerializeObject(result));
                                 return;
                             }

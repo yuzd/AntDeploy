@@ -464,6 +464,8 @@ namespace AntDeployWinform.Winform
             }
 
             this.checkBox_Increment_iis.Checked = PluginConfig.IISEnableIncrement;
+            this.checkBox_Increment_docker.Checked = PluginConfig.DockerEnableIncrement;
+            this.checkBox_select_deploy_docker.Checked = PluginConfig.DockerServiceEnableSelectDeploy;
             this.checkBox_Increment_window_service.Checked = PluginConfig.WindowsServiceEnableIncrement;
             this.checkBox_select_deploy_service.Checked = PluginConfig.WindowsServiceEnableSelectDeploy;
             this.checkBox_select_deploy_iis.Checked = PluginConfig.IISEnableSelectDeploy;
@@ -3082,22 +3084,20 @@ namespace AntDeployWinform.Winform
         private void checkBox_Increment_iis_CheckedChanged(object sender, EventArgs e)
         {
             PluginConfig.IISEnableIncrement = checkBox_Increment_iis.Checked;
-            //if (PluginConfig.IISEnableIncrement)
-            //{
-            //    checkBox_select_deploy_iis.Checked = false;
-            //    PluginConfig.IISEnableSelectDeploy = false;
-            //}
         }
         private void checkBox_selectDeplot_iis_CheckedChanged(object sender, EventArgs e)
         {
             PluginConfig.IISEnableSelectDeploy = checkBox_select_deploy_iis.Checked;
-            //if (PluginConfig.IISEnableSelectDeploy)
-            //{
-            //    checkBox_Increment_iis.Checked = false;
-            //    PluginConfig.IISEnableIncrement = false;
-            //}
         }
 
+        private void checkBox_Increment_docker_CheckedChanged(object sender, EventArgs e)
+        {
+            PluginConfig.DockerEnableIncrement = checkBox_Increment_docker.Checked;
+        }
+        private void checkBox_selectDeplot_docker_CheckedChanged(object sender, EventArgs e)
+        {
+            PluginConfig.DockerServiceEnableSelectDeploy = checkBox_select_deploy_docker.Checked;
+        }
         #endregion
 
         #region windowsService page
@@ -5015,7 +5015,7 @@ namespace AntDeployWinform.Winform
                 return;
             }
 
-            //如果是特定文件夹发布 得选择一个dll
+            //如果是特定文件夹发布 得选择一个入口dll
             CheckIsDockerSpecialFolderDeploy();
 
             var ENTRYPOINT = _project.OutPutName;
@@ -5066,7 +5066,8 @@ namespace AntDeployWinform.Winform
                this.nlog_docker.Info($"-----------------Start publish[Ver:{Vsix.VERSION}]-----------------");
                PrintCommonLog(this.nlog_docker);
                EnableForDocker(false);
-
+               GitClient gitModel = null;
+               var gitPath = string.Empty;
                try
                {
                    var publishPath = !string.IsNullOrEmpty(PluginConfig.DeployFolderPath) ? PluginConfig.DeployFolderPath : Path.Combine(ProjectFolderPath, "bin", "Release", "deploy_docker", envName);
@@ -5113,24 +5114,74 @@ namespace AntDeployWinform.Winform
                        return;
                    }
 
-                   MemoryStream zipBytes;
-                   try
+                   //查看是否开启了增量
+                   if (this.PluginConfig.DockerEnableIncrement)
                    {
-                       this.nlog_docker.Info($"package ignoreList Count:{ignoreList.Count}");
-                       zipBytes = ZipHelper.DoCreateTarFromDirectory(publishPath,
-                           ignoreList,
-                           (progressValue) =>
-                           {
-                               UpdatePackageProgress(this.tabPage_docker, null, progressValue); //打印打包记录
-                               return stop_docker_cancel_token;
-                           }, nlog_docker);
+                       this.nlog_docker.Info("Enable Increment Deploy:true");
+                       if (string.IsNullOrEmpty(gitPath))
+                       {
+                           gitModel = new GitClient(publishPath, this.nlog_docker);
+                       }
+                       else
+                       {
+                           gitModel = new GitClient(gitPath, this.nlog_docker);
+                       }
+
+                       if (!gitModel.InitSuccess)
+                       {
+                           this.nlog_docker.Error("package fail,can not init git,please cancel Increment Deploy");
+                           PackageError(this.tabPage_docker);
+                           return;
+                       }
                    }
-                   catch (Exception ex)
+
+                   MemoryStream zipBytes = null;
+                   var gitChangeFileCount = 0;
+                   if (gitModel != null)
                    {
-                       this.nlog_docker.Error("package fail:" + ex.Message);
-                       PackageError(this.tabPage_docker);
-                       return;
+                       var fileList = gitModel.GetChanges();
+                       gitChangeFileCount = fileList.Count;
+                       this.nlog_docker.Info("【git】Increment package file count:" + gitChangeFileCount);
+                       try
+                       {
+                           this.nlog_docker.Info($"package ignoreList Count:{ignoreList.Count}");
+                           zipBytes = ZipHelper.DoCreateTarFromDirectory(publishPath, fileList,
+                               ignoreList,
+                               (progressValue) =>
+                               {
+                                   UpdatePackageProgress(this.tabPage_docker, null, progressValue); //打印打包记录
+                                   return stop_docker_cancel_token;
+                               }, nlog_docker);
+                       }
+                       catch (Exception ex)
+                       {
+                           this.nlog_docker.Error("package fail:" + ex.Message);
+                           PackageError(this.tabPage_docker);
+                           return;
+                       }
                    }
+
+                   if (zipBytes == null)
+                   {
+                       try
+                       {
+                           this.nlog_docker.Info($"package ignoreList Count:{ignoreList.Count}");
+                           zipBytes = ZipHelper.DoCreateTarFromDirectory(publishPath,
+                               ignoreList,
+                               (progressValue) =>
+                               {
+                                   UpdatePackageProgress(this.tabPage_docker, null, progressValue); //打印打包记录
+                                   return stop_docker_cancel_token;
+                               }, nlog_docker);
+                       }
+                       catch (Exception ex)
+                       {
+                           this.nlog_docker.Error("package fail:" + ex.Message);
+                           PackageError(this.tabPage_docker);
+                           return;
+                       }
+                   }
+                   
 
                    if (zipBytes == null || zipBytes.Length < 1)
                    {
@@ -5138,8 +5189,8 @@ namespace AntDeployWinform.Winform
                        PackageError(this.tabPage_docker);
                        return;
                    }
-
-                   this.nlog_docker.Info($"package success,package size:{(zipBytes.Length / 1024 / 1024)}M");
+                   var packageSize = (zipBytes.Length / 1024 / 1024);
+                   this.nlog_docker.Info($"package success,package size:{(packageSize > 0 ? (packageSize + "") : "<1")}M");
                    //执行 上传
                    this.nlog_docker.Info("-----------------Deploy Start-----------------");
                    var clientDateTimeFolderNameParent = DateTime.Now.ToString("yyyyMMddHHmmss");
@@ -5234,6 +5285,10 @@ namespace AntDeployWinform.Winform
                                allSuccess = false;
                                this.nlog_docker.Error("【Server】" + str);
                            }
+                           else if(logLevel == NLog.LogLevel.Warn)
+                           {
+                               this.nlog_docker.Warn("【Server】" + str);
+                           }
                            else
                            {
                                this.nlog_docker.Info("【Server】" + str);
@@ -5249,7 +5304,8 @@ namespace AntDeployWinform.Winform
                            ClientDateTimeFolderName = clientDateTimeFolderName,
                            RemoveDaysFromPublished = DeployConfig.DockerConfig.RemoveDaysFromPublished,
                            Volume = DeployConfig.DockerConfig.Volume,
-                           Remark = confirmResult.Item2
+                           Remark = confirmResult.Item2,
+                           Increment = this.PluginConfig.DockerEnableIncrement
                        })
                        {
                            var connectResult = sshClient.Connect();
@@ -5331,6 +5387,7 @@ namespace AntDeployWinform.Winform
                    if (allSuccess)
                    {
                        this.nlog_docker.Info("Deploy Version：" + clientDateTimeFolderNameParent);
+                       if (gitModel != null) gitModel.SubmitChanges(gitChangeFileCount);
                        allfailServerList = new List<LinuxServer>();
                    }
                    else
@@ -5515,6 +5572,10 @@ namespace AntDeployWinform.Winform
                                 {
                                     this.nlog_docker.Error("【Server】" + str);
                                 }
+                                else if (logLevel == NLog.LogLevel.Warn)
+                                {
+                                    this.nlog_docker.Warn("【Server】" + str);
+                                }
                                 else
                                 {
                                     this.nlog_docker.Info("【Server】" + str);
@@ -5587,6 +5648,10 @@ namespace AntDeployWinform.Winform
                                 hasError = true;
                                 allSuccess = false;
                                 this.nlog_docker.Error("【Server】" + str);
+                            }
+                            else if (logLevel == NLog.LogLevel.Warn)
+                            {
+                                this.nlog_docker.Warn("【Server】" + str);
                             }
                             else
                             {

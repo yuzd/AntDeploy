@@ -22,6 +22,9 @@ namespace AntDeployWinform.Models
         public bool IISEnableSelectDeploy { get; set; }
         public bool WindowsServiceEnableIncrement { get; set; }
         public bool WindowsServiceEnableSelectDeploy { get; set; }
+
+        public bool DockerEnableIncrement { get; set; }
+        public bool DockerServiceEnableSelectDeploy { get; set; }
         public string NetCorePublishMode { get; set; }
 
 

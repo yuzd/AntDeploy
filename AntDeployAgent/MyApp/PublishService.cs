@@ -95,6 +95,7 @@ namespace AntDeployAgentWindows.MyApp
             obj.Success = false;
             obj.Msg = errMsg;
             Response.ContentType = "application/json";
+            Response.StatusCode = 200;
             Response.Write(JsonConvert.SerializeObject(obj));
         }
 
@@ -102,6 +103,7 @@ namespace AntDeployAgentWindows.MyApp
         {
             DeployResult obj = new DeployResult();
             obj.Success = true;
+            Response.StatusCode = 200;
             Response.ContentType = "application/json";
             Response.Write(JsonConvert.SerializeObject(obj));
         }

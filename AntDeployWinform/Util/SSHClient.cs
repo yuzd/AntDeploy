@@ -85,6 +85,7 @@ namespace AntDeployWinform.Util
 
         public string NetCoreEnvironment { get; set; }
         public string NetCoreENTRYPOINT { get; set; }
+        public bool Increment { get; set; }
         public string ClientDateTimeFolderName { get; set; }
         public string RemoveDaysFromPublished { get; set; }
         public string Remark { get; set; }
@@ -97,8 +98,7 @@ namespace AntDeployWinform.Util
         private readonly SftpClient _sftpClient;
         private readonly SshClient _sshClient;
         private long _lastProgressNumber;
-        private object lockObject = new object();
-        private IDisposable _subscribe;
+        private readonly IDisposable _subscribe;
         public SSHClient(string host, string userName, string pwd,string proxy ,Func<string, NLog.LogLevel,bool> logger, Action<int> uploadLogger)
         {
             this.UserName = userName;
@@ -200,7 +200,15 @@ namespace AntDeployWinform.Util
                     if (!ignoreLog)
                     {
                         RootFolder = _sftpClient.WorkingDirectory;
-                        _logger($"ssh connect success:{Host}", NLog.LogLevel.Info);
+                        var _connectionInfo = _sshClient.ConnectionInfo;
+                        if (_connectionInfo != null && !string.IsNullOrEmpty(_connectionInfo.Host))
+                        {
+                            _logger($"Connected to {_connectionInfo.Username}@{_connectionInfo.Host}:{_connectionInfo.Port} via SSH", NLog.LogLevel.Info);
+                        }
+                        else
+                        {
+                            _logger($"ssh connect success:{Host}", NLog.LogLevel.Info);
+                        }
                     }
                     return true;
 
@@ -291,35 +299,25 @@ namespace AntDeployWinform.Util
 
         private void uploadProgress(long size, ulong uploadedSize)
         {
-           // lock (lockObject)
+            var lastProgressNumber = (((long)uploadedSize * 100 / size));
+
+            if (lastProgressNumber < 1)
             {
-                var lastProgressNumber = (((long)uploadedSize * 100 / size));
-
-                if (lastProgressNumber < 1)
-                {
-                    return;
-                }
-
-                if (lastProgressNumber <= _lastProgressNumber)
-                {
-                    return;
-                }
-
-                //if (lastProgressNumber.ToString().Length == 2 && _lastProgressNumber.ToString().First() == lastProgressNumber.ToString().First())
-                //{
-                //    return;
-                //}
-
-                _lastProgressNumber = lastProgressNumber;
-                var isCanceled = _logger($"uploaded {lastProgressNumber} %", NLog.LogLevel.Info);
-                if (isCanceled)
-                {
-                   this.Dispose();
-                }
-                _uploadLogger((int)_lastProgressNumber);
-
+                return;
             }
 
+            if (lastProgressNumber <= _lastProgressNumber)
+            {
+                return;
+            }
+
+            _lastProgressNumber = lastProgressNumber;
+            var isCanceled = _logger($"uploaded {lastProgressNumber} %", NLog.LogLevel.Info);
+            if (isCanceled)
+            {
+               this.Dispose();
+            }
+            _uploadLogger((int)_lastProgressNumber);
         }
 
         /// <summary>
@@ -453,12 +451,16 @@ namespace AntDeployWinform.Util
         public void PublishZip(Stream stream, string destinationFolder, string destinationfileName,Func<bool> continuetask = null)
         {
             if (!destinationFolder.EndsWith("/")) destinationFolder = destinationFolder + "/";
-
+            //按照项目分文件夹
             var projectPath = destinationFolder + PorjectName + "/";
+            //再按发布版本分文件夹
             destinationFolder = projectPath + ClientDateTimeFolderName + "/";
+
+            //创建项目根目录
+            var deploySaveFolder = projectPath + "deploy/";
             try
             {
-
+                CreateServerDirectoryIfItDoesntExist(deploySaveFolder);
                 Upload(stream, destinationFolder, destinationfileName);
             }
             catch (Exception)
@@ -502,6 +504,8 @@ namespace AntDeployWinform.Util
                 return;
             }
             var publishFolder = $"{destinationFolder}publish/";
+          
+
             if (!_sftpClient.Exists("publish"))
             {
                 _logger($"tar fail: {publishFolder}", NLog.LogLevel.Error);
@@ -509,13 +513,46 @@ namespace AntDeployWinform.Util
             }
             _logger($"tar success: {publishFolder}", NLog.LogLevel.Info);
 
+            var isExistDockFile = true;
+            if (!Increment)
+            {
+                //如果没有DockerFile 创建默认的
+                var dockFilePath = publishFolder + "Dockerfile";
+                var dockFilePath2 = "publish/Dockerfile";
+                isExistDockFile = _sftpClient.Exists(dockFilePath2);
+                if (!isExistDockFile)
+                {
+                    var createDockerFileResult = CreateDockerFile(dockFilePath);
+                    if (!createDockerFileResult) return;
+                }
+            }
+
+            //复制 覆盖 文件到项目下的 deploy目录
+            CopyCpFolder(publishFolder, deploySaveFolder);
+
+
+            if (Increment)
+            {
+                var incrementFoler = $"{destinationFolder}increment/";
+
+                //增量发布 备份全部文件到 increment 文件夹
+                _logger($"Increment deploy start backup to [{incrementFoler}]", NLog.LogLevel.Info);
+
+                CopyCpFolder(deploySaveFolder, incrementFoler);
+
+                _logger($"Increment deploy success backup to [{incrementFoler}]", NLog.LogLevel.Info);
+            }
+
 
             //执行Docker命令
+            _sftpClient.ChangeDirectory(RootFolder);
+            ChangeToFolder(deploySaveFolder);
+            DoDockerCommand(deploySaveFolder,false,!isExistDockFile,publishName:"");
 
-            DoDockerCommand(publishFolder);
-
-
+            
         }
+
+
 
         /// <summary>
         /// 回退
@@ -535,18 +572,46 @@ namespace AntDeployWinform.Util
             }
 
             ClientDateTimeFolderName = version;
+
+            var isIncrement = false;
+            var increment = $"{path}increment/";
+            try
+            {
+                if (_sftpClient.Exists("increment"))
+                {
+                    isIncrement = true;
+                }
+            }
+            catch (Exception)
+            {
+                //ignore
+            }
+
+            if (isIncrement)
+            {
+                DoDockerCommand(increment, true, publishName: "increment");
+                return;
+            }
+        
             DoDockerCommand(publishFolder, true);
         }
 
-        public void DoDockerCommand(string publishFolder, bool isrollBack = false)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="publishFolder">deploy文件目录</param>
+        /// <param name="isrollBack"></param>
+        /// <param name="isDefaultDockfile">上传的时候没有DockerFile要创建</param>
+        public void DoDockerCommand(string publishFolder, bool isrollBack = false,bool isDefaultDockfile = false,string publishName = "publish")
         {
             string port = string.Empty;
             string server_port = string.Empty;
             if (!publishFolder.EndsWith("/")) publishFolder = publishFolder + "/";
             //先查看本地是否有dockerFile
             var dockFilePath = publishFolder + "Dockerfile";
-            var dockFilePath2 = "publish/Dockerfile";
-            var isExistDockFile = _sftpClient.Exists(dockFilePath2);
+            var dockFilePath2 = $"{(string.IsNullOrEmpty(publishName)?"": publishName+"/")}Dockerfile";
+            // ReSharper disable once SimplifyConditionalTernaryExpression
+            var isExistDockFile = isDefaultDockfile? false: _sftpClient.Exists(dockFilePath2);
             //如果本地存在dockerfile 那么就根据此创建image
             //如果不存在的话 就根据当前的netcore sdk的版本 进行创建相对应的 dockfile
 
@@ -557,9 +622,13 @@ namespace AntDeployWinform.Util
                     _logger($"dockerFile is not exist: {dockFilePath}", NLog.LogLevel.Error);
                     return;
                 }
-                _logger($"dockerFile not found in: [{dockFilePath}],will create default Dockerfile!", NLog.LogLevel.Info);
-                var createDockerFileResult = CreateDockerFile(dockFilePath);
-                if (!createDockerFileResult) return;
+              
+
+                if (!isDefaultDockfile)
+                {
+                    var createDockerFileResult = CreateDockerFile(dockFilePath);
+                    if (!createDockerFileResult) return;
+                }
             }
             else
             {
@@ -701,7 +770,7 @@ namespace AntDeployWinform.Util
             }
             catch (Exception)
             {
-
+                //ignore
             }
 
             try
@@ -715,7 +784,7 @@ namespace AntDeployWinform.Util
             }
             catch (Exception)
             {
-
+                //ignore
             }
 
 
@@ -773,9 +842,16 @@ namespace AntDeployWinform.Util
             }
 
 
-            //查看是否有<none>的image 把它删掉 因为我们创建image的时候每次都会覆盖所以会产生一些没有的image
-            //_sshClient.RunCommand($"if sudo docker images -f \"dangling=true\" | grep ago --quiet; then sudo docker rmi -f $(sudo docker images -f \"dangling=true\" -q); fi");
+            try
+            {
+                //查看是否有<none>的image 把它删掉 因为我们创建image的时候每次都会覆盖所以会产生一些没有的image
+                _sshClient.RunCommand($"if sudo docker images -f \"dangling=true\" | grep ago --quiet; then sudo docker rmi -f $(sudo docker images -f \"dangling=true\" -q); fi");
 
+            }
+            catch (Exception )
+            {
+                //igore
+            }
 
             ClearOldHistroy();
 
@@ -849,27 +925,6 @@ namespace AntDeployWinform.Util
 
 
 
-
-
-        public void DeletePublishFolder(string destinationFolder)
-        {
-            if (string.IsNullOrEmpty(RootFolder))
-            {
-                return;
-            }
-
-            _sftpClient.ChangeDirectory(RootFolder);
-
-            if (!destinationFolder.EndsWith("/")) destinationFolder = destinationFolder + "/";
-
-            if (string.IsNullOrEmpty(PorjectName) || string.IsNullOrEmpty(ClientDateTimeFolderName)) return;
-
-            destinationFolder = destinationFolder + PorjectName + "/" + ClientDateTimeFolderName + "/";
-
-            this.DeleteDirectory(destinationFolder);
-        }
-
-
         private bool CreateArgsFile(string path)
         {
             try
@@ -900,6 +955,7 @@ namespace AntDeployWinform.Util
         {
             try
             {
+                _logger($"dockerFile not found in: [{path}],will create default Dockerfile!", NLog.LogLevel.Info);
                 string dllName = NetCoreENTRYPOINT;
 
                 string sdkVersion = NetCoreVersion;
@@ -1007,34 +1063,6 @@ namespace AntDeployWinform.Util
             return true;
         }
 
-        public void DeleteFile(string path)
-        {
-            try
-            {
-                _logger($"delete file: {path}", NLog.LogLevel.Info);
-                _sftpClient.Delete(path);
-                _logger($"delete file success: {path}", NLog.LogLevel.Info);
-            }
-            catch (Exception ex)
-            {
-                _logger($"delete file fail: {path},err:{ex.Message}", NLog.LogLevel.Error);
-            }
-        }
-
-
-        public void DeleteFolder(string folder)
-        {
-            try
-            {
-                _logger($"delete folder: {folder}", NLog.LogLevel.Info);
-                DeleteDirectory(folder);
-                _logger($"delete folder success: {folder}", NLog.LogLevel.Info);
-            }
-            catch (Exception ex)
-            {
-                _logger($"delete folder fail: {folder},err:{ex.Message}", NLog.LogLevel.Error);
-            }
-        }
 
 
         public void Dispose()
@@ -1068,8 +1096,40 @@ namespace AntDeployWinform.Util
 
             }
         }
-        private void DeleteDirectory(string path)
+
+
+        private void CopyCpFolder(string from ,string to)
         {
+            this._logger($"Start Copy Files From [{from}] To [{to}]", LogLevel.Info);
+            if (!from.EndsWith("/")) from = from + "/";
+            if (!to.EndsWith("/")) from = to + "/";
+            var command = $"\\cp -rf {from}. {to}";
+            SshCommand cmd = _sshClient.RunCommand(command);
+            if (cmd.ExitStatus != 0)
+            {
+                this._logger($"Copy Files From [{from}] To [{to}] fail", LogLevel.Error);
+            }
+            else
+            {
+                this._logger($"Success Copy Files From [{from}] To [{to}]", LogLevel.Info);
+            }
+        }
+
+        private void DeleteDirectory(string path,bool useCommand = true)
+        {
+            if (useCommand)
+            {
+                //目前有2种会用到删除文件夹
+                // 1.文件上传发现要上传的目录已存在
+                // 2.旧的发布版本文件夹
+                SshCommand cmd = _sshClient.RunCommand($"set -e;cd ~;\\rm -rf \"{path}\";");
+                if (cmd.ExitStatus != 0)
+                {
+                    this._logger($"Delete directory:{path} fail", LogLevel.Warn);
+                }
+                return;
+            }
+
             foreach (SftpFile file in _sftpClient.ListDirectory(path))
             {
                 if ((file.Name != ".") && (file.Name != ".."))
