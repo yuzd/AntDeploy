@@ -22,6 +22,10 @@ https://github.com/yuzd/AntDeployAgent/issues/7
 
 https://github.com/yuzd/AntDeployAgent/issues/18
 
+# 其他教程(看完原理使用更上手)
+
+https://github.com/yuzd/AntDeployAgent/issues
+
 # 脑图
 
  ![image](https://images4.c-ctrip.com/target/zb0r11000000ra2dzE339.jpg)
