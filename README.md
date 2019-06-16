@@ -60,6 +60,14 @@ https://github.com/yuzd/AntDeployAgent/issues/23
 【demo演示】 如何用AntDeploy批量更新Agent
 https://github.com/yuzd/AntDeployAgent/issues/25
 
+# IIS发布效果
+
+![image](https://images4.c-ctrip.com/target/zb0q15000000xwkq07449.gif)
+
+# Docker发布效果
+
+![image](https://images4.c-ctrip.com/target/zb0d15000000xtt49033C.gif)
+
 # 其他
 如果您对这款vs插件有任何意见和建议都欢迎提Issue
 
