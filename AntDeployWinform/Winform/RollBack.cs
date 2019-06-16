@@ -177,7 +177,7 @@ namespace AntDeployWinform.Winform
             {
                 if (listView_rollback_version.CheckedItems.Count<1)
                 {
-                    MessageBox.Show("please select rollback version!");
+                    MessageBoxEx.Show(this, (!string.IsNullOrEmpty(_lang) && _lang.StartsWith("zh-") ? "请选择要回滚的版本号" : "please select one rollback version!"));
                     return;
                 }
 
@@ -190,7 +190,7 @@ namespace AntDeployWinform.Winform
                 var selectItem = this.listbox_rollback_list.SelectedItem as string;
                 if (string.IsNullOrEmpty(selectItem))
                 {
-                    MessageBox.Show("please select one!");
+                    MessageBoxEx.Show(this, (!string.IsNullOrEmpty(_lang) && _lang.StartsWith("zh-") ? "请选择" : "please select one!"));
                     return;
                 }
 

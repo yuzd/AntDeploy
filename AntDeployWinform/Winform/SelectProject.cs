@@ -85,7 +85,7 @@ namespace AntDeployWinform.Winform
             {
                 if (!fdlg.FileName.ToLower().EndsWith(".csproj") && !fdlg.FileName.ToLower().EndsWith(".vbproj"))
                 {
-                    MessageBox.Show("Err:must be csproj file！");
+                    MessageBoxEx.Show(this,"Err:must be csproj file！");
                     return;
                 }
 

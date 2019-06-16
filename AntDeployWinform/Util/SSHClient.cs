@@ -86,6 +86,7 @@ namespace AntDeployWinform.Util
         public string NetCoreEnvironment { get; set; }
         public string NetCoreENTRYPOINT { get; set; }
         public bool Increment { get; set; }
+        public bool IsSelect { get; set; }
         public string ClientDateTimeFolderName { get; set; }
         public string RemoveDaysFromPublished { get; set; }
         public string Remark { get; set; }
@@ -450,6 +451,20 @@ namespace AntDeployWinform.Util
 
         public void PublishZip(Stream stream, string destinationFolder, string destinationfileName,Func<bool> continuetask = null)
         {
+            bool CheckCancel()
+            {
+                if (continuetask != null)
+                {
+                    var canContinue = continuetask();
+                    if (!canContinue)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
             if (!destinationFolder.EndsWith("/")) destinationFolder = destinationFolder + "/";
             //按照项目分文件夹
             var projectPath = destinationFolder + PorjectName + "/";
@@ -460,19 +475,20 @@ namespace AntDeployWinform.Util
             var deploySaveFolder = projectPath + "deploy/";
             try
             {
+                if (IsSelect)
+                {
+                    if (!_sftpClient.Exists(deploySaveFolder))
+                    {
+                        _logger($"The first time Can not use select file deploy", NLog.LogLevel.Error);
+                        return;
+                    }
+                }
                 CreateServerDirectoryIfItDoesntExist(deploySaveFolder);
                 Upload(stream, destinationFolder, destinationfileName);
             }
             catch (Exception)
             {
-                if (continuetask != null)
-                {
-                    var canContinue = continuetask();
-                    if (!canContinue)
-                    {
-                        return;
-                    }
-                }
+                if (CheckCancel()) return;
 
                 throw;
             }
@@ -483,14 +499,7 @@ namespace AntDeployWinform.Util
                 return;
             }
 
-            if (continuetask != null)
-            {
-                var canContinue = continuetask();
-                if (!canContinue)
-                {
-                    return;
-                }
-            }
+            if (CheckCancel()) return;
             //创建args文件 antdeploy_args
             var argsFilePath = destinationFolder + "antdeploy_args";
             CreateArgsFile(argsFilePath);
@@ -503,6 +512,9 @@ namespace AntDeployWinform.Util
                 _logger($"please check 【tar】 is installed in your server!", NLog.LogLevel.Error);
                 return;
             }
+
+            if (CheckCancel()) return;
+
             var publishFolder = $"{destinationFolder}publish/";
           
 
@@ -525,11 +537,13 @@ namespace AntDeployWinform.Util
                     var createDockerFileResult = CreateDockerFile(dockFilePath);
                     if (!createDockerFileResult) return;
                 }
+
+                if (CheckCancel()) return;
             }
 
             //复制 覆盖 文件到项目下的 deploy目录
             CopyCpFolder(publishFolder, deploySaveFolder);
-
+            if (CheckCancel()) return;
 
             if (Increment)
             {
@@ -541,6 +555,7 @@ namespace AntDeployWinform.Util
                 CopyCpFolder(deploySaveFolder, incrementFoler);
 
                 _logger($"Increment deploy success backup to [{incrementFoler}]", NLog.LogLevel.Info);
+                if (CheckCancel()) return;
             }
 
 
@@ -548,7 +563,6 @@ namespace AntDeployWinform.Util
             _sftpClient.ChangeDirectory(RootFolder);
             ChangeToFolder(deploySaveFolder);
             DoDockerCommand(deploySaveFolder,false,!isExistDockFile,publishName:"");
-
             
         }
 
