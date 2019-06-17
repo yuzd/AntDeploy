@@ -971,7 +971,7 @@ namespace AntDeployWinform.Winform
                     {
                         if (result.Equals("success"))
                         {
-                            MessageBoxEx.Show(this,"Connect Success");
+                            MessageBoxEx.Show(this,"Connect Success","AntDeploy",MessageBoxButtons.OK,MessageBoxIcon.None);
                         }
                         else
                         {
@@ -1241,7 +1241,7 @@ namespace AntDeployWinform.Winform
                         {
                             if (r)
                             {
-                                MessageBoxEx.Show(this,"Connect Success");
+                                MessageBoxEx.Show(this,"Connect Success","AntDeploy",MessageBoxButtons.OK,MessageBoxIcon.None);
                             }
                             else
                             {
