@@ -177,6 +177,12 @@
   <data name="groupBox2.Text" xml:space="preserve">
     <value> (只有第一次创建服务可选填,若非首次不用填)</value>
   </data>
+  <data name="checkBox_save_deploy_log.Size" type="System.Drawing.Size, System.Drawing">
+    <value>132, 16</value>
+  </data>
+  <data name="checkBox_save_deploy_log.Text" xml:space="preserve">
+    <value>保存发布日志到本地</value>
+  </data>
   <data name="label30.Location" type="System.Drawing.Point, System.Drawing">
     <value>73, 340</value>
   </data>
@@ -233,8 +239,5 @@
   </data>
   <data name="label15.Text" xml:space="preserve">
     <value>指定特定文件夹发布：</value>
-  </data>
-  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
   </data>
 </root>

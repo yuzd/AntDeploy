@@ -327,6 +327,7 @@ namespace AntDeployWinform.Winform
         private void Reload()
         {
             this.checkBox_Chinese.Checked = GlobalConfig.IsChinease;
+            this.checkBox_save_deploy_log.Checked = GlobalConfig.SaveLogs;
 
             //只要有传了msbuild来初始化的话 就覆盖原来配置的
             if (!string.IsNullOrEmpty(CommandHelper.MsBuildPath))
@@ -2080,6 +2081,8 @@ namespace AntDeployWinform.Winform
                     this.nlog_iis.Info($"-----------------Deploy End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
                     zipBytes = null;
 
+                    //记录发布日志
+                    SaveLog(publishPath, dateTimeFolderNameParent, nlog_iis);
                 }
                 catch (Exception ex1)
                 {
@@ -2100,6 +2103,52 @@ namespace AntDeployWinform.Winform
 
             }, System.Threading.Tasks.TaskCreationOptions.LongRunning).Start();
 
+        }
+
+        private void SaveLog(string publishPath, string dateTimeFolderNameParent, Logger nlog)
+        {
+            try
+            {
+                if (!GlobalConfig.SaveLogs) return;
+
+                if (!Directory.Exists(publishPath))
+                {
+                    return;
+                }
+
+                var folder = new DirectoryInfo(publishPath);
+
+                var logFolder = Path.Combine(folder.Parent.FullName, folder.Name + "_deploy_logs");
+
+                if (!Directory.Exists(logFolder)) Directory.CreateDirectory(logFolder);
+
+                var currentLogPath = Path.Combine(logFolder, dateTimeFolderNameParent+".log");
+                if (nlog == nlog_iis)
+                {
+                    this.BeginInvokeLambda(() =>
+                    {
+                        rich_iis_log.SaveFile(currentLogPath, RichTextBoxStreamType.PlainText);
+                    });
+                }
+                else if (nlog == nlog_docker)
+                {
+                    this.BeginInvokeLambda(() =>
+                    {
+                        rich_docker_log.SaveFile(currentLogPath, RichTextBoxStreamType.PlainText);
+                    });
+                }
+                else if (nlog == nlog_windowservice)
+                {
+                    this.BeginInvokeLambda(() =>
+                    {
+                        rich_windowservice_log.SaveFile(currentLogPath, RichTextBoxStreamType.PlainText);
+                    });
+                }
+            }
+            catch (Exception)
+            {
+                //ignore
+            }
         }
 
         private void DoSelectDeployIIS(List<string> fileList, string publishPath, List<Server> serverList, List<string> backUpIgnoreList, string Port, string PoolName, string PhysicalPath, GitClient gitModel, string remark)
@@ -2404,7 +2453,8 @@ namespace AntDeployWinform.Winform
                         this.nlog_iis.Log(publisEvent2);
                         this.nlog_iis.Info($"-----------------Deploy End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
                         zipBytes = null;
-
+                        //记录发布日志
+                        SaveLog(publishPath, dateTimeFolderNameParent, nlog_iis);
                     }
                     catch (Exception ex1)
                     {
@@ -3930,6 +3980,9 @@ namespace AntDeployWinform.Winform
                     publisEvent2.LoggerName = "rich_windowservice_log";
                     this.nlog_windowservice.Log(publisEvent2);
                     this.nlog_windowservice.Info($"-----------------Deploy End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
+
+                    //记录发布日志
+                    SaveLog(publishPath, dateTimeFolderNameParent, nlog_windowservice);
                 }
                 catch (Exception ex1)
                 {
@@ -4209,6 +4262,8 @@ namespace AntDeployWinform.Winform
                     publisEvent2.LoggerName = "rich_windowservice_log";
                     this.nlog_windowservice.Log(publisEvent2);
                     this.nlog_windowservice.Info($"-----------------Deploy End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
+                    //记录发布日志
+                    SaveLog(publishPath, dateTimeFolderNameParent, nlog_windowservice);
                 }
                 catch (Exception ex1)
                 {
@@ -5484,6 +5539,9 @@ namespace AntDeployWinform.Winform
                    publisEvent2.LoggerName = "rich_docker_log";
                    this.nlog_docker.Log(publisEvent2);
                    this.nlog_docker.Info($"-----------------Deploy End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
+
+                   //记录发布日志
+                   SaveLog(publishPath, clientDateTimeFolderNameParent, nlog_docker);
                }
                catch (Exception ex1)
                {
@@ -6515,5 +6573,11 @@ namespace AntDeployWinform.Winform
         {
             PluginConfig.DeployHttpProxy = this.txt_http_proxy.Text.Trim();
         }
+
+        private void checkBox_save_deploy_log_Click(object sender, EventArgs e)
+        {
+            GlobalConfig.SaveLogs = checkBox_save_deploy_log.Checked;
+        }
+
     }
 }

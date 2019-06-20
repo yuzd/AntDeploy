@@ -155,6 +155,7 @@
             this.b_env_add_by_name = new System.Windows.Forms.Button();
             this.combo_env_list = new System.Windows.Forms.ComboBox();
             this.pag_advance_setting = new System.Windows.Forms.TabPage();
+            this.checkBox_save_deploy_log = new System.Windows.Forms.CheckBox();
             this.label33 = new System.Windows.Forms.Label();
             this.txt_http_proxy = new System.Windows.Forms.TextBox();
             this.label30 = new System.Windows.Forms.Label();
@@ -1250,6 +1251,7 @@
             // 
             // pag_advance_setting
             // 
+            this.pag_advance_setting.Controls.Add(this.checkBox_save_deploy_log);
             this.pag_advance_setting.Controls.Add(this.label33);
             this.pag_advance_setting.Controls.Add(this.txt_http_proxy);
             this.pag_advance_setting.Controls.Add(this.label30);
@@ -1273,6 +1275,13 @@
             resources.ApplyResources(this.pag_advance_setting, "pag_advance_setting");
             this.pag_advance_setting.Name = "pag_advance_setting";
             this.pag_advance_setting.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_save_deploy_log
+            // 
+            resources.ApplyResources(this.checkBox_save_deploy_log, "checkBox_save_deploy_log");
+            this.checkBox_save_deploy_log.Name = "checkBox_save_deploy_log";
+            this.checkBox_save_deploy_log.UseVisualStyleBackColor = true;
+            this.checkBox_save_deploy_log.Click += new System.EventHandler(this.checkBox_save_deploy_log_Click);
             // 
             // label33
             // 
@@ -1617,5 +1626,6 @@
         private System.Windows.Forms.Label label33;
         private System.Windows.Forms.CheckBox checkBox_Increment_docker;
         private System.Windows.Forms.CheckBox checkBox_select_deploy_docker;
+        private System.Windows.Forms.CheckBox checkBox_save_deploy_log;
     }
 }
