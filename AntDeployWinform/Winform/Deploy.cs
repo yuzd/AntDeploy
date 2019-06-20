@@ -2121,7 +2121,7 @@ namespace AntDeployWinform.Winform
                 var logFolder = Path.Combine(folder.Parent.FullName, folder.Name + "_deploy_logs");
 
                 if (!Directory.Exists(logFolder)) Directory.CreateDirectory(logFolder);
-
+                LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "【Deploy log】 ==> ");
                 var currentLogPath = Path.Combine(logFolder, dateTimeFolderNameParent+".log");
                 if (nlog == nlog_iis)
                 {
@@ -2129,6 +2129,7 @@ namespace AntDeployWinform.Winform
                     {
                         rich_iis_log.SaveFile(currentLogPath, RichTextBoxStreamType.PlainText);
                     });
+                    publisEvent2.LoggerName = "rich_iis_log";
                 }
                 else if (nlog == nlog_docker)
                 {
@@ -2136,6 +2137,7 @@ namespace AntDeployWinform.Winform
                     {
                         rich_docker_log.SaveFile(currentLogPath, RichTextBoxStreamType.PlainText);
                     });
+                    publisEvent2.LoggerName = "rich_docker_log";
                 }
                 else if (nlog == nlog_windowservice)
                 {
@@ -2143,7 +2145,11 @@ namespace AntDeployWinform.Winform
                     {
                         rich_windowservice_log.SaveFile(currentLogPath, RichTextBoxStreamType.PlainText);
                     });
+                    publisEvent2.LoggerName = "rich_windowservice_log";
                 }
+
+                publisEvent2.Properties["ShowLink"] = "file://" + currentLogPath.Replace("\\", "\\\\");
+                nlog.Log(publisEvent2);
             }
             catch (Exception)
             {
