@@ -2040,6 +2040,12 @@ namespace AntDeployWinform.Winform
                             failServerList.Add(server);
                             this.nlog_iis.Error($"Fail Deploy,Host:{getHostDisplayName(server)},Response:{ex.Message},Skip to Next");
                             UpdateDeployProgress(this.tabPage_progress, server.Host, false);
+                            if (stop_iis_cancel_token)
+                            {
+                                this.nlog_iis.Warn($"deploy task was canceled!");
+                                UploadError(this.tabPage_progress, server.Host);
+                                return;
+                            }
                         }
                         finally
                         {
@@ -3946,6 +3952,12 @@ namespace AntDeployWinform.Winform
                             this.nlog_windowservice.Error(
                                 $"Fail Deploy,Host:{getHostDisplayName(server)},Response:{ex.Message},Skip to Next");
                             UpdateDeployProgress(this.tabPage_windows_service, server.Host, false);
+                            if (stop_windows_cancel_token)
+                            {
+                                this.nlog_windowservice.Warn($"deploy task was canceled!");
+                                UploadError(this.tabPage_windows_service, server.Host);
+                                return;
+                            }
                         }
                         finally
                         {
