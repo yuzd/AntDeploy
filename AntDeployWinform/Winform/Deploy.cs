@@ -3614,8 +3614,8 @@ namespace AntDeployWinform.Winform
                             if (!serviceNameByFile.Equals(serviceName))
                             {
                                 this.nlog_windowservice.Warn($"windowsService name is {serviceNameByFile} in file: {serviceFile} ,but input name is {serviceName} !");
-                                BuildError(this.tabPage_windows_service);
-                                return;
+                                //BuildError(this.tabPage_windows_service);
+                                //return;
                             }
                             isProjectInstallService = true;
                         }
