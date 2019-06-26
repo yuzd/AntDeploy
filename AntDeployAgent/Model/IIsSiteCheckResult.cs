@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AntDeployAgent.Model
 {
-    public class IIsSiteCheckResult
+    public class CheckExistResult
     {
 
         public string WebSiteName { get; set; }
@@ -17,4 +17,6 @@ namespace AntDeployAgent.Model
 
         public bool Level2Exist { get; set; }
     }
+
+
 }

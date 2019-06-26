@@ -197,7 +197,7 @@ namespace AntDeployWinform.Util
             return false;
         }
 
-        public static async Task<T> HttpPostAsync<T>(string url, object json, Logger logger)
+        public static async Task<T> HttpPostAsync<T>(string url, object json, Logger logger, bool ignore = false) 
         {
             string result = string.Empty;
             try
@@ -237,6 +237,11 @@ namespace AntDeployWinform.Util
                     {
                         try
                         {
+                            if (ignore)
+                            {
+                                return default(T);
+                            }
+
                             var rr = JsonConvert.DeserializeObject<GetVersionResult>(result);
                             if (rr != null && !string.IsNullOrEmpty(rr.Msg))
                             {

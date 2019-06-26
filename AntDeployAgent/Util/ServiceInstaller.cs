@@ -8,6 +8,7 @@ namespace AntDeployAgentWindows.Util
     {
         private const int STANDARD_RIGHTS_REQUIRED = 0xF0000;
         private const int SERVICE_WIN32_OWN_PROCESS = 0x00000010;
+        private const int SERVICE_CONFIG_DESCRIPTION = 1;
         [StructLayout(LayoutKind.Sequential)]
         private class SERVICE_STATUS
         {
@@ -34,7 +35,8 @@ namespace AntDeployAgentWindows.Util
         [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         private static extern IntPtr CreateService(IntPtr hSCManager, string lpServiceName, string lpDisplayName, ServiceAccessRights dwDesiredAccess, int dwServiceType, ServiceBootFlag dwStartType, ServiceError dwErrorControl, string lpBinaryPathName, string lpLoadOrderGroup, IntPtr lpdwTagId, string lpDependencies, string lp, string lpPassword);
         #endregion
-
+        [DllImport("advapi32.dll", SetLastError = true)]
+        private static extern int ChangeServiceConfig2(IntPtr hService, uint dwInfoLevel, ref SERVICE_DESCRIPTION info);
         #region CloseServiceHandle
         [DllImport("advapi32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -109,19 +111,33 @@ namespace AntDeployAgentWindows.Util
             }
         }
 
-        public static void InstallAndStart(string serviceName, string displayName, string fileName)
+        public static void InstallAndStart(string serviceName, string displayName, string fileName,string startType,string desc)
         {
             IntPtr scm = OpenSCManager(ScmAccessRights.AllAccess);
 
             try
             {
                 IntPtr service = OpenService(scm, serviceName, ServiceAccessRights.AllAccess);
-
+                ServiceBootFlag startTypeFlag = ServiceBootFlag.AutoStart;
+                if (!string.IsNullOrEmpty(startType))
+                {
+                    if (!startType.ToLower().Equals("auto"))
+                    {
+                        startTypeFlag = ServiceBootFlag.DemandStart;
+                    }
+                }
                 if (service == IntPtr.Zero)
-                    service = CreateService(scm, serviceName, displayName, ServiceAccessRights.AllAccess, SERVICE_WIN32_OWN_PROCESS, ServiceBootFlag.AutoStart, ServiceError.Normal, fileName, null, IntPtr.Zero, null, null, null);
+                    service = CreateService(scm, serviceName, displayName, ServiceAccessRights.AllAccess, SERVICE_WIN32_OWN_PROCESS, startTypeFlag, ServiceError.Normal, fileName, null, IntPtr.Zero, null, null, null);
 
                 if (service == IntPtr.Zero)
                     throw new ApplicationException("Failed to install service.");
+
+                if (!string.IsNullOrEmpty(desc))
+                {
+                    var serviceDescription = new SERVICE_DESCRIPTION { lpDescription = Marshal.StringToHGlobalAnsi(desc) };
+                    ChangeServiceConfig2(service, SERVICE_CONFIG_DESCRIPTION, ref serviceDescription);
+                    Marshal.FreeHGlobal(serviceDescription.lpDescription);
+                }
 
                 try
                 {
@@ -372,5 +388,9 @@ namespace AntDeployAgentWindows.Util
         Normal = 0x00000001,
         Severe = 0x00000002,
         Critical = 0x00000003
+    }
+    public struct SERVICE_DESCRIPTION
+    {
+        public IntPtr lpDescription;
     }
 }

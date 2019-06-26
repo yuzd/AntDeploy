@@ -31,12 +31,14 @@ namespace AntDeployWinform.Models
         public bool Level2Exist { get; set; }
     }
 
-    public class IIsCreateParam
+    public class FirstCreateParam
     {
         public string Port { get; set; }
         public string PoolName { get; set; }
         public string PhysicalPath { get; set; }
+        public string Desc { get; set; }
+        public string StartUp { get; set; }
     }
+ 
 
-   
 }

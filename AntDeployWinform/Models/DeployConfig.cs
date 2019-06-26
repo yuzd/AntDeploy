@@ -8,6 +8,7 @@ namespace AntDeployWinform.Models
         //public string DeployFolderPath { get; set; }
         public bool IsChinease { get; set; }
         public bool SaveLogs { get; set; }
+        public bool MultiInstance { get; set; }
         public List<string> ProjectPathList  { get; set; }
     }
 

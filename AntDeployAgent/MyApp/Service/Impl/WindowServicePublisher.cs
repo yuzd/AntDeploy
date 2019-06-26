@@ -19,6 +19,8 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
         private bool _isNoStopWebSite;
         private string _serviceName;
         private string _serviceExecName;
+        private string _serviceDescription;
+        private string _serviceStartType;
         private int _waitForServiceStopTimeOut = 15;
         private List<string> _backUpIgnoreList = new List<string>();
         private string _projectPublishFolder;
@@ -94,10 +96,6 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 }
                 if (service.Item1 == null)
                 {
-                    //if (!_isProjectInstallService)
-                    //{
-                    //    return $"windowService : {_serviceName} not found";
-                    //}
 
                     Log($"windowService : {_serviceName} not found,start to create!");
 
@@ -131,9 +129,13 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     Log($"start to install windows service");
                     Log($"service name:{_serviceName}");
                     Log($"service path:{execFullPath}");
+                    Log($"service startType:{(!string.IsNullOrEmpty(_serviceStartType)?_serviceStartType:"Auto")}");
+                    Log($"service description:{_serviceDescription??string.Empty}");
+                   
+                    
                     try
                     {
-                        ServiceInstaller.InstallAndStart(_serviceName, _serviceName, execFullPath);
+                        ServiceInstaller.InstallAndStart(_serviceName, _serviceName, execFullPath,_serviceStartType,_serviceDescription);
                         Log($"install windows service success");
                         Log($"start windows service success");
                         return string.Empty;
@@ -143,24 +145,6 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                         return $"install windows service fail:" + e2.Message;
                     }
 
-                    //var installResult = WindowServiceHelper.InstallWindowsService(execFullPath);
-                    //if (!string.IsNullOrEmpty(installResult))
-                    //{
-                    //    try{ Directory.Delete(firstDeployFolder, true);}catch (Exception) {}
-                    //    return installResult;
-                    //}
-
-
-                    ////部署成功 启动服务
-                    //Log($"start windows service : " + _serviceName);
-                    //var startResult = WindowServiceHelper.StartService(_serviceName,120);
-                    //if (!string.IsNullOrEmpty(startResult))
-                    //{
-                    //    try{ Directory.Delete(firstDeployFolder, true);}catch (Exception) {}
-                    //    return startResult;
-                    //}
-                    //Log($"start windows service success");
-                    //return string.Empty;
                 }
 
                 var projectLocationFolder = string.Empty;
@@ -336,6 +320,18 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
             if (physicalPath != null && !string.IsNullOrEmpty(physicalPath.TextValue))
             {
                 _physicalPath = physicalPath.TextValue;
+            }
+
+            var desc = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("desc"));
+            if (desc != null && !string.IsNullOrEmpty(desc.TextValue))
+            {
+                _serviceDescription = desc.TextValue;
+            }
+
+            var startType = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("startType"));
+            if (startType != null && !string.IsNullOrEmpty(startType.TextValue))
+            {
+                _serviceStartType = startType.TextValue;
             }
 
             var backUpIgnoreList = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("backUpIgnore"));

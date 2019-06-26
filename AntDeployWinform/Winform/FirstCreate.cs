@@ -36,7 +36,7 @@ namespace AntDeployWinform.Winform
             }
         }
 
-        public IIsCreateParam IsCreateParam { get; set; }
+        public FirstCreateParam IsCreateParam { get; set; }
 
         private void btn_continue_Click(object sender, EventArgs e)
         {
@@ -55,7 +55,7 @@ namespace AntDeployWinform.Winform
                     return;
                 }
             }
-            IsCreateParam = new IIsCreateParam
+            IsCreateParam = new FirstCreateParam
             {
                 Port = this.txt_iis_port.Text.Trim(),
                 PhysicalPath = this.txt_iis_PhysicalPath.Text.Trim(),

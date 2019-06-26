@@ -1,6 +1,6 @@
 ﻿namespace AntDeployWinform.Winform
 {
-    partial class FirstCreate
+    partial class FirstService
     {
         /// <summary>
         /// Required designer variable.
@@ -28,76 +28,48 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FirstCreate));
-            this.label33 = new System.Windows.Forms.Label();
-            this.txt_iis_port = new System.Windows.Forms.TextBox();
-            this.txt_iis_PhysicalPath = new System.Windows.Forms.TextBox();
-            this.label30 = new System.Windows.Forms.Label();
-            this.label15 = new System.Windows.Forms.Label();
-            this.txt_pool_name = new System.Windows.Forms.TextBox();
-            this.label16 = new System.Windows.Forms.Label();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FirstService));
             this.label1 = new System.Windows.Forms.Label();
+            this.txt_service_description = new System.Windows.Forms.TextBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.txt_windows_service_PhysicalPath = new System.Windows.Forms.TextBox();
+            this.label30 = new System.Windows.Forms.Label();
+            this.label33 = new System.Windows.Forms.Label();
+            this.btn_continue = new AltoControls.AltoButton();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.btn_continue = new AltoControls.AltoButton();
+            this.comboBox_service_start_type = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
-            // 
-            // label33
-            // 
-            resources.ApplyResources(this.label33, "label33");
-            this.label33.Name = "label33";
-            // 
-            // txt_iis_port
-            // 
-            resources.ApplyResources(this.txt_iis_port, "txt_iis_port");
-            this.txt_iis_port.Name = "txt_iis_port";
-            // 
-            // txt_iis_PhysicalPath
-            // 
-            resources.ApplyResources(this.txt_iis_PhysicalPath, "txt_iis_PhysicalPath");
-            this.txt_iis_PhysicalPath.Name = "txt_iis_PhysicalPath";
-            // 
-            // label30
-            // 
-            resources.ApplyResources(this.label30, "label30");
-            this.label30.Name = "label30";
-            // 
-            // label15
-            // 
-            resources.ApplyResources(this.label15, "label15");
-            this.label15.Name = "label15";
-            // 
-            // txt_pool_name
-            // 
-            resources.ApplyResources(this.txt_pool_name, "txt_pool_name");
-            this.txt_pool_name.Name = "txt_pool_name";
-            // 
-            // label16
-            // 
-            resources.ApplyResources(this.label16, "label16");
-            this.label16.Name = "label16";
             // 
             // label1
             // 
             resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
             // 
-            // label2
+            // txt_service_description
             // 
-            resources.ApplyResources(this.label2, "label2");
-            this.label2.Name = "label2";
+            resources.ApplyResources(this.txt_service_description, "txt_service_description");
+            this.txt_service_description.Name = "txt_service_description";
             // 
-            // label3
+            // label16
             // 
-            resources.ApplyResources(this.label3, "label3");
-            this.label3.ForeColor = System.Drawing.Color.Red;
-            this.label3.Name = "label3";
+            resources.ApplyResources(this.label16, "label16");
+            this.label16.Name = "label16";
             // 
-            // label4
+            // txt_windows_service_PhysicalPath
             // 
-            resources.ApplyResources(this.label4, "label4");
-            this.label4.Name = "label4";
+            resources.ApplyResources(this.txt_windows_service_PhysicalPath, "txt_windows_service_PhysicalPath");
+            this.txt_windows_service_PhysicalPath.Name = "txt_windows_service_PhysicalPath";
+            // 
+            // label30
+            // 
+            resources.ApplyResources(this.label30, "label30");
+            this.label30.Name = "label30";
+            // 
+            // label33
+            // 
+            resources.ApplyResources(this.label33, "label33");
+            this.label33.Name = "label33";
             // 
             // btn_continue
             // 
@@ -116,26 +88,43 @@
             this.btn_continue.Transparency = false;
             this.btn_continue.Click += new System.EventHandler(this.btn_continue_Click);
             // 
-            // FirstCreate
+            // label2
+            // 
+            resources.ApplyResources(this.label2, "label2");
+            this.label2.Name = "label2";
+            // 
+            // label3
+            // 
+            resources.ApplyResources(this.label3, "label3");
+            this.label3.Name = "label3";
+            // 
+            // comboBox_service_start_type
+            // 
+            this.comboBox_service_start_type.FormattingEnabled = true;
+            this.comboBox_service_start_type.Items.AddRange(new object[] {
+            resources.GetString("comboBox_service_start_type.Items"),
+            resources.GetString("comboBox_service_start_type.Items1")});
+            resources.ApplyResources(this.comboBox_service_start_type, "comboBox_service_start_type");
+            this.comboBox_service_start_type.Name = "comboBox_service_start_type";
+            // 
+            // FirstService
             // 
             resources.ApplyResources(this, "$this");
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.Controls.Add(this.txt_iis_port);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.comboBox_service_start_type);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.btn_continue);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.txt_iis_PhysicalPath);
+            this.Controls.Add(this.txt_windows_service_PhysicalPath);
             this.Controls.Add(this.label30);
-            this.Controls.Add(this.label15);
-            this.Controls.Add(this.txt_pool_name);
-            this.Controls.Add(this.label16);
             this.Controls.Add(this.label33);
-            this.Controls.Add(this.label4);
+            this.Controls.Add(this.txt_service_description);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.label16);
+            this.Controls.Add(this.label2);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "FirstCreate";
+            this.Name = "FirstService";
             this.ShowInTaskbar = false;
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -144,17 +133,15 @@
 
         #endregion
 
-        private System.Windows.Forms.Label label33;
-        private System.Windows.Forms.TextBox txt_iis_port;
-        private System.Windows.Forms.TextBox txt_iis_PhysicalPath;
-        private System.Windows.Forms.Label label30;
-        private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.TextBox txt_pool_name;
-        private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox txt_service_description;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.TextBox txt_windows_service_PhysicalPath;
+        private System.Windows.Forms.Label label30;
+        private System.Windows.Forms.Label label33;
         private AltoControls.AltoButton btn_continue;
+        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ComboBox comboBox_service_start_type;
     }
 }

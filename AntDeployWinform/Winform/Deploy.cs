@@ -33,7 +33,7 @@ namespace AntDeployWinform.Winform
         private string PluginConfigPath;//这个是按照项目来的
         private string ConfigPath;//这个是全局配置
         private ProjectParam _project;
-        private IIsCreateParam _iiCreateParam = new IIsCreateParam();
+        private FirstCreateParam _CreateParam = new FirstCreateParam();
         private RollBackVersion _rollBackVersion = new RollBackVersion();
         private NLog.Logger nlog_iis;
         private NLog.Logger nlog_windowservice;
@@ -328,6 +328,7 @@ namespace AntDeployWinform.Winform
         {
             this.checkBox_Chinese.Checked = GlobalConfig.IsChinease;
             this.checkBox_save_deploy_log.Checked = GlobalConfig.SaveLogs;
+            this.checkBox_multi_deploy.Checked = GlobalConfig.MultiInstance;
 
             //只要有传了msbuild来初始化的话 就覆盖原来配置的
             if (!string.IsNullOrEmpty(CommandHelper.MsBuildPath))
@@ -1541,6 +1542,7 @@ namespace AntDeployWinform.Winform
 
             this.rich_iis_log.Text = "";
             DeployConfig.IIsConfig.WebSiteName = websiteName;
+            _CreateParam = new FirstCreateParam();
             new Task(async () =>
             {
 
@@ -1847,16 +1849,16 @@ namespace AntDeployWinform.Winform
                                 var data = creatFrom.ShowDialog();
                                 if (data == DialogResult.Cancel)
                                 {
-                                    _iiCreateParam = null;
+                                    _CreateParam = null;
                                 }
                                 else
                                 {
-                                    _iiCreateParam = creatFrom.IsCreateParam;
+                                    _CreateParam = creatFrom.IsCreateParam;
                                 }
                                 Condition.Set();
                             });
                             Condition.WaitOne();
-                            if (_iiCreateParam == null)
+                            if (_CreateParam == null)
                             {
                                 this.nlog_iis.Error($"Create Website Param Required!");
                                 UploadError(this.tabPage_progress, server.Host);
@@ -1867,9 +1869,9 @@ namespace AntDeployWinform.Winform
                             }
                             else
                             {
-                                Port = _iiCreateParam.Port;
-                                PhysicalPath = _iiCreateParam.PhysicalPath;
-                                PoolName = _iiCreateParam.PoolName;
+                                Port = _CreateParam.Port;
+                                PhysicalPath = _CreateParam.PhysicalPath;
+                                PoolName = _CreateParam.PoolName;
                                 this.nlog_iis.Info($"Website Create Port:{Port},PoolName:{PoolName},PhysicalPath:{PhysicalPath}");
                             }
                         }
@@ -1892,16 +1894,16 @@ namespace AntDeployWinform.Winform
                                 var data = creatFrom.ShowDialog();
                                 if (data == DialogResult.Cancel)
                                 {
-                                    _iiCreateParam = null;
+                                    _CreateParam = null;
                                 }
                                 else
                                 {
-                                    _iiCreateParam = creatFrom.IsCreateParam;
+                                    _CreateParam = creatFrom.IsCreateParam;
                                 }
                                 Condition.Set();
                             });
                             Condition.WaitOne();
-                            if (_iiCreateParam == null)
+                            if (_CreateParam == null)
                             {
                                 this.nlog_iis.Error($"Create Website Param Required!");
                                 UploadError(this.tabPage_progress, server.Host);
@@ -1912,9 +1914,9 @@ namespace AntDeployWinform.Winform
                             }
                             else
                             {
-                                Port = _iiCreateParam.Port;
-                                PhysicalPath = _iiCreateParam.PhysicalPath;
-                                PoolName = _iiCreateParam.PoolName;
+                                Port = _CreateParam.Port;
+                                PhysicalPath = _CreateParam.PhysicalPath;
+                                PoolName = _CreateParam.PoolName;
                                 this.nlog_iis.Info($"Website Create Port:{Port},PoolName:{PoolName},PhysicalPath:{PhysicalPath}");
                             }
                         }
@@ -3115,9 +3117,14 @@ namespace AntDeployWinform.Winform
                         }
                     }
 
-                    if (progressBoxList.Count == 1) return;
+                    
                     if (tabPage == this.tabPage_progress)
                     {
+                        if (progressBoxList.Count == 1)
+                        {
+                            if (!this.btn_iis_stop.Visible) this.btn_iis_stop.Visible = true;
+                            return;
+                        }
                         //针对iis 和 windows服务发布 上传超过100的话  会隐藏 Stop
                         //在结束第四个圈圈的时候在释放
                         var flag = this.btn_iis_stop.Tag as string;
@@ -3129,6 +3136,12 @@ namespace AntDeployWinform.Winform
                     }
                     else if (tabPage == this.tabPage_windows_service)
                     {
+                        if (progressBoxList.Count == 1)
+                        {
+
+                            if (!this.btn_windows_serivce_stop.Visible) this.btn_windows_serivce_stop.Visible = true;
+                            return;
+                        }
                         var flag = this.btn_windows_serivce_stop.Tag as string;
                         if (!string.IsNullOrEmpty(flag) && flag == "false")
                         {
@@ -3292,7 +3305,6 @@ namespace AntDeployWinform.Winform
                     }
                 }
                 this.b_windows_service_rollback.Enabled = flag;
-                this.txt_windows_service_PhysicalPath.Enabled = flag;
                 this.checkBox_Increment_window_service.Enabled = flag;
                 this.b_windowservice_deploy.Enabled = flag;
                 if (!ignore)
@@ -3386,7 +3398,9 @@ namespace AntDeployWinform.Winform
 
             DeployConfig.WindowsServiveConfig.ServiceName = serviceName;
             var isAgentUpdate = DeployConfig.WindowsServiveConfig.ServiceName.ToLower().Equals("antdeployagentwindowsservice");
-            var PhysicalPath = this.txt_windows_service_PhysicalPath.Text.Trim();
+            var PhysicalPath = "";
+            var ServiceStartType = "";
+            var ServiceDescription = "";
 
             var envName = this.combo_windowservice_env.SelectedItem as string;
             if (string.IsNullOrEmpty(envName))
@@ -3407,7 +3421,8 @@ namespace AntDeployWinform.Winform
             var backUpIgnoreList = DeployConfig.Env.First(r => r.Name.Equals(envName)).WindowsBackUpIgnoreList;
 
 #if DEBUG
-            var execFilePath = this.ProjectName + ".exe";
+            
+            var execFilePath = (!string.IsNullOrEmpty(PluginConfig.DeployFolderPath)?serviceName:this.ProjectName) + ".exe";
 #else
             //如果是特定文件夹发布 得选择一个exe
             if (!string.IsNullOrEmpty(PluginConfig.DeployFolderPath) && string.IsNullOrEmpty(_project.OutPutName))
@@ -3511,7 +3526,7 @@ namespace AntDeployWinform.Winform
                     this.nlog_windowservice.Info($"DotNetSDK.Version:{_project.NetCoreSDKVersion}");
                 }
             }
-
+            _CreateParam = new FirstCreateParam();
             new Task(async () =>
             {
                 this.nlog_windowservice.Info($"-----------------Start publish[Ver:{Vsix.VERSION}]-----------------");
@@ -3806,6 +3821,110 @@ namespace AntDeployWinform.Winform
                             failServerList.Add(server);
                             continue;
                         }
+                        var isOldAgent = false;
+                        this.nlog_windowservice.Info("Start Check Windows Service IsExist In Remote Server:" + server.Host);
+                        var checkResult = await WebUtil.HttpPostAsync<IIsSiteCheck>(
+                            $"http://{server.Host}/version", new
+                            {
+                                Token = server.Token,
+                                Type = "checkwinservice",
+                                Mac = CodingHelper.GetMacAddress(),
+                                Name = serviceName
+                            }, nlog_windowservice,true);
+
+                     
+                        if (checkResult == null || checkResult.Data == null)
+                        {
+                            if (isAgentUpdate)
+                            {
+                                isOldAgent = true;
+                            }
+                            else
+                            {
+                                this.nlog_windowservice.Error($"Check IsExist In Remote Server Fail!");
+                                UploadError(this.tabPage_windows_service, server.Host);
+                                allSuccess = false;
+                                failCount++;
+                                failServerList.Add(server);
+                                continue;
+                            }
+                        }
+
+                       
+                        if (!isOldAgent && !string.IsNullOrEmpty(checkResult.Msg))
+                        {
+                            this.nlog_windowservice.Error($"Check IsExist In Remote Server Fail：" + checkResult.Msg);
+                            UploadError(this.tabPage_windows_service, server.Host);
+                            allSuccess = false;
+                            failCount++;
+                            failServerList.Add(server);
+                            continue;
+                        }
+
+                        if (isOldAgent)
+                        {
+                            //兼容老的Agent版本
+                            this.nlog_windowservice.Warn($"【Server】Agent version is old,please update agent version to:{Vsix.AGENTVERSION}！");
+                        }
+                        else if (checkResult.Data.Success)
+                        {
+                            this.nlog_windowservice.Info($"Windows Service Is Exist In Remote Server:" + server.Host);
+                        }
+                        else
+                        {
+                            if (this.PluginConfig.WindowsServiceEnableIncrement)
+                            {
+                                this.nlog_windowservice.Error($"Windows Service Is Not Exist In Remote Server,Can not use [Increment deplpoy]");
+                                UploadError(this.tabPage_windows_service, server.Host);
+                                allSuccess = false;
+                                failCount++;
+                                failServerList.Add(server);
+                                continue;
+                            }
+                            else if (isAgentUpdate)
+                            {
+                                this.nlog_windowservice.Error($"Agent Service Is Not Exist In Remote Server,Can not update！");
+                                UploadError(this.tabPage_windows_service, server.Host);
+                                allSuccess = false;
+                                failCount++;
+                                failServerList.Add(server);
+                                continue;
+                            }
+
+                            this.BeginInvokeLambda(() =>
+                            {
+                                //级别一不存在
+                                FirstService creatFrom = new FirstService();
+                                var data = creatFrom.ShowDialog();
+                                if (data == DialogResult.Cancel)
+                                {
+                                    _CreateParam = null;
+                                }
+                                else
+                                {
+                                    _CreateParam = creatFrom.WindowsServiceCreateParam;
+                                }
+                                Condition.Set();
+                            });
+                            Condition.WaitOne();
+
+                            if (_CreateParam == null)
+                            {
+                                this.nlog_windowservice.Error($"Create Windows Service Param Required!");
+                                UploadError(this.tabPage_windows_service, server.Host);
+                                allSuccess = false;
+                                failCount++;
+                                failServerList.Add(server);
+                                continue;
+                            }
+                            else
+                            {
+                                ServiceStartType = _CreateParam.StartUp;
+                                PhysicalPath = _CreateParam.PhysicalPath;
+                                ServiceDescription = _CreateParam.Desc;
+                                this.nlog_windowservice.Info($"WindowsService Create Description:{_CreateParam.Desc},StartType:{_CreateParam.StartUp},PhysicalPath:{PhysicalPath}");
+                            }
+                        }
 
 
                         ProgressPercentageForWindowsService = 0;
@@ -3813,8 +3932,7 @@ namespace AntDeployWinform.Winform
                         this.nlog_windowservice.Info($"Start Uppload,Host:{getHostDisplayName(server)}");
                         HttpRequestClient httpRequestClient = new HttpRequestClient();
                         httpRequestClient.SetFieldValue("publishType", "windowservice");
-                        httpRequestClient.SetFieldValue("isIncrement",
-                            this.PluginConfig.WindowsServiceEnableIncrement && !isAgentUpdate ? "true" : "");
+                        httpRequestClient.SetFieldValue("isIncrement",this.PluginConfig.WindowsServiceEnableIncrement && !isAgentUpdate ? "true" : "");
                         httpRequestClient.SetFieldValue("serviceName", serviceName);
                         httpRequestClient.SetFieldValue("id", loggerId);
                         httpRequestClient.SetFieldValue("sdkType", DeployConfig.WindowsServiveConfig.SdkType);
@@ -3827,6 +3945,8 @@ namespace AntDeployWinform.Winform
                         httpRequestClient.SetFieldValue("localIp", CodingHelper.GetLocalIPAddress());
                         httpRequestClient.SetFieldValue("deployFolderName", dateTimeFolderName);
                         httpRequestClient.SetFieldValue("physicalPath", PhysicalPath);
+                        httpRequestClient.SetFieldValue("startType", ServiceStartType);
+                        httpRequestClient.SetFieldValue("desc", ServiceDescription);
                         httpRequestClient.SetFieldValue("Token", server.Token);
                         httpRequestClient.SetFieldValue("backUpIgnore", (backUpIgnoreList != null && backUpIgnoreList.Any()) ? string.Join("@_@", backUpIgnoreList) : "");
                         httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream", zipBytes);
@@ -6597,5 +6717,11 @@ namespace AntDeployWinform.Winform
             GlobalConfig.SaveLogs = checkBox_save_deploy_log.Checked;
         }
 
+        private void checkBox_multi_deploy_Click(object sender, EventArgs e)
+        {
+            GlobalConfig.MultiInstance = checkBox_multi_deploy.Checked;
+        }
+       
+        
     }
 }

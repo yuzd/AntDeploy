@@ -211,10 +211,10 @@ namespace yuzd.AntDeploy
 
         private void DoAntDeployProcess(string projectPath, ProjectParam param)
         {
-
+            var globalConfig = ProjectHelper.ReadGlobalConfig();
             try
             {
-                StartListeningForWindowChanges();
+                if(!globalConfig.MultiInstance)StartListeningForWindowChanges();
 
                 var md5 = MD5(projectPath);
                 var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -234,29 +234,30 @@ namespace yuzd.AntDeploy
                     process.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
                     process.StartInfo.UseShellExecute = false;
                     process.StartInfo.Verb = "runas";
-                   
                     process.Start();
-                    processHIntPtrGet = () =>
+                    if (!globalConfig.MultiInstance)
                     {
-                        try
+                        processHIntPtrGet = () =>
                         {
-                            return process.MainWindowHandle;
-                        }
-                        catch (Exception e)
-                        {
-                            return new IntPtr(0);
-                        }
-                    };
+                            try
+                            {
+                                return process.MainWindowHandle;
+                            }
+                            catch (Exception)
+                            {
+                                return new IntPtr(0);
+                            }
+                        };
+                    }
                     //var hwndMainWindow = (IntPtr)DTE.MainWindow.HWnd;
                     //SetParent(processHIntPtr, hwndMainWindow);
-                    process.WaitForExit();
-
+                    if (!globalConfig.MultiInstance) process.WaitForExit();
                   
                 }
             }
             finally
             {
-               StopListeningForWindowChanges();
+                if (!globalConfig.MultiInstance) StopListeningForWindowChanges();
             }
        
         }
@@ -290,7 +291,7 @@ namespace yuzd.AntDeploy
         static extern bool SetForegroundWindow(IntPtr hWnd);
         const uint WINEVENT_OUTOFCONTEXT = 0;
         const uint EVENT_SYSTEM_FOREGROUND = 3;
-        private IntPtr winHook;
+        private IntPtr winHook = new IntPtr(0);
         private static Func<IntPtr> processHIntPtrGet ;
         private  WinEventProc listener;
 
@@ -312,6 +313,7 @@ namespace yuzd.AntDeploy
         {
             try
             {
+                if (winHook == new IntPtr(0)) return;
                 UnhookWinEvent(winHook);
             }
             catch (Exception)
@@ -362,5 +364,10 @@ namespace yuzd.AntDeploy
         public string MsBuildPath { get; set; }
         public string ProjectPath { get; set; }
         public string NetCoreSDKVersion { get; set; }
+    }
+
+    internal class GlobalConfig
+    {
+        public bool MultiInstance { get; set; }
     }
 }

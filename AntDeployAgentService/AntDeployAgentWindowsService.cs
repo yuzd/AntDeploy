@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using TinyFox;
 
 namespace AntDeployAgentService
@@ -11,7 +12,12 @@ namespace AntDeployAgentService
     public class AntDeployAgentWindowsService : IHostedService, IDisposable
     {
         private Startup _startup;
+        private ILogger<AntDeployAgentWindowsService> _logger;
 
+        public AntDeployAgentWindowsService(ILogger<AntDeployAgentWindowsService> logger)
+        {
+            _logger = logger;
+        }
         public void Dispose()
         {
         }
@@ -28,6 +34,7 @@ namespace AntDeployAgentService
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex,"StartError");
                 try
                 {
                     File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"startupError.txt"), ex.ToString());

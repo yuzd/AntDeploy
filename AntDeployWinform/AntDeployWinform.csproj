@@ -168,6 +168,12 @@
     <Compile Include="Winform\FirstCreate.Designer.cs">
       <DependentUpon>FirstCreate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Winform\FirstService.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Winform\FirstService.Designer.cs">
+      <DependentUpon>FirstService.cs</DependentUpon>
+    </Compile>
     <Compile Include="Winform\InputDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -237,6 +243,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Winform\FirstCreate.zh-CN.resx">
       <DependentUpon>FirstCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Winform\FirstService.resx">
+      <DependentUpon>FirstService.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Winform\FirstService.zh-CN.resx">
+      <DependentUpon>FirstService.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Winform\InputDialog.resx">
       <DependentUpon>InputDialog.cs</DependentUpon>

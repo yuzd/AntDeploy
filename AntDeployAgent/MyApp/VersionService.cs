@@ -62,6 +62,9 @@ namespace AntDeployAgentWindows.MyApp
                     case "winservice":
                         GetWindowsServiceVersionList(request);
                         break;
+                    case "checkwinservice":
+                        CheckWinservice(request);
+                        break;
                     default:
                         WriteError("request Type is invaild");
                         return;
@@ -73,6 +76,36 @@ namespace AntDeployAgentWindows.MyApp
             }
         }
 
+        /// <summary>
+        /// 检查windows服务是否已存在
+        /// </summary>
+        /// <param name="request"></param>
+        private void CheckWinservice(GetVersionVm request)
+        {
+            if (string.IsNullOrEmpty(request.Name))
+            {
+                WriteError("service name required!");
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(request.Mac) && !Setting.CheckIsInWhiteMacList(request.Mac))
+            {
+                WriteError($"macAddress:[{request.Mac}] invalid");
+                return;
+            }
+
+            var serviceName = request.Name.Trim();
+            var service = WindowServiceHelper.GetWindowServiceByName(serviceName);
+
+            if (!string.IsNullOrEmpty(service.Item2))
+            {
+                WriteError(service.Item2);
+                return;
+            }
+
+            CheckExistResult result = new CheckExistResult {WebSiteName = serviceName, Success = service.Item1!=null};
+            WriteSuccess(result);
+        }
 
         /// <summary>
         /// 检查IIS中是否存在指定网站
@@ -117,7 +150,7 @@ namespace AntDeployAgentWindows.MyApp
                 return;
             }
 
-            IIsSiteCheckResult result = new IIsSiteCheckResult();
+            CheckExistResult result = new CheckExistResult();
             result.WebSiteName = webSiteName;
             result.Level1Name = level1;
             result.Level1Exist = isSiteExistResult.Item1;

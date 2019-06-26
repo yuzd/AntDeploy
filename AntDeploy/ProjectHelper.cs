@@ -8,6 +8,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
+using Newtonsoft.Json;
 
 namespace yuzd.AntDeploy
 {
@@ -577,6 +579,68 @@ namespace yuzd.AntDeploy
                              ToAbsoluteFilePath(file, root, folder) :
                              ToAbsoluteFilePath(file, root, Path.GetDirectoryName(bundleFileName));
             }
+        }
+
+        public static string GetPluginConfigPath()
+        {
+            try
+            {
+                var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                var folderName = Path.Combine(path, "AntDeploy");
+                if (!string.IsNullOrEmpty(folderName))
+                {
+                    if (!Directory.Exists(folderName))
+                    {
+                        Directory.CreateDirectory(folderName);
+                    }
+
+                    return Path.Combine(folderName,  "AntDeploy.json" );
+                }
+                return string.Empty;
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+        }
+
+        public static GlobalConfig ReadGlobalConfig()
+        {
+            GlobalConfig GlobalConfig = null;
+            var projectPath = GetPluginConfigPath();
+            if (string.IsNullOrEmpty(projectPath))
+            {
+                GlobalConfig = new GlobalConfig();
+                return GlobalConfig;
+            }
+
+            if (File.Exists(projectPath))
+            {
+                var config = File.ReadAllText(projectPath, Encoding.UTF8);
+                if (!string.IsNullOrEmpty(config))
+                {
+                    try
+                    {
+                        GlobalConfig = JsonConvert.DeserializeObject<GlobalConfig>(config);
+                    }
+                    catch (Exception)
+                    {
+                        //ignore
+                    }
+
+                    if (GlobalConfig == null) GlobalConfig = new GlobalConfig() ;
+                }
+                else
+                {
+                    if (GlobalConfig == null) new GlobalConfig();
+                }
+            }
+            else
+            {
+                GlobalConfig = new GlobalConfig() ;
+            }
+
+            return GlobalConfig;
         }
     }
 }
