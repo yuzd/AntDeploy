@@ -33,6 +33,8 @@ namespace AntDeployWinform.Winform
                 this.txt_iis_port.Visible = false;
                 label15.Visible = false;
                 label3.Visible = false;
+                label4.Visible = false;
+                label5.Visible = true;
             }
         }
 

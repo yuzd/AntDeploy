@@ -41,6 +41,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.btn_continue = new AltoControls.AltoButton();
+            this.label5 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label33
@@ -116,10 +117,17 @@
             this.btn_continue.Transparency = false;
             this.btn_continue.Click += new System.EventHandler(this.btn_continue_Click);
             // 
+            // label5
+            // 
+            resources.ApplyResources(this.label5, "label5");
+            this.label5.ForeColor = System.Drawing.Color.Red;
+            this.label5.Name = "label5";
+            // 
             // FirstCreate
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.txt_iis_port);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.btn_continue);
@@ -156,5 +164,6 @@
         private AltoControls.AltoButton btn_continue;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
     }
 }
