@@ -758,7 +758,7 @@ namespace AntDeployWinform.Util
             }
 
             //执行docker build 生成一个镜像
-            var dockerBuildResult = RunSheell($"sudo docker build --no-cache --rm -t {PorjectName}:{ClientDateTimeFolderName} -f {dockFilePath} {publishFolder} ");
+            var dockerBuildResult = RunSheell($"docker build --no-cache --rm -t {PorjectName}:{ClientDateTimeFolderName} -f {dockFilePath} {publishFolder} ");
             if (!dockerBuildResult)
             {
                 _logger($"build image fail", NLog.LogLevel.Error);
@@ -774,10 +774,10 @@ namespace AntDeployWinform.Util
             SshCommand r1 = null;
             try
             {
-                r1 = _sshClient.RunCommand($"sudo docker stop -t 10 {continarName}");
+                r1 = _sshClient.RunCommand($"docker stop -t 10 {continarName}");
                 if (r1.ExitStatus == 0)
                 {
-                    _logger($"sudo docker stop -t 10 {continarName}", LogLevel.Info);
+                    _logger($"docker stop -t 10 {continarName}", LogLevel.Info);
                 }
 
                 Thread.Sleep(5000);
@@ -790,10 +790,10 @@ namespace AntDeployWinform.Util
             try
             {
                 //查看容器有没有在runing 如果有就干掉它
-                r1 = _sshClient.RunCommand($"sudo docker rm -f {continarName}");
+                r1 = _sshClient.RunCommand($"docker rm -f {continarName}");
                 if (r1.ExitStatus == 0)
                 {
-                    _logger($"sudo docker rm -f {continarName}", LogLevel.Info);
+                    _logger($"docker rm -f {continarName}", LogLevel.Info);
                 }
             }
             catch (Exception)
@@ -815,7 +815,7 @@ namespace AntDeployWinform.Util
             string volume = GetVolume();
 
             // 根据image启动一个容器
-            var dockerRunRt = RunSheell($"sudo docker run --name {continarName}{volume} -d --restart=always -p {server_port}:{port} {PorjectName}:{ClientDateTimeFolderName}");
+            var dockerRunRt = RunSheell($"docker run --name {continarName}{volume} -d --restart=always -p {server_port}:{port} {PorjectName}:{ClientDateTimeFolderName}");
 
             if (!dockerRunRt)
             {
@@ -840,7 +840,7 @@ namespace AntDeployWinform.Util
                     var imageArr = imageName.Split(':');
                     if (imageArr.Length == 3)
                     {
-                        var r2 = _sshClient.RunCommand($"sudo docker rmi {imageArr[2]}");
+                        var r2 = _sshClient.RunCommand($"docker rmi {imageArr[2]}");
                         if (r2.ExitStatus == 0)
                         {
                             if (!clearOldImages)
@@ -848,7 +848,7 @@ namespace AntDeployWinform.Util
                                 _logger($"start to clear old images of name:{PorjectName}", LogLevel.Info);
                                 clearOldImages = true;
                             }
-                            _logger($"sudo docker rmi {imageArr[2]} [{imageName}]", LogLevel.Info);
+                            _logger($"docker rmi {imageArr[2]} [{imageName}]", LogLevel.Info);
                         }
                     }
                 }
@@ -859,7 +859,7 @@ namespace AntDeployWinform.Util
             try
             {
                 //查看是否有<none>的image 把它删掉 因为我们创建image的时候每次都会覆盖所以会产生一些没有的image
-                _sshClient.RunCommand($"if sudo docker images -f \"dangling=true\" | grep ago --quiet; then sudo docker rmi -f $(sudo docker images -f \"dangling=true\" -q); fi");
+                _sshClient.RunCommand($"if docker images -f \"dangling=true\" | grep ago --quiet; then docker rmi -f $(docker images -f \"dangling=true\" -q); fi");
 
             }
             catch (Exception )
@@ -985,8 +985,8 @@ namespace AntDeployWinform.Util
                 _logger($"create docker file: {path}", NLog.LogLevel.Info);
                 using (var writer = _sftpClient.CreateText(path))
                 {
-                    writer.WriteLine($"FROM microsoft/dotnet:{sdkVersion}-aspnetcore-runtime");
-                    _logger($"FROM mcr.microsoft.com/dotnet/core/runtime:{sdkVersion}", NLog.LogLevel.Info);// microsoft/dotnet:{sdkVersion}-aspnetcore-runtime
+                    writer.WriteLine($"FROM mcr.microsoft.com/dotnet/core/aspnet:{sdkVersion}");
+                    _logger($"FROM mcr.microsoft.com/dotnet/core/aspnet:{sdkVersion}", NLog.LogLevel.Info);// microsoft/dotnet:{sdkVersion}-aspnetcore-runtime
 
                     writer.WriteLine($"COPY . /publish");
                     _logger($"COPY . /publish", NLog.LogLevel.Info);
