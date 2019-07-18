@@ -34,7 +34,7 @@ namespace AntDeployCommand.Utils
                 }
                 arguments += " -o \"" + publishPath + "\"";
             }
-            Console.WriteLine($"current project Path:{projectPath}");
+            LogHelper.Info($"current project Path:{projectPath}");
             return RunDotnetExternalExe($"dotnet", arguments);
         }
 

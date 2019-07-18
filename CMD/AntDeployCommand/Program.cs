@@ -12,27 +12,27 @@ namespace AntDeployCommand
         {
             if (args.Length !=1)
             {
-                Console.WriteLine("arguments required");
+                LogHelper.Error("arguments required");
                 return -1;
             }
 
             var file = args[0];
             if (string.IsNullOrEmpty(file))
             {
-                Console.WriteLine("arguments required");
+                LogHelper.Error("arguments required");
                 return -1;
             }
 
             if (!File.Exists(file))
             {
-                Console.WriteLine($" {file} not found");
+                LogHelper.Error($" {file} not found");
                 return -1;
             }
 
             var fileContext = File.ReadAllText(file);
             if (string.IsNullOrEmpty(fileContext))
             {
-                Console.WriteLine($" {file} is empty");
+                LogHelper.Error($" {file} is empty");
                 return -1;
             }
 
@@ -40,13 +40,12 @@ namespace AntDeployCommand
             if (arguments == null)
             {
 
-                Console.WriteLine("arguments required");
+                LogHelper.Error("arguments required");
                 return -1;
             }
             if (string.IsNullOrEmpty(arguments.DeployType))
             {
-
-                Console.WriteLine("arguments DeployType required");
+                LogHelper.Error("arguments DeployType required");
                 return -1;
             }
 
@@ -58,10 +57,9 @@ namespace AntDeployCommand
             }
             catch (Exception ex)
             {
-                Console.WriteLine();
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-                throw;
+                LogHelper.Error(ex.Message);
+                LogHelper.Error(ex.StackTrace);
+                return -1;
             }
 
             ops.Execute();
