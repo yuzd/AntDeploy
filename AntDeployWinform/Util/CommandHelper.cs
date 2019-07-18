@@ -168,7 +168,11 @@ namespace AntDeployWinform.Util
                     }
                     if (!string.IsNullOrWhiteSpace(args.Data))
                     {
-                        if (!args.Data.StartsWith(" ") && args.Data.Contains(": error"))
+                        if (args.Data.StartsWith(" "))//有这个代表肯定build有出问题
+                        {
+                            logger.Info(args.Data);
+                        }
+                        if (args.Data.Contains(": warning"))
                         {
                             pr.Log(new BuildEventArgs
                             {
@@ -176,13 +180,9 @@ namespace AntDeployWinform.Util
                                 message = args.Data
                             });
                         }
-                        else if (args.Data.Contains(".csproj : error"))
+                        else if (args.Data.Contains(": error"))
                         {
-                            pr.Log(new BuildEventArgs
-                            {
-                                level = LogLevel.Error,
-                                message = args.Data
-                            });
+                            logger.Error(args.Data);
                         }
                         else
                         {
