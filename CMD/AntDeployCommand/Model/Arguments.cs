@@ -20,6 +20,8 @@ namespace AntDeployCommand.Model
         /// 编译类型
         /// </summary>
         public string BuildMode { get; set; }
+        public string EnvName { get; set; }
+        public string EnvType { get; set; }
 
         /// <summary>
         /// 打包目录

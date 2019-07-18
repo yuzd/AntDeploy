@@ -6,21 +6,32 @@ using AntDeployCommand.Model;
 
 namespace AntDeployCommand
 {
-    class OperationsBase : IOperations
+    public abstract class OperationsBase : IOperations
     {
-        protected Arguments args;
-        public OperationsBase(Arguments args)
-        {
-            this.args = args;
-        }
+      
+        public Arguments Arguments;
+
+
+
+        public abstract string ValidateArgument();
+        public abstract void Run();
+
         public void ValidateArguments()
         {
-            throw new NotImplementedException();
+        
+
+            var re = ValidateArgument();
+            if (!string.IsNullOrEmpty(re))
+            {
+                throw new ArgumentException(re);
+            }
         }
 
         public void Execute()
         {
-            throw new NotImplementedException();
+            Run();
         }
+
     }
+
 }
