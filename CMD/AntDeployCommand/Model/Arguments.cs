@@ -31,7 +31,7 @@ namespace AntDeployCommand.Model
         /// <summary>
         /// 打包排除规则
         /// </summary>
-        public List<string> PackageIgnore { get; set; }
+        public List<string> PackageIgnore { get; set; } = new List<string>();
 
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace AntDeployCommand.Model
         public string WebSiteName { get; set; }
         public string ServiceName { get; set; }
         public bool IsSelectedDeploy { get; set; }
-        public List<string> SelectedFileList { get; set; }
+        public List<string> SelectedFileList { get; set; } = new List<string>();
         public bool IsIncrementDeploy { get; set; }
         /// <summary>
         /// linux服务器账号

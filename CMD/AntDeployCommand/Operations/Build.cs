@@ -38,7 +38,7 @@ namespace AntDeployCommand.Operations
             var file = new FileInfo(Arguments.ProjectPath);
             var ProjectFolderPath = file.DirectoryName;
             var buildMode = GetNetCorePublishRuntimeArg();
-            var envType = string.Empty;
+            var envType = "unknow";
             if (Arguments.EnvType.Equals("IIS"))
             {
                 envType = "deploy_iis";
@@ -61,7 +61,7 @@ namespace AntDeployCommand.Operations
             }
             else
             {
-                LogHelper.Info($"【publish Success】{publishPath}");
+                LogHelper.Info($"【publish success】{publishPath}");
             }
         }
 
@@ -73,16 +73,22 @@ namespace AntDeployCommand.Operations
                 return string.Empty;
             }
 
-            if (Arguments.BuildMode.Equals("FDD(runtime)"))
+            try
+            {
+                if (Arguments.BuildMode.Equals("FDD(runtime)"))
+                {
+                    return string.Empty;
+                }
+                else
+                {
+                    var runtime = Arguments.BuildMode.Split('(')[1].Split(')')[0];
+                    return $" --runtime {runtime}";
+                }
+            }
+            catch (Exception)
             {
                 return string.Empty;
             }
-            else
-            {
-                var runtime = Arguments.BuildMode.Split('(')[1].Split(')')[0];
-                return $" --runtime {runtime}";
-            }
-
         }
     }
 }
