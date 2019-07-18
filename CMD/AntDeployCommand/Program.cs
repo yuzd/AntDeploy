@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using AntDeployCommand.Interface;
 using AntDeployCommand.Model;
 using AntDeployCommand.Utils;
@@ -15,7 +16,27 @@ namespace AntDeployCommand
                 return -1;
             }
 
-            Arguments arguments = args[0].JsonToObject<Arguments>();
+            var file = args[0];
+            if (string.IsNullOrEmpty(file))
+            {
+                Console.WriteLine("arguments required");
+                return -1;
+            }
+
+            if (!File.Exists(file))
+            {
+                Console.WriteLine($" {file} not found");
+                return -1;
+            }
+
+            var fileContext = File.ReadAllText(file);
+            if (string.IsNullOrEmpty(fileContext))
+            {
+                Console.WriteLine($" {file} is empty");
+                return -1;
+            }
+
+            Arguments arguments = fileContext.JsonToObject<Arguments>();
             if (arguments == null)
             {
 
