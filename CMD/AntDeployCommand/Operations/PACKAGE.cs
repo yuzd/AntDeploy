@@ -20,18 +20,9 @@ namespace AntDeployCommand.Operations
 
             if (!Directory.Exists(Arguments.PackagePath))
             {
-                Directory.CreateDirectory(Arguments.PackagePath);
+                return $"{nameof(Arguments.PackagePath)} not found!";
             }
 
-            if (string.IsNullOrEmpty(Arguments.PackageZipPath))
-            {
-                return $"{nameof(Arguments.PackageZipPath)} required!";
-            }
-
-            if (!Directory.Exists(Arguments.PackageZipPath))
-            {
-                Directory.CreateDirectory(Arguments.PackageZipPath);
-            }
 
             if (string.IsNullOrEmpty(Arguments.EnvType))
             {
@@ -40,11 +31,11 @@ namespace AntDeployCommand.Operations
 
             if (!Arguments.EnvName.Equals("DOCKER"))
             {
-                zipPath = Path.Combine(Arguments.PackageZipPath, "package.zip");
+                zipPath = Path.Combine(Arguments.PackagePath, "package.zip");
             }
             else
             {
-                zipPath = Path.Combine(Arguments.PackageZipPath, "package.tar");
+                zipPath = Path.Combine(Arguments.PackagePath, "package.tar");
             }
 
             if (File.Exists(zipPath))
@@ -60,7 +51,7 @@ namespace AntDeployCommand.Operations
             //1 全部打包
             //2 指定打包文件列表
 
-            LogHelper.Info($"package start {Arguments.PackagePath}");
+            LogHelper.Info($"package start: {Arguments.PackagePath}");
             LogHelper.Info($"package ignoreList Count:{Arguments.PackageIgnore.Count}");
             byte[] zipBytes = null;
 
@@ -138,8 +129,8 @@ namespace AntDeployCommand.Operations
             File.WriteAllBytes(zipPath, zipBytes);
 
             var packageSize = (zipBytes.Length / 1024 / 1024);
-            LogHelper.Info($"【package success】package size:{(packageSize > 0 ? (packageSize + "") : "<1")}M");
-
+            LogHelper.Info($"package size:{(packageSize > 0 ? (packageSize + "") : "<1")}M");
+            LogHelper.Info($"【package success】{zipPath}");
 
         }
     }
