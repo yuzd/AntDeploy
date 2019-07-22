@@ -15,21 +15,21 @@ namespace AntDeployCommand.Operations
         {
             if (string.IsNullOrEmpty(Arguments.PackagePath))
             {
-                return $"{nameof(Arguments.PackagePath)} required!";
+                return $"【Package】{nameof(Arguments.PackagePath)} required!";
             }
 
             if (!Directory.Exists(Arguments.PackagePath))
             {
-                return $"{nameof(Arguments.PackagePath)} not found!";
+                return $"【Package】{nameof(Arguments.PackagePath)} not found!";
             }
 
 
             if (string.IsNullOrEmpty(Arguments.EnvType))
             {
-                return $"{nameof(Arguments.EnvType)} required!";
+                return $"【Package】{nameof(Arguments.EnvType)} required!";
             }
 
-            if (!Arguments.EnvName.Equals("DOCKER"))
+            if (!Arguments.EnvType.Equals("DOCKER"))
             {
                 zipPath = Path.Combine(Arguments.PackagePath, "package.zip");
             }
@@ -51,13 +51,13 @@ namespace AntDeployCommand.Operations
             //1 全部打包
             //2 指定打包文件列表
 
-            LogHelper.Info($"package start: {Arguments.PackagePath}");
-            LogHelper.Info($"package ignoreList Count:{Arguments.PackageIgnore.Count}");
+            LogHelper.Info($"【Package】start: {Arguments.PackagePath}");
+            LogHelper.Info($"【Package】ignoreList Count:{Arguments.PackageIgnore.Count}");
             byte[] zipBytes = null;
 
             try
             {
-                if (Arguments.EnvName.Equals("DOCKER"))
+                if (Arguments.EnvType.Equals("DOCKER"))
                 {
                     if (Arguments.SelectedFileList.Count < 1)
                     {
@@ -65,7 +65,7 @@ namespace AntDeployCommand.Operations
                             Arguments.PackageIgnore,
                             (progressValue) =>
                             {
-                                LogHelper.Info($"【package progress】 {progressValue} %");
+                                LogHelper.Info($"【Package progress】 {progressValue} %");
                                 return false;
                             }, LogHelper.Info))
                         {
@@ -75,12 +75,12 @@ namespace AntDeployCommand.Operations
                     }
                     else
                     {
-                        LogHelper.Info($"selected fileList Count:{Arguments.SelectedFileList.Count}");
+                        LogHelper.Info($"【Package】selected fileList Count:{Arguments.SelectedFileList.Count}");
                         using (var memeory = ZipHelper.DoCreateTarFromDirectory(Arguments.PackagePath, Arguments.SelectedFileList,
                             Arguments.PackageIgnore,
                             (progressValue) =>
                             {
-                                LogHelper.Info($"【package progress】 {progressValue} %");
+                                LogHelper.Info($"【Package progress】 {progressValue} %");
                                 return false;
                             }, LogHelper.Info, Arguments.IsSelectedDeploy))
                         {
@@ -96,18 +96,18 @@ namespace AntDeployCommand.Operations
                             true, Arguments.PackageIgnore,
                             (progressValue) =>
                             {
-                                LogHelper.Info($"【package progress】 {progressValue} %");
+                                LogHelper.Info($"【Package progress】 {progressValue} %");
                                 return false;
                             });
                     }
                     else
                     {
-                        LogHelper.Info($"selected fileList Count:{Arguments.SelectedFileList.Count}");
+                        LogHelper.Info($"【Package】selected fileList Count:{Arguments.SelectedFileList.Count}");
                         zipBytes = ZipHelper.DoCreateFromDirectory(Arguments.PackagePath, Arguments.SelectedFileList, CompressionLevel.Optimal,
                             true, Arguments.PackageIgnore,
                             (progressValue) =>
                             {
-                                LogHelper.Info($"【package progress】 {progressValue} %");
+                                LogHelper.Info($"【Package progress】 {progressValue} %");
                                 return false;
                             }, Arguments.IsSelectedDeploy);
                     }
@@ -115,13 +115,13 @@ namespace AntDeployCommand.Operations
             }
             catch (Exception ex)
             {
-                LogHelper.Error("package fail:" + ex.Message);
+                LogHelper.Error("【Package】package fail:" + ex.Message);
                 return;
             }
 
             if (zipBytes == null || zipBytes.Length < 1)
             {
-                LogHelper.Error("package fail");
+                LogHelper.Error("【Package】package fail");
                 return;
             }
 
@@ -129,8 +129,8 @@ namespace AntDeployCommand.Operations
             File.WriteAllBytes(zipPath, zipBytes);
 
             var packageSize = (zipBytes.Length / 1024 / 1024);
-            LogHelper.Info($"package size:{(packageSize > 0 ? (packageSize + "") : "<1")}M");
-            LogHelper.Info($"【package success】{zipPath}");
+            LogHelper.Info($"【Package】size:{(packageSize > 0 ? (packageSize + "") : "<1")}M");
+            LogHelper.Info($"【Package success】{zipPath}");
 
         }
     }
