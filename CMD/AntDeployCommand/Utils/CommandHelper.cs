@@ -32,9 +32,10 @@ namespace AntDeployCommand.Utils
                 {
                     ClearPublishFolder(publishPath);
                 }
+                LogHelper.Info($"【Build】clear folder success:{publishPath}");
                 arguments += " -o \"" + publishPath + "\"";
             }
-            LogHelper.Info($"current project Path:{projectPath}");
+            LogHelper.Info($"【Build】current project Path:{projectPath}");
             return RunDotnetExternalExe($"dotnet", arguments);
         }
 
@@ -50,7 +51,7 @@ namespace AntDeployCommand.Utils
             BuildProgress pr = null;
             try
             {
-                LogHelper.Info(fileName + " " + arguments);
+                LogHelper.Info("【Build】" + fileName + " " + arguments);
                 if (string.IsNullOrEmpty(arguments))
                 {
                     throw new ArgumentException(nameof(arguments));
@@ -83,26 +84,26 @@ namespace AntDeployCommand.Utils
                     {
                         if (args.Data.StartsWith(" "))//有这个代表肯定build有出问题
                         {
-                            LogHelper.Info(args.Data);
+                            LogHelper.Info("【Build】" + args.Data);
                         }
                         if (args.Data.Contains(": warning"))
                         {
                             pr.Log(new BuildEventArgs
                             {
                                 level = LogLevel.Warning,
-                                message = args.Data
+                                message = "【Build】" + args.Data
                             });
                         }
                         else if (args.Data.Contains(": error"))
                         {
-                            LogHelper.Error(args.Data);
+                            LogHelper.Error("【Build】" + args.Data);
                         }
                         else
                         {
                             pr.Log(new BuildEventArgs
                             {
                                 level = LogLevel.Info,
-                                message = args.Data
+                                message = "【Build】" + args.Data
                             });
                         }
                     }
@@ -113,7 +114,7 @@ namespace AntDeployCommand.Utils
                 {
                     if (!string.IsNullOrWhiteSpace(data.Data))
                     {
-                        LogHelper.Error(data.Data);
+                        LogHelper.Error("【Build】" + data.Data);
                        
                     }
                 };
@@ -133,7 +134,7 @@ namespace AntDeployCommand.Utils
             }
             catch (Exception ex)
             {
-                LogHelper.Error(ex.Message);
+                LogHelper.Error("【Build】" + ex.Message);
                 return false;
             }
             finally

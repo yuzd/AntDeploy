@@ -126,6 +126,7 @@ namespace AntDeployCommand.Utils
             //    ignoreList.Add("/.git?");
             //}
             var haveFile = false;
+            long lastProgressNumber = 0;
             sourceDirectoryName = Path.GetFullPath(sourceDirectoryName);
             using (var outStream = new MemoryStream())
             {
@@ -143,9 +144,10 @@ namespace AntDeployCommand.Utils
                     foreach (FileSystemInfo enumerateFileSystemInfo in allFile)
                     {
                         index++;
-                        var lastProgressNumber = (((long)index * 100 / allFileLength));
-                        if (progress != null)
+                        var progressNumber = (((long)index * 100 / allFileLength));
+                        if (progress != null && lastProgressNumber!= progressNumber)
                         {
+                            lastProgressNumber = progressNumber;
                             var r = progress.Invoke((int)lastProgressNumber);
                             if (r)
                             {
@@ -236,6 +238,7 @@ namespace AntDeployCommand.Utils
             //    ignoreList.Add("/.git?");
             //}
             var haveFile = false;
+            long lastProgressNumber = 0;
             sourceDirectoryName = Path.GetFullPath(sourceDirectoryName);
             using (var outStream = new MemoryStream())
             {
@@ -252,16 +255,16 @@ namespace AntDeployCommand.Utils
                     foreach (FileSystemInfo enumerateFileSystemInfo in allFile)
                     {
                         index++;
-                        var lastProgressNumber = (((long)index * 100 / allFileLength));
-                        if (progress != null)
+                        var progressNumber = (((long)index * 100 / allFileLength));
+                        if (progress != null && lastProgressNumber != progressNumber)
                         {
+                            lastProgressNumber = progressNumber;
                             var r = progress.Invoke((int)lastProgressNumber);
                             if (r)
                             {
                                 throw new Exception("deploy task was canceled!");
                             }
                         }
-
                         flag = false;
                         int length = enumerateFileSystemInfo.FullName.Length - fullName.Length;
                         string entryName = EntryFromPath(enumerateFileSystemInfo.FullName, fullName.Length, length);
@@ -338,7 +341,7 @@ namespace AntDeployCommand.Utils
         /// <returns></returns>
         public static byte[] DoCreateFromDirectorySharpZipLib(string sourceDirectoryName, List<string> ignoreList = null, Action<int> progress = null)
         {
-
+            long lastProgressNumber = 0;
             sourceDirectoryName = Path.GetFullPath(sourceDirectoryName);
             using (var outputMemStream = new MemoryStream())
             {
@@ -352,8 +355,12 @@ namespace AntDeployCommand.Utils
                 foreach (FileSystemInfo enumerateFileSystemInfo in allFile)
                 {
                     index++;
-                    var lastProgressNumber = (((long)index * 100 / allFileLength));
-                    progress?.Invoke((int)lastProgressNumber);
+                    var progressNumber = (((long)index * 100 / allFileLength));
+                    if (progress != null && lastProgressNumber != progressNumber)
+                    {
+                        lastProgressNumber = progressNumber;
+                        progress.Invoke((int) lastProgressNumber);
+                    }
                     int length = enumerateFileSystemInfo.FullName.Length - fullName.Length;
                     string entryName = EntryFromPath(enumerateFileSystemInfo.FullName, fullName.Length, length);
                     if (ignoreList != null)
@@ -440,19 +447,20 @@ namespace AntDeployCommand.Utils
             var allFileLength = allFile.Count();
             var index = 0;
             var haveFile = false;
+            long lastProgressNumber = 0;
             foreach (FileSystemInfo enumerateFileSystemInfo in allFile)
             {
                 index++;
-                var lastProgressNumber = (((long)index * 100 / allFileLength));
-                if (progress != null)
+                var progressNumber = (((long)index * 100 / allFileLength));
+                if (progress != null && lastProgressNumber != progressNumber)
                 {
+                    lastProgressNumber = progressNumber;
                     var r = progress.Invoke((int)lastProgressNumber);
                     if (r)
                     {
                         throw new Exception("deploy task was canceled!");
                     }
                 }
-
 
                 int length = enumerateFileSystemInfo.FullName.Length - fullName.Length;
                 string entryName = EntryFromPath(enumerateFileSystemInfo.FullName, fullName.Length, length);

@@ -13,21 +13,21 @@ namespace AntDeployCommand.Operations
         {
             if (string.IsNullOrEmpty(Arguments.EnvName))
             {
-                return $"{nameof(Arguments.EnvName)} required!";
+                return $"【Build】{nameof(Arguments.EnvName)} required!";
             }
             if (string.IsNullOrEmpty(Arguments.EnvType))
             {
-                return $"{nameof(Arguments.EnvType)} required!";
+                return $"【Build】{nameof(Arguments.EnvType)} required!";
             }
 
             if (string.IsNullOrEmpty(Arguments.ProjectPath))
             {
-                return $"{nameof(Arguments.ProjectPath)} required!";
+                return $"【Build】{nameof(Arguments.ProjectPath)} required!";
             }
 
             if (!File.Exists(Arguments.ProjectPath))
             {
-                return $"{(Arguments.ProjectPath)} not found!";
+                return $"【Build】{(Arguments.ProjectPath)} not found!";
             }
 
             return string.Empty;
