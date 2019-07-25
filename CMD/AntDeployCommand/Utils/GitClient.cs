@@ -53,7 +53,7 @@ namespace AntDeployCommand.Utils
             }
             catch (Exception ex)
             {
-                _logger?.Invoke("【git】" + ex.Message,LogLevel.Error);
+                _logger?.Invoke(ex.Message,LogLevel.Error);
             }
 
             return false;
@@ -70,7 +70,7 @@ namespace AntDeployCommand.Utils
                 var branch = _repository.Branches[name];
                 if (branch==null)
                 {
-                    _logger?.Invoke($"【git】branch name:{name} not exist",LogLevel.Warning);
+                    _logger?.Invoke($"branch name:{name} not exist",LogLevel.Warning);
                     return false;
                 }
                 Branch currentBranch = LibGit2Sharp.Commands.Checkout(_repository , branch);
@@ -78,7 +78,7 @@ namespace AntDeployCommand.Utils
             }
             catch (Exception e)
             {
-                _logger?.Invoke($"【git】checkout branch:{name} fail:{e.Message}",LogLevel.Error);
+                _logger?.Invoke($"checkout branch:{name} fail:{e.Message}",LogLevel.Error);
                 return false;
             }
         }
@@ -95,22 +95,22 @@ namespace AntDeployCommand.Utils
                 var branch = _repository.Branches[name];
                 if (branch!=null)
                 {
-                    _logger?.Invoke($"【git】create branch warn:{name} is already exist",LogLevel.Info);
+                    _logger?.Invoke($"create branch warn:{name} is already exist",LogLevel.Info);
                     return true;
                 }
                 
                 Branch newbranch = _repository.CreateBranch(name);
                 if (newbranch != null)
                 {
-                    _logger?.Invoke($"【git】create branch success:{name}",LogLevel.Info);
+                    _logger?.Invoke($"create branch success:{name}",LogLevel.Info);
                     return true;
                 }
-                _logger?.Invoke($"【git】create branch:{name} fail",LogLevel.Error);
+                _logger?.Invoke($"create branch:{name} fail",LogLevel.Error);
                 return false;
             }
             catch (Exception e)
             {
-                _logger?.Invoke($"【git】create branch:{name} fail:{e.Message}",LogLevel.Error);
+                _logger?.Invoke($"create branch:{name} fail:{e.Message}",LogLevel.Error);
                 return false;
             }
         }
@@ -139,7 +139,7 @@ namespace AntDeployCommand.Utils
                 var path2 = Path.Combine(path, ".git");
                 if (Directory.Exists(path2))
                 {
-                    _logger?.Invoke("【git】 git Repository is already created!",LogLevel.Info);
+                    _logger?.Invoke("git Repository is already created!",LogLevel.Info);
                     _repository = new Repository(_projectPath);
                     InitSuccess =true;// doBranch();//切换成对应的分支
                     return true;
@@ -148,7 +148,7 @@ namespace AntDeployCommand.Utils
                 string rootedPath = Repository.Init(path);
                 if (!string.IsNullOrEmpty(rootedPath))
                 {
-                    _logger?.Invoke("【git】create git Repository success :" + path,LogLevel.Info);
+                    _logger?.Invoke("create git Repository success :" + path,LogLevel.Info);
                     _repository = new Repository(_projectPath);
 
                     CommitChanges("first init");
@@ -159,7 +159,7 @@ namespace AntDeployCommand.Utils
             }
             catch (Exception ex)
             {
-                _logger?.Invoke("【git】create git repository err:" + ex.Message,LogLevel.Error);
+                _logger?.Invoke("create git repository err:" + ex.Message,LogLevel.Error);
             }
 
             return false;
@@ -171,7 +171,7 @@ namespace AntDeployCommand.Utils
         /// </summary>
         public void SubmitChanges(int count)
         {
-            _logger?.Invoke("【git】commit start",LogLevel.Info);
+            _logger?.Invoke("commit start",LogLevel.Info);
             try
             {
                 StageIgnoreFile();
@@ -180,16 +180,16 @@ namespace AntDeployCommand.Utils
             }
             catch (Exception ex1)
             {
-                _logger?.Invoke("【git】stage err:" + ex1.Message,LogLevel.Warning);
+                _logger?.Invoke("stage err:" + ex1.Message,LogLevel.Warning);
             }
 
             CommitChanges(DateTime.Now.ToString("yyyyMMddHHmms"));
-            _logger?.Invoke($"【git】commit success,file count:{count}",LogLevel.Info);
+            _logger?.Invoke($"commit success,file count:{count}",LogLevel.Info);
         }
 
         public void SubmitSelectedChanges(List<string> fileList,string dir)
         {
-            _logger?.Invoke("【git】commit start",LogLevel.Info);
+            _logger?.Invoke("commit start",LogLevel.Info);
             try
             {
                 //StageIgnoreFile();
@@ -206,11 +206,11 @@ namespace AntDeployCommand.Utils
             }
             catch (Exception ex1)
             {
-                _logger?.Invoke("【git】stage err:" + ex1.Message,LogLevel.Warning);
+                _logger?.Invoke("stage err:" + ex1.Message,LogLevel.Warning);
             }
 
             CommitChanges(DateTime.Now.ToString("yyyyMMddHHmms"));
-            _logger?.Invoke($"【git】commit success,file count:{fileList.Count}",LogLevel.Info);
+            _logger?.Invoke($"commit success,file count:{fileList.Count}",LogLevel.Info);
         }
         /// <summary>
         /// 提交被忽略的文件列表
@@ -242,7 +242,7 @@ namespace AntDeployCommand.Utils
 
                 if (!status.IsDirty)
                 {
-                    _logger?.Invoke("【git】no file changed!",LogLevel.Error);
+                    _logger?.Invoke("no file changed!",LogLevel.Error);
                     return result;
                 }
 
@@ -265,7 +265,7 @@ namespace AntDeployCommand.Utils
             }
             catch (Exception ex)
             {
-                _logger?.Invoke("【git】Get Changes FileList err:" + ex.Message,LogLevel.Error);
+                _logger?.Invoke("Get Changes FileList err:" + ex.Message,LogLevel.Error);
             }
             return result;
         }
@@ -285,7 +285,7 @@ namespace AntDeployCommand.Utils
             }
             catch (Exception e)
             {
-                _logger?.Invoke("【git】commit err:" + e.Message,LogLevel.Warning);
+                _logger?.Invoke("commit err:" + e.Message,LogLevel.Warning);
             }
         }
 

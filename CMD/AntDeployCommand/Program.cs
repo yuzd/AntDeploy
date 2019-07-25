@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using AntDeployCommand.Interface;
 using AntDeployCommand.Model;
 using AntDeployCommand.Utils;
@@ -8,7 +9,7 @@ namespace AntDeployCommand
 {
     class Program
     {
-        static int Main(string[] args)
+        static async Task<int> Main(string[] args)
         {
             if (args.Length !=1)
             {
@@ -62,7 +63,7 @@ namespace AntDeployCommand
                 return -1;
             }
 
-            ops.Execute();
+            await ops.Execute();
             return 0;
         }
     }

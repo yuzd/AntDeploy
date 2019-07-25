@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using AntDeployCommand.Model;
 
 namespace AntDeployCommand.Operations
@@ -13,9 +14,10 @@ namespace AntDeployCommand.Operations
             return string.Empty;
         }
 
-        public override void Run()
+        public override async Task Run()
         {
 
+            await Task.CompletedTask;
         }
     }
 }

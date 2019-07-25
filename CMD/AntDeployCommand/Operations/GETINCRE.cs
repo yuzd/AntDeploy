@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using AntDeployCommand.Model;
 using AntDeployCommand.Utils;
 using LibGit2Sharp;
@@ -16,23 +17,25 @@ namespace AntDeployCommand.Operations
             //这个就是发布成果物的目录
             if (string.IsNullOrEmpty(Arguments.ProjectPath))
             {
-                return $"{nameof(Arguments.ProjectPath)} required!";
+                return $"{Name}{nameof(Arguments.ProjectPath)} required!";
             }
 
             if (string.IsNullOrEmpty(Arguments.EnvType))
             {
-                return $"{nameof(Arguments.EnvType)} required!";
+                return $"{Name}{nameof(Arguments.EnvType)} required!";
             }
 
             if (string.IsNullOrEmpty(Arguments.PackageZipPath))
             {
-                return $"{nameof(Arguments.PackageZipPath)} required!";
+                return $"{Name}{nameof(Arguments.PackageZipPath)} required!";
             }
 
             return string.Empty;
         }
 
-        public override void Run()
+        public override string Name => "【Git】";
+
+        public override async Task Run()
         {
             //判断是否已经创建了git
             if (Arguments.EnvType.Equals("get"))
@@ -43,6 +46,8 @@ namespace AntDeployCommand.Operations
             {
                 CommitIncrmentFileList();
             }
+
+            await Task.CompletedTask;
         }
 
         /// <summary>
@@ -53,7 +58,7 @@ namespace AntDeployCommand.Operations
             var lines = File.ReadAllLines(Arguments.PackageZipPath);
             if (lines.Length < 1)
             {
-                LogHelper.Error("【Git】can not commit,selected fileList count = 0");
+                Log("can not commit,selected fileList count = 0", LogLevel.Error);
                 return;
             }
 
@@ -79,7 +84,7 @@ namespace AntDeployCommand.Operations
             {
                 if (!gitModel.InitSuccess)
                 {
-                    LogHelper.Error("【Git】can not init git,please cancel Increment Deploy");
+                    Log("can not init git,please cancel Increment Deploy", LogLevel.Error);
                     return;
                 }
 
@@ -89,26 +94,12 @@ namespace AntDeployCommand.Operations
                     return;
                 }
 
-                LogHelper.Info("【git】Increment package file count:" + fileList.Count);
+                Log("Increment package file count:" + fileList.Count, LogLevel.Info);
 
                 File.WriteAllLines(Arguments.PackageZipPath, fileList.ToArray(), Encoding.UTF8);
             }
         }
 
-        private void Log(string msg, LogLevel level)
-        {
-            if (level == LogLevel.Warning)
-            {
-                LogHelper.Warn(msg);
-            }
-            else if (level == LogLevel.Error)
-            {
-                LogHelper.Error(msg);
-            }
-            else
-            {
-                LogHelper.Info(msg);
-            }
-        }
+
     }
 }

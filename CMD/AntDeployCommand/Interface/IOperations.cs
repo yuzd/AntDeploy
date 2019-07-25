@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace AntDeployCommand.Interface
 {
@@ -9,7 +10,8 @@ namespace AntDeployCommand.Interface
 
         void ValidateArguments();
 
-        void Execute();
+        Task Execute();
 
+        string Name { get; }
     }
 }
