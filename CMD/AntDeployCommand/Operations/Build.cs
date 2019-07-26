@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using AntDeployCommand.Model;
 using AntDeployCommand.Utils;
 
@@ -33,7 +34,7 @@ namespace AntDeployCommand.Operations
             return string.Empty;
         }
 
-        public override void Run()
+        public override async Task Run()
         {
             var file = new FileInfo(Arguments.ProjectPath);
             var ProjectFolderPath = file.DirectoryName;
@@ -63,6 +64,7 @@ namespace AntDeployCommand.Operations
             {
                 LogHelper.Info($"【publish success】{publishPath}");
             }
+            await Task.CompletedTask;
         }
 
 

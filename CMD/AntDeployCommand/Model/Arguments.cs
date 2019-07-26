@@ -32,7 +32,7 @@ namespace AntDeployCommand.Model
         /// 打包排除规则
         /// </summary>
         public List<string> PackageIgnore { get; set; } = new List<string>();
-
+        public List<string> BackUpIgnore { get; set; } = new List<string>();
 
         /// <summary>
         /// 打包成果物
@@ -48,6 +48,12 @@ namespace AntDeployCommand.Model
         /// </summary>
         public string Token { get; set; }
         public string WebSiteName { get; set; }
+        public string PhysicalPath { get; set; }
+        public string PoolName { get; set; }
+        public string Proxy { get; set; }
+        public string LoggerId { get; set; }
+        public string DeployFolderName { get; set; }
+        public string Remark { get; set; }
         public string ServiceName { get; set; }
         public bool IsSelectedDeploy { get; set; }
         public List<string> SelectedFileList { get; set; } = new List<string>();

@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using AntDeployCommand.Utils;
 
 namespace AntDeployCommand.Operations
@@ -45,7 +46,7 @@ namespace AntDeployCommand.Operations
             return string.Empty;
         }
 
-        public override void Run()
+        public override async Task Run()
         {
             //打包分好几种情况
             //1 全部打包
@@ -131,7 +132,7 @@ namespace AntDeployCommand.Operations
             var packageSize = (zipBytes.Length / 1024 / 1024);
             LogHelper.Info($"【Package】size:{(packageSize > 0 ? (packageSize + "") : "<1")}M");
             LogHelper.Info($"【Package success】{zipPath}");
-
+            await Task.CompletedTask;
         }
     }
 }
