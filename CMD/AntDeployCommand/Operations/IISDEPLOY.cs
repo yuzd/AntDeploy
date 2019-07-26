@@ -47,7 +47,6 @@ namespace AntDeployCommand.Operations
             return string.Empty;
         }
         int ProgressPercentage = 0;
-        string ProgressCurrentHost = null;
         public override async Task Run()
         {
             byte[] zipBytes = File.ReadAllBytes(Arguments.PackageZipPath);
@@ -57,14 +56,12 @@ namespace AntDeployCommand.Operations
                 return;
             }
 
-            this.Info("-----------------Deploy Start-----------------");
-            ProgressCurrentHost = Arguments.Host;
             this.Info($"Start Uppload,Host:{Arguments.Host}");
 
             HttpRequestClient httpRequestClient = new HttpRequestClient();
 
             httpRequestClient.SetFieldValue("publishType", "iis");
-            httpRequestClient.SetFieldValue("isIncrement", "true");
+            httpRequestClient.SetFieldValue("isIncrement", (Arguments.IsSelectedDeploy || Arguments.IsIncrementDeploy)?"true":"false");
             httpRequestClient.SetFieldValue("sdkType", "netcore");
             httpRequestClient.SetFieldValue("port", Arguments.Port);
             httpRequestClient.SetFieldValue("id", Arguments.LoggerId);
@@ -87,7 +84,7 @@ namespace AntDeployCommand.Operations
                 Url = $"http://{Arguments.Host}/logger?key=" + Arguments.LoggerId
             };
 
-            IDisposable _subcribe = null;
+            //IDisposable _subcribe = null;
             WebSocketClient webSocket = new WebSocketClient(this.Log, HttpLogger);
      
             try
@@ -101,15 +98,15 @@ namespace AntDeployCommand.Operations
                     (client) =>
                     {
                         client.Proxy = GetProxy();
-                        _subcribe = System.Reactive.Linq.Observable
-                            .FromEventPattern<UploadProgressChangedEventArgs>(client, "UploadProgressChanged")
-                            .Sample(TimeSpan.FromMilliseconds(100))
-                            .Subscribe(arg => { ClientOnUploadProgressChanged(arg.Sender, arg.EventArgs); });});
+                        client.UploadProgressChanged += ClientOnUploadProgressChanged;
+                        //_subcribe = System.Reactive.Linq.Observable
+                        //    .FromEventPattern<UploadProgressChangedEventArgs>(client, "UploadProgressChanged")
+                        //    .Sample(TimeSpan.FromMilliseconds(100))
+                        //    .Subscribe(arg => { ClientOnUploadProgressChanged(arg.Sender, arg.EventArgs); });
+                    });
 
                 if (ProgressPercentage == 0) return;
-                if (ProgressPercentage > 0 && ProgressPercentage < 100)
-                    this.Info($"Upload {100} % complete..."); //结束上传
-
+           
                 webSocket.ReceiveHttpAction(true);
                 if (webSocket.HasError)
                 {
@@ -119,8 +116,7 @@ namespace AntDeployCommand.Operations
                 {
                     if (uploadResult.Item1)
                     {
-                        this.Info($"Host:{Arguments.Host},Response:{uploadResult.Item2}");
-
+                        this.Info($"【deploy success】Host:{Arguments.Host},Response:{uploadResult.Item2}");
                     }
                     else
                     {
@@ -136,7 +132,7 @@ namespace AntDeployCommand.Operations
             finally
             {
                 await webSocket?.Dispose();
-                _subcribe?.Dispose();
+                //_subcribe?.Dispose();
             }
         }
 

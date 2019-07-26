@@ -38,7 +38,7 @@ namespace AntDeployCommand
             await Run();
         }
 
-        public virtual string Name => this.GetType().Name;
+        public virtual string Name => $"【{this.GetType().Name}】";
 
         protected void Log(string msg, LogLevel level)
         {
