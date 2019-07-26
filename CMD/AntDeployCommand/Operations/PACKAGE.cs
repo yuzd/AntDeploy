@@ -77,7 +77,7 @@ namespace AntDeployCommand.Operations
                     {
                         LogHelper.Info($"【Package】selected fileList Count:{Arguments.SelectedFileList.Count}");
                         using (var memeory = ZipHelper.DoCreateTarFromDirectory(Arguments.PackagePath, Arguments.SelectedFileList,
-                            Arguments.PackageIgnore,
+                            Arguments.IsSelectedDeploy?null:Arguments.PackageIgnore,
                             (progressValue) =>
                             {
                                 LogHelper.Info($"【Package progress】 {progressValue} %");
@@ -104,7 +104,7 @@ namespace AntDeployCommand.Operations
                     {
                         LogHelper.Info($"【Package】selected fileList Count:{Arguments.SelectedFileList.Count}");
                         zipBytes = ZipHelper.DoCreateFromDirectory(Arguments.PackagePath, Arguments.SelectedFileList, CompressionLevel.Optimal,
-                            true, Arguments.PackageIgnore,
+                            true, Arguments.IsSelectedDeploy ? null : Arguments.PackageIgnore,
                             (progressValue) =>
                             {
                                 LogHelper.Info($"【Package progress】 {progressValue} %");
