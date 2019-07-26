@@ -63,50 +63,66 @@ namespace AntDeployCommand.Utils
         /// <summary>
         /// 上传
         /// </summary>
-        /// <param name="requestUrl">请求url</param>
         /// <returns></returns>
-        public async Task<Tuple<bool, string>> Upload(String requestUrl, Action<WebClient> config)
+        public async Task<Tuple<bool, string>> Upload(String requestUrl, Action<long> progress, IWebProxy proxy = null)
         {
-            WebClient webClient = new AntDeplopyWebClient();
-
-            webClient.Proxy = null;
-            webClient.Headers.Add("Content-Type", "multipart/form-data; boundary=" + boundary);
-            webClient.Headers.Add("User-Agent", "antdeploy");
-            config?.Invoke(webClient);
-
-
-            byte[] responseBytes;
             byte[] bytes = MergeContent();
-
             try
             {
-                responseBytes = await webClient.UploadDataTaskAsync(requestUrl, bytes);
-                var responseText = System.Text.Encoding.UTF8.GetString(responseBytes);
-                if (!string.IsNullOrEmpty(responseText))
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUrl);
+                request.Method = "POST";
+                request.AllowWriteStreamBuffering = false;
+                request.AllowReadStreamBuffering = false;
+                request.ContentLength = bytes.Length;
+                request.ContentType = "multipart/form-data; boundary=" + boundary;
+                using (var req = await request.GetRequestStreamAsync())
                 {
-                    var model = responseText.JsonToObject<DeployResult>();
-                    if (model == null)
+                    var bytesArr = BufferSplit(bytes, 4096);
+                    var i = 0;
+                    foreach (var arr in bytesArr)
                     {
-                        return new Tuple<bool, string>(false, responseText);
-                    }
-
-                    if (model.Success)
-                    {
-                        return new Tuple<bool, string>(true, "Deploy Success");
-                    }
-                    else
-                    {
-                        return new Tuple<bool, string>(false, responseText);
+                        await req.WriteAsync(arr, 0, arr.Length);
+                        i += arr.Length;
+                        await req.FlushAsync(); // flushing is required or else we jump to 100% very fast
+                        progress((int)(100.0 * i / bytes.Length));
                     }
                 }
-                return new Tuple<bool, string>(true, responseText);
+
+                HttpWebResponse WResp = (HttpWebResponse)request.GetResponse();
+                using (Stream stream = WResp.GetResponseStream())
+                {
+                    var reader = new StreamReader(stream);
+                    var responseText = reader.ReadToEnd();
+
+
+                    if (!string.IsNullOrEmpty(responseText))
+                    {
+                        var model = responseText.JsonToObject<DeployResult>();
+                        if (model == null)
+                        {
+                            return new Tuple<bool, string>(false, responseText);
+                        }
+
+                        if (model.Success)
+                        {
+                            return new Tuple<bool, string>(true, "Deploy Success");
+                        }
+                        else
+                        {
+                            return new Tuple<bool, string>(false, responseText);
+                        }
+                    }
+                }
+                WResp.Close();
+                return new Tuple<bool, string>(true, "Deploy Fail");
+
             }
             catch (WebException ex)
             {
                 try
                 {
                     Stream responseStream = ex.Response.GetResponseStream();
-                    responseBytes = new byte[ex.Response.ContentLength];
+                    byte[] responseBytes = new byte[ex.Response.ContentLength];
                     responseStream?.Read(responseBytes, 0, responseBytes.Length);
                     var responseText2 = System.Text.Encoding.UTF8.GetString(responseBytes);
                     return new Tuple<bool, string>(false, responseText2 + "==>exception:" + ex.Message);
@@ -122,11 +138,20 @@ namespace AntDeployCommand.Utils
             }
             finally
             {
-                webClient.Dispose();
                 bytesArray = null;
             }
+        }
+        public static byte[][] BufferSplit(byte[] buffer, int blockSize)
+        {
+            byte[][] blocks = new byte[(buffer.Length + blockSize - 1) / blockSize][];
 
+            for (int i = 0, j = 0; i < blocks.Length; i++, j += blockSize)
+            {
+                blocks[i] = new byte[Math.Min(blockSize, buffer.Length - j)];
+                Array.Copy(buffer, j, blocks[i], 0, blocks[i].Length);
+            }
 
+            return blocks;
         }
 
         /// <summary>

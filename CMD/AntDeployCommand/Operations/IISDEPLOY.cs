@@ -46,7 +46,7 @@ namespace AntDeployCommand.Operations
             }
             return string.Empty;
         }
-        int ProgressPercentage = 0;
+        long ProgressPercentage = 0;
         public override async Task Run()
         {
             byte[] zipBytes = File.ReadAllBytes(Arguments.PackageZipPath);
@@ -94,16 +94,7 @@ namespace AntDeployCommand.Operations
 
                 httpRequestClient.SetFieldValue("wsKey", hostKey);
 
-                var uploadResult = await httpRequestClient.Upload($"http://{Arguments.Host}/publish",
-                    (client) =>
-                    {
-                        client.Proxy = GetProxy();
-                        client.UploadProgressChanged += ClientOnUploadProgressChanged;
-                        //_subcribe = System.Reactive.Linq.Observable
-                        //    .FromEventPattern<UploadProgressChangedEventArgs>(client, "UploadProgressChanged")
-                        //    .Sample(TimeSpan.FromMilliseconds(100))
-                        //    .Subscribe(arg => { ClientOnUploadProgressChanged(arg.Sender, arg.EventArgs); });
-                    });
+                var uploadResult = await httpRequestClient.Upload($"http://{Arguments.Host}/publish",ClientOnUploadProgressChanged, GetProxy());
 
                 if (ProgressPercentage == 0) return;
            
@@ -136,15 +127,12 @@ namespace AntDeployCommand.Operations
             }
         }
 
-        private void ClientOnUploadProgressChanged(object sender, UploadProgressChangedEventArgs e)
+        private void ClientOnUploadProgressChanged(long progress)
         {
-            if (e.ProgressPercentage > ProgressPercentage && e.ProgressPercentage != 100)
+            if (progress > ProgressPercentage)
             {
-                ProgressPercentage = e.ProgressPercentage;
-                var showValue = (e.ProgressPercentage != 100 ? e.ProgressPercentage * 2 : e.ProgressPercentage);
-               
-                this.Info($"Upload {showValue} % complete...");
-
+                ProgressPercentage = progress;
+                this.Info($"Upload {progress} % complete...");
             }
         }
     }
