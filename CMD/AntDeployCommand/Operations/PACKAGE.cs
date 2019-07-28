@@ -58,60 +58,26 @@ namespace AntDeployCommand.Operations
 
             try
             {
-                if (Arguments.EnvType.Equals("DOCKER"))
+                if (Arguments.SelectedFileList.Count < 1)
                 {
-                    if (Arguments.SelectedFileList.Count < 1)
-                    {
-                        using (var memeory = ZipHelper.DoCreateTarFromDirectory(Arguments.PackagePath,
-                            Arguments.PackageIgnore,
-                            (progressValue) =>
-                            {
-                                LogHelper.Info($"【Package progress】 {progressValue} %");
-                                return false;
-                            }, LogHelper.Info))
+                    zipBytes = ZipHelper.DoCreateFromDirectory(Arguments.PackagePath, CompressionLevel.Optimal,
+                        !Arguments.EnvType.Equals("DOCKER"), Arguments.PackageIgnore,
+                        (progressValue) =>
                         {
-
-                            zipBytes = memeory.GetBuffer();
-                        }
-                    }
-                    else
-                    {
-                        LogHelper.Info($"【Package】selected fileList Count:{Arguments.SelectedFileList.Count}");
-                        using (var memeory = ZipHelper.DoCreateTarFromDirectory(Arguments.PackagePath, Arguments.SelectedFileList,
-                            Arguments.IsSelectedDeploy?null:Arguments.PackageIgnore,
-                            (progressValue) =>
-                            {
-                                LogHelper.Info($"【Package progress】 {progressValue} %");
-                                return false;
-                            }, LogHelper.Info, Arguments.IsSelectedDeploy))
-                        {
-                            zipBytes = memeory.GetBuffer();
-                        }
-                    }
+                            LogHelper.Info($"【Package progress】 {progressValue} %");
+                            return false;
+                        });
                 }
                 else
                 {
-                    if (Arguments.SelectedFileList.Count < 1)
-                    {
-                        zipBytes = ZipHelper.DoCreateFromDirectory(Arguments.PackagePath, CompressionLevel.Optimal,
-                            true, Arguments.PackageIgnore,
-                            (progressValue) =>
-                            {
-                                LogHelper.Info($"【Package progress】 {progressValue} %");
-                                return false;
-                            });
-                    }
-                    else
-                    {
-                        LogHelper.Info($"【Package】selected fileList Count:{Arguments.SelectedFileList.Count}");
-                        zipBytes = ZipHelper.DoCreateFromDirectory(Arguments.PackagePath, Arguments.SelectedFileList, CompressionLevel.Optimal,
-                            true, Arguments.IsSelectedDeploy ? null : Arguments.PackageIgnore,
-                            (progressValue) =>
-                            {
-                                LogHelper.Info($"【Package progress】 {progressValue} %");
-                                return false;
-                            }, Arguments.IsSelectedDeploy);
-                    }
+                    LogHelper.Info($"【Package】selected fileList Count:{Arguments.SelectedFileList.Count}");
+                    zipBytes = ZipHelper.DoCreateFromDirectory(Arguments.PackagePath, Arguments.SelectedFileList, CompressionLevel.Optimal,
+                        !Arguments.EnvType.Equals("DOCKER"), Arguments.IsSelectedDeploy ? null : Arguments.PackageIgnore,
+                        (progressValue) =>
+                        {
+                            LogHelper.Info($"【Package progress】 {progressValue} %");
+                            return false;
+                        }, Arguments.IsSelectedDeploy);
                 }
             }
             catch (Exception ex)
