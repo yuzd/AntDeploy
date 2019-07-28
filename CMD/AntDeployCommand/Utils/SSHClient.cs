@@ -504,12 +504,12 @@ namespace AntDeployCommand.Utils
             var argsFilePath = destinationFolder + "antdeploy_args";
             CreateArgsFile(argsFilePath);
 
-            _logger($"tar -xf {destinationFolder + destinationfileName} -C publish", LogLevel.Info);
-            var unzipresult = _sshClient.RunCommand($"cd {destinationFolder} && tar -xf {destinationfileName} -C publish");
+            _logger($"unzip -o -q {destinationFolder + destinationfileName} -d publish/", LogLevel.Info);
+            var unzipresult = _sshClient.RunCommand($"cd {destinationFolder} && unzip -o -q {destinationfileName} -d publish/");
             if (unzipresult.ExitStatus != 0)
             {
-                _logger($"excute tar command error,return status is not 0", LogLevel.Error);
-                _logger($"please check 【tar】 is installed in your server!", LogLevel.Error);
+                _logger($"excute zip command error,return status is not 0", LogLevel.Error);
+                _logger($"please check 【zip】 is installed in your server!", LogLevel.Error);
                 return;
             }
 
@@ -520,10 +520,10 @@ namespace AntDeployCommand.Utils
 
             if (!_sftpClient.Exists("publish"))
             {
-                _logger($"tar fail: {publishFolder}", LogLevel.Error);
+                _logger($"unzip fail: {publishFolder}", LogLevel.Error);
                 return;
             }
-            _logger($"tar success: {publishFolder}", LogLevel.Info);
+            _logger($"unzip success: {publishFolder}", LogLevel.Info);
 
             var isExistDockFile = true;
             if (!Increment)

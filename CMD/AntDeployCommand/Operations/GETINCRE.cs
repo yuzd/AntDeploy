@@ -70,12 +70,6 @@ namespace AntDeployCommand.Operations
                 File.Delete(zipPath);
             }
 
-            zipPath = Path.Combine(Arguments.ProjectPath, "package.tar");
-            if (File.Exists(zipPath))
-            {
-                File.Delete(zipPath);
-            }
-
             using (var gitModel = new GitClient(Arguments.ProjectPath, Log))
             {
                 if (Arguments.IsSelectedDeploy)

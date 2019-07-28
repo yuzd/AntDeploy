@@ -218,7 +218,7 @@ namespace AntDeployCommand.Utils
                 {
                     throw new Exception("no file was packaged!");
                 }
-                return outStream.GetBuffer();
+                return outStream.ToArray();
             }
         }
 
@@ -324,7 +324,7 @@ namespace AntDeployCommand.Utils
                 {
                     throw new Exception("no file was packaged!");
                 }
-                return outStream.GetBuffer();
+                return outStream.ToArray();
             }
         }
 
