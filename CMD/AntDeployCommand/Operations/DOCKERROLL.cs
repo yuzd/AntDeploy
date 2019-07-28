@@ -202,7 +202,7 @@ namespace AntDeployCommand.Operations
                         return;
                     }
 
-                    this.Info($"【rollback success】 Host: {Arguments.Host} End");
+                    this.Info($"【rollback success】Host:{Arguments.Host},Response:Success");
                 }
                 catch (Exception ex)
                 {

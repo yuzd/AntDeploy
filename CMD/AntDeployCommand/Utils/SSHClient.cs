@@ -84,6 +84,7 @@ namespace AntDeployCommand.Utils
         public string NetCoreEnvironment { get; set; }
         public string NetCoreENTRYPOINT { get; set; }
         public bool Increment { get; set; }
+        public bool IsRuntime { get; set; }
         public bool IsSelect { get; set; }
         public string ClientDateTimeFolderName { get; set; }
         public string RemoveDaysFromPublished { get; set; }
@@ -312,7 +313,7 @@ namespace AntDeployCommand.Utils
             }
 
             _lastProgressNumber = lastProgressNumber;
-            var isCanceled = _logger($"uploaded {lastProgressNumber} %", LogLevel.Info);
+            var isCanceled = _logger($"【Upload progress】 {lastProgressNumber} %", LogLevel.Info);
             if (isCanceled)
             {
                 this.Dispose();
@@ -987,11 +988,11 @@ namespace AntDeployCommand.Utils
                     writer.WriteLine($"FROM mcr.microsoft.com/dotnet/core/aspnet:{sdkVersion}");
                     _logger($"FROM mcr.microsoft.com/dotnet/core/aspnet:{sdkVersion}", LogLevel.Info);// microsoft/dotnet:{sdkVersion}-aspnetcore-runtime
 
-                    writer.WriteLine($"COPY . /publish");
-                    _logger($"COPY . /publish", LogLevel.Info);
-
                     writer.WriteLine($"WORKDIR /publish");
                     _logger($"WORKDIR /publish", LogLevel.Info);
+
+                    writer.WriteLine($"COPY . /publish");
+                    _logger($"COPY . /publish", LogLevel.Info);
 
                     writer.WriteLine($"ENV ASPNETCORE_URLS=http://*:{this.ContainerPort}");
                     _logger($"ENV ASPNETCORE_URLS=http://*:{this.ContainerPort}", LogLevel.Info);
@@ -1005,7 +1006,8 @@ namespace AntDeployCommand.Utils
                     writer.WriteLine($"EXPOSE {this.ContainerPort}");
                     _logger($"EXPOSE {this.ContainerPort}", LogLevel.Info);
 
-                    var excuteLine = $"ENTRYPOINT [\"dotnet\", \"{dllName}\"]";
+                    
+                    var excuteLine = IsRuntime? $"ENTRYPOINT [\"dotnet\", \"{dllName}\"]": $"ENTRYPOINT [\"{dllName.Replace(".dll","")}\"]";
                     //var excuteCMDLine = $"CMD [\"--server.urls\", \"http://*:{port}\"";
 
                     //if (!string.IsNullOrEmpty(environment))

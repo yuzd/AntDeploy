@@ -88,7 +88,7 @@ namespace AntDeployCommand.Operations
                         }
 
                         return false;
-                    }, (progress) => { this.Info($"【Upload progress】 {progress} %"); })
+                    }, (progress) => { })
                 {
                     NetCoreENTRYPOINT = Arguments.PackagePath,
                     NetCoreVersion = Arguments.Token,
@@ -100,7 +100,8 @@ namespace AntDeployCommand.Operations
                     Remark = Arguments.Remark,
                     Increment = Arguments.IsSelectedDeploy ||
                                 Arguments.IsIncrementDeploy,
-                    IsSelect = Arguments.IsSelectedDeploy
+                    IsSelect = Arguments.IsSelectedDeploy,
+                    IsRuntime = string.IsNullOrEmpty(Arguments.BuildMode) || Arguments.BuildMode.Contains("FDD")
                 })
                 {
                     var connectResult = sshClient.Connect();
@@ -112,13 +113,12 @@ namespace AntDeployCommand.Operations
 
                     try
                     {
-                        sshClient.PublishZip(memory, "antdeploy", "publish.tar", () => false);
+                        sshClient.PublishZip(memory, "antdeploy", "publish.tar", () => true);
                         if (hasError)
                         {
                             return;
                         }
-
-                        this.Info($"【deploy success】 Host: {Arguments.Host} End");
+                        this.Info($"【deploy success】Host:{Arguments.Host},Response:Success");
                     }
                     catch (Exception ex)
                     {
