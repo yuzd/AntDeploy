@@ -61,6 +61,20 @@ namespace AntDeployCommand.Operations
                 Log("can not commit,selected fileList count = 0", LogLevel.Error);
                 return;
             }
+            //先删除
+            File.Delete(Arguments.PackageZipPath);
+
+            var zipPath = Path.Combine(Arguments.ProjectPath, "package.zip");
+            if (File.Exists(zipPath))
+            {
+                File.Delete(zipPath);
+            }
+
+            zipPath = Path.Combine(Arguments.ProjectPath, "package.tar");
+            if (File.Exists(zipPath))
+            {
+                File.Delete(zipPath);
+            }
 
             using (var gitModel = new GitClient(Arguments.ProjectPath, Log))
             {
@@ -84,13 +98,13 @@ namespace AntDeployCommand.Operations
             {
                 if (!gitModel.InitSuccess)
                 {
-                    Log("can not init git,please cancel Increment Deploy", LogLevel.Error);
                     return;
                 }
 
                 var fileList = gitModel.GetChanges();
                 if (fileList == null || fileList.Count < 1)
                 {
+                    Log("Increment package file count: 0" , LogLevel.Warning);
                     return;
                 }
 

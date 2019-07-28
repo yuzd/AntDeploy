@@ -132,7 +132,7 @@ namespace AntDeployCommand.Operations
             if (progress > ProgressPercentage)
             {
                 ProgressPercentage = progress;
-                this.Info($"Upload {progress} % complete...");
+                this.Info($"【Upload progress】 {progress} %");
             }
         }
     }

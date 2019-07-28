@@ -70,6 +70,10 @@ namespace AntDeployCommand.Utils
             try
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUrl);
+                if (proxy != null)
+                {
+                    request.Proxy = proxy;
+                }
                 request.Method = "POST";
                 request.AllowWriteStreamBuffering = false;
                 request.AllowReadStreamBuffering = false;
@@ -84,7 +88,7 @@ namespace AntDeployCommand.Utils
                         await req.WriteAsync(arr, 0, arr.Length);
                         i += arr.Length;
                         await req.FlushAsync(); // flushing is required or else we jump to 100% very fast
-                        progress((int)(100.0 * i / bytes.Length));
+                        progress?.Invoke((int)(100.0 * i / bytes.Length));
                     }
                 }
 

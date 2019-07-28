@@ -59,11 +59,10 @@ namespace AntDeployCommand
             catch (Exception ex)
             {
                 LogHelper.Error(ex.Message);
-                LogHelper.Error(ex.StackTrace);
                 return -1;
             }
 
-            await ops.Execute();
+            await ops.Execute().ConfigureAwait(false);
             return 0;
         }
     }
