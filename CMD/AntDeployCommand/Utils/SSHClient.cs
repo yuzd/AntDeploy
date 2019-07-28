@@ -1091,8 +1091,7 @@ namespace AntDeployCommand.Utils
 
             try
             {
-                _sftpClient.Disconnect();
-                _sftpClient.Dispose();
+                (_sftpClient.ConnectionInfo as IDisposable).Dispose();
             }
             catch (Exception)
             {
@@ -1101,8 +1100,7 @@ namespace AntDeployCommand.Utils
 
             try
             {
-                _sshClient.Disconnect();
-                _sshClient.Dispose();
+                (_sshClient.ConnectionInfo as IDisposable).Dispose();
             }
             catch (Exception)
             {
