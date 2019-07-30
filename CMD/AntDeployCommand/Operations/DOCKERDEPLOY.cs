@@ -113,7 +113,7 @@ namespace AntDeployCommand.Operations
 
                     try
                     {
-                        sshClient.PublishZip(memory, "antdeploy", "publish.tar", () => true);
+                        sshClient.PublishZip(memory, "antdeploy", "publish.zip", () => true);
                         if (hasError)
                         {
                             return;

@@ -30,14 +30,7 @@ namespace AntDeployCommand.Operations
                 return $"【Package】{nameof(Arguments.EnvType)} required!";
             }
 
-            if (!Arguments.EnvType.Equals("DOCKER"))
-            {
-                zipPath = Path.Combine(Arguments.PackagePath, "package.zip");
-            }
-            else
-            {
-                zipPath = Path.Combine(Arguments.PackagePath, "package.tar");
-            }
+            zipPath = Path.Combine(Arguments.PackagePath, "package.zip");
 
             if (File.Exists(zipPath))
             {
