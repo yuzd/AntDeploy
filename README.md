@@ -7,7 +7,7 @@ https://marketplace.visualstudio.com/items?itemName=nainaigu.AntDeploy
 * 支持iis一键部署(支持netcore和framework)
 * 支持windows服务一键部署(支持netcore和framework)
 *  **(支持增量发布)(支持一键回滚)(支持点火)(支持选择特定文件发布)(支持查看发布记录)**
-* 支持脱离Visual Studio独立使用
+* 支持脱离Visual Studio独立使用（跨平台支持windows系统和mac系统）
 * 支持Agent批量更新
 
 # (如要安装Windows服务器上agent服务)How to install 
@@ -68,6 +68,9 @@ https://github.com/yuzd/AntDeployAgent/issues/25
 
 ![image](https://images4.c-ctrip.com/target/zb0d15000000xtt49033C.gif)
 
+# mac电脑使用效果(mac端请在群文件下载)
+![image](https://images4.c-ctrip.com/target/zb0t160000010orw7C020.gif)
+
 # 其他
 如果您对这款vs插件有任何意见和建议都欢迎提Issue
 
@@ -76,6 +79,5 @@ https://github.com/yuzd/AntDeployAgent/issues/25
 反馈QQ群：
  ![image](https://images4.c-ctrip.com/target/zb0711000000rv06a5645.jpg)
 
-
 # 关于源码
-所有源代码全部开源,如果用到请注明出处
+所有源代码全部开源 https://github.com/yuzd/AntDeploy
