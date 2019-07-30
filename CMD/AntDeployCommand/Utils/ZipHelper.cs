@@ -156,7 +156,7 @@ namespace AntDeployCommand.Utils
                         flag = false;
                         int length = enumerateFileSystemInfo.FullName.Length - fullName.Length;
                         string entryName = EntryFromPath(enumerateFileSystemInfo.FullName, fullName.Length, length);
-                        var mathchEntryName = entryName.Substring(directoryInfo.Name.Length);
+                        var mathchEntryName = includeBaseDirectory? entryName.Substring(directoryInfo.Name.Length): "/"+entryName;
                         if (ignoreList != null && ignoreList.Count > 0)
                         {
                             var haveMatch = false;
@@ -262,7 +262,7 @@ namespace AntDeployCommand.Utils
                         flag = false;
                         int length = enumerateFileSystemInfo.FullName.Length - fullName.Length;
                         string entryName = EntryFromPath(enumerateFileSystemInfo.FullName, fullName.Length, length);
-                        var mathchEntryName = includeBaseDirectory? entryName.Substring(directoryInfo.Name.Length): entryName;
+                        var mathchEntryName = includeBaseDirectory? entryName.Substring(directoryInfo.Name.Length): "/"+entryName;
                         if (ignoreList != null && ignoreList.Count > 0)
                         {
                             var haveMatch = false;
