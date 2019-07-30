@@ -30,7 +30,7 @@ namespace AntDeployCommand
                 return -1;
             }
 
-            var fileContext = File.ReadAllText(file);
+            var fileContext = File.ReadAllText(file,encoding:System.Text.Encoding.UTF8);
             if (string.IsNullOrEmpty(fileContext))
             {
                 LogHelper.Error($" {file} is empty");

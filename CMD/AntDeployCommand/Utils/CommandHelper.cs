@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reactive.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using LibGit2Sharp;
 
@@ -36,7 +37,8 @@ namespace AntDeployCommand.Utils
                 arguments += " -o \"" + publishPath + "\"";
             }
             LogHelper.Info($"【Build】current project Path:{projectPath}");
-            return RunDotnetExternalExe($"dotnet", arguments);
+            var dotnet = System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(OSPlatform.Windows)? "dotnet": System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(OSPlatform.OSX)? "/usr/local/share/dotnet/dotnet": "/usr/share/dotnet/dotnet";
+            return RunDotnetExternalExe(dotnet, arguments);
         }
 
         /// <summary>
@@ -70,9 +72,10 @@ namespace AntDeployCommand.Utils
                 process.StartInfo.UseShellExecute = false;
                 process.StartInfo.Verb = "runas";
                 process.StartInfo.RedirectStandardError = true;
+                process.StartInfo.StandardErrorEncoding = Encoding.UTF8;
                 process.StartInfo.RedirectStandardOutput = true;
-
-
+                process.StartInfo.StandardOutputEncoding = Encoding.UTF8;
+                //process.StartInfo.StandardInputEncoding = Encoding.UTF8;
 
                 process.Start();
 
