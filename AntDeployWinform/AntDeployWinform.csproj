@@ -39,9 +39,6 @@
     <Reference Include="CircularProgressBar">
       <HintPath>..\packages\CircularProgressBar.2.6.6823.24527\lib\net35-client\CircularProgressBar.dll</HintPath>
     </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>..\packages\SharpZipLib.1.1.0\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
-    </Reference>
     <Reference Include="LibGit2Sharp">
       <HintPath>..\packages\LibGit2Sharp.0.26.0\lib\net46\LibGit2Sharp.dll</HintPath>
     </Reference>

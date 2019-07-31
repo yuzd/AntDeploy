@@ -304,6 +304,10 @@ namespace AntDeployCommand.Utils
                         if (enumerateFileSystemInfo is FileInfo)
                         {
                             haveFile = true;
+                            if (entryName.Contains("Dockerfile"))
+                            {
+                                LogHelper.Info($"Find Dockerfile In Package: {mathchEntryName}");
+                            }
                             DoCreateEntryFromFile(destination, enumerateFileSystemInfo.FullName, entryName, compressionLevel);
                         }
                         else

@@ -725,7 +725,7 @@ namespace AntDeployCommand.Utils
                     if (serverPostDockerFileExist.Length == 2)
                     {
                         var temp2 = serverPostDockerFileExist[1].Split('@');
-                        if (temp2.Length == 2)
+                        if (temp2.Length >0)
                         {
                             serverPostDockerFile = temp2[0];
                         }

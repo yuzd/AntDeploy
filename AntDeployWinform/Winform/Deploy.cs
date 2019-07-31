@@ -5363,13 +5363,20 @@ namespace AntDeployWinform.Winform
                        try
                        {
                            this.nlog_docker.Info($"package ignoreList Count:{ignoreList.Count}");
-                           zipBytes = ZipHelper.DoCreateTarFromDirectory(publishPath, fileList,
+                           var b_zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, fileList, CompressionLevel.Optimal,false,
                                ignoreList,
                                (progressValue) =>
                                {
                                    UpdatePackageProgress(this.tabPage_docker, null, progressValue); //打印打包记录
                                    return stop_docker_cancel_token;
-                               }, nlog_docker, this.PluginConfig.DockerServiceEnableSelectDeploy);
+                               }, this.PluginConfig.DockerServiceEnableSelectDeploy,nlog_docker);
+                           if (b_zipBytes.Length < 1)
+                           {
+                               this.nlog_docker.Error("package fail");
+                               PackageError(this.tabPage_docker);
+                               return;
+                           }
+                           zipBytes = new MemoryStream(b_zipBytes);
                        }
                        catch (Exception ex)
                        {
@@ -5409,13 +5416,20 @@ namespace AntDeployWinform.Winform
                        try
                        {
                            this.nlog_docker.Info($"package ignoreList Count:{ignoreList.Count}");
-                           zipBytes = ZipHelper.DoCreateTarFromDirectory(publishPath, fileList,
+                           var b_zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, fileList, CompressionLevel.Optimal, false,
                                ignoreList,
                                (progressValue) =>
                                {
                                    UpdatePackageProgress(this.tabPage_docker, null, progressValue); //打印打包记录
                                    return stop_docker_cancel_token;
-                               }, nlog_docker, this.PluginConfig.DockerServiceEnableSelectDeploy);
+                               }, this.PluginConfig.DockerServiceEnableSelectDeploy, nlog_docker);
+                           if (b_zipBytes.Length < 1)
+                           {
+                               this.nlog_docker.Error("package fail");
+                               PackageError(this.tabPage_docker);
+                               return;
+                           }
+                           zipBytes = new MemoryStream(b_zipBytes);
                        }
                        catch (Exception ex)
                        {
@@ -5430,13 +5444,20 @@ namespace AntDeployWinform.Winform
                        try
                        {
                            this.nlog_docker.Info($"package ignoreList Count:{ignoreList.Count}");
-                           zipBytes = ZipHelper.DoCreateTarFromDirectory(publishPath,
+                           var b_zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, CompressionLevel.Optimal, false,
                                ignoreList,
                                (progressValue) =>
                                {
                                    UpdatePackageProgress(this.tabPage_docker, null, progressValue); //打印打包记录
                                    return stop_docker_cancel_token;
                                }, nlog_docker);
+                           if (b_zipBytes.Length < 1)
+                           {
+                               this.nlog_docker.Error("package fail");
+                               PackageError(this.tabPage_docker);
+                               return;
+                           }
+                           zipBytes = new MemoryStream(b_zipBytes);
                        }
                        catch (Exception ex)
                        {
@@ -5586,7 +5607,7 @@ namespace AntDeployWinform.Winform
 
                            try
                            {
-                               sshClient.PublishZip(zipBytes, "antdeploy", "publish.tar", () => !stop_docker_cancel_token);
+                               sshClient.PublishZip(zipBytes, "antdeploy", "publish.zip", () => !stop_docker_cancel_token);
                                UpdateUploadProgress(this.tabPage_docker, server.Host, 100);
 
                                if (stop_docker_cancel_token)

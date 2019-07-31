@@ -504,12 +504,12 @@ namespace AntDeployWinform.Util
             var argsFilePath = destinationFolder + "antdeploy_args";
             CreateArgsFile(argsFilePath);
 
-            _logger($"tar -xf {destinationFolder + destinationfileName} -C publish", NLog.LogLevel.Info);
-            var unzipresult = _sshClient.RunCommand($"cd {destinationFolder} && tar -xf {destinationfileName} -C publish");
+            _logger($"unzip -o -q {destinationFolder + destinationfileName} -d publish/", LogLevel.Info);
+            var unzipresult = _sshClient.RunCommand($"cd {destinationFolder} && unzip -o -q {destinationfileName} -d publish/");
             if (unzipresult.ExitStatus != 0)
             {
-                _logger($"excute tar command error,return status is not 0", NLog.LogLevel.Error);
-                _logger($"please check 【tar】 is installed in your server!", NLog.LogLevel.Error);
+                _logger($"excute zip command error,return status is not 0", LogLevel.Error);
+                _logger($"please check 【zip】 is installed in your server!", LogLevel.Error);
                 return;
             }
 
@@ -520,10 +520,10 @@ namespace AntDeployWinform.Util
 
             if (!_sftpClient.Exists("publish"))
             {
-                _logger($"tar fail: {publishFolder}", NLog.LogLevel.Error);
+                _logger($"unzip fail: {publishFolder}", NLog.LogLevel.Error);
                 return;
             }
-            _logger($"tar success: {publishFolder}", NLog.LogLevel.Info);
+            _logger($"unzip success: {publishFolder}", NLog.LogLevel.Info);
 
             var isExistDockFile = true;
             if (!Increment)
@@ -725,7 +725,7 @@ namespace AntDeployWinform.Util
                     if (serverPostDockerFileExist.Length == 2)
                     {
                         var temp2 = serverPostDockerFileExist[1].Split('@');
-                        if (temp2.Length == 2)
+                        if (temp2.Length > 0)
                         {
                             serverPostDockerFile = temp2[0];
                         }

@@ -204,12 +204,6 @@
     <Content Include="en\AntDeployWinform.resources.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="ICSharpCode.SharpZipLib.dll">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="ICSharpCode.SharpZipLib.pdb">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <Content Include="LibGit2Sharp.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
