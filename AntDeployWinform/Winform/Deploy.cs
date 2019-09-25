@@ -51,6 +51,9 @@ namespace AntDeployWinform.Winform
 
         private string _webSiteName = string.Empty;
         private string _windowsServiceName = string.Empty;
+        private string _dockerPort = string.Empty;
+        private string _dockerEnvName = string.Empty;
+        private string _dockerVolume = string.Empty;
         public Deploy(string projectPath = null, ProjectParam project = null)
         {
 
@@ -75,8 +78,91 @@ namespace AntDeployWinform.Winform
 
             this.txt_iis_web_site_name.DataBindings.Add("Text", this, "BindWebSiteName", false,DataSourceUpdateMode.OnPropertyChanged);
             this.txt_windowservice_name.DataBindings.Add("Text", this, "BindWindowsServiceName", false,DataSourceUpdateMode.OnPropertyChanged);
+            this.txt_docker_port.DataBindings.Add("Text", this, "BindDockerPort", false,DataSourceUpdateMode.OnPropertyChanged);
+            this.txt_docker_envname.DataBindings.Add("Text", this, "BindDockerEnvName", false,DataSourceUpdateMode.OnPropertyChanged);
+            this.txt_docker_volume.DataBindings.Add("Text", this, "BindDockerVolume", false,DataSourceUpdateMode.OnPropertyChanged);
         }
+        public string BindDockerVolume
+        {
+            get { return _dockerVolume; }
+            set
+            {
+                _dockerVolume = value;
 
+                var selectName = this.combo_docker_env.SelectedItem as string;
+                if (string.IsNullOrEmpty(selectName)) return;
+                if (DeployConfig.DockerConfig != null && DeployConfig.DockerConfig.EnvPairList != null)
+                {
+                    var first = DeployConfig.DockerConfig.EnvPairList.FirstOrDefault(r => r.EnvName.Equals(selectName));
+                    if (first != null)
+                    {
+                        first.DockerVolume = _dockerVolume;
+                    }
+                    else
+                    {
+                        DeployConfig.DockerConfig.EnvPairList.Add(new EnvPairConfig
+                        {
+                            EnvName = selectName,
+                            DockerVolume = _dockerVolume
+                        });
+                    }
+                }
+            }
+        }
+        public string BindDockerEnvName
+        {
+            get { return _dockerEnvName; }
+            set
+            {
+                _dockerEnvName = value;
+
+                var selectName = this.combo_docker_env.SelectedItem as string;
+                if (string.IsNullOrEmpty(selectName)) return;
+                if (DeployConfig.DockerConfig != null && DeployConfig.DockerConfig.EnvPairList != null)
+                {
+                    var first = DeployConfig.DockerConfig.EnvPairList.FirstOrDefault(r => r.EnvName.Equals(selectName));
+                    if (first != null)
+                    {
+                        first.DockerEnvName = _dockerEnvName;
+                    }
+                    else
+                    {
+                        DeployConfig.DockerConfig.EnvPairList.Add(new EnvPairConfig
+                        {
+                            EnvName = selectName,
+                            DockerEnvName = _dockerEnvName
+                        });
+                    }
+                }
+            }
+        }
+        public string BindDockerPort
+        {
+            get { return _dockerPort; }
+            set
+            {
+                _dockerPort = value;
+
+                var selectName = this.combo_docker_env.SelectedItem as string;
+                if (string.IsNullOrEmpty(selectName)) return;
+                if (DeployConfig.DockerConfig != null && DeployConfig.DockerConfig.EnvPairList != null)
+                {
+                    var first = DeployConfig.DockerConfig.EnvPairList.FirstOrDefault(r => r.EnvName.Equals(selectName));
+                    if (first != null)
+                    {
+                        first.DockerPort = _dockerPort;
+                    }
+                    else
+                    {
+                        DeployConfig.DockerConfig.EnvPairList.Add(new EnvPairConfig
+                        {
+                            EnvName = selectName,
+                            DockerPort = _dockerPort
+                        });
+                    }
+                }
+            }
+        }
         public string BindWebSiteName
         {
             get { return _webSiteName; }
@@ -436,12 +522,12 @@ namespace AntDeployWinform.Winform
 
                 if (!string.IsNullOrEmpty(DeployConfig.DockerConfig.Prot))
                 {
-                    this.txt_docker_port.Text = DeployConfig.DockerConfig.Prot;
+                    _dockerPort = this.txt_docker_port.Text = DeployConfig.DockerConfig.Prot;
                 }
 
                 if (!string.IsNullOrEmpty(DeployConfig.DockerConfig.AspNetCoreEnv))
                 {
-                    this.txt_docker_envname.Text = DeployConfig.DockerConfig.AspNetCoreEnv;
+                    _dockerEnvName = this.txt_docker_envname.Text = DeployConfig.DockerConfig.AspNetCoreEnv;
                 }
 
                 if (!string.IsNullOrEmpty(DeployConfig.DockerConfig.RemoveDaysFromPublished))
@@ -451,7 +537,7 @@ namespace AntDeployWinform.Winform
 
                 if (!string.IsNullOrEmpty(DeployConfig.DockerConfig.Volume))
                 {
-                    this.txt_docker_volume.Text = DeployConfig.DockerConfig.Volume;
+                    _dockerVolume = this.txt_docker_volume.Text = DeployConfig.DockerConfig.Volume;
                 }
             }
 
@@ -590,10 +676,10 @@ namespace AntDeployWinform.Winform
 
                 this.BindWindowsServiceName = DeployConfig.WindowsServiveConfig.ServiceName = this.txt_windowservice_name.Text.Trim();
 
-                DeployConfig.DockerConfig.Prot = this.txt_docker_port.Text.Trim();
-                DeployConfig.DockerConfig.AspNetCoreEnv = this.txt_docker_envname.Text.Trim();
+                this.BindDockerPort =  DeployConfig.DockerConfig.Prot = this.txt_docker_port.Text.Trim();
+                this.BindDockerEnvName = DeployConfig.DockerConfig.AspNetCoreEnv = this.txt_docker_envname.Text.Trim();
                 DeployConfig.DockerConfig.RemoveDaysFromPublished = this.t_docker_delete_days.Text.Trim();
-                DeployConfig.DockerConfig.Volume = this.txt_docker_volume.Text.Trim();
+                this.BindDockerVolume = DeployConfig.DockerConfig.Volume = this.txt_docker_volume.Text.Trim();
 
                 if (!string.IsNullOrEmpty(ProjectConfigPath))
                 {
@@ -6108,6 +6194,18 @@ namespace AntDeployWinform.Winform
             if (!string.IsNullOrEmpty(selectName))
             {
                 DeployConfig.DockerConfig.LastEnvName = selectName;
+
+                //设置对应的websitename
+                if (DeployConfig.DockerConfig.EnvPairList != null && DeployConfig.DockerConfig.EnvPairList.Any())
+                {
+                    var target = DeployConfig.DockerConfig.EnvPairList.FirstOrDefault(r => r.EnvName.Equals(selectName));
+                    if (target != null)
+                    {
+                        if(!string.IsNullOrEmpty(target.DockerPort))this.txt_docker_port.Text = target.DockerPort;
+                        if(!string.IsNullOrEmpty(target.DockerEnvName))this.txt_docker_envname.Text = target.DockerEnvName;
+                        if(!string.IsNullOrEmpty(target.DockerVolume))this.txt_docker_volume.Text = target.DockerVolume;
+                    }
+                }
 
                 //生成进度
                 if (this.tabPage_docker.Tag is Dictionary<string, ProgressBox> progressBoxList)
