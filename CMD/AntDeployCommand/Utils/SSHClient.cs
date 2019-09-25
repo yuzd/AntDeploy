@@ -769,7 +769,7 @@ namespace AntDeployCommand.Utils
                                 entryPointIndex = i;
                             }
 
-                            if (line.Contains("ASPNETCORE_ENVIRONMENT"))
+                            if (line.StartsWith("ENV ASPNETCORE_ENVIRONMENT"))
                             {
                                 haveEnv = true;
                             }
