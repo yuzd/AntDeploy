@@ -785,7 +785,7 @@ namespace AntDeployWinform.Util
                                 _logger($"Add EXPOSE " + port + $" to dockerFile  : 【{dockFilePath}】", NLog.LogLevel.Info);
                             }
 
-                            if (!haveEnv)
+                            if (!haveEnv && !string.IsNullOrEmpty(NetCoreEnvironment))
                             {
                                 allLines.Insert(entryPointIndex, "ENV ASPNETCORE_ENVIRONMENT " + NetCoreEnvironment);
                                 _logger($"Add ENV ASPNETCORE_ENVIRONMENT " + NetCoreEnvironment + $" to dockerFile  : 【{dockFilePath}】", NLog.LogLevel.Info);
