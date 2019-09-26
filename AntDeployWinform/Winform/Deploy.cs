@@ -18,6 +18,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ToastHelper;
+using Exception = System.Exception;
 using Process = System.Diagnostics.Process;
 
 namespace AntDeployWinform.Winform
@@ -54,6 +56,9 @@ namespace AntDeployWinform.Winform
         private string _dockerPort = string.Empty;
         private string _dockerEnvName = string.Empty;
         private string _dockerVolume = string.Empty;
+        private string iconPath = string.Empty;
+
+        ToastHelper.NotificationService notificationService = new NotificationService();
         public Deploy(string projectPath = null, ProjectParam project = null)
         {
 
@@ -67,7 +72,24 @@ namespace AntDeployWinform.Winform
             Assembly assembly = typeof(Deploy).Assembly;
             using (Stream stream = assembly.GetManifestResourceStream("AntDeployWinform.Resources.Logo12.ico"))
             {
-                if (stream != null) this.Icon = new Icon(stream);
+                if (stream != null)
+                {
+                    this.Icon = new Icon(stream);
+                    iconPath = Path.Combine(new FileInfo(ConfigPath).Directory.FullName, "antdeploy.ico");
+                    try
+                    {
+                        using (var stream2 = new System.IO.FileStream(iconPath, System.IO.FileMode.Create))
+                        {
+
+                            this.Icon.Save(stream2);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        iconPath = null;
+                    }
+                    
+                }
             }
 
             Init(projectPath, project);
@@ -81,6 +103,8 @@ namespace AntDeployWinform.Winform
             this.txt_docker_port.DataBindings.Add("Text", this, "BindDockerPort", false,DataSourceUpdateMode.OnPropertyChanged);
             this.txt_docker_envname.DataBindings.Add("Text", this, "BindDockerEnvName", false,DataSourceUpdateMode.OnPropertyChanged);
             this.txt_docker_volume.DataBindings.Add("Text", this, "BindDockerVolume", false,DataSourceUpdateMode.OnPropertyChanged);
+
+            notificationService.Init("AntDeploy");
         }
         public string BindDockerVolume
         {
@@ -2173,6 +2197,8 @@ namespace AntDeployWinform.Winform
                     publisEvent2.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
                     this.nlog_iis.Log(publisEvent2);
                     this.nlog_iis.Info($"-----------------Deploy End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
+                    Notice("Deploy End", $"[Total]:{serverList.Count},[Fail]:{failCount}");
+
                     zipBytes = null;
 
                     //记录发布日志
@@ -2552,6 +2578,7 @@ namespace AntDeployWinform.Winform
                         publisEvent2.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
                         this.nlog_iis.Log(publisEvent2);
                         this.nlog_iis.Info($"-----------------Deploy End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
+                        Notice("Deploy End", $"[Total]:{serverList.Count},[Fail]:{failCount}");
                         zipBytes = null;
                         //记录发布日志
                         SaveLog(publishPath, dateTimeFolderNameParent, nlog_iis);
@@ -2864,7 +2891,7 @@ namespace AntDeployWinform.Winform
                     }
 
                     this.nlog_iis.Info($"-----------------Rollback End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
-
+                    Notice("Rollback End", $"[Total]:{serverList.Count},[Fail]:{failCount}");
                 }
                 catch (Exception ex1)
                 {
@@ -4204,7 +4231,7 @@ namespace AntDeployWinform.Winform
                     publisEvent2.LoggerName = "rich_windowservice_log";
                     this.nlog_windowservice.Log(publisEvent2);
                     this.nlog_windowservice.Info($"-----------------Deploy End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
-
+                    Notice("Deploy End", $"[Total]:{serverList.Count},[Fail]:{failCount}");
                     //记录发布日志
                     SaveLog(publishPath, dateTimeFolderNameParent, nlog_windowservice);
                 }
@@ -4486,6 +4513,7 @@ namespace AntDeployWinform.Winform
                     publisEvent2.LoggerName = "rich_windowservice_log";
                     this.nlog_windowservice.Log(publisEvent2);
                     this.nlog_windowservice.Info($"-----------------Deploy End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
+                    Notice("Deploy End", $"[Total]:{serverList.Count},[Fail]:{failCount}");
                     //记录发布日志
                     SaveLog(publishPath, dateTimeFolderNameParent, nlog_windowservice);
                 }
@@ -4765,6 +4793,7 @@ namespace AntDeployWinform.Winform
                     {
                     }
                     this.nlog_windowservice.Info($"-----------------Rollback End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
+                    Notice("Rollback End", $"[Total]:{serverList.Count},[Fail]:{failCount}");
                 }
                 catch (Exception ex1)
                 {
@@ -5784,6 +5813,7 @@ namespace AntDeployWinform.Winform
                    publisEvent2.LoggerName = "rich_docker_log";
                    this.nlog_docker.Log(publisEvent2);
                    this.nlog_docker.Info($"-----------------Deploy End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
+                   Notice("Deploy End", $"[Total]:{serverList.Count},[Fail]:{failCount}");
 
                    //记录发布日志
                    SaveLog(publishPath, clientDateTimeFolderNameParent, nlog_docker);
@@ -6108,7 +6138,8 @@ namespace AntDeployWinform.Winform
                     {
                     }
 
-                    this.nlog_docker.Info($"-----------------Rollback End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------"); ;
+                    this.nlog_docker.Info($"-----------------Rollback End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
+                    Notice("Rollback End", $"[Total]:{serverList.Count},[Fail]:{failCount}");
                 }
                 catch (Exception ex1)
                 {
@@ -6841,6 +6872,27 @@ namespace AntDeployWinform.Winform
             GlobalConfig.MultiInstance = checkBox_multi_deploy.Checked;
         }
        
-        
+        private void Notice(string title,string message)
+        {
+            BeginInvokeLambda(() =>
+            {
+                try
+                {
+                    if (!string.IsNullOrEmpty(this.iconPath))
+                    {
+                        notificationService.Notify(this.iconPath, title, message);
+                    }
+                    else
+                    {
+                        notificationService.Notify(title, message);
+                    }
+
+                }
+                catch (Exception)
+                {
+                }
+
+            });
+        }
     }
 }
