@@ -706,7 +706,7 @@ namespace AntDeployWinform.Util
                     if (volumeExist.Length == 2)
                     {
                         var temp2 = volumeExist[1].Split('@');
-                        if (temp2.Length == 2)
+                        if (temp2.Length > 0)
                         {
                             volumeInDockerFile = temp2[0];
                         }
@@ -770,7 +770,7 @@ namespace AntDeployWinform.Util
                                 entryPointIndex = i;
                             }
 
-                            if (line.StartsWith("ENV ASPNETCORE_ENVIRONMENT"))
+                            if (line.Trim().StartsWith("ENV ASPNETCORE_ENVIRONMENT"))
                             {
                                 haveEnv = true;
                             }
@@ -779,26 +779,33 @@ namespace AntDeployWinform.Util
 
                         if (entryPointIndex>0)
                         {
+                            var add = false;
                             if (needAddPort)
                             {
+                                add = true;
                                 allLines.Insert(entryPointIndex, "EXPOSE " + port);
                                 _logger($"Add EXPOSE " + port + $" to dockerFile  : 【{dockFilePath}】", NLog.LogLevel.Info);
                             }
 
                             if (!haveEnv && !string.IsNullOrEmpty(NetCoreEnvironment))
                             {
+                                add = true;
                                 allLines.Insert(entryPointIndex, "ENV ASPNETCORE_ENVIRONMENT " + NetCoreEnvironment);
                                 _logger($"Add ENV ASPNETCORE_ENVIRONMENT " + NetCoreEnvironment + $" to dockerFile  : 【{dockFilePath}】", NLog.LogLevel.Info);
                             }
 
-                            //没有发现包含环境变量 就添加进去
-                            using (var writer = _sftpClient.CreateText(dockFilePath))
+                            if (add)
                             {
-                                foreach (var line in allLines)
+                                _sftpClient.DeleteFile(dockFilePath);
+                                //没有发现包含环境变量 就添加进去
+                                using (var writer = _sftpClient.CreateText(dockFilePath))
                                 {
-                                    writer.WriteLine(line);
+                                    foreach (var line in allLines)
+                                    {
+                                        writer.WriteLine(line);
+                                    }
+                                    writer.Flush();
                                 }
-                                writer.Flush();
                             }
                         }
                     }
