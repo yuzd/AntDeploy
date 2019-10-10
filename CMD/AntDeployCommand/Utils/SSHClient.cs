@@ -796,7 +796,10 @@ namespace AntDeployCommand.Utils
                             if (add)
                             {
                                 //没有发现包含环境变量 就添加进去
-                                _sftpClient.DeleteFile(dockFilePath);
+
+                                _sshClient.RunCommand($"set -e;cd ~;\\rm -rf \"{dockFilePath}\";");
+
+
                                 using (var writer = _sftpClient.CreateText(dockFilePath))
                                 {
                                     foreach (var line in allLines)

@@ -796,7 +796,7 @@ namespace AntDeployWinform.Util
 
                             if (add)
                             {
-                                _sftpClient.DeleteFile(dockFilePath);
+                                _sshClient.RunCommand($"set -e;cd ~;\\rm -rf \"{dockFilePath}\";");
                                 //没有发现包含环境变量 就添加进去
                                 using (var writer = _sftpClient.CreateText(dockFilePath))
                                 {
