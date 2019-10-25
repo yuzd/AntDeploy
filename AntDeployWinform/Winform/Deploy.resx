@@ -117,11 +117,42 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="checkBox_iis_restart_site.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="checkBox_iis_restart_site.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="checkBox_iis_restart_site.Location" type="System.Drawing.Point, System.Drawing">
+    <value>370, 72</value>
+  </data>
+  <data name="checkBox_iis_restart_site.Size" type="System.Drawing.Size, System.Drawing">
+    <value>120, 16</value>
+  </data>
+  <data name="checkBox_iis_restart_site.TabIndex" type="System.Int32, mscorlib">
+    <value>37</value>
+  </data>
+  <data name="checkBox_iis_restart_site.Text" xml:space="preserve">
+    <value>Do Not Stop Site</value>
+  </data>
+  <data name="&gt;&gt;checkBox_iis_restart_site.Name" xml:space="preserve">
+    <value>checkBox_iis_restart_site</value>
+  </data>
+  <data name="&gt;&gt;checkBox_iis_restart_site.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;checkBox_iis_restart_site.Parent" xml:space="preserve">
+    <value>page_web_iis</value>
+  </data>
+  <data name="&gt;&gt;checkBox_iis_restart_site.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="btn_iis_stop.Font" type="System.Drawing.Font, System.Drawing">
     <value>Comic Sans MS, 10pt, style=Bold</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="btn_iis_stop.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
@@ -131,7 +162,6 @@
   <data name="btn_iis_stop.Size" type="System.Drawing.Size, System.Drawing">
     <value>107, 43</value>
   </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="btn_iis_stop.TabIndex" type="System.Int32, mscorlib">
     <value>36</value>
   </data>
@@ -151,7 +181,7 @@
     <value>page_web_iis</value>
   </data>
   <data name="&gt;&gt;btn_iis_stop.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>1</value>
   </data>
   <data name="btn_iis_retry.Font" type="System.Drawing.Font, System.Drawing">
     <value>Comic Sans MS, 10pt, style=Bold</value>
@@ -184,7 +214,7 @@
     <value>page_web_iis</value>
   </data>
   <data name="&gt;&gt;btn_iis_retry.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>2</value>
   </data>
   <data name="checkBox_select_deploy_iis.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -193,7 +223,7 @@
     <value>NoControl</value>
   </data>
   <data name="checkBox_select_deploy_iis.Location" type="System.Drawing.Point, System.Drawing">
-    <value>376, 70</value>
+    <value>370, 51</value>
   </data>
   <data name="checkBox_select_deploy_iis.Size" type="System.Drawing.Size, System.Drawing">
     <value>102, 16</value>
@@ -214,7 +244,7 @@
     <value>page_web_iis</value>
   </data>
   <data name="&gt;&gt;checkBox_select_deploy_iis.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>3</value>
   </data>
   <data name="b_iis_rollback.Font" type="System.Drawing.Font, System.Drawing">
     <value>Comic Sans MS, 10pt, style=Bold</value>
@@ -241,7 +271,7 @@
     <value>page_web_iis</value>
   </data>
   <data name="&gt;&gt;b_iis_rollback.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>4</value>
   </data>
   <data name="checkBox_Increment_iis.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -250,7 +280,7 @@
     <value>NoControl</value>
   </data>
   <data name="checkBox_Increment_iis.Location" type="System.Drawing.Point, System.Drawing">
-    <value>376, 49</value>
+    <value>370, 30</value>
   </data>
   <data name="checkBox_Increment_iis.Size" type="System.Drawing.Size, System.Drawing">
     <value>120, 16</value>
@@ -271,7 +301,7 @@
     <value>page_web_iis</value>
   </data>
   <data name="&gt;&gt;checkBox_Increment_iis.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>5</value>
   </data>
   <data name="label25.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -301,7 +331,7 @@
     <value>page_web_iis</value>
   </data>
   <data name="&gt;&gt;label25.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>6</value>
   </data>
   <data name="label9.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -331,7 +361,7 @@
     <value>page_web_iis</value>
   </data>
   <data name="&gt;&gt;label9.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>7</value>
   </data>
   <data name="b_iis_deploy.Font" type="System.Drawing.Font, System.Drawing">
     <value>Comic Sans MS, 10pt, style=Bold</value>
@@ -361,7 +391,7 @@
     <value>page_web_iis</value>
   </data>
   <data name="&gt;&gt;b_iis_deploy.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>8</value>
   </data>
   <data name="combo_iis_env.Location" type="System.Drawing.Point, System.Drawing">
     <value>163, 50</value>
@@ -382,7 +412,7 @@
     <value>page_web_iis</value>
   </data>
   <data name="&gt;&gt;combo_iis_env.ZOrder" xml:space="preserve">
-    <value>8</value>
+    <value>9</value>
   </data>
   <data name="label8.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -412,7 +442,7 @@
     <value>page_web_iis</value>
   </data>
   <data name="&gt;&gt;label8.ZOrder" xml:space="preserve">
-    <value>9</value>
+    <value>10</value>
   </data>
   <data name="txt_iis_web_site_name.Location" type="System.Drawing.Point, System.Drawing">
     <value>163, 88</value>
@@ -433,7 +463,7 @@
     <value>page_web_iis</value>
   </data>
   <data name="&gt;&gt;txt_iis_web_site_name.ZOrder" xml:space="preserve">
-    <value>10</value>
+    <value>11</value>
   </data>
   <data name="label7.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -463,7 +493,7 @@
     <value>page_web_iis</value>
   </data>
   <data name="&gt;&gt;label7.ZOrder" xml:space="preserve">
-    <value>11</value>
+    <value>12</value>
   </data>
   <data name="combo_iis_sdk_type.Items" xml:space="preserve">
     <value>netframework</value>
@@ -490,7 +520,7 @@
     <value>page_web_iis</value>
   </data>
   <data name="&gt;&gt;combo_iis_sdk_type.ZOrder" xml:space="preserve">
-    <value>12</value>
+    <value>13</value>
   </data>
   <data name="label6.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -520,7 +550,7 @@
     <value>page_web_iis</value>
   </data>
   <data name="&gt;&gt;label6.ZOrder" xml:space="preserve">
-    <value>13</value>
+    <value>14</value>
   </data>
   <data name="label_iis_demo.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -550,7 +580,7 @@
     <value>page_web_iis</value>
   </data>
   <data name="&gt;&gt;label_iis_demo.ZOrder" xml:space="preserve">
-    <value>14</value>
+    <value>15</value>
   </data>
   <data name="tabPage_progress.AutoScroll" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -685,7 +715,7 @@
     <value>page_web_iis</value>
   </data>
   <data name="&gt;&gt;tab_iis.ZOrder" xml:space="preserve">
-    <value>15</value>
+    <value>16</value>
   </data>
   <data name="page_web_iis.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 22</value>
