@@ -655,29 +655,35 @@ namespace AntDeployWinform.Util
                         _logger($"dockerFile is empty: {dockFilePath}", NLog.LogLevel.Error);
                         return;
                     }
-
+                    var needAddPort = false;
+                    var newPort = string.Empty;
                     var newPortA = dockerFileText.Split(new string[] { "EXPOSE " }, StringSplitOptions.None);
                     if (newPortA.Length != 2)
                     {
-                        _logger($"EXPOSE param in dockerFile is empty: {dockFilePath}", NLog.LogLevel.Error);
-                        return;
+                        needAddPort = true;
                     }
-                    var newPort = string.Empty;
-                    foreach (var item in newPortA[1].Trim())
+                    else
                     {
-                        if (Char.IsDigit(item))
+                        if (!newPortA[0].EndsWith("#"))
                         {
-                            newPort += item;
+                            foreach (var item in newPortA[1].Trim())
+                            {
+                                if (Char.IsDigit(item))
+                                {
+                                    newPort += item;
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
                         }
-                        else
-                        {
-                            break;
-                        }
+                            
                     }
+
                     if (string.IsNullOrEmpty(newPort))
                     {
-                        _logger($"EXPOSE in dockerFile is invalid: {dockFilePath}", NLog.LogLevel.Error);
-                        return;
+                        needAddPort = true;
                     }
                     else
                     {
@@ -692,14 +698,15 @@ namespace AntDeployWinform.Util
 
                     }
 
-                    port = newPort;
+                    //如果dockfile里面没有配置EXPOST 就用界面上提供的
+                    port = needAddPort? ContainerPort:newPort;
 
                     var volumeInDockerFile = string.Empty;
                     var volumeExist = dockerFileText.Split(new string[] { volumeProfix }, StringSplitOptions.None);
                     if (volumeExist.Length == 2)
                     {
                         var temp2 = volumeExist[1].Split('@');
-                        if (temp2.Length == 2)
+                        if (temp2.Length > 0)
                         {
                             volumeInDockerFile = temp2[0];
                         }
@@ -747,12 +754,65 @@ namespace AntDeployWinform.Util
                     }
                     else
                     {
-                        server_port = port;
+                        server_port = needAddPort ? ServerPort : port;
+                    }
+
+                    if (!string.IsNullOrEmpty(NetCoreEnvironment) || needAddPort)
+                    {
+                        var allLines = _sftpClient.ReadAllLines(dockFilePath).ToList();
+                        var entryPointIndex = 0;
+                        var haveEnv = false;
+                        for (int i = 0; i < allLines.Count; i++)
+                        {
+                            var line = allLines[i];
+                            if (line.Trim().StartsWith("ENTRYPOINT"))
+                            {
+                                entryPointIndex = i;
+                            }
+
+                            if (line.Trim().StartsWith("ENV ASPNETCORE_ENVIRONMENT"))
+                            {
+                                haveEnv = true;
+                            }
+                        }
+                      
+
+                        if (entryPointIndex>0)
+                        {
+                            var add = false;
+                            if (needAddPort)
+                            {
+                                add = true;
+                                allLines.Insert(entryPointIndex, "EXPOSE " + port);
+                                _logger($"Add EXPOSE " + port + $" to dockerFile  : 【{dockFilePath}】", NLog.LogLevel.Info);
+                            }
+
+                            if (!haveEnv && !string.IsNullOrEmpty(NetCoreEnvironment))
+                            {
+                                add = true;
+                                allLines.Insert(entryPointIndex, "ENV ASPNETCORE_ENVIRONMENT " + NetCoreEnvironment);
+                                _logger($"Add ENV ASPNETCORE_ENVIRONMENT " + NetCoreEnvironment + $" to dockerFile  : 【{dockFilePath}】", NLog.LogLevel.Info);
+                            }
+
+                            if (add)
+                            {
+                                _sshClient.RunCommand($"set -e;cd ~;\\rm -rf \"{dockFilePath}\";");
+                                //没有发现包含环境变量 就添加进去
+                                using (var writer = _sftpClient.CreateText(dockFilePath))
+                                {
+                                    foreach (var line in allLines)
+                                    {
+                                        writer.WriteLine(line);
+                                    }
+                                    writer.Flush();
+                                }
+                            }
+                        }
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    _logger($"Get EXPOSE param in dockerFile fail: {dockFilePath}", NLog.LogLevel.Error);
+                    _logger($"parse param in dockerFile fail: {dockFilePath},err:{ex.Message}", NLog.LogLevel.Error);
                     return;
                 }
             }

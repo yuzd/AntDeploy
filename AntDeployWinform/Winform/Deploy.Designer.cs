@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Deploy));
             this.tabcontrol = new System.Windows.Forms.TabControl();
             this.page_web_iis = new System.Windows.Forms.TabPage();
+            this.checkBox_iis_restart_site = new System.Windows.Forms.CheckBox();
             this.btn_iis_stop = new AltoControls.AltoButton();
             this.btn_iis_retry = new AltoControls.AltoButton();
             this.checkBox_select_deploy_iis = new System.Windows.Forms.CheckBox();
@@ -211,6 +212,7 @@
             // 
             // page_web_iis
             // 
+            this.page_web_iis.Controls.Add(this.checkBox_iis_restart_site);
             this.page_web_iis.Controls.Add(this.btn_iis_stop);
             this.page_web_iis.Controls.Add(this.btn_iis_retry);
             this.page_web_iis.Controls.Add(this.checkBox_select_deploy_iis);
@@ -230,6 +232,13 @@
             resources.ApplyResources(this.page_web_iis, "page_web_iis");
             this.page_web_iis.Name = "page_web_iis";
             this.page_web_iis.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_iis_restart_site
+            // 
+            resources.ApplyResources(this.checkBox_iis_restart_site, "checkBox_iis_restart_site");
+            this.checkBox_iis_restart_site.Name = "checkBox_iis_restart_site";
+            this.checkBox_iis_restart_site.UseVisualStyleBackColor = true;
+            this.checkBox_iis_restart_site.Click += new System.EventHandler(this.checkBox_iis_restart_site_Click);
             // 
             // btn_iis_stop
             // 
@@ -1601,5 +1610,6 @@
         private System.Windows.Forms.CheckBox checkBox_select_deploy_docker;
         private System.Windows.Forms.CheckBox checkBox_save_deploy_log;
         private System.Windows.Forms.CheckBox checkBox_multi_deploy;
+        private System.Windows.Forms.CheckBox checkBox_iis_restart_site;
     }
 }

@@ -264,6 +264,9 @@
     <Content Include="System.ValueTuple.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="ToastHelper.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="WinFormAnimation.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>

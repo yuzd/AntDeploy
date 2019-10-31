@@ -355,6 +355,8 @@ namespace AntDeployWinform.Models
 
         public void UpdateUploadProgress(int value)
         {
+            if (progress_iis_upload.Value >= 100) return;
+
             if (value > 0 && progress_iis_upload.Value == 0)
             {
                 progress_iis_upload.Value = 20;
@@ -412,6 +414,7 @@ namespace AntDeployWinform.Models
 
         public void UploadError()
         {
+            if (progress_iis_upload.Value >= 100) return;
             progress_iis_upload.Value = 100;
             progress_iis_upload.SuperscriptText = "Error";
             this.progress_iis_upload.ProgressColor = System.Drawing.Color.Red;

@@ -22,6 +22,7 @@ namespace AntDeployWinform.Models
         public int LastTabIndex { get; set; }
         public bool IISEnableIncrement { get; set; }
         public bool IISEnableSelectDeploy { get; set; }
+        public bool IISEnableNotStopSiteDeploy { get; set; }
         public bool WindowsServiceEnableIncrement { get; set; }
         public bool WindowsServiceEnableSelectDeploy { get; set; }
 
@@ -110,6 +111,13 @@ namespace AntDeployWinform.Models
         /// iis名称和环境走 windows服务名称和环境走
         /// </summary>
         public string ConfigName { get; set; }
+
+        /// <summary>
+        /// Docker的配置和环境走
+        /// </summary>
+        public string DockerPort { get; set; }
+        public string DockerEnvName { get; set; }
+        public string DockerVolume { get; set; }
     }
 
     /// <summary>
@@ -139,6 +147,8 @@ namespace AntDeployWinform.Models
         public string LastEnvName { get; set; }
         public string RemoveDaysFromPublished { get; set; }
         public string Volume { get; set; }
+
+        public List<EnvPairConfig> EnvPairList { get; set; } = new List<EnvPairConfig>();
     }
 
     public class Env

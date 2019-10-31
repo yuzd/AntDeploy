@@ -91,6 +91,9 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="ToastHelper">
+      <HintPath>..\AntDeploy\ToastHelper.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="WinFormAnimation">
       <HintPath>..\packages\WinFormAnimation.1.5.6298.3372\lib\net35-client\WinFormAnimation.dll</HintPath>
