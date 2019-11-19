@@ -1955,6 +1955,17 @@ namespace AntDeployWinform.Winform
                                 continue;
                             }
 
+                            if (this.PluginConfig.IISEnableNotStopSiteDeploy)
+                            {
+                                //网站还不存在不能选择不关闭站点
+                                this.nlog_iis.Error($"Website Is Not Exist In Remote IIS,Can not use [Do Not Stop Site]");
+                                UploadError(this.tabPage_progress, server.Host);
+                                allSuccess = false;
+                                failCount++;
+                                failServerList.Add(server);
+                                continue;
+                            }
+
                             this.BeginInvokeLambda(() =>
                             {
                                 //级别一不存在
