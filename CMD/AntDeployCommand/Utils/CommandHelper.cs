@@ -45,7 +45,61 @@ namespace AntDeployCommand.Utils
             var dotnet = System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(OSPlatform.Windows)? "dotnet": System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(OSPlatform.OSX)? "/usr/local/share/dotnet/dotnet": "/usr/share/dotnet/dotnet";
             return RunDotnetExternalExe(dotnet, arguments);
         }
+        private static bool RunCommand(string commandToRun, string workingDirectory = null)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(workingDirectory))
+                {
+                    workingDirectory = Directory.GetDirectoryRoot(Directory.GetCurrentDirectory());
+                }
 
+                var processStartInfo = new ProcessStartInfo()
+                {
+                    FileName = (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "cmd" : "bash"),
+                    RedirectStandardOutput = true,
+                    RedirectStandardInput = true,
+                    WorkingDirectory = workingDirectory
+                };
+
+                var process = Process.Start(processStartInfo);
+
+                if (process == null)
+                {
+                    LogHelper.Error("Process should not be null.");
+                    return false;
+                }
+
+                process.StandardInput.WriteLine($"{commandToRun} & exit");
+                process.WaitForExit();
+
+                var output = process.StandardOutput.ReadToEnd();
+                if (process.ExitCode == 0)
+                {
+                    LogHelper.Info("【Command】" + output);
+                }
+                else
+                {
+                    LogHelper.Warn("【Command】" + output);
+                }
+
+                try
+                {
+                    process.Kill();
+                }
+                catch (Exception)
+                {
+                    //ignore
+                }
+                return process.ExitCode == 0;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error("【Command】" + ex.Message);
+                return false;
+            }
+
+        }
         /// <summary>
         /// 执行dotnet Command命令
         /// </summary>
@@ -56,6 +110,10 @@ namespace AntDeployCommand.Utils
         /// <returns></returns>
         public static bool RunDotnetExternalExe(string fileName, string arguments,string workingFolder = null,string prefix = "【Build】")
         {
+            if (!string.IsNullOrEmpty(workingFolder))
+            {
+                return RunCommand(arguments, workingFolder);
+            }
             Process process = null;
             BuildProgress pr = null;
             try
