@@ -89,6 +89,7 @@ namespace AntDeployCommand.Utils
         public string ClientDateTimeFolderName { get; set; }
         public string RemoveDaysFromPublished { get; set; }
         public string Remark { get; set; }
+        public string Email { get; set; }
         public string Volume { get; set; }
         public string RootFolder { get; set; }
 
@@ -500,9 +501,7 @@ namespace AntDeployCommand.Utils
             }
 
             if (CheckCancel()) return;
-            //创建args文件 antdeploy_args
-            var argsFilePath = destinationFolder + "antdeploy_args";
-            CreateArgsFile(argsFilePath);
+     
 
             _logger($"unzip -o -q {destinationFolder + destinationfileName} -d publish/", LogLevel.Info);
             var unzipresult = _sshClient.RunCommand($"cd {destinationFolder} && unzip -o -q {destinationfileName} -d publish/");
@@ -562,8 +561,13 @@ namespace AntDeployCommand.Utils
             //执行Docker命令
             _sftpClient.ChangeDirectory(RootFolder);
             ChangeToFolder(deploySaveFolder);
-            DoDockerCommand(deploySaveFolder, false, !isExistDockFile, publishName: "");
-
+            var isDeploySuccess = DoDockerCommand(deploySaveFolder, false, !isExistDockFile, publishName: "");
+            if (isDeploySuccess)
+            {
+                //创建args文件 antdeploy_args
+                var argsFilePath = destinationFolder + "antdeploy_args";
+                CreateArgsFile(argsFilePath);
+            }
         }
 
 
@@ -616,7 +620,7 @@ namespace AntDeployCommand.Utils
         /// <param name="publishFolder">deploy文件目录</param>
         /// <param name="isrollBack"></param>
         /// <param name="isDefaultDockfile">上传的时候没有DockerFile要创建</param>
-        public void DoDockerCommand(string publishFolder, bool isrollBack = false, bool isDefaultDockfile = false, string publishName = "publish")
+        public bool DoDockerCommand(string publishFolder, bool isrollBack = false, bool isDefaultDockfile = false, string publishName = "publish")
         {
             string port = string.Empty;
             string server_port = string.Empty;
@@ -634,14 +638,14 @@ namespace AntDeployCommand.Utils
                 if (isrollBack)
                 {
                     _logger($"dockerFile is not exist: {dockFilePath}", LogLevel.Error);
-                    return;
+                    return false;
                 }
 
 
                 if (!isDefaultDockfile)
                 {
                     var createDockerFileResult = CreateDockerFile(dockFilePath);
-                    if (!createDockerFileResult) return;
+                    if (!createDockerFileResult) return false;
                 }
             }
             else
@@ -653,7 +657,7 @@ namespace AntDeployCommand.Utils
                     if (string.IsNullOrEmpty(dockerFileText))
                     {
                         _logger($"dockerFile is empty: {dockFilePath}", LogLevel.Error);
-                        return;
+                        return false;
                     }
                     var needAddPort = false;
                     var newPort = string.Empty;
@@ -816,7 +820,7 @@ namespace AntDeployCommand.Utils
                 catch (Exception ex)
                 {
                     _logger($"parse param in dockerFile fail: {dockFilePath},err:{ex.Message}", LogLevel.Error);
-                    return;
+                    return false;
                 }
             }
 
@@ -825,7 +829,7 @@ namespace AntDeployCommand.Utils
             if (!dockerBuildResult)
             {
                 _logger($"build image fail", LogLevel.Error);
-                return;
+                return false;
             }
 
             var continarName = "d_" + PorjectName;
@@ -883,7 +887,7 @@ namespace AntDeployCommand.Utils
             if (!dockerRunRt)
             {
                 _logger($"docker run fail", LogLevel.Error);
-                return;
+                return false;
             }
 
             //把旧的image给删除
@@ -931,6 +935,7 @@ namespace AntDeployCommand.Utils
             }
 
             ClearOldHistroy();
+            return true;
 
         }
 
@@ -1013,7 +1018,7 @@ namespace AntDeployCommand.Utils
                         Remark = Remark ?? string.Empty,
                         Mac = CodingHelper.GetMacAddress(),
                         Ip = CodingHelper.GetLocalIPAddress(),
-                        Pc = Environment.MachineName
+                        Pc = string.IsNullOrEmpty(Email)? Environment.MachineName:Email
                     };
                     writer.WriteLine(JsonConvert.SerializeObject(obj));
                     writer.Flush();

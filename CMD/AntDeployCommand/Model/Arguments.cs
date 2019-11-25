@@ -54,6 +54,7 @@ namespace AntDeployCommand.Model
         public string LoggerId { get; set; }
         public string DeployFolderName { get; set; }
         public string Remark { get; set; }
+        public string Email { get; set; }
         public string ServiceName { get; set; }
         public bool IsSelectedDeploy { get; set; }
         public List<string> SelectedFileList { get; set; } = new List<string>();

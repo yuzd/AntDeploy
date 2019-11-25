@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AntDeployAgentService", "An
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntDeployWinform", "AntDeployWinform\AntDeployWinform.csproj", "{DD2721A8-5956-4259-B68F-4E6B21A7BF0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntDeployCommand", "CMD\AntDeployCommand\AntDeployCommand.csproj", "{1C46A63D-E1E1-46A1-9BE8-1225851617FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AntDeployCommand", "CMD\AntDeployCommand\AntDeployCommand.csproj", "{1C46A63D-E1E1-46A1-9BE8-1225851617FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -35,7 +35,7 @@ namespace AntDeployCommand.Operations
 
         public override string Name => "【Git】";
 
-        public override async Task Run()
+        public override async Task<bool> Run()
         {
             //判断是否已经创建了git
             if (Arguments.EnvType.Equals("get"))
@@ -47,7 +47,7 @@ namespace AntDeployCommand.Operations
                 CommitIncrmentFileList();
             }
 
-            await Task.CompletedTask;
+            return await Task.FromResult(true);
         }
 
         /// <summary>

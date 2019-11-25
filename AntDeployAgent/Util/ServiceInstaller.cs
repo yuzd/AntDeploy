@@ -260,7 +260,6 @@ namespace AntDeployAgentWindows.Util
         private static bool WaitForServiceStatus(IntPtr service, ServiceState waitStatus, ServiceState desiredStatus)
         {
             SERVICE_STATUS status = new SERVICE_STATUS();
-
             QueryServiceStatus(service, status);
             if (status.dwCurrentState == desiredStatus) return true;
 
@@ -299,6 +298,7 @@ namespace AntDeployAgentWindows.Util
                     }
                 }
             }
+            Thread.Sleep(2000);
             return (status.dwCurrentState == desiredStatus);
         }
 

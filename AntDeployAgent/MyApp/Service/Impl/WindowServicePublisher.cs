@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Threading;
 
 namespace AntDeployAgentWindows.MyApp.Service.Impl
 {
@@ -142,6 +143,14 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     }
                     catch (Exception e2)
                     {
+                        Thread.Sleep(5000);
+                        var isStart = WindowServiceHelper.IsStart(_serviceName);
+                        if (isStart)
+                        {
+                            Log($"install windows service success");
+                            Log($"start windows service success");
+                            return string.Empty;
+                        }
                         return $"install windows service fail:" + e2.Message;
                     }
 

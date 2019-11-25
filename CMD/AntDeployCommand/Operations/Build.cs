@@ -10,6 +10,7 @@ namespace AntDeployCommand.Operations
 {
     public class Build: OperationsBase
     {
+        public string PublishPath { get; set; }
         public override string ValidateArgument()
         {
             if (string.IsNullOrEmpty(Arguments.EnvName))
@@ -34,7 +35,7 @@ namespace AntDeployCommand.Operations
             return string.Empty;
         }
 
-        public override async Task Run()
+        public override async Task<bool> Run()
         {
             var file = new FileInfo(Arguments.ProjectPath);
             var ProjectFolderPath = file.DirectoryName;
@@ -62,9 +63,11 @@ namespace AntDeployCommand.Operations
             }
             else
             {
+                PublishPath = publishPath;
                 LogHelper.Info($"【publish success】{publishPath}");
             }
-            await Task.CompletedTask;
+
+            return  await Task.FromResult(isSuccess);
         }
 
 

@@ -11,6 +11,7 @@ namespace AntDeployCommand.Operations
 {
     public class PACKAGE : OperationsBase
     {
+        public string PackagePath { get; set; }
         private string zipPath = string.Empty;
         public override string ValidateArgument()
         {
@@ -39,7 +40,7 @@ namespace AntDeployCommand.Operations
             return string.Empty;
         }
 
-        public override async Task Run()
+        public override async Task<bool> Run()
         {
             //打包分好几种情况
             //1 全部打包
@@ -76,13 +77,13 @@ namespace AntDeployCommand.Operations
             catch (Exception ex)
             {
                 LogHelper.Error("【Package】package fail:" + ex.Message);
-                return;
+                return await Task.FromResult(false);
             }
 
             if (zipBytes == null || zipBytes.Length < 1)
             {
                 LogHelper.Error("【Package】package fail");
-                return;
+                return await Task.FromResult(false);
             }
 
             //保存
@@ -91,7 +92,8 @@ namespace AntDeployCommand.Operations
             var packageSize = (zipBytes.Length / 1024 / 1024);
             LogHelper.Info($"【Package】size:{(packageSize > 0 ? (packageSize + "") : "<1")}M");
             LogHelper.Info($"【Package success】{zipPath}");
-            await Task.CompletedTask;
+            PackagePath = zipPath;
+            return await Task.FromResult(true);
         }
     }
 }

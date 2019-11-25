@@ -35,7 +35,7 @@ namespace AntDeployCommand.Operations
             return string.Empty;
         }
 
-        public override async Task Run()
+        public override async Task<bool> Run()
         {
             this.Info($"Host:{Arguments.Host} Start rollBack from version:" + Arguments.DeployFolderName);
             HttpRequestClient httpRequestClient = new HttpRequestClient();
@@ -50,6 +50,7 @@ namespace AntDeployCommand.Operations
                 Url = $"http://{Arguments.Host}/logger?key=" + Arguments.LoggerId
             };
             WebSocketClient webSocket = new WebSocketClient(this.Log, HttpLogger);
+            var isSuccess = true;
             try
             {
 
@@ -63,6 +64,7 @@ namespace AntDeployCommand.Operations
                 if (webSocket.HasError)
                 {
                     this.Error($"Host:{Arguments.Host},Rollback Fail,Skip to Next");
+                    isSuccess = false;
                 }
                 else
                 {
@@ -72,19 +74,21 @@ namespace AntDeployCommand.Operations
                     }
                     else
                     {
-
+                        isSuccess = false;
                         this.Error($"Host:{Arguments.Host},Response:{uploadResult.Item2},Skip to Next");
                     }
                 }
             }
             catch (Exception ex)
             {
+                isSuccess = false;
                 this.Error($"Fail Rollback,Host:{Arguments.Host},Response:{ex.Message},Skip to Next");
             }
             finally
             {
                 await webSocket?.Dispose();
             }
+            return await Task.FromResult(isSuccess);
         }
     }
 }

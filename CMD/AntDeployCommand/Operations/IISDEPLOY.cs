@@ -47,13 +47,13 @@ namespace AntDeployCommand.Operations
             return string.Empty;
         }
         long ProgressPercentage = 0;
-        public override async Task Run()
+        public override async Task<bool> Run()
         {
             byte[] zipBytes = File.ReadAllBytes(Arguments.PackageZipPath);
             if (zipBytes.Length < 1)
             {
                 Error("package file is empty");
-                return;
+                return await Task.FromResult(false);
             }
 
             this.Info($"Start Uppload,Host:{Arguments.Host}");
@@ -67,7 +67,7 @@ namespace AntDeployCommand.Operations
             httpRequestClient.SetFieldValue("id", Arguments.LoggerId);
             httpRequestClient.SetFieldValue("remark", Arguments.Remark);
             httpRequestClient.SetFieldValue("mac", CodingHelper.GetMacAddress());
-            httpRequestClient.SetFieldValue("pc", System.Environment.MachineName);
+            httpRequestClient.SetFieldValue("pc", string.IsNullOrEmpty(Arguments.Email) ? System.Environment.MachineName : Arguments.Email);
             httpRequestClient.SetFieldValue("localIp", CodingHelper.GetLocalIPAddress());
             httpRequestClient.SetFieldValue("poolName", Arguments.PoolName);
             httpRequestClient.SetFieldValue("physicalPath", Arguments.PhysicalPath);
@@ -86,7 +86,7 @@ namespace AntDeployCommand.Operations
 
             //IDisposable _subcribe = null;
             WebSocketClient webSocket = new WebSocketClient(this.Log, HttpLogger);
-     
+            var isSuccess = true;
             try
             {
 
@@ -96,28 +96,37 @@ namespace AntDeployCommand.Operations
 
                 var uploadResult = await httpRequestClient.Upload($"http://{Arguments.Host}/publish",ClientOnUploadProgressChanged, GetProxy());
 
-                if (ProgressPercentage == 0) return;
-           
-                webSocket.ReceiveHttpAction(true);
-                if (webSocket.HasError)
+                if (ProgressPercentage == 0)
                 {
-                    this.Error($"Host:{Arguments.Host},Deploy Fail,Skip to Next");
+                    isSuccess = false;
                 }
                 else
                 {
-                    if (uploadResult.Item1)
+                    webSocket.ReceiveHttpAction(true);
+                    if (webSocket.HasError)
                     {
-                        this.Info($"【deploy success】Host:{Arguments.Host},Response:{uploadResult.Item2}");
+                        this.Error($"Host:{Arguments.Host},Deploy Fail,Skip to Next");
+                        isSuccess = false;
                     }
                     else
                     {
-                        
-                        this.Error($"Host:{Arguments.Host},Response:{uploadResult.Item2},Skip to Next");
+                        if (uploadResult.Item1)
+                        {
+                            this.Info($"【deploy success】Host:{Arguments.Host},Response:{uploadResult.Item2}");
+                        }
+                        else
+                        {
+                            isSuccess = false;
+                            this.Error($"Host:{Arguments.Host},Response:{uploadResult.Item2},Skip to Next");
+                        }
                     }
                 }
+
+               
             }
             catch (Exception ex)
             {
+                isSuccess = false;
                 this.Error($"Fail Deploy,Host:{Arguments.Host},Response:{ex.Message},Skip to Next");
             }
             finally
@@ -125,6 +134,8 @@ namespace AntDeployCommand.Operations
                 await webSocket?.Dispose();
                 //_subcribe?.Dispose();
             }
+
+            return await Task.FromResult(isSuccess);
         }
 
         private void ClientOnUploadProgressChanged(long progress)

@@ -10,7 +10,7 @@ namespace AntDeployCommand.Interface
 
         void ValidateArguments();
 
-        Task Execute();
+        Task<bool> Execute();
 
         string Name { get; }
     }

@@ -6,24 +6,29 @@ namespace AntDeployCommand.Utils
 {
     public class LogHelper
     {
+        /// <summary>
+        /// 日志
+        /// </summary>
+        public static Action<string> LoggerProvider = Console.WriteLine;
+
         public static void Info(string txt)
         {
-            Console.WriteLine($"【INFO】{txt}");
+            LoggerProvider($"【INFO】{txt}");
         }
 
         public static void Debug(string txt)
         {
-            Console.WriteLine($"【DEBG】{txt}");
+            LoggerProvider($"【DEBG】{txt}");
         }
 
         public static void Warn(string txt)
         {
-            Console.WriteLine($"【WARN】{txt}");
+            LoggerProvider($"【WARN】{txt}");
         }
 
         public static void Error(string txt)
         {
-            Console.WriteLine($"【FAIL】{txt}");
+            LoggerProvider($"【FAIL】{txt}");
         }
     }
 }

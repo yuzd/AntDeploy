@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using LibGit2Sharp.Handlers;
+using Newtonsoft.Json;
 
 namespace AntDeployCommand.Utils
 {
@@ -11,6 +13,7 @@ namespace AntDeployCommand.Utils
         private readonly Action<string,LogLevel> _logger;
         private Repository _repository;
         private readonly string _projectPath;
+        private GitLocalConfig GitLocalConfig;
         public GitClient(string projectPath, Action<string,LogLevel>  logger) 
         {
             _logger = logger;
@@ -18,25 +21,16 @@ namespace AntDeployCommand.Utils
             CreateGit(_projectPath);
         }
         
-        public GitClient(string projectPath,string envName, Action<string,LogLevel>  logger) 
+        public GitClient(string projectPath,string branchName, Action<string,LogLevel>  logger)
         {
+            var gitConfig = File.ReadAllText("gitlocal.json");
+            GitLocalConfig = JsonConvert.DeserializeObject<GitLocalConfig>(gitConfig);
             _logger = logger;
             _projectPath = projectPath;
-            CreateGit(_projectPath,envName);
-        }
-        
-
-        public GitClient(string projectPath)
-        {
-            _projectPath = projectPath;
-            CreateGit(_projectPath);
+            _repository = new Repository(_projectPath);
+            InitSuccess= ChangeBranch(branchName);//切换成对应的分支
         }
 
-        public GitClient(string projectPath,string envName)
-        {
-            _projectPath = projectPath;
-            CreateGit(_projectPath,envName);
-        }
         
         public bool InitSuccess { get; private set; }
 
@@ -57,6 +51,98 @@ namespace AntDeployCommand.Utils
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// 拉取最新代码
+        /// </summary>
+        /// <returns></returns>
+        public (bool,string,string) Fetch()
+        {
+            var lastMessage = string.Empty;
+            var LastEmail = string.Empty;
+            try
+            {
+                // Credential information to fetch
+                LibGit2Sharp.PullOptions options = new LibGit2Sharp.PullOptions();
+                options.FetchOptions = new FetchOptions();
+                options.FetchOptions.CredentialsProvider = new CredentialsHandler(
+                    (url, usernameFromUrl, types) =>
+                        new UsernamePasswordCredentials()
+                        {
+                            Username = GitLocalConfig.UserName,
+                            Password = GitLocalConfig.Password
+                        });
+
+                // User information to create a merge commit
+                var signature = new LibGit2Sharp.Signature(
+                    new Identity(GitLocalConfig.LocalName, GitLocalConfig.LocalEmail), DateTimeOffset.Now);
+
+                
+                // Pull
+                var re = Commands.Pull(_repository, signature, options);
+               
+                _logger?.Invoke($"【Git】git pull success >>> " + re.Status.ToString(), LogLevel.Info);
+                var commitLog2 = GetBrandLastCommintInfo();
+                if (!string.IsNullOrEmpty(commitLog2.Item1))
+                {
+                    lastMessage = commitLog2.Item1;
+                    _logger?.Invoke($"【Git】Commit Message:\r\n" + commitLog2.Item1, LogLevel.Info);
+                }
+                if (!string.IsNullOrEmpty(commitLog2.Item2))
+                {
+                    LastEmail = commitLog2.Item2;
+                    _logger?.Invoke($"【Git】Commit Author:\r\n" + commitLog2.Item2, LogLevel.Info);
+                }
+                if (!string.IsNullOrEmpty(commitLog2.Item3))
+                {
+                    _logger?.Invoke($"【Git】Commit Time:\r\n" + commitLog2.Item3, LogLevel.Info);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger?.Invoke($"【Git】git pull fail:{e.Message}", LogLevel.Error);
+                return (false, null,null);
+            }
+
+            return (true,lastMessage,LastEmail);
+        }
+
+
+        public (string,string,string) GetBrandLastCommintInfo()
+        {
+            var currentPushMessage = string.Empty;
+            var currentPushAuth =  string.Empty;
+            var currentPushTime =  string.Empty;
+            try
+            {
+                currentPushMessage = _repository.Head.Tip.Message;
+                if (currentPushMessage.EndsWith("\n"))
+                {
+                    currentPushMessage = currentPushMessage.Substring(0, currentPushMessage.Length - 1).Replace("\n","\r\n");
+                }
+            }
+            catch (Exception)
+            {
+               
+            }
+            try
+            {
+                currentPushAuth = _repository.Head.Tip.Author.Email;
+            }
+            catch (Exception)
+            {
+
+            }
+            try
+            {
+                currentPushTime = _repository.Head.Tip.Author.When.ToString("yyyy-MM-dd HH:mm:ss");
+            }
+            catch (Exception)
+            {
+
+            }
+            return (currentPushMessage, currentPushAuth, currentPushTime);
         }
 
         /// <summary>
@@ -119,9 +205,8 @@ namespace AntDeployCommand.Utils
         /// 创建git仓库
         /// </summary>
         /// <param name="path"></param>
-        /// <param name="envName"></param>
         /// <returns></returns>
-        public bool CreateGit(string path = null,string envName = null)
+        public bool CreateGit(string path = null)
         {
             try
             {
@@ -293,5 +378,13 @@ namespace AntDeployCommand.Utils
         {
             this._repository?.Dispose();
         }
+    }
+
+    public class GitLocalConfig
+    {
+        public string UserName { get; set; }
+        public string Password { get; set; }
+        public string LocalName { get; set; }
+        public string LocalEmail { get; set; }
     }
 }

@@ -20,7 +20,7 @@ namespace AntDeployCommand
 
 
         public abstract string ValidateArgument();
-        public abstract Task Run();
+        public abstract Task<bool> Run();
 
         public void ValidateArguments()
         {
@@ -33,9 +33,9 @@ namespace AntDeployCommand
             }
         }
 
-        public async Task Execute()
+        public async Task<bool> Execute()
         {
-            await Run();
+            return await Run();
         }
 
         public virtual string Name => $"【{this.GetType().Name}】";

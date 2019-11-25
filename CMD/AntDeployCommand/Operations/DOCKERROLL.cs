@@ -12,6 +12,11 @@ namespace AntDeployCommand.Operations
 {
     public class DOCKERROLL : OperationsBase
     {
+
+        public bool IsNotThrow { get; set; }
+        public string FirstVersion { get; set; }
+        public string RollRemark { get; set; }
+
         public override string ValidateArgument()
         {
             if (string.IsNullOrEmpty(Arguments.Host))
@@ -54,30 +59,30 @@ namespace AntDeployCommand.Operations
             return string.Empty;
         }
 
-        public override async Task Run()
+        public override async Task<bool> Run()
         {
+            this.FirstVersion = string.Empty;
             if (Arguments.EnvType.Equals("TEST"))
             {
-                TEST();
-                return;
+                return await TEST();
             }
 
             if (Arguments.EnvType.Equals("ROLL"))
             {
-                RollBack();
-                return;
+                return await RollBack();
             }
 
-            if (File.Exists(Arguments.PackageZipPath))
+            if (!string.IsNullOrEmpty(Arguments.PackageZipPath)&& File.Exists(Arguments.PackageZipPath))
             {
                 File.Delete(Arguments.PackageZipPath);
             }
-
+            var hasError = false;
             using (SSHClient sshClient = new SSHClient(Arguments.Host, Arguments.Root, Arguments.Pwd, Arguments.Proxy,
                 (str, logLevel) =>
                 {
                     if (logLevel == LogLevel.Error)
                     {
+                        hasError = true;
                         this.Error("【Server】" + str);
                     }
                     else if (logLevel == LogLevel.Warning)
@@ -102,7 +107,7 @@ namespace AntDeployCommand.Operations
                 if (!connectResult)
                 {
                     this.Error($"connect rollBack Host:{Arguments.Host} Fail");
-                    return;
+                    return await Task.FromResult(false);
                 }
 
                 var versionList = sshClient.GetDeployHistory("antdeploy", 11);
@@ -110,18 +115,44 @@ namespace AntDeployCommand.Operations
                 if (versionList.Count <= 1)
                 {
                     this.Error($"Host:{Arguments.Host} get rollBack version list count:0");
-                    return;
+                    return await Task.FromResult(false);
                 }
 
                 this.Info($"Host:{Arguments.Host} get rollBack version list count:{versionList.Count}");
+                if (IsNotThrow)
+                {
+                    var first = versionList.Where(r=>!string.IsNullOrEmpty(r.Item2)).Skip(1).First();//当前版本的最后一个
+                    this.FirstVersion = first.Item1;
+                    this.RollRemark = first.Item2;
+                    this.Info($"Host:{Arguments.Host} rollBack version to:【{first.Item1}】【{first.Item2}】");
+
+                    try
+                    {
+                        sshClient.RollBack(this.FirstVersion);
+                        if (hasError)
+                        {
+                            this.Info($"【rollback error】Host:{Arguments.Host},version:{this.FirstVersion}");
+                            return await Task.FromResult(false);
+                        }
+
+                        this.Info($"【rollback success】Host:{Arguments.Host},version:{this.FirstVersion},Response:Success");
+                        return await Task.FromResult(true);
+                    }
+                    catch (Exception ex)
+                    {
+                        this.Error($"RollBack Host:{Arguments.Host},version:{this.FirstVersion} Fail:" + ex.Message);
+                        return await Task.FromResult(false);
+                    }
+
+                }
 
                 File.WriteAllLines(Arguments.PackageZipPath,versionList.Select(r=>r.Item1+"@_@"+r.Item2),Encoding.UTF8);
 
             }
-            await Task.CompletedTask;
+            return await Task.FromResult(true);
         }
 
-        private void TEST()
+        private async Task<bool> TEST()
         {
             this.Info($"Host:{Arguments.Host} ");
 
@@ -150,14 +181,16 @@ namespace AntDeployCommand.Operations
                 var connectResult = sshClient.Connect();
                 if (!connectResult)
                 {
-                    throw new Exception($"RollBack Host:{Arguments.Host} Fail: connect fail");
+                    if(!IsNotThrow) throw new Exception($"RollBack Host:{Arguments.Host} Fail: connect fail");
+                    return await Task.FromResult(false);
                 }
 
                 this.Info($"Host:{Arguments.Host} Connect Success");
+                return await Task.FromResult(true);
             }
         }
 
-        private void RollBack()
+        private async Task<bool> RollBack()
         {
             var hasError = false;
             using (SSHClient sshClient = new SSHClient(Arguments.Host, Arguments.Root, Arguments.Pwd,
@@ -191,7 +224,7 @@ namespace AntDeployCommand.Operations
                 if (!connectResult)
                 {
                     this.Error($"RollBack Host:{Arguments.Host} Fail: connect fail");
-                    return;
+                    return await Task.FromResult(false);
                 }
 
                 try
@@ -199,14 +232,16 @@ namespace AntDeployCommand.Operations
                     sshClient.RollBack(Arguments.DeployFolderName);
                     if (hasError)
                     {
-                        return;
+                        return await Task.FromResult(false);
                     }
 
                     this.Info($"【rollback success】Host:{Arguments.Host},Response:Success");
+                    return await Task.FromResult(true);
                 }
                 catch (Exception ex)
                 {
                     this.Error($"RollBack Host:{Arguments.Host} Fail:" + ex.Message);
+                    return await Task.FromResult(false);
                 }
             }
         }

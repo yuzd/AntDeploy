@@ -56,14 +56,14 @@ namespace AntDeployCommand.Operations
             return string.Empty;
         }
 
-        public override async Task Run()
+        public override async Task<bool> Run()
         {
            
             byte[] zipBytes = File.ReadAllBytes(Arguments.PackageZipPath);
             if (zipBytes.Length < 1)
             {
                 Error("package file is empty");
-                return;
+                return await Task.FromResult(false);
             }
 
             var hasError = false;
@@ -98,6 +98,7 @@ namespace AntDeployCommand.Operations
                     RemoveDaysFromPublished = Arguments.RemoveDays+"",
                     Volume = Arguments.Volume,
                     Remark = Arguments.Remark,
+                    Email = Arguments.Email,
                     Increment = Arguments.IsSelectedDeploy ||
                                 Arguments.IsIncrementDeploy,
                     IsSelect = Arguments.IsSelectedDeploy,
@@ -108,7 +109,7 @@ namespace AntDeployCommand.Operations
                     if (!connectResult)
                     {
                         this.Error($"Deploy Host:{Arguments.Host} Fail: connect fail");
-                        return;
+                        return await Task.FromResult(false);
                     }
 
                     try
@@ -116,17 +117,18 @@ namespace AntDeployCommand.Operations
                         sshClient.PublishZip(memory, "antdeploy", "publish.zip", () => true);
                         if (hasError)
                         {
-                            return;
+                            return await Task.FromResult(false);
                         }
                         this.Info($"【deploy success】Host:{Arguments.Host},Response:Success");
+                        return await Task.FromResult(true);
                     }
                     catch (Exception ex)
                     {
                         this.Error($"Deploy Host:{Arguments.Host} Fail:" + ex.Message);
+                        return await Task.FromResult(false);
                     }
                 }
             }
-            await Task.CompletedTask;
         }
     }
 }

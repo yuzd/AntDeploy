@@ -167,6 +167,22 @@ namespace AntDeployAgentWindows.Util
             }
         }
 
+        public static bool IsStart(string serviceName)
+        {
+            try
+            {
+                using (var service = new ServiceController(serviceName))
+                {
+                    service.Refresh();
+                    return service.Status == ServiceControllerStatus.Running;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         public static string StopService(string serviceName, int timeoutMilliseconds)
         {
             try
