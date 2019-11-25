@@ -51,9 +51,10 @@ namespace AntDeployCommand.Utils
         /// </summary>
         /// <param name="fileName"></param>
         /// <param name="prefix"></param>
+        /// <param name="workingFolder"></param>
         /// <param name="arguments"></param>
         /// <returns></returns>
-        public static bool RunDotnetExternalExe(string fileName, string arguments,string prefix = "【Build】")
+        public static bool RunDotnetExternalExe(string fileName, string arguments,string workingFolder = null,string prefix = "【Build】")
         {
             Process process = null;
             BuildProgress pr = null;
@@ -70,7 +71,7 @@ namespace AntDeployCommand.Utils
 
                 process = new Process();
 
-                process.StartInfo.WorkingDirectory = "";
+                process.StartInfo.WorkingDirectory = workingFolder??string.Empty;
                 process.StartInfo.FileName = fileName;
                 process.StartInfo.Arguments = arguments;
                 process.StartInfo.CreateNoWindow = true;
