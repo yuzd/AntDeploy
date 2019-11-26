@@ -57,10 +57,11 @@ namespace AntDeployCommand.Utils
         /// 拉取最新代码
         /// </summary>
         /// <returns></returns>
-        public (bool,string,string) Fetch()
+        public (bool,string,string,string) Fetch()
         {
             var lastMessage = string.Empty;
             var LastEmail = string.Empty;
+            var LastTime = string.Empty;
             try
             {
                 // Credential information to fetch
@@ -96,16 +97,17 @@ namespace AntDeployCommand.Utils
                 }
                 if (!string.IsNullOrEmpty(commitLog2.Item3))
                 {
+                    LastTime = commitLog2.Item3;
                     _logger?.Invoke($"【Git】Commit Time:\r\n" + commitLog2.Item3, LogLevel.Info);
                 }
             }
             catch (Exception e)
             {
                 _logger?.Invoke($"【Git】git pull fail:{e.Message}", LogLevel.Error);
-                return (false, null,null);
+                return (false, null,null,null);
             }
 
-            return (true,lastMessage,LastEmail);
+            return (true,lastMessage,LastEmail,LastTime);
         }
 
 
