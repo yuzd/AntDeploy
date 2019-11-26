@@ -70,6 +70,8 @@ namespace AntDeployCommand.Utils
             try
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUrl);
+                request.Timeout = 1000*60*30;//30分钟
+                request.ReadWriteTimeout = 1000*60*30;//30分钟
                 if (proxy != null)
                 {
                     request.Proxy = proxy;
