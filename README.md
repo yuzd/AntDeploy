@@ -54,6 +54,9 @@ https://github.com/yuzd/AntDeployAgent/issues/5
 【demo演示】一键发布WindowsService项目(netcore 普通项目)
 https://github.com/yuzd/AntDeployAgent/issues/17
 
+【demo演示】一键发布WindowsService项目(netcore3.0项目)
+https://github.com/yuzd/AntDeployAgent/issues/32
+
 【demo演示】 AntDeploy发布前端项目到IIS（脱离vs单独使用）
 https://github.com/yuzd/AntDeployAgent/issues/23
 
