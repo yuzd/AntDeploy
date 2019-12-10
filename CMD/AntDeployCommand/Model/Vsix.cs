@@ -6,6 +6,6 @@ namespace AntDeployCommand.Model
 {
     public static class Vsix
     {
-        public const string AGENTVERSION = "6.3";
+        public const string AGENTVERSION = "7.0";
     }
 }

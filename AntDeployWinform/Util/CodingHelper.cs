@@ -75,13 +75,23 @@ namespace AntDeployWinform.Util
         /// <returns></returns>
         public static string GetMacAddress()
         {
-            var firstMacAddress = NetworkInterface
-                .GetAllNetworkInterfaces()
-                .Where(nic => nic.OperationalStatus == OperationalStatus.Up && nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
-                .Select(nic => nic.GetPhysicalAddress().ToString())
-                .FirstOrDefault();
+            try
+            {
+                var firstMacAddress = NetworkInterface
+                    .GetAllNetworkInterfaces()
+                    .Where(nic =>
+                        nic.OperationalStatus == OperationalStatus.Up &&
+                        nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
+                    .Select(nic => nic.GetPhysicalAddress().ToString())
+                    .FirstOrDefault();
 
-            return firstMacAddress;
+                return firstMacAddress;
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+           
         }
 
 

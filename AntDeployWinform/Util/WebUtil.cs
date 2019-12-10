@@ -261,7 +261,7 @@ namespace AntDeployWinform.Util
             }
             catch (Exception ex1)
             {
-                logger.Error(ex1.Message);
+                logger.Error("HttpPost Err:" + ex1.Message);
                 //ignore
             }
             return default(T);

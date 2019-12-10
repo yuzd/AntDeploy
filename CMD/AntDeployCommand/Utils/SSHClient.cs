@@ -810,10 +810,32 @@ namespace AntDeployCommand.Utils
                                     {
                                         writer.WriteLine(line);
                                     }
+                                    //发布的时候界面上有填volume 也存在dockerfile 要记录到dockerfile中 不然回滚的时候就没了
+                                    if (string.IsNullOrEmpty(volumeInDockerFile) && !string.IsNullOrEmpty(this.Volume))
+                                    {
+                                        writer.WriteLine(volumeProfix + this.Volume + "@");
+                                        _logger(volumeProfix + this.Volume + "@", LogLevel.Info);
+                                    }
                                     writer.Flush();
                                 }
                             }
-                            
+                        }
+                    }
+                    else if (string.IsNullOrEmpty(volumeInDockerFile) && !string.IsNullOrEmpty(this.Volume))
+                    {
+                        //发布的时候界面上有填volume 也存在dockerfile 要记录到dockerfile中 不然回滚的时候就没了
+                        var allLines = _sftpClient.ReadAllLines(dockFilePath).ToList();
+                        _sshClient.RunCommand($"set -e;cd ~;\\rm -rf \"{dockFilePath}\";");
+                        using (var writer = _sftpClient.CreateText(dockFilePath))
+                        {
+                            foreach (var line in allLines)
+                            {
+                                writer.WriteLine(line);
+                            }
+
+                            writer.WriteLine(volumeProfix + this.Volume + "@");
+                            _logger(volumeProfix + this.Volume + "@", LogLevel.Info);
+                            writer.Flush();
                         }
                     }
                 }
