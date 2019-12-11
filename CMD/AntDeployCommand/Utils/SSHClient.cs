@@ -561,7 +561,7 @@ namespace AntDeployCommand.Utils
             //执行Docker命令
             _sftpClient.ChangeDirectory(RootFolder);
             ChangeToFolder(deploySaveFolder);
-            var isDeploySuccess = DoDockerCommand(deploySaveFolder, false, !isExistDockFile, publishName: "");
+            var isDeploySuccess = DoDockerCommand(deploySaveFolder, false, !isExistDockFile, publishName: "", fromFolder:publishFolder);
             if (isDeploySuccess)
             {
                 //创建args文件 antdeploy_args
@@ -620,7 +620,7 @@ namespace AntDeployCommand.Utils
         /// <param name="publishFolder">deploy文件目录</param>
         /// <param name="isrollBack"></param>
         /// <param name="isDefaultDockfile">上传的时候没有DockerFile要创建</param>
-        public bool DoDockerCommand(string publishFolder, bool isrollBack = false, bool isDefaultDockfile = false, string publishName = "publish")
+        public bool DoDockerCommand(string publishFolder, bool isrollBack = false, bool isDefaultDockfile = false, string publishName = "publish", string fromFolder = null)
         {
             string port = string.Empty;
             string server_port = string.Empty;
@@ -837,6 +837,14 @@ namespace AntDeployCommand.Utils
                             _logger(volumeProfix + this.Volume + "@", LogLevel.Info);
                             writer.Flush();
                         }
+                    }
+
+                    if (!string.IsNullOrEmpty(fromFolder))
+                    {
+                        //需要将修改过的DockerFile 移动到 发布文件夹的publish 目录下 不然会导致回滚的时候失败
+                        var command = $"\\cp -rf {dockFilePath} {fromFolder}";
+                        _logger($"Update DockerFile 【{command}】", LogLevel.Info);
+                        _sshClient.RunCommand(command);
                     }
                 }
                 catch (Exception ex)

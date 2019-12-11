@@ -562,7 +562,7 @@ namespace AntDeployWinform.Util
             //执行Docker命令
             _sftpClient.ChangeDirectory(RootFolder);
             ChangeToFolder(deploySaveFolder);
-            DoDockerCommand(deploySaveFolder,false,!isExistDockFile,publishName:"");
+            DoDockerCommand(deploySaveFolder,false,!isExistDockFile,publishName:"",fromFolder: publishFolder);
             
         }
 
@@ -616,7 +616,7 @@ namespace AntDeployWinform.Util
         /// <param name="publishFolder">deploy文件目录</param>
         /// <param name="isrollBack"></param>
         /// <param name="isDefaultDockfile">上传的时候没有DockerFile要创建</param>
-        public void DoDockerCommand(string publishFolder, bool isrollBack = false,bool isDefaultDockfile = false,string publishName = "publish")
+        public void DoDockerCommand(string publishFolder, bool isrollBack = false,bool isDefaultDockfile = false,string publishName = "publish",string fromFolder = null)
         {
             string port = string.Empty;
             string server_port = string.Empty;
@@ -832,6 +832,15 @@ namespace AntDeployWinform.Util
                             writer.Flush();
                         }
                     }
+
+                    if (!string.IsNullOrEmpty(fromFolder))
+                    {
+                        //需要将修改过的DockerFile 移动到 发布文件夹的publish 目录下 不然会导致回滚的时候失败
+                        var command = $"\\cp -rf {dockFilePath} {fromFolder}";
+                        _logger($"Update DockerFile 【{command}】", NLog.LogLevel.Info);
+                        _sshClient.RunCommand(command);
+                    }
+
                 }
                 catch (Exception ex)
                 {
