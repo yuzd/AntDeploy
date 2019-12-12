@@ -544,7 +544,7 @@ namespace AntDeployWinform.Util
             //复制 覆盖 文件到项目下的 deploy目录
             CopyCpFolder(publishFolder, deploySaveFolder);
             if (CheckCancel()) return;
-
+            var temp = publishFolder;
             if (Increment)
             {
                 var incrementFoler = $"{destinationFolder}increment/";
@@ -556,13 +556,14 @@ namespace AntDeployWinform.Util
 
                 _logger($"Increment deploy success backup to [{incrementFoler}]", NLog.LogLevel.Info);
                 if (CheckCancel()) return;
+                temp = incrementFoler;
             }
 
 
             //执行Docker命令
             _sftpClient.ChangeDirectory(RootFolder);
             ChangeToFolder(deploySaveFolder);
-            DoDockerCommand(deploySaveFolder,false,!isExistDockFile,publishName:"",fromFolder: publishFolder);
+            DoDockerCommand(deploySaveFolder,false,!isExistDockFile,publishName:"",fromFolder: temp);
             
         }
 

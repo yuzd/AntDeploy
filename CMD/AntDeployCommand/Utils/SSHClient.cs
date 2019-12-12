@@ -536,6 +536,10 @@ namespace AntDeployCommand.Utils
                     var createDockerFileResult = CreateDockerFile(dockFilePath);
                     if (!createDockerFileResult) return;
                 }
+                else
+                {
+                    _logger($"dockerFile found: [{dockFilePath2}]", LogLevel.Info);
+                }
 
                 if (CheckCancel()) return;
             }
@@ -543,6 +547,8 @@ namespace AntDeployCommand.Utils
             //复制 覆盖 文件到项目下的 deploy目录
             CopyCpFolder(publishFolder, deploySaveFolder);
             if (CheckCancel()) return;
+
+            var temp = publishFolder;
 
             if (Increment)
             {
@@ -555,13 +561,14 @@ namespace AntDeployCommand.Utils
 
                 _logger($"Increment deploy success backup to [{incrementFoler}]", LogLevel.Info);
                 if (CheckCancel()) return;
+                temp = incrementFoler;
             }
 
 
             //执行Docker命令
             _sftpClient.ChangeDirectory(RootFolder);
             ChangeToFolder(deploySaveFolder);
-            var isDeploySuccess = DoDockerCommand(deploySaveFolder, false, !isExistDockFile, publishName: "", fromFolder:publishFolder);
+            var isDeploySuccess = DoDockerCommand(deploySaveFolder, false, !isExistDockFile, publishName: "", fromFolder: temp);
             if (isDeploySuccess)
             {
                 //创建args文件 antdeploy_args
@@ -843,7 +850,7 @@ namespace AntDeployCommand.Utils
                     {
                         //需要将修改过的DockerFile 移动到 发布文件夹的publish 目录下 不然会导致回滚的时候失败
                         var command = $"\\cp -rf {dockFilePath} {fromFolder}";
-                        _logger($"Update DockerFile 【{command}】", LogLevel.Info);
+                        _logger($"Update DockerFile 【{command}】", LogLevel.Warning);
                         _sshClient.RunCommand(command);
                     }
                 }
