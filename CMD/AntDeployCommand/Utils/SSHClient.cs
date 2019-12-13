@@ -736,6 +736,10 @@ namespace AntDeployCommand.Utils
 
                         Volume = volumeInDockerFile;
                     }
+                    else
+                    {
+                        _logger($"Volume in dockerFile is not defined!", LogLevel.Warning);
+                    }
 
                     var serverPostDockerFile = string.Empty;
                     var serverPostDockerFileExist = dockerFileText.Split(new string[] { serverPortProfix }, StringSplitOptions.None);
@@ -767,6 +771,8 @@ namespace AntDeployCommand.Utils
                         server_port = needAddPort ? ServerPort : port;
                     }
 
+                    var addV = false;
+
                     if (!string.IsNullOrEmpty(NetCoreEnvironment) || needAddPort)
                     {
                         var allLines = _sftpClient.ReadAllLines(dockFilePath).ToList();
@@ -786,7 +792,7 @@ namespace AntDeployCommand.Utils
                             }
                         }
 
-
+                       
                         if (entryPointIndex > 0)
                         {
                             var add = false;
@@ -820,6 +826,7 @@ namespace AntDeployCommand.Utils
                                     //发布的时候界面上有填volume 也存在dockerfile 要记录到dockerfile中 不然回滚的时候就没了
                                     if (string.IsNullOrEmpty(volumeInDockerFile) && !string.IsNullOrEmpty(this.Volume))
                                     {
+                                        addV = true;
                                         writer.WriteLine(volumeProfix + this.Volume + "@");
                                         _logger(volumeProfix + this.Volume + "@", LogLevel.Info);
                                     }
@@ -828,7 +835,8 @@ namespace AntDeployCommand.Utils
                             }
                         }
                     }
-                    else if (string.IsNullOrEmpty(volumeInDockerFile) && !string.IsNullOrEmpty(this.Volume))
+                    
+                    if (!addV && string.IsNullOrEmpty(volumeInDockerFile) && !string.IsNullOrEmpty(this.Volume))
                     {
                         //发布的时候界面上有填volume 也存在dockerfile 要记录到dockerfile中 不然回滚的时候就没了
                         var allLines = _sftpClient.ReadAllLines(dockFilePath).ToList();
@@ -839,7 +847,6 @@ namespace AntDeployCommand.Utils
                             {
                                 writer.WriteLine(line);
                             }
-
                             writer.WriteLine(volumeProfix + this.Volume + "@");
                             _logger(volumeProfix + this.Volume + "@", LogLevel.Info);
                             writer.Flush();
