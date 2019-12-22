@@ -104,7 +104,40 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
         {
             try
             {
-                base.Deploy();
+                if (args.UseOfflineHtm)
+                {
+                    try
+                    {
+                        var createErr = IISHelper.CreateAppOffineHtm(this.args.AppFolder);
+                        if (!string.IsNullOrEmpty(createErr))
+                        {
+                            logger($"【Error】Create app_offline.htm to [{this.args.AppFolder}] Fail:[{createErr}]");
+                            return;
+                        }
+
+                        logger($"create app_offline.htm to [{this.args.AppFolder}] Success");
+
+                        //创建了app_offline.htm成功后 iis会解除占用
+
+                        //执行copy
+                        base.Deploy();
+
+                    }
+                    finally
+                    {
+                        var deleteErr = IISHelper.DeleteAppOfflineHtm(this.args.AppFolder);
+                        if (!string.IsNullOrEmpty(deleteErr))
+                        {
+                            logger($"【Error】delete app_offline.htm from [{this.args.AppFolder}] Fail:[{deleteErr}]");
+                        }
+
+                        logger($"delete app_offline.htm from [{this.args.AppFolder}] Success");
+                    }
+                }
+                else
+                {
+                    base.Deploy();
+                }
             }
             catch (Exception exception)
             {

@@ -26,6 +26,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
         private bool _isIncrement;//是否增量
         private bool _isNoStopWebSite;//是否需要停止website
         private string _physicalPath;//指定的创建的时候用的服务器路径
+        private bool _useOfflineHtm = false;//指定用offline.htm
 
         public override string ProviderName => "iis";
         public override string ProjectName => _projectName;
@@ -171,7 +172,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                         }
 
                         //复制文件到发布目录
-                        CopyHelper.DirectoryCopy(deployFolder, level2Folder, true);
+                        CopyHelper.ProcessXcopy(deployFolder, level2Folder);
 
                         Log($"copy files success from [{deployFolder}] to [{level2Folder}]");
                         return String.Empty;
@@ -180,7 +181,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     {
                         //只需要一级 就是程序所在目录
                         //复制文件到发布目录
-                        CopyHelper.DirectoryCopy(deployFolder, firstDeployFolder, true);
+                        CopyHelper.ProcessXcopy(deployFolder, firstDeployFolder);
 
                         Log($"copy files success from [{deployFolder}] to [{firstDeployFolder}]");
                         return String.Empty;
@@ -215,7 +216,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     }
 
                     //复制文件到发布目录
-                    CopyHelper.DirectoryCopy(deployFolder, level2Folder, true);
+                    CopyHelper.ProcessXcopy(deployFolder, level2Folder);
 
                     Log($"copy files success from [{deployFolder}] to [{level2Folder}]");
                     return String.Empty;
@@ -260,7 +261,13 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     NoBackup = !Setting.NeedBackUp
                 };
 
-                if (_isNoStopWebSite)
+                if (_useOfflineHtm)
+                {
+                    args.NoStop = true;
+                    args.NoStart = true;
+                    args.UseOfflineHtm = true;
+                }
+                else if (_isNoStopWebSite)
                 {
                     args.NoStop = true;
                     args.NoStart = true;
@@ -379,6 +386,13 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
             {
                 _isIncrement = true;
             }
+
+            var useOfflineHtm = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("useOfflineHtm"));
+            if (useOfflineHtm != null && !string.IsNullOrEmpty(useOfflineHtm.TextValue) && useOfflineHtm.TextValue.ToLower().Equals("true"))
+            {
+                _useOfflineHtm = true;
+            }
+            
 
             var isNoStopWebSite = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("isNoStopWebSite"));
             if (isNoStopWebSite != null && !string.IsNullOrEmpty(isNoStopWebSite.TextValue) && isNoStopWebSite.TextValue.ToLower().Equals("true"))

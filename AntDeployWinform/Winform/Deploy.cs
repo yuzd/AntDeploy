@@ -576,6 +576,7 @@ namespace AntDeployWinform.Winform
             }
 
             this.checkBox_iis_restart_site.Checked = PluginConfig.IISEnableNotStopSiteDeploy;
+            this.checkBox_iis_use_offlinehtm.Checked = PluginConfig.IISEnableUseOfflineHtm;
             this.checkBox_Increment_iis.Checked = PluginConfig.IISEnableIncrement;
             this.checkBox_Increment_docker.Checked = PluginConfig.DockerEnableIncrement;
             this.checkBox_select_deploy_docker.Checked = PluginConfig.DockerServiceEnableSelectDeploy;
@@ -1659,10 +1660,15 @@ namespace AntDeployWinform.Winform
 
 
                 this.nlog_iis.Info($"-----------------Start publish[Ver:{Vsix.VERSION}]-----------------");
-                if (PluginConfig.IISEnableNotStopSiteDeploy)
+                if (PluginConfig.IISEnableUseOfflineHtm)
+                {
+                    nlog_iis.Info("Do not stop webSite during deploy use app_offline.htm!");
+                }
+                else if (PluginConfig.IISEnableNotStopSiteDeploy)
                 {
                     nlog_iis.Info("Do not stop webSite during deploy!");
                 }
+                
                 PrintCommonLog(this.nlog_iis);
                 Enable(false); //第一台开始编译
                 GitClient gitModel = null;
@@ -1965,6 +1971,16 @@ namespace AntDeployWinform.Winform
                                 failServerList.Add(server);
                                 continue;
                             }
+                            if (this.PluginConfig.IISEnableUseOfflineHtm)
+                            {
+                                //网站还不存在不能选择不关闭站点
+                                this.nlog_iis.Error($"Website Is Not Exist In Remote IIS,Can not use [Use app_offline.htm]");
+                                UploadError(this.tabPage_progress, server.Host);
+                                allSuccess = false;
+                                failCount++;
+                                failServerList.Add(server);
+                                continue;
+                            }
 
                             this.BeginInvokeLambda(() =>
                             {
@@ -2064,6 +2080,7 @@ namespace AntDeployWinform.Winform
                         httpRequestClient.SetFieldValue("Token", server.Token);
                         httpRequestClient.SetFieldValue("remark", confirmResult.Item2);
                         httpRequestClient.SetFieldValue("isNoStopWebSite", PluginConfig.IISEnableNotStopSiteDeploy ? "true" : "");
+                        httpRequestClient.SetFieldValue("useOfflineHtm", PluginConfig.IISEnableUseOfflineHtm ? "true" : "");
                         httpRequestClient.SetFieldValue("mac", CodingHelper.GetMacAddress());
                         httpRequestClient.SetFieldValue("pc", System.Environment.MachineName);
                         httpRequestClient.SetFieldValue("localIp", CodingHelper.GetLocalIPAddress());
@@ -2463,6 +2480,7 @@ namespace AntDeployWinform.Winform
                             httpRequestClient.SetFieldValue("webSiteName", DeployConfig.IIsConfig.WebSiteName);
                             httpRequestClient.SetFieldValue("deployFolderName", dateTimeFolderName);
                             httpRequestClient.SetFieldValue("isNoStopWebSite", PluginConfig.IISEnableNotStopSiteDeploy ? "true" : "");
+                            httpRequestClient.SetFieldValue("useOfflineHtm", PluginConfig.IISEnableUseOfflineHtm ? "true" : "");
                             httpRequestClient.SetFieldValue("Token", server.Token);
                             httpRequestClient.SetFieldValue("backUpIgnore", (backUpIgnoreList != null && backUpIgnoreList.Any()) ? string.Join("@_@", backUpIgnoreList) : "");
                             httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream", zipBytes);
@@ -3025,6 +3043,7 @@ namespace AntDeployWinform.Winform
                 }
 
                 this.checkBox_Increment_iis.Enabled = flag;
+                this.checkBox_iis_use_offlinehtm.Enabled = flag;
                 this.txt_iis_web_site_name.Enabled = flag;
                 this.checkBox_iis_restart_site.Enabled = flag;
                 this.combo_iis_env.Enabled = flag;
@@ -3302,7 +3321,10 @@ namespace AntDeployWinform.Winform
         {
             PluginConfig.IISEnableSelectDeploy = checkBox_select_deploy_iis.Checked;
         }
-
+        private void checkBox_iis_use_offlinehtm_Click(object sender, EventArgs e)
+        {
+            PluginConfig.IISEnableUseOfflineHtm = checkBox_iis_use_offlinehtm.Checked;
+        }
         private void checkBox_Increment_docker_CheckedChanged(object sender, EventArgs e)
         {
             PluginConfig.DockerEnableIncrement = checkBox_Increment_docker.Checked;

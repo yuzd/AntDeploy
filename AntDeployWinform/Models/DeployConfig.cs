@@ -23,6 +23,7 @@ namespace AntDeployWinform.Models
         public bool IISEnableIncrement { get; set; }
         public bool IISEnableSelectDeploy { get; set; }
         public bool IISEnableNotStopSiteDeploy { get; set; }
+        public bool IISEnableUseOfflineHtm { get; set; }
         public bool WindowsServiceEnableIncrement { get; set; }
         public bool WindowsServiceEnableSelectDeploy { get; set; }
 

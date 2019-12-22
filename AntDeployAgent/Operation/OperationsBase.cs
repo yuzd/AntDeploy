@@ -62,7 +62,7 @@ namespace AntDeployAgentWindows.Operation
         public virtual void Restore()
         {
             logger("Start to Restore");
-            CopyHelper.DirectoryCopy(this.args.RestorePath, this.args.AppFolder, true);
+            CopyHelper.ProcessXcopy(this.args.RestorePath, this.args.AppFolder);
             logger("Success Restore from folder:[" + this.args.RestorePath + "] to folder:[" + this.args.AppFolder + "]");
         }
 
@@ -74,7 +74,8 @@ namespace AntDeployAgentWindows.Operation
         public virtual void Deploy()
         {
             logger("Start to Deploy");
-            CopyHelper.DirectoryCopy(this.args.DeployFolder, this.args.AppFolder, true);
+            CopyHelper.ProcessXcopy(this.args.DeployFolder, this.args.AppFolder);
+            //CopyHelper.DirectoryCopy(this.args.DeployFolder, this.args.AppFolder, true);
             logger("Success Deploy from folder:[" + this.args.DeployFolder + "] to folder [" + this.args.AppFolder + "]");
         }
 

@@ -11,7 +11,63 @@ namespace AntDeployAgentWindows.Util
 {
     public static class IISHelper
     {
-        
+
+        /// <summary>
+        /// 创建App_offline.htm
+        /// </summary>
+        /// <param name="path"></param>
+        public static string CreateAppOffineHtm(string path)
+        {
+            try
+            {
+
+                var content = @"
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>网站维护中(Website under maintenance)</title>
+</head>
+<body>
+    <div style='margin-top:200px;text-align:center'>
+        <h3>正在维护中…(under maintenance...)</h3>
+        <div>系统正在维护中，请稍后访问(System is under maintenance, please visit later!)</div>
+    </div>
+</body>
+</html>
+         ";
+
+                File.WriteAllText(Path.Combine(path, "app_offline.htm"), content);
+                return string.Empty;
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+        }
+
+        /// <summary>
+        /// 删除App_offline.htm
+        /// </summary>
+        /// <param name="path"></param>
+
+        public static string DeleteAppOfflineHtm(string path)
+        {
+            try
+            {
+                var file = Path.Combine(path, "app_offline.htm");
+                if (!File.Exists(file)) return string.Empty;
+                File.Delete(Path.Combine(path, "app_offline.htm"));
+                return string.Empty;
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+          
+        }
+
+
 
         public static int GetIISVersion()
         {

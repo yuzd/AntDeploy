@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
 namespace AntDeployAgentWindows.Util
@@ -47,6 +49,45 @@ namespace AntDeployAgentWindows.Util
                 }
             }
         }
+
+        /// <summary>
+        /// 利用xcopy复制源文件夹到目标文件夹，覆盖
+        /// 选用/S时对源目录下及其子目录下的所有文件进行COPY 除非指定/E参数，否则/S不会拷贝空目录
+        /// /q 禁止显示“xcopy”的消息。/y 禁止提示确认要覆盖已存在的目标文件。
+        /// /I 如果“Source”是一个目录或包含通配符，而“Destination”不存在，“xcopy”会假定“destination”指定目录名并创建一个新目录。然后，“xcopy”会将所有指定文件复制到新目录中。默认情况下，“xcopy”将提示您指定“Destination”是文件还是目录
+        /// </summary>
+        /// <param name="SolutionDirectory"></param>
+        /// <param name="TargetDirectory"></param>
+        /// <returns></returns>
+        public static void ProcessXcopy(string SolutionDirectory, string TargetDirectory)
+        {
+
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.CreateNoWindow = false;
+            startInfo.UseShellExecute = false;
+            //Give the name as Xcopy
+            startInfo.FileName = "xcopy";
+            //make the window Hidden
+            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            //Send the Source and destination as Arguments to the pro
+            //   RedirectStandardOutput = true,
+            startInfo.RedirectStandardOutput = true;
+
+            startInfo.Arguments = "\"" + SolutionDirectory + "\"" + " " + "\"" + TargetDirectory + "\"" + @" /s /e /Q /Y /I";
+            // Start the process with the info we specified.
+            // Call WaitForExit and then the using statement will close.
+            using (Process exeProcess = Process.Start(startInfo))
+            {
+                // ReSharper disable once PossibleNullReferenceException
+                exeProcess.WaitForExit();
+                if (exeProcess.ExitCode != 0)
+                {
+                    var output = exeProcess.StandardOutput.ReadToEnd();
+                    throw new IOException(output);
+                }
+            }
+        }
+
 
         /// <summary>
         /// copies source directory to the destionation directory

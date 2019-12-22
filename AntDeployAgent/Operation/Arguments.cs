@@ -23,6 +23,7 @@ namespace AntDeployAgentWindows.Operation
         public bool NoBackup { get;  set; }
         public bool NoStop { get;  set; }
         public bool NoStart { get;  set; }
+        public bool UseOfflineHtm { get;  set; }
         public List<string> BackUpIgnoreList { get;  set; }
       
 
