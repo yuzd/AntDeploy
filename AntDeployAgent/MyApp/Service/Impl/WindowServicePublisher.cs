@@ -114,7 +114,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                   
 
                     //复制文件到发布目录
-                    CopyHelper.ProcessXcopy(deployFolder, firstDeployFolder);
+                    CopyHelper.ProcessXcopy(deployFolder, firstDeployFolder, Log);
 
                     Log($"copy files success from [{deployFolder}] to [{firstDeployFolder}]");
 

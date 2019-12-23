@@ -58,8 +58,9 @@ namespace AntDeployAgentWindows.Util
         /// </summary>
         /// <param name="SolutionDirectory"></param>
         /// <param name="TargetDirectory"></param>
+        /// <param name="logger"></param>
         /// <returns></returns>
-        public static void ProcessXcopy(string SolutionDirectory, string TargetDirectory)
+        public static void ProcessXcopy(string SolutionDirectory, string TargetDirectory,Action<string> logger = null)
         {
 
             ProcessStartInfo startInfo = new ProcessStartInfo();
@@ -72,17 +73,33 @@ namespace AntDeployAgentWindows.Util
             //Send the Source and destination as Arguments to the pro
             //   RedirectStandardOutput = true,
             startInfo.RedirectStandardOutput = true;
+            startInfo.Verb = "runas";
 
             startInfo.Arguments = "\"" + SolutionDirectory + "\"" + " " + "\"" + TargetDirectory + "\"" + @" /s /e /Q /Y /I";
+            logger?.Invoke("xcopy " + startInfo.Arguments);
             // Start the process with the info we specified.
             // Call WaitForExit and then the using statement will close.
             using (Process exeProcess = Process.Start(startInfo))
             {
                 // ReSharper disable once PossibleNullReferenceException
                 exeProcess.WaitForExit();
+                var output = exeProcess.StandardOutput.ReadToEnd();
+                if (!string.IsNullOrEmpty(output))
+                {
+                    var outputArr = output.Split(new string[] {"\r\n"}, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var outPut in outputArr)
+                    {
+                        logger?.Invoke("【Xcopy】"+outPut);
+                    }
+                }
+                else
+                {
+                    output = "return empty info.";
+                    logger?.Invoke("【Xcopy】" + output);
+                }
                 if (exeProcess.ExitCode != 0)
                 {
-                    var output = exeProcess.StandardOutput.ReadToEnd();
+                    logger?.Invoke("【Error】"+output);
                     throw new IOException(output);
                 }
             }

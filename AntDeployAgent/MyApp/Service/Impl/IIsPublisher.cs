@@ -172,7 +172,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                         }
 
                         //复制文件到发布目录
-                        CopyHelper.ProcessXcopy(deployFolder, level2Folder);
+                        CopyHelper.ProcessXcopy(deployFolder, level2Folder, Log);
 
                         Log($"copy files success from [{deployFolder}] to [{level2Folder}]");
                         return String.Empty;
@@ -181,7 +181,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     {
                         //只需要一级 就是程序所在目录
                         //复制文件到发布目录
-                        CopyHelper.ProcessXcopy(deployFolder, firstDeployFolder);
+                        CopyHelper.ProcessXcopy(deployFolder, firstDeployFolder, Log);
 
                         Log($"copy files success from [{deployFolder}] to [{firstDeployFolder}]");
                         return String.Empty;
@@ -216,7 +216,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     }
 
                     //复制文件到发布目录
-                    CopyHelper.ProcessXcopy(deployFolder, level2Folder);
+                    CopyHelper.ProcessXcopy(deployFolder, level2Folder, Log);
 
                     Log($"copy files success from [{deployFolder}] to [{level2Folder}]");
                     return String.Empty;
