@@ -1,12 +1,16 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+#if NETSTANDARD
+using System.Configuration;
+#endif
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using TinyFox;
 
 namespace AntDeployAgentService
 {
@@ -34,6 +38,10 @@ namespace AntDeployAgentService
             var pathToContentRoot = Path.GetDirectoryName(pathToExe);
             Directory.SetCurrentDirectory(pathToContentRoot);
 
+#if NETSTANDARD
+            TinyFoxService.WebRoot = Path.Combine(pathToContentRoot,"wwwroot");
+            ConfigurationManager.Initialize(pathToExe);
+#endif
             var isService = !(Debugger.IsAttached || args.Contains("--console"));
 
             if (HaveVisibleConsole()) isService = false;
