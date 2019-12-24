@@ -15,6 +15,7 @@ namespace AntDeployAgentWindows
     /// </summary>
     public class Startup
     {
+        public static string RootPath = string.Empty;
 
         /// <summary>
         /// Microsoft.Owin中间件处理管线的入口函数
@@ -34,7 +35,12 @@ namespace AntDeployAgentWindows
             }
             else
             {
+#if NETSTANDARD
+                Setting.InitWebRoot(RootPath);
+#else
                 Setting.InitWebRoot(AppDomain.CurrentDomain.BaseDirectory);
+#endif
+
             }
 
         }

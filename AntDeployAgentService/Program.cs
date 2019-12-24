@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using AntDeployAgentWindows;
 using Microsoft.Extensions.Logging;
 using TinyFox;
 
@@ -39,6 +40,7 @@ namespace AntDeployAgentService
             Directory.SetCurrentDirectory(pathToContentRoot);
 
 #if NETSTANDARD
+            Startup.RootPath = pathToContentRoot;
             TinyFoxService.WebRoot = Path.Combine(pathToContentRoot,"wwwroot");
             ConfigurationManager.Initialize(pathToExe);
 #endif

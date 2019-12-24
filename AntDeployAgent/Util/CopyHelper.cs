@@ -62,49 +62,125 @@ namespace AntDeployAgentWindows.Util
         /// <returns></returns>
         public static void ProcessXcopy(string SolutionDirectory, string TargetDirectory,Action<string> logger = null)
         {
+            RunCommand($" xcopy " + "\"" + SolutionDirectory + "\"" + " " + "\"" + TargetDirectory + "\"" +
+                       @" /s /e /Q /Y /I",null, logger);
+            return;
 
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.CreateNoWindow = false;
-            startInfo.UseShellExecute = false;
-            //Give the name as Xcopy
-            startInfo.FileName = "xcopy";
-            //make the window Hidden
-            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            //Send the Source and destination as Arguments to the pro
-            //   RedirectStandardOutput = true,
-            startInfo.RedirectStandardOutput = true;
-            startInfo.Verb = "runas";
+            //ProcessStartInfo startInfo = new ProcessStartInfo();
+            //startInfo.CreateNoWindow = false;
+            //startInfo.UseShellExecute = false;
+            ////Give the name as Xcopy
+            //startInfo.FileName = "xcopy";
+            ////make the window Hidden
+            //startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            ////Send the Source and destination as Arguments to the pro
+            ////   RedirectStandardOutput = true,
+            //startInfo.RedirectStandardOutput = true;
+            //startInfo.Verb = "runas";
 
-            startInfo.Arguments = "\"" + SolutionDirectory + "\"" + " " + "\"" + TargetDirectory + "\"" + @" /s /e /Q /Y /I";
-            logger?.Invoke("xcopy " + startInfo.Arguments);
-            // Start the process with the info we specified.
-            // Call WaitForExit and then the using statement will close.
-            using (Process exeProcess = Process.Start(startInfo))
+            //startInfo.Arguments = "\"" + SolutionDirectory + "\"" + " " + "\"" + TargetDirectory + "\"" + @" /s /e /Q /Y /I";
+            //logger?.Invoke("xcopy " + startInfo.Arguments);
+            //// Start the process with the info we specified.
+            //// Call WaitForExit and then the using statement will close.
+            //using (Process exeProcess = Process.Start(startInfo))
+            //{
+            //    // ReSharper disable once PossibleNullReferenceException
+            //    exeProcess.WaitForExit();
+            //    var output = exeProcess.StandardOutput.ReadToEnd();
+            //    if (!string.IsNullOrEmpty(output))
+            //    {
+            //        var outputArr = output.Split(new string[] {"\r\n"}, StringSplitOptions.RemoveEmptyEntries);
+            //        foreach (var outPut in outputArr)
+            //        {
+            //            logger?.Invoke("【Xcopy】"+outPut);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        output = "return empty info.";
+            //        logger?.Invoke("【Xcopy】" + output);
+            //    }
+            //    if (exeProcess.ExitCode != 0)
+            //    {
+            //        logger?.Invoke("【Error】"+output);
+            //        throw new IOException(output);
+            //    }
+            //}
+        }
+
+        /// <summary>
+        /// 运行bash命令
+        /// </summary>
+        /// <param name="commandToRun"></param>
+        /// <param name="workingDirectory"></param>
+        /// <param name="logger"></param>
+        public static void RunCommand(string commandToRun, string workingDirectory = null, Action<string> logger = null)
+        {
+            try
             {
-                // ReSharper disable once PossibleNullReferenceException
-                exeProcess.WaitForExit();
-                var output = exeProcess.StandardOutput.ReadToEnd();
+                if (string.IsNullOrEmpty(workingDirectory))
+                {
+                    workingDirectory = Directory.GetDirectoryRoot(Directory.GetCurrentDirectory());
+                }
+
+                var processStartInfo = new ProcessStartInfo()
+                {
+                    FileName = (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "cmd" : "bash"),
+                    RedirectStandardOutput = true,
+                    RedirectStandardInput = true,
+                    UseShellExecute = false,
+                    WorkingDirectory = workingDirectory
+                };
+
+                var process = Process.Start(processStartInfo);
+
+                if (process == null)
+                {
+                    return;
+                }
+
+                process.StandardInput.WriteLine($"{commandToRun} & exit");
+                process.WaitForExit();
+
+                var output = process.StandardOutput.ReadToEnd();
+
+
+                var prefix = "";
+                var isSuccess = process.ExitCode == 0;
+                if (!isSuccess)
+                {
+                    prefix = "【Error】";
+                }
+              
                 if (!string.IsNullOrEmpty(output))
                 {
-                    var outputArr = output.Split(new string[] {"\r\n"}, StringSplitOptions.RemoveEmptyEntries);
+                    var outputArr = output.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                     foreach (var outPut in outputArr)
                     {
-                        logger?.Invoke("【Xcopy】"+outPut);
+                        logger?.Invoke(prefix + "【Command】 " + outPut);
                     }
                 }
                 else
                 {
                     output = "return empty info.";
-                    logger?.Invoke("【Xcopy】" + output);
+                    logger?.Invoke("【Command】 " + output);
                 }
-                if (exeProcess.ExitCode != 0)
+
+                try
                 {
-                    logger?.Invoke("【Error】"+output);
-                    throw new IOException(output);
+                    process.Kill();
+                }
+                catch (Exception)
+                {
+                    //ignore
                 }
             }
+            catch (Exception ex)
+            {
+                logger?.Invoke("【Error】【Command】" + ex.Message);
+                throw ex;
+            }
         }
-
 
         /// <summary>
         /// copies source directory to the destionation directory
