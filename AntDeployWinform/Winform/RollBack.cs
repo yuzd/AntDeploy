@@ -37,7 +37,18 @@ namespace AntDeployWinform.Winform
                     var remark = li.Item2;
                     if (string.IsNullOrEmpty(version)) continue;
                     ListViewItem lv = new ListViewItem();
+                  
                     lv.Text = version;
+                    try
+                    {
+                        var date = DateTime.ParseExact(version, "yyyyMMddHHmmss", null);
+                        var version2 = date.ToString("yyyy/MM/dd HH:mm:ss");
+                        lv.SubItems.Add(version2);
+                    }
+                    catch (Exception)
+                    {
+                    }
+
                     if (string.IsNullOrEmpty(remark))
                     {
                         lv.SubItems.Add(remark);
@@ -137,7 +148,19 @@ namespace AntDeployWinform.Winform
 
                     if(string.IsNullOrEmpty(version)) continue;
                     ListViewItem lv = new ListViewItem();
+                   
+                    
                     lv.Text = version;
+                    try
+                    {
+                        var date = DateTime.ParseExact(version, "yyyyMMddHHmmss", null);
+                        var version2 = date.ToString("yyyy/MM/dd HH:mm:ss");
+                        lv.SubItems.Add(version2);
+                    }
+                    catch (Exception)
+                    {
+                    }
+                 
                     lv.SubItems.Add(remark);
                     lv.SubItems.Add(pc);
                     lv.SubItems.Add(mac);

@@ -117,193 +117,208 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="b_rollback_Rollback.Text" xml:space="preserve">
-    <value>Do RollBack</value>
-  </data>
-  <data name="&gt;&gt;ip.Name" xml:space="preserve">
-    <value>ip</value>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="listbox_rollback_list.ItemHeight" type="System.Int32, mscorlib">
+    <value>12</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="b_rollback_Rollback.Location" type="System.Drawing.Point, System.Drawing">
-    <value>417, 254</value>
+  <data name="listbox_rollback_list.Location" type="System.Drawing.Point, System.Drawing">
+    <value>1, 1</value>
   </data>
-  <data name="&gt;&gt;listView_rollback_version.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ListView, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="listbox_rollback_list.Size" type="System.Drawing.Size, System.Drawing">
+    <value>247, 244</value>
   </data>
-  <data name="&gt;&gt;b_rollback_Rollback.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="listbox_rollback_list.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
-  <data name="&gt;&gt;version.Name" xml:space="preserve">
-    <value>version</value>
+  <data name="&gt;&gt;listbox_rollback_list.Name" xml:space="preserve">
+    <value>listbox_rollback_list</value>
   </data>
-  <data name="label_server_name.Size" type="System.Drawing.Size, System.Drawing">
-    <value>389, 46</value>
+  <data name="&gt;&gt;listbox_rollback_list.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ListBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;b_rollback_Rollback.Type" xml:space="preserve">
-    <value>AltoControls.AltoButton, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;listbox_rollback_list.Parent" xml:space="preserve">
+    <value>$this</value>
   </data>
-  <data name="&gt;&gt;remark.Name" xml:space="preserve">
-    <value>remark</value>
+  <data name="&gt;&gt;listbox_rollback_list.ZOrder" xml:space="preserve">
+    <value>3</value>
   </data>
-  <data name="&gt;&gt;mac.Name" xml:space="preserve">
-    <value>mac</value>
+  <data name="b_rollback_Rollback.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Comic Sans MS, 10pt, style=Bold</value>
   </data>
-  <data name="&gt;&gt;$this.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="b_rollback_Rollback.Location" type="System.Drawing.Point, System.Drawing">
+    <value>417, 254</value>
   </data>
-  <data name="label_server_name.Font" type="System.Drawing.Font, System.Drawing">
-    <value>宋体, 8pt</value>
+  <data name="b_rollback_Rollback.Size" type="System.Drawing.Size, System.Drawing">
+    <value>81, 43</value>
   </data>
-  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>499, 303</value>
+  <data name="b_rollback_Rollback.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
   </data>
-  <data name="&gt;&gt;$this.Name" xml:space="preserve">
-    <value>RollBack</value>
+  <data name="b_rollback_Rollback.Text" xml:space="preserve">
+    <value>Do RollBack</value>
   </data>
   <data name="&gt;&gt;b_rollback_Rollback.Name" xml:space="preserve">
     <value>b_rollback_Rollback</value>
   </data>
-  <data name="label_server_name.Text" xml:space="preserve">
-    <value>Server:{}</value>
+  <data name="&gt;&gt;b_rollback_Rollback.Type" xml:space="preserve">
+    <value>AltoControls.AltoButton, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;listView_rollback_version.Parent" xml:space="preserve">
+  <data name="&gt;&gt;b_rollback_Rollback.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
   <data name="&gt;&gt;b_rollback_Rollback.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="&gt;&gt;mac.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;pc.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="remark.Width" type="System.Int32, mscorlib">
-    <value>160</value>
-  </data>
-  <data name="listbox_rollback_list.ItemHeight" type="System.Int32, mscorlib">
-    <value>12</value>
-  </data>
-  <data name="&gt;&gt;label_server_name.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="listbox_rollback_list.Location" type="System.Drawing.Point, System.Drawing">
-    <value>1, 1</value>
-  </data>
-  <data name="&gt;&gt;version.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label_server_name.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;listbox_rollback_list.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ListBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
-    <value>CenterParent</value>
-  </data>
-  <data name="ip.Width" type="System.Int32, mscorlib">
-    <value>80</value>
-  </data>
-  <data name="version.Text" xml:space="preserve">
-    <value>version</value>
-  </data>
   <data name="listView_rollback_version.Location" type="System.Drawing.Point, System.Drawing">
     <value>2, 1</value>
+  </data>
+  <data name="listView_rollback_version.Size" type="System.Drawing.Size, System.Drawing">
+    <value>497, 247</value>
+  </data>
+  <data name="listView_rollback_version.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
   </data>
   <data name="listView_rollback_version.Visible" type="System.Boolean, mscorlib">
     <value>False</value>
   </data>
-  <data name="&gt;&gt;pc.Name" xml:space="preserve">
-    <value>pc</value>
+  <data name="&gt;&gt;listView_rollback_version.Name" xml:space="preserve">
+    <value>listView_rollback_version</value>
   </data>
-  <data name="b_rollback_Rollback.Size" type="System.Drawing.Size, System.Drawing">
-    <value>81, 43</value>
+  <data name="&gt;&gt;listView_rollback_version.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ListView, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="version.Width" type="System.Int32, mscorlib">
-    <value>120</value>
-  </data>
-  <data name="ip.Text" xml:space="preserve">
-    <value>ip</value>
-  </data>
-  <data name="&gt;&gt;listbox_rollback_list.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="pc.Width" type="System.Int32, mscorlib">
-    <value>80</value>
-  </data>
-  <data name="&gt;&gt;listbox_rollback_list.Parent" xml:space="preserve">
+  <data name="&gt;&gt;listView_rollback_version.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
   <data name="&gt;&gt;listView_rollback_version.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>96, 96</value>
+  <data name="version.Text" xml:space="preserve">
+    <value>version</value>
   </data>
-  <data name="listView_rollback_version.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
+  <data name="version.Width" type="System.Int32, mscorlib">
+    <value>120</value>
   </data>
-  <data name="&gt;&gt;listView_rollback_version.Name" xml:space="preserve">
-    <value>listView_rollback_version</value>
+  <data name="date.Text" xml:space="preserve">
+    <value>Time</value>
   </data>
-  <data name="b_rollback_Rollback.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="date.TextAlign" type="System.Windows.Forms.HorizontalAlignment, System.Windows.Forms">
+    <value>Center</value>
   </data>
-  <data name="listbox_rollback_list.Size" type="System.Drawing.Size, System.Drawing">
-    <value>247, 244</value>
+  <data name="date.Width" type="System.Int32, mscorlib">
+    <value>140</value>
+  </data>
+  <data name="remark.Text" xml:space="preserve">
+    <value>remark</value>
+  </data>
+  <data name="remark.Width" type="System.Int32, mscorlib">
+    <value>160</value>
+  </data>
+  <data name="pc.Text" xml:space="preserve">
+    <value>pc</value>
+  </data>
+  <data name="pc.Width" type="System.Int32, mscorlib">
+    <value>80</value>
   </data>
   <data name="mac.Text" xml:space="preserve">
     <value>mac</value>
   </data>
+  <data name="mac.Width" type="System.Int32, mscorlib">
+    <value>80</value>
+  </data>
+  <data name="ip.Text" xml:space="preserve">
+    <value>ip</value>
+  </data>
+  <data name="ip.Width" type="System.Int32, mscorlib">
+    <value>80</value>
+  </data>
+  <data name="label_server_name.Font" type="System.Drawing.Font, System.Drawing">
+    <value>宋体, 8pt</value>
+  </data>
   <data name="label_server_name.Location" type="System.Drawing.Point, System.Drawing">
     <value>1, 251</value>
+  </data>
+  <data name="label_server_name.Size" type="System.Drawing.Size, System.Drawing">
+    <value>389, 46</value>
+  </data>
+  <data name="label_server_name.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="label_server_name.Text" xml:space="preserve">
+    <value>Server:{}</value>
   </data>
   <data name="&gt;&gt;label_server_name.Name" xml:space="preserve">
     <value>label_server_name</value>
   </data>
-  <data name="listView_rollback_version.Size" type="System.Drawing.Size, System.Drawing">
-    <value>497, 247</value>
+  <data name="&gt;&gt;label_server_name.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="remark.Text" xml:space="preserve">
+  <data name="&gt;&gt;label_server_name.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;label_server_name.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>zh-CN</value>
+  </metadata>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>96, 96</value>
+  </data>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>499, 303</value>
+  </data>
+  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
+    <value>CenterParent</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Select RollBack Version</value>
+  </data>
+  <data name="&gt;&gt;version.Name" xml:space="preserve">
+    <value>version</value>
+  </data>
+  <data name="&gt;&gt;version.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;date.Name" xml:space="preserve">
+    <value>date</value>
+  </data>
+  <data name="&gt;&gt;date.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;remark.Name" xml:space="preserve">
     <value>remark</value>
   </data>
   <data name="&gt;&gt;remark.Type" xml:space="preserve">
     <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;pc.Name" xml:space="preserve">
+    <value>pc</value>
+  </data>
+  <data name="&gt;&gt;pc.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;mac.Name" xml:space="preserve">
+    <value>mac</value>
+  </data>
+  <data name="&gt;&gt;mac.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;ip.Name" xml:space="preserve">
+    <value>ip</value>
+  </data>
   <data name="&gt;&gt;ip.Type" xml:space="preserve">
     <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;listbox_rollback_list.Name" xml:space="preserve">
-    <value>listbox_rollback_list</value>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>RollBack</value>
   </data>
-  <data name="mac.Width" type="System.Int32, mscorlib">
-    <value>80</value>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="pc.Text" xml:space="preserve">
-    <value>pc</value>
-  </data>
-  <data name="b_rollback_Rollback.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Comic Sans MS, 10pt, style=Bold</value>
-  </data>
-  <data name="label_server_name.TabIndex" type="System.Int32, mscorlib">
-    <value>4</value>
-  </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>Select RollBack Version</value>
-  </data>
-  <data name="&gt;&gt;label_server_name.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>zh-CN</value>
-  </metadata>
 </root>

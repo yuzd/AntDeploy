@@ -33,6 +33,7 @@
             this.b_rollback_Rollback = new AltoControls.AltoButton();
             this.listView_rollback_version = new System.Windows.Forms.ListView();
             this.version = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.date = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.remark = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.pc = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.mac = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -42,17 +43,17 @@
             // 
             // listbox_rollback_list
             // 
-            resources.ApplyResources(this.listbox_rollback_list, "listbox_rollback_list");
             this.listbox_rollback_list.FormattingEnabled = true;
+            resources.ApplyResources(this.listbox_rollback_list, "listbox_rollback_list");
             this.listbox_rollback_list.Name = "listbox_rollback_list";
             // 
             // b_rollback_Rollback
             // 
-            resources.ApplyResources(this.b_rollback_Rollback, "b_rollback_Rollback");
             this.b_rollback_Rollback.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
             this.b_rollback_Rollback.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
             this.b_rollback_Rollback.BackColor = System.Drawing.Color.Transparent;
             this.b_rollback_Rollback.DialogResult = System.Windows.Forms.DialogResult.OK;
+            resources.ApplyResources(this.b_rollback_Rollback, "b_rollback_Rollback");
             this.b_rollback_Rollback.ForeColor = System.Drawing.Color.Black;
             this.b_rollback_Rollback.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(188)))), ((int)(((byte)(210)))));
             this.b_rollback_Rollback.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(188)))), ((int)(((byte)(210)))));
@@ -65,16 +66,17 @@
             // 
             // listView_rollback_version
             // 
-            resources.ApplyResources(this.listView_rollback_version, "listView_rollback_version");
             this.listView_rollback_version.CheckBoxes = true;
             this.listView_rollback_version.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.version,
+            this.date,
             this.remark,
             this.pc,
             this.mac,
             this.ip});
             this.listView_rollback_version.Cursor = System.Windows.Forms.Cursors.Hand;
             this.listView_rollback_version.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            resources.ApplyResources(this.listView_rollback_version, "listView_rollback_version");
             this.listView_rollback_version.MultiSelect = false;
             this.listView_rollback_version.Name = "listView_rollback_version";
             this.listView_rollback_version.ShowItemToolTips = true;
@@ -85,6 +87,10 @@
             // version
             // 
             resources.ApplyResources(this.version, "version");
+            // 
+            // date
+            // 
+            resources.ApplyResources(this.date, "date");
             // 
             // remark
             // 
@@ -138,5 +144,6 @@
         private System.Windows.Forms.ColumnHeader pc;
         private System.Windows.Forms.ColumnHeader mac;
         private System.Windows.Forms.ColumnHeader ip;
+        private System.Windows.Forms.ColumnHeader date;
     }
 }

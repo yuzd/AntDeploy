@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using AntDeployAgentWindows;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.EventLog;
 using TinyFox;
 
 namespace AntDeployAgentService
@@ -33,7 +34,7 @@ namespace AntDeployAgentService
                           Console.WindowHeight > 0;
         }
 
-        private static async Task Main(string[] args)
+        private static  void Main(string[] args)
         {
             var pathToExe = Process.GetCurrentProcess().MainModule.FileName;
             var pathToContentRoot = Path.GetDirectoryName(pathToExe);
@@ -47,24 +48,27 @@ namespace AntDeployAgentService
             var isService = !(Debugger.IsAttached || args.Contains("--console"));
 
             if (HaveVisibleConsole()) isService = false;
-            var builder = new HostBuilder()
+
+           
+            var builder = Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddLogging(configure => configure.AddConsole());
-
                     services.AddHostedService<AntDeployAgentWindowsService>();
                 });
 
             if (isService)
             {
-                await builder.RunAsServiceAsync();
+                 builder.UseWindowsService().Build().Run();
             }
             else
             {
-                Console.WriteLine("Current Version：" + AntDeployAgentWindows.Version.VERSION);
-                await builder.RunConsoleAsync();
+                Console.WriteLine("Current Version：" + AntDeployAgentWindows.Version.VERSION); 
+                builder.Build().Run();
             }
         }
+
+
     }
 
 

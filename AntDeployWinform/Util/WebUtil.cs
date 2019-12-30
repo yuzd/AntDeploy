@@ -2,9 +2,11 @@
 using NLog;
 using System;
 using System.Collections.Specialized;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Configuration;
 using System.Net.Security;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
@@ -68,6 +70,18 @@ namespace AntDeployWinform.Util
         {
             try
             {
+                try
+                {
+                    var conf = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                    var section = conf.GetSection("system.net/settings") as SettingsSection;
+                    section.HttpWebRequest.UseUnsafeHeaderParsing = true;
+                    conf.Save();
+                }
+                catch (Exception e)
+                {
+                }
+             
+
                 //ServicePointManager.Expect100Continue = false;
                 //ServicePointManager.MaxServicePointIdleTime = 2000;
 

@@ -9,24 +9,34 @@ using TinyFox;
 
 namespace AntDeployAgentService
 {
-    public class AntDeployAgentWindowsService : IHostedService, IDisposable
+    public class AntDeployAgentWindowsService : BackgroundService
     {
         private Startup _startup;
-        private ILogger<AntDeployAgentWindowsService> _logger;
+        private readonly ILogger<AntDeployAgentWindowsService> _logger;
 
         public AntDeployAgentWindowsService(ILogger<AntDeployAgentWindowsService> logger)
         {
             _logger = logger;
         }
-        public void Dispose()
+
+        public override Task StartAsync(CancellationToken cancellationToken)
         {
+            return base.StartAsync(cancellationToken);
         }
 
-        public Task StartAsync(CancellationToken cancellationToken)
+        public override Task StopAsync(CancellationToken cancellationToken)
+        {
+            _startup?.Stop();
+            TinyFoxService.Stop();
+            return Task.CompletedTask;
+        }
+
+        protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             try
             {
                 var port = System.Configuration.ConfigurationManager.AppSettings["Port"];
+                TinyFoxService.OwinOnly = true;
                 TinyFoxService.IpAddress = TyeIpAddress.Any;
                 TinyFoxService.Port = string.IsNullOrEmpty(port) ? 8088 : int.Parse(port);
                 _startup = new AntDeployAgentWindows.Startup();
@@ -34,10 +44,10 @@ namespace AntDeployAgentService
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex,"StartError");
+                _logger.LogError(ex, "StartError");
                 try
                 {
-                    File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"startupError.txt"), ex.ToString());
+                    File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "startupError.txt"), ex.ToString());
                 }
                 catch (Exception)
                 {
@@ -47,13 +57,6 @@ namespace AntDeployAgentService
 
             return Task.CompletedTask;
 
-        }
-
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            _startup?.Stop();
-            TinyFoxService.Stop();
-            return Task.CompletedTask;
         }
 
 
