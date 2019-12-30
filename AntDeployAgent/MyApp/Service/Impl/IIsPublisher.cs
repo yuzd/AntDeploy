@@ -53,8 +53,12 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 {
                     return "publish file save fail";
                 }
+#if NETCORE
+                Log("netcore agent version ==>" + AntDeployAgentWindows.Version.VERSION);
+#else
+                Log("netframework agent version ==>" + AntDeployAgentWindows.Version.VERSION);
+#endif
 
-                Log("agent version ==>" + AntDeployAgentWindows.Version.VERSION);
 
                 Log("upload success ==>" + filePath);
                 //解压

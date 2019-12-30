@@ -31,7 +31,11 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     return "rollback folder not found:" + _projectPublishFolder;
                 }
 
-                Log("agent version ==>" + AntDeployAgentWindows.Version.VERSION);
+#if NETCORE
+                Log("netcore agent version ==>" + AntDeployAgentWindows.Version.VERSION);
+#else
+                Log("netframework agent version ==>" + AntDeployAgentWindows.Version.VERSION);
+#endif
                 var deployFolder = Path.Combine(_projectPublishFolder, "publish");
 
                 if (!Directory.Exists(deployFolder))
