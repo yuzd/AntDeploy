@@ -41,7 +41,7 @@ namespace AntDeployWinform.Winform
                     lv.Text = version;
                     try
                     {
-                        var date = DateTime.ParseExact(version, "yyyyMMddHHmmss", null);
+                        var date = DateTime.ParseExact(version.Replace("_",""), "yyyyMMddHHmmss", null);
                         var version2 = date.ToString("yyyy/MM/dd HH:mm:ss");
                         lv.SubItems.Add(version2);
                     }
@@ -153,7 +153,7 @@ namespace AntDeployWinform.Winform
                     lv.Text = version;
                     try
                     {
-                        var date = DateTime.ParseExact(version, "yyyyMMddHHmmss", null);
+                        var date = DateTime.ParseExact(version.Replace("_", ""), "yyyyMMddHHmmss", null);
                         var version2 = date.ToString("yyyy/MM/dd HH:mm:ss");
                         lv.SubItems.Add(version2);
                     }
