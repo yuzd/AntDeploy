@@ -110,7 +110,48 @@ namespace AntDeployCommand.Utils
             return (true,lastMessage,LastEmail,LastTime);
         }
 
-
+        /// <summary>
+        /// 打个标签并提交
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <returns></returns>
+        public bool CreateTagAndPush(string tag)
+        {
+            try
+            {
+                Tag t = _repository.ApplyTag(tag);
+                if (t == null)
+                {
+                    _logger?.Invoke("【Git】Could not create tag :" + tag ,LogLevel.Warning);
+                    return false;
+                }
+                else
+                {
+                    _logger?.Invoke("【Git】Tag has been created successfully :" + tag,LogLevel.Info);
+                }
+                
+                Credentials creds = new UsernamePasswordCredentials()
+                {
+                    Username =  GitLocalConfig.UserName,
+                    Password = GitLocalConfig.Password
+                };
+                
+                CredentialsHandler ccd = (url, usernameFromUrl, types) => creds;
+                PushOptions options = new PushOptions { CredentialsProvider = ccd };
+                string rfspec = "refs/tags/" + tag;
+                
+                Remote remote = _repository.Network.Remotes["origin"];
+                
+                _repository.Network.Push(remote, rfspec, rfspec, options);
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger?.Invoke($"【Git】git create tag fail:{e.Message}", LogLevel.Warning);
+            }
+            return false;
+        }
+        
         public (string,string,string) GetBrandLastCommintInfo()
         {
             var currentPushMessage = string.Empty;

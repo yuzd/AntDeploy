@@ -53,32 +53,35 @@ namespace AntDeployCommand.Operations
         /// <summary>
         /// 提交
         /// </summary>
-        private void CommitIncrmentFileList()
+        public void CommitIncrmentFileList(List<string> fileList = null)
         {
-            var lines = File.ReadAllLines(Arguments.PackageZipPath);
-            if (lines.Length < 1)
+            //拿到gitchange所有的文件列表
+            var lines = fileList ?? File.ReadAllLines(Arguments.PackageZipPath).ToList();
+            if (lines.Count < 1)
             {
                 Log("can not commit,selected fileList count = 0", LogLevel.Error);
                 return;
             }
             //先删除
-            File.Delete(Arguments.PackageZipPath);
-
-            var zipPath = Path.Combine(Arguments.ProjectPath, "package.zip");
-            if (File.Exists(zipPath))
+            if (fileList == null)
             {
-                File.Delete(zipPath);
+                File.Delete(Arguments.PackageZipPath);
+                var zipPath = Path.Combine(Arguments.ProjectPath, "package.zip");
+                if (File.Exists(zipPath))
+                {
+                    File.Delete(zipPath);
+                }
             }
 
             using (var gitModel = new GitClient(Arguments.ProjectPath, Log))
             {
                 if (Arguments.IsSelectedDeploy)
                 {
-                    gitModel.SubmitSelectedChanges(lines.ToList(), Arguments.ProjectPath);
+                    gitModel.SubmitSelectedChanges(lines, Arguments.ProjectPath);
                 }
                 else
                 {
-                    gitModel.SubmitChanges(lines.Length);
+                    gitModel.SubmitChanges(lines.Count);
                 }
             }
         }
@@ -86,25 +89,31 @@ namespace AntDeployCommand.Operations
         /// <summary>
         /// 获取git增量
         /// </summary>
-        private void GetIncrmentFileList()
+        public List<string> GetIncrmentFileList(bool notWrite = false)
         {
+            var result = new List<string>();
             using (var gitModel = new GitClient(Arguments.ProjectPath, Log))
             {
                 if (!gitModel.InitSuccess)
                 {
-                    return;
+                    return result;
                 }
 
                 var fileList = gitModel.GetChanges();
                 if (fileList == null || fileList.Count < 1)
                 {
                     Log("Increment package file count: 0" , LogLevel.Warning);
-                    return;
+                    return result;
                 }
 
                 Log("Increment package file count:" + fileList.Count, LogLevel.Info);
 
-                File.WriteAllLines(Arguments.PackageZipPath, fileList.ToArray(), Encoding.UTF8);
+                if (!notWrite)
+                {
+                    File.WriteAllLines(Arguments.PackageZipPath, fileList.ToArray(), Encoding.UTF8);
+                }
+                
+                return fileList;
             }
         }
 

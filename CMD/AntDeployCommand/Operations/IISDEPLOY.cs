@@ -62,6 +62,7 @@ namespace AntDeployCommand.Operations
 
             httpRequestClient.SetFieldValue("publishType", "iis");
             httpRequestClient.SetFieldValue("isIncrement", (Arguments.IsSelectedDeploy || Arguments.IsIncrementDeploy)?"true":"false");
+            httpRequestClient.SetFieldValue("useOfflineHtm", (Arguments.UseAppOffineHtm)?"true":"false");
             httpRequestClient.SetFieldValue("sdkType", "netcore");
             httpRequestClient.SetFieldValue("port", Arguments.Port);
             httpRequestClient.SetFieldValue("id", Arguments.LoggerId);

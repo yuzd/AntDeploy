@@ -67,6 +67,7 @@ namespace AntDeployCommand.Operations
 
             httpRequestClient.SetFieldValue("publishType", "windowservice");
             httpRequestClient.SetFieldValue("isIncrement", (Arguments.IsSelectedDeploy || Arguments.IsIncrementDeploy) ? "true" : "false");
+            httpRequestClient.SetFieldValue("useOfflineHtm", (Arguments.UseAppOffineHtm)?"true":"false");
             httpRequestClient.SetFieldValue("serviceName", Arguments.ServiceName);
             httpRequestClient.SetFieldValue("sdkType", "netcore");
             httpRequestClient.SetFieldValue("id", Arguments.LoggerId);
