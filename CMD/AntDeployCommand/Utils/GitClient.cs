@@ -297,7 +297,7 @@ namespace AntDeployCommand.Utils
         /// <summary>
         /// 提交所有变动
         /// </summary>
-        public void SubmitChanges(int count)
+        public bool SubmitChanges(int count)
         {
             _logger?.Invoke("commit start",LogLevel.Info);
             try
@@ -309,13 +309,15 @@ namespace AntDeployCommand.Utils
             catch (Exception ex1)
             {
                 _logger?.Invoke("stage err:" + ex1.Message,LogLevel.Warning);
+                return false;
             }
 
-            CommitChanges(DateTime.Now.ToString("yyyyMMddHHmms"));
+            var re = CommitChanges(DateTime.Now.ToString("yyyyMMddHHmms"));
             _logger?.Invoke($"commit success,file count:{count}",LogLevel.Info);
+            return re;
         }
 
-        public void SubmitSelectedChanges(List<string> fileList,string dir)
+        public bool SubmitSelectedChanges(List<string> fileList,string dir)
         {
             _logger?.Invoke("commit start",LogLevel.Info);
             try
@@ -335,10 +337,12 @@ namespace AntDeployCommand.Utils
             catch (Exception ex1)
             {
                 _logger?.Invoke("stage err:" + ex1.Message,LogLevel.Warning);
+                return false;
             }
 
-            CommitChanges(DateTime.Now.ToString("yyyyMMddHHmms"));
+            var re= CommitChanges(DateTime.Now.ToString("yyyyMMddHHmms"));
             _logger?.Invoke($"commit success,file count:{fileList.Count}",LogLevel.Info);
+            return re;
         }
         /// <summary>
         /// 提交被忽略的文件列表
@@ -404,16 +408,18 @@ namespace AntDeployCommand.Utils
         /// 提交
         /// </summary>
         /// <param name="commit"></param>
-        public void CommitChanges(string commit)
+        public bool CommitChanges(string commit)
         {
             try
             {
                 _repository.Commit(commit, new Signature("antdeploy", "antdeploy@email.com", DateTimeOffset.Now),
                     new Signature("antdeploy", "antdeploy@email.com", DateTimeOffset.Now));
+                return true;
             }
             catch (Exception e)
             {
                 _logger?.Invoke("commit err:" + e.Message,LogLevel.Warning);
+                return false;
             }
         }
 

@@ -53,14 +53,14 @@ namespace AntDeployCommand.Operations
         /// <summary>
         /// 提交
         /// </summary>
-        public void CommitIncrmentFileList(List<string> fileList = null)
+        public bool CommitIncrmentFileList(List<string> fileList = null)
         {
             //拿到gitchange所有的文件列表
             var lines = fileList ?? File.ReadAllLines(Arguments.PackageZipPath).ToList();
             if (lines.Count < 1)
             {
                 Log("can not commit,selected fileList count = 0", LogLevel.Error);
-                return;
+                return false;
             }
             //先删除
             if (fileList == null)
@@ -73,17 +73,20 @@ namespace AntDeployCommand.Operations
                 }
             }
 
+            var re = false;
             using (var gitModel = new GitClient(Arguments.ProjectPath, Log))
             {
                 if (Arguments.IsSelectedDeploy)
                 {
-                    gitModel.SubmitSelectedChanges(lines, Arguments.ProjectPath);
+                    re = gitModel.SubmitSelectedChanges(lines, Arguments.ProjectPath);
                 }
                 else
                 {
-                    gitModel.SubmitChanges(lines.Count);
+                    re = gitModel.SubmitChanges(lines.Count);
                 }
             }
+
+            return re;
         }
 
         /// <summary>
