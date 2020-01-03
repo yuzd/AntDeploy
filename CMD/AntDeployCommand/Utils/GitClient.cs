@@ -110,6 +110,71 @@ namespace AntDeployCommand.Utils
             return (true,lastMessage,LastEmail,LastTime);
         }
 
+
+        /// <summary>
+        /// 检测是否2个分支可以merger
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns></returns>
+        public bool CanMerge(string from, string to)
+        {
+            try
+            {
+                var fromCommit = _repository.Lookup<Commit>(from);
+                var toCommit = _repository.Lookup<Commit>(to);
+                if (fromCommit == null)
+                {
+                    _logger?.Invoke($"【Git】git can not merge:{from} not found", LogLevel.Warning);
+                    return false;
+                }
+                if (toCommit == null)
+                {
+                    _logger?.Invoke($"【Git】git can not merge:{to} not found", LogLevel.Warning);
+                    return false;
+                }
+                //没有冲突
+                var result = _repository.ObjectDatabase.CanMergeWithoutConflict(fromCommit, toCommit);
+                return result;
+            }
+            catch (Exception e)
+            {
+                _logger?.Invoke($"【Git】git can not merge:{e.Message}", LogLevel.Warning);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns></returns>
+        public (string,string) Merge(string from, string to)
+        {
+            try
+            {
+                var localBranch = _repository.Branches[to];
+                if (localBranch == null)
+                {
+                    return ($"{to}不存在",null);
+                }
+                
+                if (!CanMerge(from, to))
+                {
+                    return ($"can not merge from:{from} to:{to}",null);
+                }
+                
+                var signature = new  Signature("antdeploy", "antdeploy@email.com", DateTimeOffset.Now);
+                var re = _repository.Merge(localBranch, signature);
+                return (string.Empty,re.Status.ToString());
+            }
+            catch (Exception e)
+            {
+                return (e.Message,null);
+            }
+        }
+        
         /// <summary>
         /// 打个标签并提交
         /// </summary>
