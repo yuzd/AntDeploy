@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="AntDeployVsix.1abea616-593a-493c-80d9-f088b8e752fb" Version="2.0" Language="en-US" Publisher="yuzd" />
+        <Identity Id="AntDeployVsix.1abea616-593a-493c-80d9-f088b8e752fb" Version="2.1" Language="en-US" Publisher="yuzd" />
         <DisplayName>AntDeployVsix</DisplayName>
         <Description xml:space="preserve">Tools to deploy applications to remote server(iis,windowsService,docker) support netframwork and dotnetcore,support rollback and increment deploy</Description>
         <MoreInfo>https://github.com/yuzd</MoreInfo>

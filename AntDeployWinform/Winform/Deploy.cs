@@ -590,6 +590,7 @@ namespace AntDeployWinform.Winform
             this.txt_http_proxy.Text = PluginConfig.DeployHttpProxy;
 
             this.checkBoxdocker_rep_enable.Checked = PluginConfig.DockerServiceEnableUpload;
+            this.checkBoxdocker_rep_uploadOnly.Checked = PluginConfig.DockerServiceBuildImageOnly;
             this.txt_docker_rep_domain.Text = PluginConfig.RepositoryUrl;
             this.txt_docker_rep_name.Text = PluginConfig.RepositoryUserName;
             this.txt_docker_rep_pwd.Text = PluginConfig.RepositoryUserPwd;
@@ -719,6 +720,7 @@ namespace AntDeployWinform.Winform
 
 
                 PluginConfig.DockerServiceEnableUpload = this.checkBoxdocker_rep_enable.Checked;
+                PluginConfig.DockerServiceBuildImageOnly = this.checkBoxdocker_rep_uploadOnly.Checked;
                 PluginConfig.RepositoryUrl = this.txt_docker_rep_domain.Text.Trim();
                 PluginConfig.RepositoryUserName = this.txt_docker_rep_name.Text.Trim();
                 PluginConfig.RepositoryUserPwd = this.txt_docker_rep_pwd.Text.Trim();
@@ -3357,6 +3359,10 @@ namespace AntDeployWinform.Winform
         {
             PluginConfig.DockerServiceEnableUpload = checkBoxdocker_rep_enable.Checked;
         }
+        private void checkBoxdocker_rep_uploadOnly_Click(object sender, EventArgs e)
+        {
+            PluginConfig.DockerServiceBuildImageOnly = checkBoxdocker_rep_uploadOnly.Checked;
+        }
         #endregion
 
         #region windowsService page
@@ -5801,6 +5807,7 @@ namespace AntDeployWinform.Winform
                            Increment = this.PluginConfig.DockerEnableIncrement || this.PluginConfig.DockerServiceEnableSelectDeploy,
                            IsSelect = this.PluginConfig.DockerServiceEnableSelectDeploy,
                            DockerServiceEnableUpload = this.PluginConfig.DockerServiceEnableUpload,
+                           DockerServiceBuildImageOnly = this.PluginConfig.DockerServiceBuildImageOnly,
                            RepositoryUrl = this.PluginConfig.RepositoryUrl,
                            RepositoryUserName = this.PluginConfig.RepositoryUserName,
                            RepositoryUserPwd = this.PluginConfig.RepositoryUserPwd,
@@ -7001,6 +7008,6 @@ namespace AntDeployWinform.Winform
             });
         }
 
-      
+       
     }
 }

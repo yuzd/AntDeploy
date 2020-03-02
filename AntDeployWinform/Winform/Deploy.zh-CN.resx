@@ -152,6 +152,12 @@
   <data name="btn_docker_retry.Text" xml:space="preserve">
     <value>重试</value>
   </data>
+  <data name="checkBoxdocker_rep_uploadOnly.Size" type="System.Drawing.Size, System.Drawing">
+    <value>234, 24</value>
+  </data>
+  <data name="checkBoxdocker_rep_uploadOnly.Text" xml:space="preserve">
+    <value>在宿主机上只打包镜像不运行容器</value>
+  </data>
   <data name="checkBoxdocker_rep_enable.Text" xml:space="preserve">
     <value>开启镜像上传</value>
   </data>
@@ -283,9 +289,5 @@
   </data>
   <data name="label15.Text" xml:space="preserve">
     <value>指定特定文件夹发布：</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
   </data>
 </root>

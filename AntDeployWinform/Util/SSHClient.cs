@@ -84,6 +84,7 @@ namespace AntDeployWinform.Util
 
         #region 镜像上传
         public bool DockerServiceEnableUpload { get; set; }
+        public bool DockerServiceBuildImageOnly { get; set; }
         public string RepositoryUrl { get; set; }
         public string RepositoryUserName { get; set; }
         public string RepositoryUserPwd { get; set; }
@@ -875,6 +876,11 @@ namespace AntDeployWinform.Util
                 return;
             }
 
+            if (this.DockerServiceBuildImageOnly)
+            {
+                goto DockerServiceBuildImageOnlyLEVEL;
+            }
+
             var continarName = "d_" + PorjectName;
 
 
@@ -933,6 +939,12 @@ namespace AntDeployWinform.Util
                 return;
             }
 
+            //查看是否只打包镜像不允许
+            DockerServiceBuildImageOnlyLEVEL:
+            if (DockerServiceBuildImageOnly)
+            {
+                _logger($"ignore docker run", NLog.LogLevel.Warn);
+            }
             //把旧的image给删除
             r1 = _sshClient.RunCommand("docker images --format '{{.Repository}}:{{.Tag}}:{{.ID}}' | grep '^" + PorjectName + ":'");
             Tuple<string, string, string> currentImageInfo = null;
