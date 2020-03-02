@@ -82,6 +82,16 @@ namespace AntDeployWinform.Util
             }
         }
 
+        #region 镜像上传
+        public bool DockerServiceEnableUpload { get; set; }
+        public string RepositoryUrl { get; set; }
+        public string RepositoryUserName { get; set; }
+        public string RepositoryUserPwd { get; set; }
+        public string RepositoryNameSpace { get; set; }
+        public string RepositoryImageName { get; set; }
+
+
+        #endregion
 
         public string NetCoreEnvironment { get; set; }
         public string NetCoreENTRYPOINT { get; set; }
@@ -925,6 +935,7 @@ namespace AntDeployWinform.Util
 
             //把旧的image给删除
             r1 = _sshClient.RunCommand("docker images --format '{{.Repository}}:{{.Tag}}:{{.ID}}' | grep '^" + PorjectName + ":'");
+            Tuple<string, string, string> currentImageInfo = null;
             if (r1.ExitStatus == 0 && !string.IsNullOrEmpty(r1.Result))
             {
                 var deleteImageArr = r1.Result.Split('\n');
@@ -933,6 +944,11 @@ namespace AntDeployWinform.Util
                 {
                     if (imageName.StartsWith($"{PorjectName}:{ClientDateTimeFolderName}:"))
                     {
+                        var imageArr2 = imageName.Split(':');
+                        if (imageArr2.Length == 3)
+                        {
+                            currentImageInfo = new Tuple<string, string, string>(imageArr2[0], imageArr2[1], imageArr2[2]);
+                        }
                         //当前版本
                         continue;
                     }
@@ -967,9 +983,46 @@ namespace AntDeployWinform.Util
                 //igore
             }
 
+            //镜像上传
+            if (!isrollBack && currentImageInfo!=null && this.DockerServiceEnableUpload)
+            {
+                //第一步 登录
+                //第二步 重新tag
+                //第三步 推送
+                //第四步 删除
+                //第五步 退出登录
+                //万一已经存在就删除
+                var uploadImageName =$"{this.RepositoryUrl}/{this.RepositoryNameSpace}/{this.RepositoryImageName}:{currentImageInfo.Item2}";
+                _sshClient.RunCommand($"docker rmi {uploadImageName}");
+                var rr11 = _sshClient.CreateCommand($"set -e;docker login -u {this.RepositoryUserName} -p {this.RepositoryUserPwd} {this.RepositoryUrl}; docker tag {currentImageInfo.Item3} {uploadImageName};docker push {uploadImageName}");
+                var result = rr11.BeginExecute();
+                using (var reader = new StreamReader(rr11.OutputStream, Encoding.UTF8, true, 1024, true))
+                {
+                    while (!result.IsCompleted || !reader.EndOfStream)
+                    {
+                        string line = reader.ReadLine();
+                        if (line != null)
+                        {
+                            _logger($"[upload image] - {line}", LogLevel.Warn);
+                        }
+                    }
+                }
+                rr11.EndExecute(result);
+                if (rr11.ExitStatus != 0)
+                {
+                    _logger($"[upload image] - Fail", LogLevel.Error);
+                }
+                else
+                {
+                    _logger($"[upload image] - Success", LogLevel.Info);
+                }
+                _sshClient.RunCommand($"docker rmi {uploadImageName}");
+            }
+
             ClearOldHistroy();
 
         }
+
 
 
         public void ClearOldHistroy()

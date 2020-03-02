@@ -129,6 +129,9 @@
   <data name="DeployServerConfim" xml:space="preserve">
     <value>你确认要发布到以下机器吗？</value>
   </data>
+  <data name="DockerRepositoryRequired" xml:space="preserve">
+    <value>为开启镜像上传,请正确填写Docker镜像参数!</value>
+  </data>
   <data name="EnvHaveNoServer" xml:space="preserve">
     <value>选择的环境下面没有配置Windows服务器!</value>
   </data>

@@ -55,7 +55,6 @@
             this.rich_iis_log = new AntDeployWinform.ExRichTextBox();
             this.page_docker = new System.Windows.Forms.TabPage();
             this.checkBox_select_deploy_docker = new System.Windows.Forms.CheckBox();
-            this.checkBox_Increment_docker = new System.Windows.Forms.CheckBox();
             this.btn_docker_stop = new AltoControls.AltoButton();
             this.btn_docker_retry = new AltoControls.AltoButton();
             this.b_docker_deploy = new AltoControls.AltoButton();
@@ -79,7 +78,20 @@
             this.progress_docker_tip = new System.Windows.Forms.Label();
             this.tabPage_docker_log = new System.Windows.Forms.TabPage();
             this.rich_docker_log = new AntDeployWinform.ExRichTextBox();
+            this.tabPage_docker_repo = new System.Windows.Forms.TabPage();
+            this.checkBoxdocker_rep_enable = new System.Windows.Forms.CheckBox();
+            this.txt_docker_rep_image = new System.Windows.Forms.TextBox();
+            this.label44 = new System.Windows.Forms.Label();
+            this.label43 = new System.Windows.Forms.Label();
+            this.txt_docker_rep_namespace = new System.Windows.Forms.TextBox();
+            this.label40 = new System.Windows.Forms.Label();
+            this.txt_docker_rep_domain = new System.Windows.Forms.TextBox();
+            this.txt_docker_rep_pwd = new System.Windows.Forms.TextBox();
+            this.label31 = new System.Windows.Forms.Label();
+            this.txt_docker_rep_name = new System.Windows.Forms.TextBox();
+            this.label34 = new System.Windows.Forms.Label();
             this.b_docker_rollback = new AltoControls.AltoButton();
+            this.checkBox_Increment_docker = new System.Windows.Forms.CheckBox();
             this.page_window_service = new System.Windows.Forms.TabPage();
             this.btn_windows_serivce_stop = new AltoControls.AltoButton();
             this.btn_windows_service_retry = new AltoControls.AltoButton();
@@ -158,7 +170,6 @@
             this.label33 = new System.Windows.Forms.Label();
             this.txt_http_proxy = new System.Windows.Forms.TextBox();
             this.label30 = new System.Windows.Forms.Label();
-            this.btn_shang = new AltoControls.AltoButton();
             this.label16 = new System.Windows.Forms.Label();
             this.btn_folder_clear = new System.Windows.Forms.Button();
             this.btn_choose_folder = new System.Windows.Forms.Button();
@@ -175,6 +186,7 @@
             this.label36 = new System.Windows.Forms.Label();
             this.txt_msbuild_path = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
+            this.btn_shang = new AltoControls.AltoButton();
             this.tabcontrol.SuspendLayout();
             this.page_web_iis.SuspendLayout();
             this.tab_iis.SuspendLayout();
@@ -185,6 +197,7 @@
             this.tabControl_docker.SuspendLayout();
             this.tabPage_docker.SuspendLayout();
             this.tabPage_docker_log.SuspendLayout();
+            this.tabPage_docker_repo.SuspendLayout();
             this.page_window_service.SuspendLayout();
             this.tabControl_window_service.SuspendLayout();
             this.tabPage_windows_service.SuspendLayout();
@@ -201,19 +214,18 @@
             // 
             // tabcontrol
             // 
-            resources.ApplyResources(this.tabcontrol, "tabcontrol");
             this.tabcontrol.Controls.Add(this.page_web_iis);
             this.tabcontrol.Controls.Add(this.page_docker);
             this.tabcontrol.Controls.Add(this.page_window_service);
             this.tabcontrol.Controls.Add(this.page_set);
             this.tabcontrol.Controls.Add(this.pag_advance_setting);
+            resources.ApplyResources(this.tabcontrol, "tabcontrol");
             this.tabcontrol.Name = "tabcontrol";
             this.tabcontrol.SelectedIndex = 0;
             this.tabcontrol.SelectedIndexChanged += new System.EventHandler(this.page__SelectedIndexChanged);
             // 
             // page_web_iis
             // 
-            resources.ApplyResources(this.page_web_iis, "page_web_iis");
             this.page_web_iis.Controls.Add(this.checkBox_iis_use_offlinehtm);
             this.page_web_iis.Controls.Add(this.checkBox_iis_restart_site);
             this.page_web_iis.Controls.Add(this.btn_iis_stop);
@@ -232,6 +244,7 @@
             this.page_web_iis.Controls.Add(this.label6);
             this.page_web_iis.Controls.Add(this.label_iis_demo);
             this.page_web_iis.Controls.Add(this.tab_iis);
+            resources.ApplyResources(this.page_web_iis, "page_web_iis");
             this.page_web_iis.Name = "page_web_iis";
             this.page_web_iis.UseVisualStyleBackColor = true;
             // 
@@ -251,11 +264,11 @@
             // 
             // btn_iis_stop
             // 
-            resources.ApplyResources(this.btn_iis_stop, "btn_iis_stop");
             this.btn_iis_stop.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
             this.btn_iis_stop.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
             this.btn_iis_stop.BackColor = System.Drawing.Color.Transparent;
             this.btn_iis_stop.DialogResult = System.Windows.Forms.DialogResult.OK;
+            resources.ApplyResources(this.btn_iis_stop, "btn_iis_stop");
             this.btn_iis_stop.ForeColor = System.Drawing.Color.Red;
             this.btn_iis_stop.Inactive1 = System.Drawing.SystemColors.Control;
             this.btn_iis_stop.Inactive2 = System.Drawing.SystemColors.ControlLight;
@@ -268,11 +281,11 @@
             // 
             // btn_iis_retry
             // 
-            resources.ApplyResources(this.btn_iis_retry, "btn_iis_retry");
             this.btn_iis_retry.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
             this.btn_iis_retry.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
             this.btn_iis_retry.BackColor = System.Drawing.Color.Transparent;
             this.btn_iis_retry.DialogResult = System.Windows.Forms.DialogResult.OK;
+            resources.ApplyResources(this.btn_iis_retry, "btn_iis_retry");
             this.btn_iis_retry.ForeColor = System.Drawing.Color.Fuchsia;
             this.btn_iis_retry.Inactive1 = System.Drawing.SystemColors.Control;
             this.btn_iis_retry.Inactive2 = System.Drawing.SystemColors.ControlLight;
@@ -292,11 +305,11 @@
             // 
             // b_iis_rollback
             // 
-            resources.ApplyResources(this.b_iis_rollback, "b_iis_rollback");
             this.b_iis_rollback.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
             this.b_iis_rollback.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
             this.b_iis_rollback.BackColor = System.Drawing.Color.Transparent;
             this.b_iis_rollback.DialogResult = System.Windows.Forms.DialogResult.OK;
+            resources.ApplyResources(this.b_iis_rollback, "b_iis_rollback");
             this.b_iis_rollback.ForeColor = System.Drawing.Color.Black;
             this.b_iis_rollback.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.b_iis_rollback.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
@@ -326,11 +339,11 @@
             // 
             // b_iis_deploy
             // 
-            resources.ApplyResources(this.b_iis_deploy, "b_iis_deploy");
             this.b_iis_deploy.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
             this.b_iis_deploy.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
             this.b_iis_deploy.BackColor = System.Drawing.Color.Transparent;
             this.b_iis_deploy.DialogResult = System.Windows.Forms.DialogResult.OK;
+            resources.ApplyResources(this.b_iis_deploy, "b_iis_deploy");
             this.b_iis_deploy.ForeColor = System.Drawing.Color.Black;
             this.b_iis_deploy.Inactive1 = System.Drawing.SystemColors.Control;
             this.b_iis_deploy.Inactive2 = System.Drawing.SystemColors.ControlLight;
@@ -343,10 +356,10 @@
             // 
             // combo_iis_env
             // 
-            resources.ApplyResources(this.combo_iis_env, "combo_iis_env");
             this.combo_iis_env.BackColor = System.Drawing.SystemColors.Window;
             this.combo_iis_env.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_iis_env.FormattingEnabled = true;
+            resources.ApplyResources(this.combo_iis_env, "combo_iis_env");
             this.combo_iis_env.Name = "combo_iis_env";
             this.combo_iis_env.SelectedIndexChanged += new System.EventHandler(this.combo_iis_env_SelectedIndexChanged);
             // 
@@ -367,13 +380,13 @@
             // 
             // combo_iis_sdk_type
             // 
-            resources.ApplyResources(this.combo_iis_sdk_type, "combo_iis_sdk_type");
             this.combo_iis_sdk_type.BackColor = System.Drawing.SystemColors.Window;
             this.combo_iis_sdk_type.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_iis_sdk_type.FormattingEnabled = true;
             this.combo_iis_sdk_type.Items.AddRange(new object[] {
             resources.GetString("combo_iis_sdk_type.Items"),
             resources.GetString("combo_iis_sdk_type.Items1")});
+            resources.ApplyResources(this.combo_iis_sdk_type, "combo_iis_sdk_type");
             this.combo_iis_sdk_type.Name = "combo_iis_sdk_type";
             this.combo_iis_sdk_type.SelectedIndexChanged += new System.EventHandler(this.combo_iis_sdk_type_SelectedIndexChanged);
             // 
@@ -392,9 +405,9 @@
             // 
             // tab_iis
             // 
-            resources.ApplyResources(this.tab_iis, "tab_iis");
             this.tab_iis.Controls.Add(this.tabPage_progress);
             this.tab_iis.Controls.Add(this.tabPage_iis_log);
+            resources.ApplyResources(this.tab_iis, "tab_iis");
             this.tab_iis.Name = "tab_iis";
             this.tab_iis.SelectedIndex = 0;
             // 
@@ -407,14 +420,14 @@
             // 
             // progress_iis_tip
             // 
-            resources.ApplyResources(this.progress_iis_tip, "progress_iis_tip");
             this.progress_iis_tip.ForeColor = System.Drawing.Color.Blue;
+            resources.ApplyResources(this.progress_iis_tip, "progress_iis_tip");
             this.progress_iis_tip.Name = "progress_iis_tip";
             // 
             // tabPage_iis_log
             // 
-            resources.ApplyResources(this.tabPage_iis_log, "tabPage_iis_log");
             this.tabPage_iis_log.Controls.Add(this.rich_iis_log);
+            resources.ApplyResources(this.tabPage_iis_log, "tabPage_iis_log");
             this.tabPage_iis_log.Name = "tabPage_iis_log";
             this.tabPage_iis_log.UseVisualStyleBackColor = true;
             // 
@@ -428,9 +441,7 @@
             // 
             // page_docker
             // 
-            resources.ApplyResources(this.page_docker, "page_docker");
             this.page_docker.Controls.Add(this.checkBox_select_deploy_docker);
-            this.page_docker.Controls.Add(this.checkBox_Increment_docker);
             this.page_docker.Controls.Add(this.btn_docker_stop);
             this.page_docker.Controls.Add(this.btn_docker_retry);
             this.page_docker.Controls.Add(this.b_docker_deploy);
@@ -444,6 +455,8 @@
             this.page_docker.Controls.Add(this.label_docker_demo);
             this.page_docker.Controls.Add(this.tabControl_docker);
             this.page_docker.Controls.Add(this.b_docker_rollback);
+            this.page_docker.Controls.Add(this.checkBox_Increment_docker);
+            resources.ApplyResources(this.page_docker, "page_docker");
             this.page_docker.Name = "page_docker";
             this.page_docker.UseVisualStyleBackColor = true;
             // 
@@ -454,20 +467,13 @@
             this.checkBox_select_deploy_docker.UseVisualStyleBackColor = true;
             this.checkBox_select_deploy_docker.Click += new System.EventHandler(this.checkBox_selectDeplot_docker_CheckedChanged);
             // 
-            // checkBox_Increment_docker
-            // 
-            resources.ApplyResources(this.checkBox_Increment_docker, "checkBox_Increment_docker");
-            this.checkBox_Increment_docker.Name = "checkBox_Increment_docker";
-            this.checkBox_Increment_docker.UseVisualStyleBackColor = true;
-            this.checkBox_Increment_docker.Click += new System.EventHandler(this.checkBox_Increment_docker_CheckedChanged);
-            // 
             // btn_docker_stop
             // 
-            resources.ApplyResources(this.btn_docker_stop, "btn_docker_stop");
             this.btn_docker_stop.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
             this.btn_docker_stop.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
             this.btn_docker_stop.BackColor = System.Drawing.Color.Transparent;
             this.btn_docker_stop.DialogResult = System.Windows.Forms.DialogResult.OK;
+            resources.ApplyResources(this.btn_docker_stop, "btn_docker_stop");
             this.btn_docker_stop.ForeColor = System.Drawing.Color.Red;
             this.btn_docker_stop.Inactive1 = System.Drawing.SystemColors.Control;
             this.btn_docker_stop.Inactive2 = System.Drawing.SystemColors.ControlLight;
@@ -480,11 +486,11 @@
             // 
             // btn_docker_retry
             // 
-            resources.ApplyResources(this.btn_docker_retry, "btn_docker_retry");
             this.btn_docker_retry.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
             this.btn_docker_retry.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
             this.btn_docker_retry.BackColor = System.Drawing.Color.Transparent;
             this.btn_docker_retry.DialogResult = System.Windows.Forms.DialogResult.OK;
+            resources.ApplyResources(this.btn_docker_retry, "btn_docker_retry");
             this.btn_docker_retry.ForeColor = System.Drawing.Color.Fuchsia;
             this.btn_docker_retry.Inactive1 = System.Drawing.SystemColors.Control;
             this.btn_docker_retry.Inactive2 = System.Drawing.SystemColors.ControlLight;
@@ -497,11 +503,11 @@
             // 
             // b_docker_deploy
             // 
-            resources.ApplyResources(this.b_docker_deploy, "b_docker_deploy");
             this.b_docker_deploy.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
             this.b_docker_deploy.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
             this.b_docker_deploy.BackColor = System.Drawing.Color.Transparent;
             this.b_docker_deploy.DialogResult = System.Windows.Forms.DialogResult.OK;
+            resources.ApplyResources(this.b_docker_deploy, "b_docker_deploy");
             this.b_docker_deploy.ForeColor = System.Drawing.Color.Black;
             this.b_docker_deploy.Inactive1 = System.Drawing.SystemColors.Control;
             this.b_docker_deploy.Inactive2 = System.Drawing.SystemColors.ControlLight;
@@ -519,16 +525,16 @@
             // 
             // label12
             // 
-            resources.ApplyResources(this.label12, "label12");
             this.label12.Cursor = System.Windows.Forms.Cursors.Hand;
             this.label12.ForeColor = System.Drawing.Color.RoyalBlue;
+            resources.ApplyResources(this.label12, "label12");
             this.label12.Name = "label12";
             this.label12.Click += new System.EventHandler(this.label12_Click);
             // 
             // t_docker_delete_days
             // 
-            resources.ApplyResources(this.t_docker_delete_days, "t_docker_delete_days");
             this.t_docker_delete_days.ForeColor = System.Drawing.Color.Blue;
+            resources.ApplyResources(this.t_docker_delete_days, "t_docker_delete_days");
             this.t_docker_delete_days.Name = "t_docker_delete_days";
             // 
             // label24
@@ -538,7 +544,6 @@
             // 
             // groupBox5
             // 
-            resources.ApplyResources(this.groupBox5, "groupBox5");
             this.groupBox5.Controls.Add(this.label28);
             this.groupBox5.Controls.Add(this.txt_docker_volume);
             this.groupBox5.Controls.Add(this.label27);
@@ -546,6 +551,7 @@
             this.groupBox5.Controls.Add(this.txt_docker_envname);
             this.groupBox5.Controls.Add(this.label23);
             this.groupBox5.Controls.Add(this.txt_docker_port);
+            resources.ApplyResources(this.groupBox5, "groupBox5");
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.TabStop = false;
             // 
@@ -556,9 +562,9 @@
             // 
             // txt_docker_volume
             // 
-            resources.ApplyResources(this.txt_docker_volume, "txt_docker_volume");
             this.txt_docker_volume.BackColor = System.Drawing.Color.Transparent;
             this.txt_docker_volume.Br = System.Drawing.Color.White;
+            resources.ApplyResources(this.txt_docker_volume, "txt_docker_volume");
             this.txt_docker_volume.ForeColor = System.Drawing.Color.DimGray;
             this.txt_docker_volume.Name = "txt_docker_volume";
             // 
@@ -589,10 +595,10 @@
             // 
             // combo_docker_env
             // 
-            resources.ApplyResources(this.combo_docker_env, "combo_docker_env");
             this.combo_docker_env.BackColor = System.Drawing.SystemColors.Window;
             this.combo_docker_env.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_docker_env.FormattingEnabled = true;
+            resources.ApplyResources(this.combo_docker_env, "combo_docker_env");
             this.combo_docker_env.Name = "combo_docker_env";
             this.combo_docker_env.SelectedIndexChanged += new System.EventHandler(this.combo_docker_env_SelectedIndexChanged);
             // 
@@ -611,9 +617,10 @@
             // 
             // tabControl_docker
             // 
-            resources.ApplyResources(this.tabControl_docker, "tabControl_docker");
             this.tabControl_docker.Controls.Add(this.tabPage_docker);
             this.tabControl_docker.Controls.Add(this.tabPage_docker_log);
+            this.tabControl_docker.Controls.Add(this.tabPage_docker_repo);
+            resources.ApplyResources(this.tabControl_docker, "tabControl_docker");
             this.tabControl_docker.Name = "tabControl_docker";
             this.tabControl_docker.SelectedIndex = 0;
             // 
@@ -626,14 +633,14 @@
             // 
             // progress_docker_tip
             // 
-            resources.ApplyResources(this.progress_docker_tip, "progress_docker_tip");
             this.progress_docker_tip.ForeColor = System.Drawing.Color.Blue;
+            resources.ApplyResources(this.progress_docker_tip, "progress_docker_tip");
             this.progress_docker_tip.Name = "progress_docker_tip";
             // 
             // tabPage_docker_log
             // 
-            resources.ApplyResources(this.tabPage_docker_log, "tabPage_docker_log");
             this.tabPage_docker_log.Controls.Add(this.rich_docker_log);
+            resources.ApplyResources(this.tabPage_docker_log, "tabPage_docker_log");
             this.tabPage_docker_log.Name = "tabPage_docker_log";
             this.tabPage_docker_log.UseVisualStyleBackColor = true;
             // 
@@ -645,13 +652,87 @@
             this.rich_docker_log.ReadOnly = true;
             this.rich_docker_log.TextColor = AntDeployWinform.RtfColor.Black;
             // 
+            // tabPage_docker_repo
+            // 
+            this.tabPage_docker_repo.Controls.Add(this.checkBoxdocker_rep_enable);
+            this.tabPage_docker_repo.Controls.Add(this.txt_docker_rep_image);
+            this.tabPage_docker_repo.Controls.Add(this.label44);
+            this.tabPage_docker_repo.Controls.Add(this.label43);
+            this.tabPage_docker_repo.Controls.Add(this.txt_docker_rep_namespace);
+            this.tabPage_docker_repo.Controls.Add(this.label40);
+            this.tabPage_docker_repo.Controls.Add(this.txt_docker_rep_domain);
+            this.tabPage_docker_repo.Controls.Add(this.txt_docker_rep_pwd);
+            this.tabPage_docker_repo.Controls.Add(this.label31);
+            this.tabPage_docker_repo.Controls.Add(this.txt_docker_rep_name);
+            this.tabPage_docker_repo.Controls.Add(this.label34);
+            resources.ApplyResources(this.tabPage_docker_repo, "tabPage_docker_repo");
+            this.tabPage_docker_repo.Name = "tabPage_docker_repo";
+            this.tabPage_docker_repo.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxdocker_rep_enable
+            // 
+            resources.ApplyResources(this.checkBoxdocker_rep_enable, "checkBoxdocker_rep_enable");
+            this.checkBoxdocker_rep_enable.Name = "checkBoxdocker_rep_enable";
+            this.checkBoxdocker_rep_enable.UseVisualStyleBackColor = true;
+            this.checkBoxdocker_rep_enable.Click += new System.EventHandler(this.checkBoxdocker_rep_enable_Click);
+            // 
+            // txt_docker_rep_image
+            // 
+            resources.ApplyResources(this.txt_docker_rep_image, "txt_docker_rep_image");
+            this.txt_docker_rep_image.Name = "txt_docker_rep_image";
+            // 
+            // label44
+            // 
+            resources.ApplyResources(this.label44, "label44");
+            this.label44.Name = "label44";
+            // 
+            // label43
+            // 
+            resources.ApplyResources(this.label43, "label43");
+            this.label43.Name = "label43";
+            // 
+            // txt_docker_rep_namespace
+            // 
+            resources.ApplyResources(this.txt_docker_rep_namespace, "txt_docker_rep_namespace");
+            this.txt_docker_rep_namespace.Name = "txt_docker_rep_namespace";
+            // 
+            // label40
+            // 
+            resources.ApplyResources(this.label40, "label40");
+            this.label40.Name = "label40";
+            // 
+            // txt_docker_rep_domain
+            // 
+            resources.ApplyResources(this.txt_docker_rep_domain, "txt_docker_rep_domain");
+            this.txt_docker_rep_domain.Name = "txt_docker_rep_domain";
+            // 
+            // txt_docker_rep_pwd
+            // 
+            resources.ApplyResources(this.txt_docker_rep_pwd, "txt_docker_rep_pwd");
+            this.txt_docker_rep_pwd.Name = "txt_docker_rep_pwd";
+            // 
+            // label31
+            // 
+            resources.ApplyResources(this.label31, "label31");
+            this.label31.Name = "label31";
+            // 
+            // txt_docker_rep_name
+            // 
+            resources.ApplyResources(this.txt_docker_rep_name, "txt_docker_rep_name");
+            this.txt_docker_rep_name.Name = "txt_docker_rep_name";
+            // 
+            // label34
+            // 
+            resources.ApplyResources(this.label34, "label34");
+            this.label34.Name = "label34";
+            // 
             // b_docker_rollback
             // 
-            resources.ApplyResources(this.b_docker_rollback, "b_docker_rollback");
             this.b_docker_rollback.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
             this.b_docker_rollback.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
             this.b_docker_rollback.BackColor = System.Drawing.Color.Transparent;
             this.b_docker_rollback.DialogResult = System.Windows.Forms.DialogResult.OK;
+            resources.ApplyResources(this.b_docker_rollback, "b_docker_rollback");
             this.b_docker_rollback.ForeColor = System.Drawing.Color.Black;
             this.b_docker_rollback.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.b_docker_rollback.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
@@ -662,9 +743,15 @@
             this.b_docker_rollback.Transparency = false;
             this.b_docker_rollback.Click += new System.EventHandler(this.btn_docker_rollback_Click);
             // 
+            // checkBox_Increment_docker
+            // 
+            resources.ApplyResources(this.checkBox_Increment_docker, "checkBox_Increment_docker");
+            this.checkBox_Increment_docker.Name = "checkBox_Increment_docker";
+            this.checkBox_Increment_docker.UseVisualStyleBackColor = true;
+            this.checkBox_Increment_docker.Click += new System.EventHandler(this.checkBox_Increment_docker_CheckedChanged);
+            // 
             // page_window_service
             // 
-            resources.ApplyResources(this.page_window_service, "page_window_service");
             this.page_window_service.Controls.Add(this.btn_windows_serivce_stop);
             this.page_window_service.Controls.Add(this.btn_windows_service_retry);
             this.page_window_service.Controls.Add(this.b_windowservice_deploy);
@@ -680,16 +767,17 @@
             this.page_window_service.Controls.Add(this.label10);
             this.page_window_service.Controls.Add(this.tabControl_window_service);
             this.page_window_service.Controls.Add(this.b_windows_service_rollback);
+            resources.ApplyResources(this.page_window_service, "page_window_service");
             this.page_window_service.Name = "page_window_service";
             this.page_window_service.UseVisualStyleBackColor = true;
             // 
             // btn_windows_serivce_stop
             // 
-            resources.ApplyResources(this.btn_windows_serivce_stop, "btn_windows_serivce_stop");
             this.btn_windows_serivce_stop.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
             this.btn_windows_serivce_stop.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
             this.btn_windows_serivce_stop.BackColor = System.Drawing.Color.Transparent;
             this.btn_windows_serivce_stop.DialogResult = System.Windows.Forms.DialogResult.OK;
+            resources.ApplyResources(this.btn_windows_serivce_stop, "btn_windows_serivce_stop");
             this.btn_windows_serivce_stop.ForeColor = System.Drawing.Color.Red;
             this.btn_windows_serivce_stop.Inactive1 = System.Drawing.SystemColors.Control;
             this.btn_windows_serivce_stop.Inactive2 = System.Drawing.SystemColors.ControlLight;
@@ -702,11 +790,11 @@
             // 
             // btn_windows_service_retry
             // 
-            resources.ApplyResources(this.btn_windows_service_retry, "btn_windows_service_retry");
             this.btn_windows_service_retry.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
             this.btn_windows_service_retry.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
             this.btn_windows_service_retry.BackColor = System.Drawing.Color.Transparent;
             this.btn_windows_service_retry.DialogResult = System.Windows.Forms.DialogResult.OK;
+            resources.ApplyResources(this.btn_windows_service_retry, "btn_windows_service_retry");
             this.btn_windows_service_retry.ForeColor = System.Drawing.Color.Fuchsia;
             this.btn_windows_service_retry.Inactive1 = System.Drawing.SystemColors.Control;
             this.btn_windows_service_retry.Inactive2 = System.Drawing.SystemColors.ControlLight;
@@ -719,11 +807,11 @@
             // 
             // b_windowservice_deploy
             // 
-            resources.ApplyResources(this.b_windowservice_deploy, "b_windowservice_deploy");
             this.b_windowservice_deploy.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
             this.b_windowservice_deploy.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
             this.b_windowservice_deploy.BackColor = System.Drawing.Color.Transparent;
             this.b_windowservice_deploy.DialogResult = System.Windows.Forms.DialogResult.OK;
+            resources.ApplyResources(this.b_windowservice_deploy, "b_windowservice_deploy");
             this.b_windowservice_deploy.ForeColor = System.Drawing.Color.Black;
             this.b_windowservice_deploy.Inactive1 = System.Drawing.SystemColors.Control;
             this.b_windowservice_deploy.Inactive2 = System.Drawing.SystemColors.ControlLight;
@@ -773,13 +861,13 @@
             // 
             // combo_windowservice_sdk_type
             // 
-            resources.ApplyResources(this.combo_windowservice_sdk_type, "combo_windowservice_sdk_type");
             this.combo_windowservice_sdk_type.BackColor = System.Drawing.SystemColors.Window;
             this.combo_windowservice_sdk_type.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_windowservice_sdk_type.FormattingEnabled = true;
             this.combo_windowservice_sdk_type.Items.AddRange(new object[] {
             resources.GetString("combo_windowservice_sdk_type.Items"),
             resources.GetString("combo_windowservice_sdk_type.Items1")});
+            resources.ApplyResources(this.combo_windowservice_sdk_type, "combo_windowservice_sdk_type");
             this.combo_windowservice_sdk_type.Name = "combo_windowservice_sdk_type";
             this.combo_windowservice_sdk_type.SelectedIndexChanged += new System.EventHandler(this.combo_windowservice_sdk_type_SelectedIndexChanged);
             // 
@@ -790,10 +878,10 @@
             // 
             // combo_windowservice_env
             // 
-            resources.ApplyResources(this.combo_windowservice_env, "combo_windowservice_env");
             this.combo_windowservice_env.BackColor = System.Drawing.SystemColors.Window;
             this.combo_windowservice_env.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_windowservice_env.FormattingEnabled = true;
+            resources.ApplyResources(this.combo_windowservice_env, "combo_windowservice_env");
             this.combo_windowservice_env.Name = "combo_windowservice_env";
             this.combo_windowservice_env.SelectedIndexChanged += new System.EventHandler(this.combo_windowservice_env_SelectedIndexChanged);
             // 
@@ -804,9 +892,9 @@
             // 
             // tabControl_window_service
             // 
-            resources.ApplyResources(this.tabControl_window_service, "tabControl_window_service");
             this.tabControl_window_service.Controls.Add(this.tabPage_windows_service);
             this.tabControl_window_service.Controls.Add(this.tabPage2);
+            resources.ApplyResources(this.tabControl_window_service, "tabControl_window_service");
             this.tabControl_window_service.Name = "tabControl_window_service";
             this.tabControl_window_service.SelectedIndex = 0;
             // 
@@ -819,14 +907,14 @@
             // 
             // progress_window_service_tip
             // 
-            resources.ApplyResources(this.progress_window_service_tip, "progress_window_service_tip");
             this.progress_window_service_tip.ForeColor = System.Drawing.Color.Blue;
+            resources.ApplyResources(this.progress_window_service_tip, "progress_window_service_tip");
             this.progress_window_service_tip.Name = "progress_window_service_tip";
             // 
             // tabPage2
             // 
-            resources.ApplyResources(this.tabPage2, "tabPage2");
             this.tabPage2.Controls.Add(this.rich_windowservice_log);
+            resources.ApplyResources(this.tabPage2, "tabPage2");
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
@@ -840,11 +928,11 @@
             // 
             // b_windows_service_rollback
             // 
-            resources.ApplyResources(this.b_windows_service_rollback, "b_windows_service_rollback");
             this.b_windows_service_rollback.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
             this.b_windows_service_rollback.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
             this.b_windows_service_rollback.BackColor = System.Drawing.Color.Transparent;
             this.b_windows_service_rollback.DialogResult = System.Windows.Forms.DialogResult.OK;
+            resources.ApplyResources(this.b_windows_service_rollback, "b_windows_service_rollback");
             this.b_windows_service_rollback.ForeColor = System.Drawing.Color.Black;
             this.b_windows_service_rollback.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.b_windows_service_rollback.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
@@ -857,12 +945,12 @@
             // 
             // page_set
             // 
-            resources.ApplyResources(this.page_set, "page_set");
             this.page_set.Controls.Add(this.label_how_to_set);
             this.page_set.Controls.Add(this.groupBox1);
             this.page_set.Controls.Add(this.label_check_update);
             this.page_set.Controls.Add(this.groupBoxIgnore);
             this.page_set.Controls.Add(this.environment);
+            resources.ApplyResources(this.page_set, "page_set");
             this.page_set.Name = "page_set";
             this.page_set.UseVisualStyleBackColor = true;
             // 
@@ -876,12 +964,12 @@
             // 
             // groupBox1
             // 
-            resources.ApplyResources(this.groupBox1, "groupBox1");
             this.groupBox1.Controls.Add(this.b_copy_backup_ignore);
             this.groupBox1.Controls.Add(this.b_backUp_ignore_remove);
             this.groupBox1.Controls.Add(this.b_backUp_ignore_add);
             this.groupBox1.Controls.Add(this.txt_backUp_ignore);
             this.groupBox1.Controls.Add(this.list_backUp_ignore);
+            resources.ApplyResources(this.groupBox1, "groupBox1");
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.TabStop = false;
             // 
@@ -915,8 +1003,8 @@
             // 
             // list_backUp_ignore
             // 
-            resources.ApplyResources(this.list_backUp_ignore, "list_backUp_ignore");
             this.list_backUp_ignore.FormattingEnabled = true;
+            resources.ApplyResources(this.list_backUp_ignore, "list_backUp_ignore");
             this.list_backUp_ignore.Name = "list_backUp_ignore";
             // 
             // label_check_update
@@ -929,12 +1017,12 @@
             // 
             // groupBoxIgnore
             // 
-            resources.ApplyResources(this.groupBoxIgnore, "groupBoxIgnore");
             this.groupBoxIgnore.Controls.Add(this.b_copy_pack_ignore);
             this.groupBoxIgnore.Controls.Add(this.b_env_ignore_remove);
             this.groupBoxIgnore.Controls.Add(this.b_env_ignore_add);
             this.groupBoxIgnore.Controls.Add(this.txt_env_ignore);
             this.groupBoxIgnore.Controls.Add(this.list_env_ignore);
+            resources.ApplyResources(this.groupBoxIgnore, "groupBoxIgnore");
             this.groupBoxIgnore.Name = "groupBoxIgnore";
             this.groupBoxIgnore.TabStop = false;
             // 
@@ -968,13 +1056,12 @@
             // 
             // list_env_ignore
             // 
-            resources.ApplyResources(this.list_env_ignore, "list_env_ignore");
             this.list_env_ignore.FormattingEnabled = true;
+            resources.ApplyResources(this.list_env_ignore, "list_env_ignore");
             this.list_env_ignore.Name = "list_env_ignore";
             // 
             // environment
             // 
-            resources.ApplyResources(this.environment, "environment");
             this.environment.Controls.Add(this.tabControl1);
             this.environment.Controls.Add(this.label2);
             this.environment.Controls.Add(this.label1);
@@ -982,20 +1069,20 @@
             this.environment.Controls.Add(this.txt_env_name);
             this.environment.Controls.Add(this.b_env_add_by_name);
             this.environment.Controls.Add(this.combo_env_list);
+            resources.ApplyResources(this.environment, "environment");
             this.environment.Name = "environment";
             this.environment.TabStop = false;
             // 
             // tabControl1
             // 
-            resources.ApplyResources(this.tabControl1, "tabControl1");
             this.tabControl1.Controls.Add(this.page_winserver);
             this.tabControl1.Controls.Add(this.page_linux_server);
+            resources.ApplyResources(this.tabControl1, "tabControl1");
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             // 
             // page_winserver
             // 
-            resources.ApplyResources(this.page_winserver, "page_winserver");
             this.page_winserver.Controls.Add(this.txt_winserver_nickname);
             this.page_winserver.Controls.Add(this.label32);
             this.page_winserver.Controls.Add(this.label29);
@@ -1009,6 +1096,7 @@
             this.page_winserver.Controls.Add(this.label3);
             this.page_winserver.Controls.Add(this.txt_env_server_token);
             this.page_winserver.Controls.Add(this.label4);
+            resources.ApplyResources(this.page_winserver, "page_winserver");
             this.page_winserver.Name = "page_winserver";
             this.page_winserver.UseVisualStyleBackColor = true;
             // 
@@ -1032,10 +1120,10 @@
             // 
             // loading_win_server_test
             // 
-            resources.ApplyResources(this.loading_win_server_test, "loading_win_server_test");
             this.loading_win_server_test.BackColor = System.Drawing.Color.Transparent;
             this.loading_win_server_test.FullTransparent = true;
             this.loading_win_server_test.Increment = 1F;
+            resources.ApplyResources(this.loading_win_server_test, "loading_win_server_test");
             this.loading_win_server_test.N = 8;
             this.loading_win_server_test.Name = "loading_win_server_test";
             this.loading_win_server_test.Radius = 2.5F;
@@ -1054,9 +1142,9 @@
             // 
             // combo_env_server_list
             // 
-            resources.ApplyResources(this.combo_env_server_list, "combo_env_server_list");
             this.combo_env_server_list.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_env_server_list.FormattingEnabled = true;
+            resources.ApplyResources(this.combo_env_server_list, "combo_env_server_list");
             this.combo_env_server_list.Name = "combo_env_server_list";
             this.combo_env_server_list.SelectedIndexChanged += new System.EventHandler(this.combo_env_server_list_SelectedIndexChanged);
             // 
@@ -1097,7 +1185,6 @@
             // 
             // page_linux_server
             // 
-            resources.ApplyResources(this.page_linux_server, "page_linux_server");
             this.page_linux_server.Controls.Add(this.txt_linux_server_nickname);
             this.page_linux_server.Controls.Add(this.loading_linux_server_test);
             this.page_linux_server.Controls.Add(this.label20);
@@ -1112,6 +1199,7 @@
             this.page_linux_server.Controls.Add(this.label18);
             this.page_linux_server.Controls.Add(this.label19);
             this.page_linux_server.Controls.Add(this.label35);
+            resources.ApplyResources(this.page_linux_server, "page_linux_server");
             this.page_linux_server.Name = "page_linux_server";
             this.page_linux_server.UseVisualStyleBackColor = true;
             // 
@@ -1122,10 +1210,10 @@
             // 
             // loading_linux_server_test
             // 
-            resources.ApplyResources(this.loading_linux_server_test, "loading_linux_server_test");
             this.loading_linux_server_test.BackColor = System.Drawing.Color.Transparent;
             this.loading_linux_server_test.FullTransparent = true;
             this.loading_linux_server_test.Increment = 1F;
+            resources.ApplyResources(this.loading_linux_server_test, "loading_linux_server_test");
             this.loading_linux_server_test.N = 8;
             this.loading_linux_server_test.Name = "loading_linux_server_test";
             this.loading_linux_server_test.Radius = 2.5F;
@@ -1137,9 +1225,9 @@
             // 
             // combo_linux_server_list
             // 
-            resources.ApplyResources(this.combo_linux_server_list, "combo_linux_server_list");
             this.combo_linux_server_list.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_linux_server_list.FormattingEnabled = true;
+            resources.ApplyResources(this.combo_linux_server_list, "combo_linux_server_list");
             this.combo_linux_server_list.Name = "combo_linux_server_list";
             this.combo_linux_server_list.SelectedIndexChanged += new System.EventHandler(this.combo_linux_server_list_SelectedIndexChanged);
             // 
@@ -1212,8 +1300,8 @@
             // 
             // b_env_remove
             // 
-            resources.ApplyResources(this.b_env_remove, "b_env_remove");
             this.b_env_remove.ForeColor = System.Drawing.Color.Red;
+            resources.ApplyResources(this.b_env_remove, "b_env_remove");
             this.b_env_remove.Name = "b_env_remove";
             this.b_env_remove.UseVisualStyleBackColor = true;
             this.b_env_remove.Click += new System.EventHandler(this.b_env_remove_Click);
@@ -1232,21 +1320,19 @@
             // 
             // combo_env_list
             // 
-            resources.ApplyResources(this.combo_env_list, "combo_env_list");
             this.combo_env_list.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_env_list.FormattingEnabled = true;
+            resources.ApplyResources(this.combo_env_list, "combo_env_list");
             this.combo_env_list.Name = "combo_env_list";
             this.combo_env_list.SelectedIndexChanged += new System.EventHandler(this.combo_env_list_SelectedIndexChanged);
             // 
             // pag_advance_setting
             // 
-            resources.ApplyResources(this.pag_advance_setting, "pag_advance_setting");
             this.pag_advance_setting.Controls.Add(this.checkBox_multi_deploy);
             this.pag_advance_setting.Controls.Add(this.checkBox_save_deploy_log);
             this.pag_advance_setting.Controls.Add(this.label33);
             this.pag_advance_setting.Controls.Add(this.txt_http_proxy);
             this.pag_advance_setting.Controls.Add(this.label30);
-            this.pag_advance_setting.Controls.Add(this.btn_shang);
             this.pag_advance_setting.Controls.Add(this.label16);
             this.pag_advance_setting.Controls.Add(this.btn_folder_clear);
             this.pag_advance_setting.Controls.Add(this.btn_choose_folder);
@@ -1263,6 +1349,8 @@
             this.pag_advance_setting.Controls.Add(this.label36);
             this.pag_advance_setting.Controls.Add(this.txt_msbuild_path);
             this.pag_advance_setting.Controls.Add(this.label15);
+            this.pag_advance_setting.Controls.Add(this.btn_shang);
+            resources.ApplyResources(this.pag_advance_setting, "pag_advance_setting");
             this.pag_advance_setting.Name = "pag_advance_setting";
             this.pag_advance_setting.UseVisualStyleBackColor = true;
             // 
@@ -1298,34 +1386,17 @@
             resources.ApplyResources(this.label30, "label30");
             this.label30.Name = "label30";
             // 
-            // btn_shang
-            // 
-            resources.ApplyResources(this.btn_shang, "btn_shang");
-            this.btn_shang.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
-            this.btn_shang.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
-            this.btn_shang.BackColor = System.Drawing.Color.Transparent;
-            this.btn_shang.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btn_shang.ForeColor = System.Drawing.Color.Black;
-            this.btn_shang.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(188)))), ((int)(((byte)(210)))));
-            this.btn_shang.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(167)))), ((int)(((byte)(188)))));
-            this.btn_shang.Name = "btn_shang";
-            this.btn_shang.Radius = 10;
-            this.btn_shang.Stroke = false;
-            this.btn_shang.StrokeColor = System.Drawing.Color.Gray;
-            this.btn_shang.Transparency = false;
-            this.btn_shang.Click += new System.EventHandler(this.btn_shang_Click);
-            // 
             // label16
             // 
-            resources.ApplyResources(this.label16, "label16");
             this.label16.Cursor = System.Windows.Forms.Cursors.Hand;
             this.label16.ForeColor = System.Drawing.Color.RoyalBlue;
+            resources.ApplyResources(this.label16, "label16");
             this.label16.Name = "label16";
             // 
             // btn_folder_clear
             // 
-            resources.ApplyResources(this.btn_folder_clear, "btn_folder_clear");
             this.btn_folder_clear.ForeColor = System.Drawing.Color.Red;
+            resources.ApplyResources(this.btn_folder_clear, "btn_folder_clear");
             this.btn_folder_clear.Name = "btn_folder_clear";
             this.btn_folder_clear.UseVisualStyleBackColor = true;
             this.btn_folder_clear.Click += new System.EventHandler(this.btn_folder_clear_Click);
@@ -1367,7 +1438,6 @@
             // 
             // combo_netcore_publish_mode
             // 
-            resources.ApplyResources(this.combo_netcore_publish_mode, "combo_netcore_publish_mode");
             this.combo_netcore_publish_mode.BackColor = System.Drawing.SystemColors.Window;
             this.combo_netcore_publish_mode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_netcore_publish_mode.FormattingEnabled = true;
@@ -1377,6 +1447,7 @@
             resources.GetString("combo_netcore_publish_mode.Items2"),
             resources.GetString("combo_netcore_publish_mode.Items3"),
             resources.GetString("combo_netcore_publish_mode.Items4")});
+            resources.ApplyResources(this.combo_netcore_publish_mode, "combo_netcore_publish_mode");
             this.combo_netcore_publish_mode.Name = "combo_netcore_publish_mode";
             this.combo_netcore_publish_mode.SelectedIndexChanged += new System.EventHandler(this.combo_netcore_publish_mode_SelectedIndexChanged);
             // 
@@ -1422,6 +1493,23 @@
             resources.ApplyResources(this.label15, "label15");
             this.label15.Name = "label15";
             // 
+            // btn_shang
+            // 
+            this.btn_shang.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
+            this.btn_shang.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
+            this.btn_shang.BackColor = System.Drawing.Color.Transparent;
+            this.btn_shang.DialogResult = System.Windows.Forms.DialogResult.OK;
+            resources.ApplyResources(this.btn_shang, "btn_shang");
+            this.btn_shang.ForeColor = System.Drawing.Color.Black;
+            this.btn_shang.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(188)))), ((int)(((byte)(210)))));
+            this.btn_shang.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(167)))), ((int)(((byte)(188)))));
+            this.btn_shang.Name = "btn_shang";
+            this.btn_shang.Radius = 10;
+            this.btn_shang.Stroke = false;
+            this.btn_shang.StrokeColor = System.Drawing.Color.Gray;
+            this.btn_shang.Transparency = false;
+            this.btn_shang.Click += new System.EventHandler(this.btn_shang_Click);
+            // 
             // Deploy
             // 
             resources.ApplyResources(this, "$this");
@@ -1449,6 +1537,8 @@
             this.tabControl_docker.ResumeLayout(false);
             this.tabPage_docker.ResumeLayout(false);
             this.tabPage_docker_log.ResumeLayout(false);
+            this.tabPage_docker_repo.ResumeLayout(false);
+            this.tabPage_docker_repo.PerformLayout();
             this.page_window_service.ResumeLayout(false);
             this.page_window_service.PerformLayout();
             this.tabControl_window_service.ResumeLayout(false);
@@ -1621,5 +1711,17 @@
         private System.Windows.Forms.CheckBox checkBox_multi_deploy;
         private System.Windows.Forms.CheckBox checkBox_iis_restart_site;
         private System.Windows.Forms.CheckBox checkBox_iis_use_offlinehtm;
+        private System.Windows.Forms.TabPage tabPage_docker_repo;
+        private System.Windows.Forms.Label label31;
+        private System.Windows.Forms.TextBox txt_docker_rep_name;
+        private System.Windows.Forms.Label label34;
+        private System.Windows.Forms.TextBox txt_docker_rep_pwd;
+        private System.Windows.Forms.TextBox txt_docker_rep_image;
+        private System.Windows.Forms.Label label44;
+        private System.Windows.Forms.Label label43;
+        private System.Windows.Forms.TextBox txt_docker_rep_namespace;
+        private System.Windows.Forms.Label label40;
+        private System.Windows.Forms.TextBox txt_docker_rep_domain;
+        private System.Windows.Forms.CheckBox checkBoxdocker_rep_enable;
     }
 }

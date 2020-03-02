@@ -554,6 +554,9 @@ namespace AntDeployWinform.Winform
                     _dockerEnvName = this.txt_docker_envname.Text = DeployConfig.DockerConfig.AspNetCoreEnv;
                 }
 
+
+
+
                 if (!string.IsNullOrEmpty(DeployConfig.DockerConfig.RemoveDaysFromPublished))
                 {
                     this.t_docker_delete_days.Text = DeployConfig.DockerConfig.RemoveDaysFromPublished;
@@ -585,6 +588,13 @@ namespace AntDeployWinform.Winform
             this.checkBox_select_deploy_iis.Checked = PluginConfig.IISEnableSelectDeploy;
             this.txt_folder_deploy.Text = PluginConfig.DeployFolderPath;
             this.txt_http_proxy.Text = PluginConfig.DeployHttpProxy;
+
+            this.checkBoxdocker_rep_enable.Checked = PluginConfig.DockerServiceEnableUpload;
+            this.txt_docker_rep_domain.Text = PluginConfig.RepositoryUrl;
+            this.txt_docker_rep_name.Text = PluginConfig.RepositoryUserName;
+            this.txt_docker_rep_pwd.Text = PluginConfig.RepositoryUserPwd;
+            this.txt_docker_rep_namespace.Text = PluginConfig.RepositoryNameSpace;
+            this.txt_docker_rep_image.Text = PluginConfig.RepositoryImageName;
 
             this.txt_env_server_host.Text = string.Empty;
             this.txt_env_server_token.Text = string.Empty;
@@ -706,6 +716,15 @@ namespace AntDeployWinform.Winform
                 this.BindDockerEnvName = DeployConfig.DockerConfig.AspNetCoreEnv = this.txt_docker_envname.Text.Trim();
                 DeployConfig.DockerConfig.RemoveDaysFromPublished = this.t_docker_delete_days.Text.Trim();
                 this.BindDockerVolume = DeployConfig.DockerConfig.Volume = this.txt_docker_volume.Text.Trim();
+
+
+                PluginConfig.DockerServiceEnableUpload = this.checkBoxdocker_rep_enable.Checked;
+                PluginConfig.RepositoryUrl = this.txt_docker_rep_domain.Text.Trim();
+                PluginConfig.RepositoryUserName = this.txt_docker_rep_name.Text.Trim();
+                PluginConfig.RepositoryUserPwd = this.txt_docker_rep_pwd.Text.Trim();
+                PluginConfig.RepositoryNameSpace = this.txt_docker_rep_namespace.Text.Trim();
+                PluginConfig.RepositoryImageName = this.txt_docker_rep_image.Text.Trim();
+
 
                 if (!string.IsNullOrEmpty(ProjectConfigPath))
                 {
@@ -3333,6 +3352,11 @@ namespace AntDeployWinform.Winform
         {
             PluginConfig.DockerServiceEnableSelectDeploy = checkBox_select_deploy_docker.Checked;
         }
+
+        private void checkBoxdocker_rep_enable_Click(object sender, EventArgs e)
+        {
+            PluginConfig.DockerServiceEnableUpload = checkBoxdocker_rep_enable.Checked;
+        }
         #endregion
 
         #region windowsService page
@@ -5304,7 +5328,11 @@ namespace AntDeployWinform.Winform
                 DeployConfig.DockerConfig.Prot = "";
             }
 
-
+            PluginConfig.RepositoryUrl = this.txt_docker_rep_domain.Text.Trim();
+            PluginConfig.RepositoryUserName =  this.txt_docker_rep_name.Text.Trim();
+            PluginConfig.RepositoryUserPwd =this.txt_docker_rep_pwd.Text.Trim();
+            PluginConfig.RepositoryNameSpace =this.txt_docker_rep_namespace.Text.Trim();
+            PluginConfig.RepositoryImageName = this.txt_docker_rep_image.Text.Trim();
 
             var aspnetcoreEnvName = this.txt_docker_envname.Text.Trim();
             if (aspnetcoreEnvName.Length > 0)
@@ -5370,6 +5398,19 @@ namespace AntDeployWinform.Winform
             {
                 MessageBoxEx.Show(this,Strings.NowNetcoreProject);
                 return;
+            }
+
+            if (PluginConfig.DockerServiceEnableUpload)
+            {
+                if (string.IsNullOrEmpty(PluginConfig.RepositoryUrl) ||
+                    string.IsNullOrEmpty(PluginConfig.RepositoryUserName) ||
+                    string.IsNullOrEmpty(PluginConfig.RepositoryUserPwd) ||
+                    string.IsNullOrEmpty(PluginConfig.RepositoryNameSpace) ||
+                    string.IsNullOrEmpty(PluginConfig.RepositoryUserPwd))
+                {
+                    MessageBoxEx.Show(this, Strings.DockerRepositoryRequired);
+                    return;
+                }
             }
 
             //如果是特定文件夹发布 得选择一个入口dll
@@ -5758,7 +5799,13 @@ namespace AntDeployWinform.Winform
                            Volume = DeployConfig.DockerConfig.Volume,
                            Remark = confirmResult.Item2,
                            Increment = this.PluginConfig.DockerEnableIncrement || this.PluginConfig.DockerServiceEnableSelectDeploy,
-                           IsSelect = this.PluginConfig.DockerServiceEnableSelectDeploy
+                           IsSelect = this.PluginConfig.DockerServiceEnableSelectDeploy,
+                           DockerServiceEnableUpload = this.PluginConfig.DockerServiceEnableUpload,
+                           RepositoryUrl = this.PluginConfig.RepositoryUrl,
+                           RepositoryUserName = this.PluginConfig.RepositoryUserName,
+                           RepositoryUserPwd = this.PluginConfig.RepositoryUserPwd,
+                           RepositoryNameSpace = this.PluginConfig.RepositoryNameSpace,
+                           RepositoryImageName = this.PluginConfig.RepositoryImageName
                        })
                        {
                            var connectResult = sshClient.Connect();
@@ -6234,6 +6281,12 @@ namespace AntDeployWinform.Winform
                 this.combo_docker_env.Enabled = flag;
                 this.txt_docker_port.Enabled = flag;
                 this.txt_docker_envname.Enabled = flag;
+                this.txt_docker_rep_domain.Enabled = flag;
+                this.checkBoxdocker_rep_enable.Enabled = flag;
+                this.txt_docker_rep_name.Enabled = flag;
+                this.txt_docker_rep_pwd.Enabled = flag;
+                this.txt_docker_rep_namespace.Enabled = flag;
+                this.txt_docker_rep_image.Enabled = flag;
 
                 this.page_set.Enabled = flag;
                 this.page_window_service.Enabled = flag;
@@ -6479,7 +6532,7 @@ namespace AntDeployWinform.Winform
         private void checkBox_Chinese_Click(object sender, EventArgs e)
         {
             GlobalConfig.IsChinease = checkBox_Chinese.Checked;
-            MessageBoxEx.Show(this,"change success please reload antdeploy!");
+            MessageBoxEx.ShowOk(this,"change success please reload antdeploy!");
         }
 
         private void btn_choose_msbuild_Click(object sender, EventArgs e)
@@ -6948,6 +7001,6 @@ namespace AntDeployWinform.Winform
             });
         }
 
-        
+      
     }
 }

@@ -129,6 +129,9 @@
   <data name="DeployServerConfim" xml:space="preserve">
     <value>Are you sure to deploy to Server:</value>
   </data>
+  <data name="DockerRepositoryRequired" xml:space="preserve">
+    <value>please input Registry param!</value>
+  </data>
   <data name="EnvHaveNoServer" xml:space="preserve">
     <value>selected env have no server set yet</value>
   </data>

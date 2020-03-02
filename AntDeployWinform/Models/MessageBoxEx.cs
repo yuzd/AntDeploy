@@ -63,6 +63,12 @@ namespace AntDeployWinform.Models
             return MessageBox.Show(owner, text,"AntDeploy",MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
+        public static DialogResult ShowOk(IWin32Window owner, string text)
+        {
+            _owner = owner;
+            Initialize();
+            return MessageBox.Show(owner, text, "AntDeploy", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
         public static DialogResult Show(IWin32Window owner, string text, string caption)
         {
             _owner = owner;
