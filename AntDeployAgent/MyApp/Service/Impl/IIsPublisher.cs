@@ -113,6 +113,12 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                      return $"【Error】 : {isSiteExistResult.Item3}";
                 }
 
+                var tempPhysicalPath = string.Empty;
+                if (_useTempPhysicalPath)
+                {
+                    tempPhysicalPath = Path.Combine(_projectPublishFolder, "_deploy_");
+                }
+               
                 var iisVersion = IISHelper.GetIISVersion();
                 if(iisVersion>0) Log($"IIS_Version : {iisVersion} ");
                 if (!isSiteExistResult.Item1)//一级都不存在
@@ -179,7 +185,11 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
                         //复制文件到发布目录
                         CopyHelper.ProcessXcopy(deployFolder, level2Folder, Log);
-
+                        if (_useTempPhysicalPath)
+                        {
+                            EnsureProjectFolder(tempPhysicalPath);
+                            CopyHelper.ProcessXcopy(deployFolder, tempPhysicalPath, Log);
+                        }
                         Log($"copy files success from [{deployFolder}] to [{level2Folder}]");
                         return String.Empty;
                     }
@@ -188,7 +198,11 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                         //只需要一级 就是程序所在目录
                         //复制文件到发布目录
                         CopyHelper.ProcessXcopy(deployFolder, firstDeployFolder, Log);
-
+                        if (_useTempPhysicalPath)
+                        {
+                            EnsureProjectFolder(tempPhysicalPath);
+                            CopyHelper.ProcessXcopy(deployFolder, tempPhysicalPath, Log);
+                        }
                         Log($"copy files success from [{deployFolder}] to [{firstDeployFolder}]");
                         return String.Empty;
                     }
@@ -223,6 +237,12 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
                     //复制文件到发布目录
                     CopyHelper.ProcessXcopy(deployFolder, level2Folder, Log);
+
+                    if (_useTempPhysicalPath)
+                    {
+                        EnsureProjectFolder(tempPhysicalPath);
+                        CopyHelper.ProcessXcopy(deployFolder, tempPhysicalPath, Log);
+                    }
 
                     Log($"copy files success from [{deployFolder}] to [{level2Folder}]");
                     return String.Empty;
