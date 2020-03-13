@@ -14,8 +14,8 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
     class OperationsIIS : OperationsBase
     {
         private int retryTimes = 0;
-        public OperationsIIS(Arguments args,Action<string> log)
-            : base(args,log)
+        public OperationsIIS(Arguments args, Action<string> log)
+            : base(args, log)
         {
         }
 
@@ -94,7 +94,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
                 logger("ApplicationPool :" + this.args.ApplicationPoolName + " is already stoped！");
             }
 
-           
+
             logger("wait for IIS WebsiteStop 5sencods :" + this.args.SiteName);
             Thread.Sleep(5000);
             logger("Success to IIS WebsiteStop :" + this.args.SiteName);
@@ -102,12 +102,49 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
 
         public override void Deploy()
         {
+            if (args.UseTempPhysicalPath)
+            {
+                //先从iis站点 this.args.AppFolder 复制 到 当前 日期文件夹下的deploy文件夹  然后在 DeployFolder 复制到 日期文件夹下的deploy文件夹
+                var isSuccess = CopyHelper.ProcessXcopy(this.args.AppFolder, this.args.TempPhysicalPath, logger);
+
+                if (!isSuccess)
+                {
+                    logger($"【Error】Copy `{this.args.AppFolder}` to `{this.args.TempPhysicalPath}` fail");
+                    throw new Exception($"Copy `{this.args.AppFolder}` to `{this.args.TempPhysicalPath}` fail");
+                }
+
+                isSuccess = CopyHelper.ProcessXcopy(this.args.DeployFolder, this.args.TempPhysicalPath, logger);
+
+                if (!isSuccess)
+                {
+                    logger($"【Error】Copy `{this.args.DeployFolder}` to `{this.args.TempPhysicalPath}` fail");
+                    throw new Exception($"Copy `{this.args.DeployFolder}` to `{this.args.TempPhysicalPath}` fail");
+                }
+
+                //修改物理路径
+                var err = IISHelper.ChangePhysicalPath(this.args.Site1,this.args.Site2, this.args.TempPhysicalPath);
+                if (!string.IsNullOrEmpty(err))
+                {
+                    logger($"【Error】Change `{this.args.SiteName}` physicalPath to `{this.args.TempPhysicalPath}` fail");
+                    throw new Exception($"【Error】Change `{this.args.SiteName}` physicalPath to `{this.args.TempPhysicalPath}` fail");
+                }
+
+                //回收一下
+                var r1 = ProcessHepler.RunAppCmd($"recycle apppool /apppool.name:\"{this.args.ApplicationPoolName}\"", logger);
+                logger($"recycle apppool /apppool.name:{this.args.ApplicationPoolName} ===> {(r1 ? "Success" : "Fail")}");
+
+                return;
+            }
+
+
             try
             {
                 if (args.UseOfflineHtm)
                 {
                     try
                     {
+
+
                         var createErr = IISHelper.CreateAppOffineHtm(this.args.AppFolder);
                         if (!string.IsNullOrEmpty(createErr))
                         {
@@ -120,8 +157,15 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
                         //创建了app_offline.htm成功后 iis会解除占用
 
                         //执行copy
-                        base.Deploy();
 
+                        if (args.UseTempPhysicalPath)
+                        {
+
+                        }
+                        else
+                        {
+                            base.Deploy();
+                        }
                     }
                     finally
                     {
@@ -147,13 +191,15 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
                 Thread.Sleep(5000);
                 if (retryTimes > 3)
                 {
-                    //执行终极方法
+                    //执行终极方法 执行pool的回收 因为每个应用的pool是唯一的情况下 不会影响别的站点
                     var r1 = ProcessHepler.RunAppCmd($"recycle apppool /apppool.name:\"{this.args.ApplicationPoolName}\"", logger);
                     logger($"recycle apppool /apppool.name:{this.args.ApplicationPoolName} ===> {(r1 ? "Success" : "Fail")}");
                     var r2 = ProcessHepler.RunAppCmd($"stop apppool /apppool.name:\"{this.args.ApplicationPoolName}\"", logger);
                     logger($"stop apppool /apppool.name:{this.args.ApplicationPoolName} ===> {(r2 ? "Success" : "Fail")}");
-                    var r3 = ProcessHepler.RunAppCmd($"stop site /site.name:\"{this.args.SiteName}\"", logger);
-                    logger($"stop site /site.name:{this.args.SiteName} ===> {(r3 ? "Success" : "Fail")}");
+
+                    // 直接关闭站点可能会影响其他的站点
+                    //var r3 = ProcessHepler.RunAppCmd($"stop site /site.name:\"{this.args.SiteName}\"", logger);
+                    //logger($"stop site /site.name:{this.args.SiteName} ===> {(r3 ? "Success" : "Fail")}");
 
                     logger("Wait 5Senconds to Try deploy again");
                     Thread.Sleep(5000);
@@ -167,7 +213,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
                         logger("【Error】Retry Copy Limit ");
                         throw;
                     }
-                   
+
                 }
 
                 Deploy();

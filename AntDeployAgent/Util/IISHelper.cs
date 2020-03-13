@@ -228,7 +228,7 @@ namespace AntDeployAgentWindows.Util
         }
 
 
-        public static string InstallSite(string name, string siteLocation, string port = "80", string poolName = null, bool isnetcore = false)
+        public static string InstallSite(string name, string siteLocation, string port = "80", string poolName = null, bool isnetcore = false, bool alwayRunning = false)
         {
             try
             {
@@ -245,6 +245,33 @@ namespace AntDeployAgentWindows.Util
                             ApplicationPool newPool = iisManager.ApplicationPools.Add(poolName);
                             newPool.ManagedRuntimeVersion = !isnetcore ? "v4.0" : null;
                             newPool.ManagedPipelineMode = ManagedPipelineMode.Integrated;
+
+
+                            if (alwayRunning)
+                            {
+                                //command: C:\Windows\System32\inetsrv\appcmd.exe set APPPOOL Ctrip.offline / "recycling.logEventOnRecycle":"Time,Requests,Schedule,Memory,IsapiUnhealthy,OnDemand,ConfigChange,PrivateMemory" / "recycling.periodicRestart.time":"00:00:00" / "startMode":"AlwaysRunning" / "recycling.disallowOverlappingRotation":"False" / "processModel.idleTimeout":"00:00:00" / "recycling.disallowRotationOnConfigChange":"False" / "managedRuntimeVersion":"v4.0"
+
+                                //设置pool不自动回收
+                                newPool.Recycling.LogEventOnRecycle = RecyclingLogEventOnRecycle.Time |
+                                                                      RecyclingLogEventOnRecycle.Requests |
+                                                                      RecyclingLogEventOnRecycle.Schedule |
+                                                                      RecyclingLogEventOnRecycle.Memory |
+                                                                      RecyclingLogEventOnRecycle.IsapiUnhealthy |
+                                                                      RecyclingLogEventOnRecycle.OnDemand |
+                                                                      RecyclingLogEventOnRecycle.ConfigChange |
+                                                                      RecyclingLogEventOnRecycle.PrivateMemory;
+
+
+                                newPool.Recycling.PeriodicRestart.Time = TimeSpan.Zero;
+
+                                newPool.StartMode = StartMode.AlwaysRunning;
+
+                                newPool.Recycling.DisallowOverlappingRotation = false;
+
+                                newPool.ProcessModel.IdleTimeout = TimeSpan.Zero;
+
+                                newPool.Recycling.DisallowRotationOnConfigChange = false;
+                            }
                         }
                     }
 
@@ -259,7 +286,7 @@ namespace AntDeployAgentWindows.Util
             }
         }
 
-        public static string InstallVirtualSite(string sitename, string virtualPath, string siteLocation, string poolName = null, bool isnetcore = false)
+        public static string InstallVirtualSite(string sitename, string virtualPath, string siteLocation, string poolName = null, bool isnetcore = false,bool alwayRunning = false)
         {
             try
             {
@@ -282,6 +309,33 @@ namespace AntDeployAgentWindows.Util
                             ApplicationPool newPool = iisManager.ApplicationPools.Add(poolName);
                             newPool.ManagedRuntimeVersion = !isnetcore ? "v4.0" : null;
                             newPool.ManagedPipelineMode = ManagedPipelineMode.Integrated;
+
+                            if (alwayRunning)
+                            {
+                                //command: C:\Windows\System32\inetsrv\appcmd.exe set APPPOOL Ctrip.offline / "recycling.logEventOnRecycle":"Time,Requests,Schedule,Memory,IsapiUnhealthy,OnDemand,ConfigChange,PrivateMemory" / "recycling.periodicRestart.time":"00:00:00" / "startMode":"AlwaysRunning" / "recycling.disallowOverlappingRotation":"False" / "processModel.idleTimeout":"00:00:00" / "recycling.disallowRotationOnConfigChange":"False" / "managedRuntimeVersion":"v4.0"
+
+                                //设置pool不自动回收
+                                newPool.Recycling.LogEventOnRecycle = RecyclingLogEventOnRecycle.Time |
+                                                                      RecyclingLogEventOnRecycle.Requests |
+                                                                      RecyclingLogEventOnRecycle.Schedule |
+                                                                      RecyclingLogEventOnRecycle.Memory |
+                                                                      RecyclingLogEventOnRecycle.IsapiUnhealthy |
+                                                                      RecyclingLogEventOnRecycle.OnDemand |
+                                                                      RecyclingLogEventOnRecycle.ConfigChange |
+                                                                      RecyclingLogEventOnRecycle.PrivateMemory;
+
+
+                                newPool.Recycling.PeriodicRestart.Time = TimeSpan.Zero;
+
+                                newPool.StartMode = StartMode.AlwaysRunning;
+
+                                newPool.Recycling.DisallowOverlappingRotation = false;
+
+                                newPool.ProcessModel.IdleTimeout = TimeSpan.Zero;
+
+                                newPool.Recycling.DisallowRotationOnConfigChange = false;
+                            }
+                           
                         }
 
                         application.ApplicationPoolName = poolName;
@@ -402,6 +456,55 @@ namespace AntDeployAgentWindows.Util
             {
                 log("get iis info err:" + ex.Message);
                 return null;
+            }
+        }
+
+        /// <summary>
+        /// 更改物理路径
+        /// </summary>
+        /// <returns></returns>
+        public static string ChangePhysicalPath(string name, string sitename, string path)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(sitename))
+                {
+                    sitename = "/";
+                }
+
+                if (!sitename.StartsWith("/"))
+                {
+                    sitename = "/" + sitename;
+                }
+
+                if (IsDefaultWebSite(name))
+                {
+                    name = "Default Web Site";
+                }
+
+                ServerManager oMan = new ServerManager();
+                var siteList = oMan.Sites.ToList();
+                var site = siteList.Where(r => r.Name.ToLower().Equals(name.ToLower())).ToList();
+                if (site.Count == 0)
+                {
+                    return "site can not found:" + name;
+                }
+
+                var target = site[0];
+
+                var applicationRoot = target.Applications.FirstOrDefault(r => r.Path.ToLower().Equals(sitename.ToLower()));
+                if (applicationRoot == null)
+                {
+                    return $"can not found {sitename} in {name}" ;
+                }
+
+                applicationRoot.VirtualDirectories[0].PhysicalPath = path;
+                oMan.CommitChanges();
+                return string.Empty;
+            }
+            catch (Exception e)
+            {
+                return e.Message;
             }
         }
 

@@ -1647,7 +1647,7 @@ namespace AntDeployWinform.Winform
             var Port = "";
             var PoolName = "";
             var PhysicalPath = "";
-
+            bool PoolAlwaysRunning = false;
             var serverList = DeployConfig.Env.Where(r => r.Name.Equals(envName)).Select(r => r.ServerList)
                 .FirstOrDefault();
 
@@ -1696,11 +1696,14 @@ namespace AntDeployWinform.Winform
                 var gitPath = string.Empty;
                 var webFolderName = string.Empty;
                 var isRuningSelectDeploy = false;
+                var isNetcore = DeployConfig.IIsConfig.SdkType.Equals("netcore");
+
+                var publishPath = !string.IsNullOrEmpty(PluginConfig.DeployFolderPath) ? PluginConfig.DeployFolderPath : Path.Combine(ProjectFolderPath, "bin", "Release", "deploy_iis", envName);
+
+                var dateTimeFolderNameParent = string.Empty;
                 try
                 {
-                    var isNetcore = DeployConfig.IIsConfig.SdkType.Equals("netcore");
-
-                    var publishPath = !string.IsNullOrEmpty(PluginConfig.DeployFolderPath) ? PluginConfig.DeployFolderPath : Path.Combine(ProjectFolderPath, "bin", "Release", "deploy_iis", envName);
+                 
                     if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath))
                     {
                         var path = publishPath + "\\";
@@ -1816,7 +1819,7 @@ namespace AntDeployWinform.Winform
                                 var slectFileForm = new SelectFile(fileList, publishPath);
                                 slectFileForm.ShowDialog();
                                 // ReSharper disable once AccessToDisposedClosure
-                                DoSelectDeployIIS(slectFileForm.SelectedFileList, publishPath, serverList, backUpIgnoreList, Port, PoolName, PhysicalPath, gitModel, confirmResult.Item2);
+                                DoSelectDeployIIS(slectFileForm.SelectedFileList, publishPath, serverList, backUpIgnoreList, Port, PoolName, PhysicalPath,PoolAlwaysRunning, gitModel, confirmResult.Item2);
                             });
                             return;
                         }
@@ -1847,7 +1850,7 @@ namespace AntDeployWinform.Winform
                         {
                             var slectFileForm = new SelectFile(publishPath);
                             slectFileForm.ShowDialog();
-                            DoSelectDeployIIS(slectFileForm.SelectedFileList, publishPath, serverList, backUpIgnoreList, Port, PoolName, PhysicalPath, null, confirmResult.Item2);
+                            DoSelectDeployIIS(slectFileForm.SelectedFileList, publishPath, serverList, backUpIgnoreList, Port, PoolName, PhysicalPath,PoolAlwaysRunning, null, confirmResult.Item2);
                         });
 
 
@@ -1887,7 +1890,7 @@ namespace AntDeployWinform.Winform
                     var loggerId = Guid.NewGuid().ToString("N");
                     //执行 上传
                     this.nlog_iis.Info("-----------------Deploy Start-----------------");
-                    var dateTimeFolderNameParent = DateTime.Now.ToString("yyyyMMddHHmmss");
+                    dateTimeFolderNameParent = DateTime.Now.ToString("yyyyMMddHHmmss");
                     var allfailServerList = new List<Server>();
                     var retryTimes = 0;
                 RETRY_IIS:
@@ -2033,7 +2036,8 @@ namespace AntDeployWinform.Winform
                                 Port = _CreateParam.Port;
                                 PhysicalPath = _CreateParam.PhysicalPath;
                                 PoolName = _CreateParam.PoolName;
-                                this.nlog_iis.Info($"Website Create Port:{Port},PoolName:{PoolName},PhysicalPath:{PhysicalPath}");
+                                PoolAlwaysRunning = _CreateParam.PoolAlwaysRunning;
+                                this.nlog_iis.Info($"Website Create Port:{Port},PoolName:{PoolName},PhysicalPath:{PhysicalPath},PoolAlwaysRunning:{PoolAlwaysRunning}");
                             }
                         }
                         else if (!checkIisResult.Data.Level2Exist)
@@ -2078,7 +2082,8 @@ namespace AntDeployWinform.Winform
                                 Port = _CreateParam.Port;
                                 PhysicalPath = _CreateParam.PhysicalPath;
                                 PoolName = _CreateParam.PoolName;
-                                this.nlog_iis.Info($"Website Create Port:{Port},PoolName:{PoolName},PhysicalPath:{PhysicalPath}");
+                                PoolAlwaysRunning = _CreateParam.PoolAlwaysRunning;
+                                this.nlog_iis.Info($"Website Create Port:{Port},PoolName:{PoolName},PhysicalPath:{PhysicalPath},PoolAlwaysRunning:{PoolAlwaysRunning}");
                             }
                         }
 
@@ -2095,12 +2100,13 @@ namespace AntDeployWinform.Winform
                         httpRequestClient.SetFieldValue("port", Port);
                         httpRequestClient.SetFieldValue("id", loggerId);
                         httpRequestClient.SetFieldValue("poolName", PoolName);
+                        httpRequestClient.SetFieldValue("poolAlwaysRunning", PoolAlwaysRunning ? "true" : "");
                         httpRequestClient.SetFieldValue("physicalPath", PhysicalPath);
                         httpRequestClient.SetFieldValue("webSiteName", DeployConfig.IIsConfig.WebSiteName);
                         httpRequestClient.SetFieldValue("deployFolderName", dateTimeFolderName);
                         httpRequestClient.SetFieldValue("Token", server.Token);
                         httpRequestClient.SetFieldValue("remark", confirmResult.Item2);
-                        httpRequestClient.SetFieldValue("isNoStopWebSite", PluginConfig.IISEnableNotStopSiteDeploy ? "true" : "");
+                        httpRequestClient.SetFieldValue("useTempPhysicalPath", PluginConfig.IISEnableNotStopSiteDeploy ? "true" : "");
                         httpRequestClient.SetFieldValue("useOfflineHtm", PluginConfig.IISEnableUseOfflineHtm ? "true" : "");
                         httpRequestClient.SetFieldValue("mac", CodingHelper.GetMacAddress());
                         httpRequestClient.SetFieldValue("pc", System.Environment.MachineName);
@@ -2262,8 +2268,6 @@ namespace AntDeployWinform.Winform
                     this.nlog_iis.Info($"-----------------Deploy End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
                     zipBytes = null;
 
-                    //记录发布日志
-                    SaveLog(publishPath, dateTimeFolderNameParent, nlog_iis);
                 }
                 catch (Exception ex1)
                 {
@@ -2273,6 +2277,9 @@ namespace AntDeployWinform.Winform
                 {
                     if (!isRuningSelectDeploy)
                     {
+                        //记录发布日志
+                        SaveLog(publishPath, dateTimeFolderNameParent, nlog_iis);
+
                         ProgressPercentage = 0;
                         ProgressCurrentHost = null;
                         Enable(true);
@@ -2292,7 +2299,7 @@ namespace AntDeployWinform.Winform
             {
                 if (!GlobalConfig.SaveLogs) return;
 
-                if (!Directory.Exists(publishPath))
+                if (string.IsNullOrEmpty(publishPath) ||string.IsNullOrEmpty(dateTimeFolderNameParent) || !Directory.Exists(publishPath))
                 {
                     return;
                 }
@@ -2338,12 +2345,13 @@ namespace AntDeployWinform.Winform
             }
         }
 
-        private void DoSelectDeployIIS(List<string> fileList, string publishPath, List<Server> serverList, List<string> backUpIgnoreList, string Port, string PoolName, string PhysicalPath, GitClient gitModel, string remark)
+        private void DoSelectDeployIIS(List<string> fileList, string publishPath, List<Server> serverList, List<string> backUpIgnoreList, string Port, string PoolName, string PhysicalPath,bool alwaysRun, GitClient gitModel, string remark)
         {
             try
             {
                 new Task(async () =>
                 {
+                    var dateTimeFolderNameParent = string.Empty;
                     try
                     {
                         if (stop_iis_cancel_token)
@@ -2390,7 +2398,7 @@ namespace AntDeployWinform.Winform
                         var loggerId = Guid.NewGuid().ToString("N");
                         //执行 上传
                         this.nlog_iis.Info("-----------------Deploy Start-----------------");
-                        var dateTimeFolderNameParent = DateTime.Now.ToString("yyyyMMddHHmmss");
+                        dateTimeFolderNameParent = DateTime.Now.ToString("yyyyMMddHHmmss");
                         var allfailServerList = new List<Server>();
                         var retryTimes = 0;
                     RETRY_IIS2:
@@ -2498,9 +2506,10 @@ namespace AntDeployWinform.Winform
                             httpRequestClient.SetFieldValue("localIp", CodingHelper.GetLocalIPAddress());
                             httpRequestClient.SetFieldValue("poolName", PoolName);
                             httpRequestClient.SetFieldValue("physicalPath", PhysicalPath);
+                            httpRequestClient.SetFieldValue("poolAlwaysRunning", alwaysRun ? "true" : "");
                             httpRequestClient.SetFieldValue("webSiteName", DeployConfig.IIsConfig.WebSiteName);
                             httpRequestClient.SetFieldValue("deployFolderName", dateTimeFolderName);
-                            httpRequestClient.SetFieldValue("isNoStopWebSite", PluginConfig.IISEnableNotStopSiteDeploy ? "true" : "");
+                            httpRequestClient.SetFieldValue("useTempPhysicalPath", PluginConfig.IISEnableNotStopSiteDeploy ? "true" : "");
                             httpRequestClient.SetFieldValue("useOfflineHtm", PluginConfig.IISEnableUseOfflineHtm ? "true" : "");
                             httpRequestClient.SetFieldValue("Token", server.Token);
                             httpRequestClient.SetFieldValue("backUpIgnore", (backUpIgnoreList != null && backUpIgnoreList.Any()) ? string.Join("@_@", backUpIgnoreList) : "");
@@ -2648,8 +2657,6 @@ namespace AntDeployWinform.Winform
                         this.nlog_iis.Log(publisEvent2);
                         this.nlog_iis.Info($"-----------------Deploy End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
                         zipBytes = null;
-                        //记录发布日志
-                        SaveLog(publishPath, dateTimeFolderNameParent, nlog_iis);
                     }
                     catch (Exception ex1)
                     {
@@ -2657,7 +2664,8 @@ namespace AntDeployWinform.Winform
                     }
                     finally
                     {
-
+                        //记录发布日志
+                        SaveLog(publishPath, dateTimeFolderNameParent, nlog_iis);
                         ProgressPercentage = 0;
                         ProgressCurrentHost = null;
                         Enable(true);
@@ -3732,11 +3740,12 @@ namespace AntDeployWinform.Winform
                 EnableForWindowsService(false); //第一台开始编译
                 GitClient gitModel = null;
                 var isRuningSelectDeploy = false;
-
+                var isNetcore = DeployConfig.WindowsServiveConfig.SdkType.Equals("netcore");
+                var publishPath = !string.IsNullOrEmpty(PluginConfig.DeployFolderPath) ? PluginConfig.DeployFolderPath : Path.Combine(ProjectFolderPath, "bin", "Release", "deploy_winservice", envName);
+                var dateTimeFolderNameParent = string.Empty;
                 try
                 {
-                    var isNetcore = DeployConfig.WindowsServiveConfig.SdkType.Equals("netcore");
-                    var publishPath = !string.IsNullOrEmpty(PluginConfig.DeployFolderPath) ? PluginConfig.DeployFolderPath : Path.Combine(ProjectFolderPath, "bin", "Release", "deploy_winservice", envName);
+                  
                     if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath))
                     {
                         var path = publishPath + "\\";
@@ -3969,7 +3978,7 @@ namespace AntDeployWinform.Winform
                     var loggerId = Guid.NewGuid().ToString("N");
                     //执行 上传
                     this.nlog_windowservice.Info("-----------------Deploy Start-----------------");
-                    var dateTimeFolderNameParent = DateTime.Now.ToString("yyyyMMddHHmmss");
+                    dateTimeFolderNameParent = DateTime.Now.ToString("yyyyMMddHHmmss");
                     var retryTimes = 0;
                     var allfailServerList = new List<Server>();
                 RETRY_WINDOWSSERVICE:
@@ -4314,8 +4323,6 @@ namespace AntDeployWinform.Winform
                     publisEvent2.LoggerName = "rich_windowservice_log";
                     this.nlog_windowservice.Log(publisEvent2);
                     this.nlog_windowservice.Info($"-----------------Deploy End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
-                    //记录发布日志
-                    SaveLog(publishPath, dateTimeFolderNameParent, nlog_windowservice);
                 }
                 catch (Exception ex1)
                 {
@@ -4323,6 +4330,9 @@ namespace AntDeployWinform.Winform
                 }
                 finally
                 {
+                    //记录发布日志
+                    SaveLog(publishPath, dateTimeFolderNameParent, nlog_windowservice);
+
                     if (!isRuningSelectDeploy)
                     {
                         ProgressPercentageForWindowsService = 0;
@@ -4343,6 +4353,7 @@ namespace AntDeployWinform.Winform
         {
             new Task(async () =>
             {
+                var dateTimeFolderNameParent = string.Empty;
                 try
                 {
                     if (stop_windows_cancel_token)
@@ -4390,7 +4401,7 @@ namespace AntDeployWinform.Winform
                     var loggerId = Guid.NewGuid().ToString("N");
                     //执行 上传
                     this.nlog_windowservice.Info("-----------------Deploy Start-----------------");
-                    var dateTimeFolderNameParent = DateTime.Now.ToString("yyyyMMddHHmmss");
+                    dateTimeFolderNameParent = DateTime.Now.ToString("yyyyMMddHHmmss");
                     var retryTimes = 0;
                     var allfailServerList = new List<Server>();
                 RETRY_WINDOWSSERVICE2:
@@ -4599,8 +4610,7 @@ namespace AntDeployWinform.Winform
                     publisEvent2.LoggerName = "rich_windowservice_log";
                     this.nlog_windowservice.Log(publisEvent2);
                     this.nlog_windowservice.Info($"-----------------Deploy End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
-                    //记录发布日志
-                    SaveLog(publishPath, dateTimeFolderNameParent, nlog_windowservice);
+                  
                 }
                 catch (Exception ex1)
                 {
@@ -4608,6 +4618,8 @@ namespace AntDeployWinform.Winform
                 }
                 finally
                 {
+                    //记录发布日志
+                    SaveLog(publishPath, dateTimeFolderNameParent, nlog_windowservice);
                     ProgressPercentageForWindowsService = 0;
                     ProgressCurrentHostForWindowsService = null;
                     EnableForWindowsService(true);
@@ -5471,9 +5483,11 @@ namespace AntDeployWinform.Winform
                PrintCommonLog(this.nlog_docker);
                EnableForDocker(false);
                GitClient gitModel = null;
+               var publishPath = !string.IsNullOrEmpty(PluginConfig.DeployFolderPath) ? PluginConfig.DeployFolderPath : Path.Combine(ProjectFolderPath, "bin", "Release", "deploy_docker", envName);
+               var clientDateTimeFolderNameParent = string.Empty;
                try
                {
-                   var publishPath = !string.IsNullOrEmpty(PluginConfig.DeployFolderPath) ? PluginConfig.DeployFolderPath : Path.Combine(ProjectFolderPath, "bin", "Release", "deploy_docker", envName);
+                  
                    if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath))
                    {
                        var path = publishPath + "\\";
@@ -5692,7 +5706,7 @@ namespace AntDeployWinform.Winform
                    this.nlog_docker.Info($"package success,package size:{(packageSize > 0 ? (packageSize + "") : "<1")}M");
                    //执行 上传
                    this.nlog_docker.Info("-----------------Deploy Start-----------------");
-                   var clientDateTimeFolderNameParent = DateTime.Now.ToString("yyyyMMddHHmmss");
+                   clientDateTimeFolderNameParent = DateTime.Now.ToString("yyyyMMddHHmmss");
                    var clientDateTimeFolderName = string.Empty;
                    var retryTimes = 0;
                    var allfailServerList = new List<LinuxServer>();
@@ -5921,9 +5935,7 @@ namespace AntDeployWinform.Winform
                    publisEvent2.LoggerName = "rich_docker_log";
                    this.nlog_docker.Log(publisEvent2);
                    this.nlog_docker.Info($"-----------------Deploy End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
-
-                   //记录发布日志
-                   SaveLog(publishPath, clientDateTimeFolderNameParent, nlog_docker);
+                 
                }
                catch (Exception ex1)
                {
@@ -5931,6 +5943,8 @@ namespace AntDeployWinform.Winform
                }
                finally
                {
+                   //记录发布日志
+                   SaveLog(publishPath, clientDateTimeFolderNameParent, nlog_docker);
                    EnableForDocker(true);
                }
 

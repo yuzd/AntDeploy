@@ -306,9 +306,6 @@
   <data name="&gt;&gt;tabPage_docker.Type" xml:space="preserve">
     <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="txt_env_server_host.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
-  </data>
   <data name="&gt;&gt;t_docker_delete_days.ZOrder" xml:space="preserve">
     <value>6</value>
   </data>
@@ -675,6 +672,9 @@
   <data name="progress_window_service_tip.Location" type="System.Drawing.Point, System.Drawing">
     <value>132, 59</value>
   </data>
+  <data name="checkBox_iis_use_offlinehtm.TabIndex" type="System.Int32, mscorlib">
+    <value>38</value>
+  </data>
   <data name="&gt;&gt;page_web_iis.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
@@ -993,17 +993,14 @@
   <data name="&gt;&gt;groupBoxIgnore.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
-  <data name="checkBox_save_deploy_log.TabIndex" type="System.Int32, mscorlib">
-    <value>50</value>
+  <data name="label21.Size" type="System.Drawing.Size, System.Drawing">
+    <value>35, 12</value>
   </data>
   <data name="&gt;&gt;label34.ZOrder" xml:space="preserve">
     <value>11</value>
   </data>
   <data name="&gt;&gt;rich_iis_log.ZOrder" xml:space="preserve">
     <value>0</value>
-  </data>
-  <data name="label2.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
   </data>
   <data name="&gt;&gt;label27.ZOrder" xml:space="preserve">
     <value>2</value>
@@ -1137,8 +1134,8 @@
   <data name="&gt;&gt;label30.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
-  <data name="label30.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
+  <data name="txt_env_server_host.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
   </data>
   <data name="&gt;&gt;label23.ZOrder" xml:space="preserve">
     <value>5</value>
@@ -1224,8 +1221,8 @@
   <data name="label10.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="&gt;&gt;pag_advance_setting.ZOrder" xml:space="preserve">
-    <value>4</value>
+  <data name="checkBox_Increment_docker.TabIndex" type="System.Int32, mscorlib">
+    <value>38</value>
   </data>
   <data name="&gt;&gt;btn_docker_retry.Type" xml:space="preserve">
     <value>AltoControls.AltoButton, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -1418,9 +1415,6 @@
   </data>
   <data name="&gt;&gt;combo_windowservice_sdk_type.ZOrder" xml:space="preserve">
     <value>9</value>
-  </data>
-  <data name="combo_netcore_publish_mode.Items" xml:space="preserve">
-    <value>FDD(runtime)</value>
   </data>
   <data name="loading_win_server_test.Location" type="System.Drawing.Point, System.Drawing">
     <value>222, 6</value>
@@ -1980,9 +1974,6 @@
   <data name="&gt;&gt;txt_env_name.Type" xml:space="preserve">
     <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;label8.ZOrder" xml:space="preserve">
-    <value>11</value>
-  </data>
   <data name="&gt;&gt;b_linux_server_remove.Name" xml:space="preserve">
     <value>b_linux_server_remove</value>
   </data>
@@ -2108,6 +2099,9 @@
   </data>
   <data name="&gt;&gt;txt_http_proxy.ZOrder" xml:space="preserve">
     <value>3</value>
+  </data>
+  <data name="&gt;&gt;label37.ZOrder" xml:space="preserve">
+    <value>14</value>
   </data>
   <data name="label19.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -2247,8 +2241,8 @@
   <data name="&gt;&gt;b_copy_backup_ignore.Name" xml:space="preserve">
     <value>b_copy_backup_ignore</value>
   </data>
-  <data name="checkBox_Increment_docker.TabIndex" type="System.Int32, mscorlib">
-    <value>38</value>
+  <data name="btn_choose_msbuild.Size" type="System.Drawing.Size, System.Drawing">
+    <value>69, 27</value>
   </data>
   <data name="btn_windows_serivce_stop.Visible" type="System.Boolean, mscorlib">
     <value>False</value>
@@ -2315,6 +2309,9 @@
   </data>
   <data name="&gt;&gt;groupBoxIgnore.Parent" xml:space="preserve">
     <value>page_set</value>
+  </data>
+  <data name="checkBox_save_deploy_log.TabIndex" type="System.Int32, mscorlib">
+    <value>50</value>
   </data>
   <data name="label28.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -2408,9 +2405,6 @@
   </data>
   <data name="&gt;&gt;rich_windowservice_log.Type" xml:space="preserve">
     <value>AntDeployWinform.ExRichTextBox, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="label21.Size" type="System.Drawing.Size, System.Drawing">
-    <value>35, 12</value>
   </data>
   <data name="tabPage_docker_log.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>3, 3, 3, 3</value>
@@ -2528,9 +2522,6 @@
   </data>
   <data name="label37.Location" type="System.Drawing.Point, System.Drawing">
     <value>49, 237</value>
-  </data>
-  <data name="btn_choose_msbuild.Size" type="System.Drawing.Size, System.Drawing">
-    <value>69, 27</value>
   </data>
   <data name="&gt;&gt;environment.Type" xml:space="preserve">
     <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -2838,6 +2829,9 @@
   <data name="btn_shang.Font" type="System.Drawing.Font, System.Drawing">
     <value>Comic Sans MS, 10pt, style=Bold</value>
   </data>
+  <data name="&gt;&gt;label43.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
   <data name="checkBox_iis_restart_site.TabIndex" type="System.Int32, mscorlib">
     <value>37</value>
   </data>
@@ -3089,6 +3083,9 @@
   </data>
   <data name="&gt;&gt;combo_netcore_publish_mode.Type" xml:space="preserve">
     <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label30.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="combo_iis_sdk_type.Items" xml:space="preserve">
     <value>netframework</value>
@@ -3350,6 +3347,9 @@
   </data>
   <data name="label44.Location" type="System.Drawing.Point, System.Drawing">
     <value>139, 175</value>
+  </data>
+  <data name="&gt;&gt;pag_advance_setting.ZOrder" xml:space="preserve">
+    <value>4</value>
   </data>
   <data name="label37.TabIndex" type="System.Int32, mscorlib">
     <value>34</value>
@@ -3732,8 +3732,8 @@
   <data name="&gt;&gt;combo_linux_server_list.Type" xml:space="preserve">
     <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;label29.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;btn_iis_retry.Name" xml:space="preserve">
+    <value>btn_iis_retry</value>
   </data>
   <data name="&gt;&gt;label7.ZOrder" xml:space="preserve">
     <value>13</value>
@@ -3834,8 +3834,8 @@
   <data name="&gt;&gt;label2.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;label43.ZOrder" xml:space="preserve">
-    <value>4</value>
+  <data name="&gt;&gt;label29.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="checkBox_Increment_docker.Text" xml:space="preserve">
     <value>Increment Deploy</value>
@@ -3843,8 +3843,8 @@
   <data name="&gt;&gt;label40.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;label37.ZOrder" xml:space="preserve">
-    <value>14</value>
+  <data name="combo_netcore_publish_mode.Items" xml:space="preserve">
+    <value>FDD(runtime)</value>
   </data>
   <data name="label12.TabIndex" type="System.Int32, mscorlib">
     <value>16</value>
@@ -3875,9 +3875,6 @@
   </data>
   <data name="label5.Text" xml:space="preserve">
     <value>Server List：</value>
-  </data>
-  <data name="&gt;&gt;btn_iis_retry.Name" xml:space="preserve">
-    <value>btn_iis_retry</value>
   </data>
   <data name="&gt;&gt;label41.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -4017,8 +4014,8 @@
   <data name="&gt;&gt;txt_env_ignore.Name" xml:space="preserve">
     <value>txt_env_ignore</value>
   </data>
-  <data name="label42.TabIndex" type="System.Int32, mscorlib">
-    <value>40</value>
+  <data name="&gt;&gt;label8.ZOrder" xml:space="preserve">
+    <value>11</value>
   </data>
   <data name="&gt;&gt;b_env_ignore_remove.Name" xml:space="preserve">
     <value>b_env_ignore_remove</value>
@@ -4094,6 +4091,9 @@
   </data>
   <data name="label6.Location" type="System.Drawing.Point, System.Drawing">
     <value>98, 20</value>
+  </data>
+  <data name="label42.TabIndex" type="System.Int32, mscorlib">
+    <value>40</value>
   </data>
   <data name="&gt;&gt;label43.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -4290,8 +4290,8 @@
   <data name="b_env_server_remove.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="checkBox_iis_use_offlinehtm.TabIndex" type="System.Int32, mscorlib">
-    <value>38</value>
+  <data name="label2.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
   <data name="environment.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -4499,8 +4499,5 @@
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
-  </metadata>
-  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>zh-CN</value>
   </metadata>
 </root>

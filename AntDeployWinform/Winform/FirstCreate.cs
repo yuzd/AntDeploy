@@ -61,7 +61,8 @@ namespace AntDeployWinform.Winform
             {
                 Port = this.txt_iis_port.Text.Trim(),
                 PhysicalPath = this.txt_iis_PhysicalPath.Text.Trim(),
-                PoolName = this.txt_pool_name.Text.Trim()
+                PoolName = this.txt_pool_name.Text.Trim(),
+                PoolAlwaysRunning = this.chk_pool_alwaysRuning.Checked
             };
             this.DialogResult = DialogResult.OK;
         }

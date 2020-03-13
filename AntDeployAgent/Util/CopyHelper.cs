@@ -60,11 +60,10 @@ namespace AntDeployAgentWindows.Util
         /// <param name="TargetDirectory"></param>
         /// <param name="logger"></param>
         /// <returns></returns>
-        public static void ProcessXcopy(string SolutionDirectory, string TargetDirectory,Action<string> logger = null)
+        public static bool ProcessXcopy(string SolutionDirectory, string TargetDirectory,Action<string> logger = null)
         {
-            RunCommand($" xcopy " + "\"" + SolutionDirectory + "\"" + " " + "\"" + TargetDirectory + "\"" +
+            return RunCommand($" xcopy " + "\"" + SolutionDirectory + "\"" + " " + "\"" + TargetDirectory + "\"" +
                        @" /s /e /Q /Y /I",null, logger);
-            return;
 
             //ProcessStartInfo startInfo = new ProcessStartInfo();
             //startInfo.CreateNoWindow = false;
@@ -114,7 +113,7 @@ namespace AntDeployAgentWindows.Util
         /// <param name="commandToRun"></param>
         /// <param name="workingDirectory"></param>
         /// <param name="logger"></param>
-        public static void RunCommand(string commandToRun, string workingDirectory = null, Action<string> logger = null)
+        public static bool RunCommand(string commandToRun, string workingDirectory = null, Action<string> logger = null)
         {
             try
             {
@@ -134,10 +133,6 @@ namespace AntDeployAgentWindows.Util
 
                 var process = Process.Start(processStartInfo);
 
-                if (process == null)
-                {
-                    return;
-                }
 
                 process.StandardInput.WriteLine($"{commandToRun} & exit");
                 process.WaitForExit();
@@ -174,12 +169,16 @@ namespace AntDeployAgentWindows.Util
                 {
                     //ignore
                 }
+
+                return isSuccess;
             }
             catch (Exception ex)
             {
                 logger?.Invoke("【Error】【Command】" + ex.Message);
                 throw ex;
+                
             }
+         
         }
 
         /// <summary>

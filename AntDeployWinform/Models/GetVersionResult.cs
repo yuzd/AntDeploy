@@ -35,6 +35,7 @@ namespace AntDeployWinform.Models
     {
         public string Port { get; set; }
         public string PoolName { get; set; }
+        public bool PoolAlwaysRunning { get; set; }
         public string PhysicalPath { get; set; }
         public string Desc { get; set; }
         public string StartUp { get; set; }

@@ -63,12 +63,26 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     }
                 }
 
-                var incrementFolder = Path.Combine(_projectPublishFolder, "increment");
+                var isUseTempPhysicalPath = false;
+                var ddeploy = Path.Combine(_projectPublishFolder, "_deploy_");
 
-                if (Directory.Exists(incrementFolder))
+                if (Directory.Exists(ddeploy))
                 {
-                    deployFolder = incrementFolder;
+                    deployFolder = ddeploy;
+                    //这里需要直接修改物理路径就可以了
+                    isUseTempPhysicalPath = true;
                 }
+                else
+                {
+                    var incrementFolder = Path.Combine(_projectPublishFolder, "increment");
+
+                    if (Directory.Exists(incrementFolder))
+                    {
+                        deployFolder = incrementFolder;
+                    }
+                }
+               
+
 
                 if (!Directory.Exists(deployFolder))
                 {
@@ -119,6 +133,21 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 Log("SiteFolder ===> " + projectLocation.Item1);
                 Log("SiteApplicationPoolName ===> " + projectLocation.Item3);
 
+                if (isUseTempPhysicalPath)
+                {
+                    var err = IISHelper.ChangePhysicalPath(level1, level2, deployFolder);
+                    if (string.IsNullOrEmpty(err))
+                    {
+                        Log("Change Site PhysicalPath Success:" + (level1 + "/" + level2));
+                        Log("NewSiteFolder ===> " + deployFolder);
+                    }
+                    else
+                    {
+                        Log("Change Site PhysicalPath Fail:" + (level1+"/"+level2));
+                    }
+                    return err;
+                }
+
                 Arguments args = new Arguments
                 {
                     DeployType = "IIS",
@@ -131,6 +160,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     NoBackup = true
                 };
 
+               
                 var ops = new OperationsIIS(args, Log);
 
                 try

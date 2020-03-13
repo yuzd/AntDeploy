@@ -24,6 +24,20 @@ namespace AntDeployAgentWindows.Operation
         public bool NoStop { get;  set; }
         public bool NoStart { get;  set; }
         public bool UseOfflineHtm { get;  set; }
+
+        /// <summary>
+        /// 是否采用AntDeploy的Agent的工作目录的方式，彻底解决资源占用的问题
+        /// 日期文件夹下创建 deploy
+        /// 从iis现有的路径中先把文件给复制过来
+        /// 然后进行替换覆盖
+        /// 然后设置pool 和 重新设置新的虚拟路径
+        /// pool进行回收
+        /// </summary>
+        public bool UseTempPhysicalPath { get;  set; }
+        public string TempPhysicalPath { get;  set; }
+        public string Site1 { get;  set; }
+        public string Site2 { get;  set; }
+
         public List<string> BackUpIgnoreList { get;  set; }
       
 

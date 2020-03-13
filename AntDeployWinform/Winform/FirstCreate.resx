@@ -483,6 +483,33 @@
   <data name="&gt;&gt;label5.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
+  <data name="chk_pool_alwaysRuning.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="chk_pool_alwaysRuning.Location" type="System.Drawing.Point, System.Drawing">
+    <value>22, 95</value>
+  </data>
+  <data name="chk_pool_alwaysRuning.Size" type="System.Drawing.Size, System.Drawing">
+    <value>126, 16</value>
+  </data>
+  <data name="chk_pool_alwaysRuning.TabIndex" type="System.Int32, mscorlib">
+    <value>31</value>
+  </data>
+  <data name="chk_pool_alwaysRuning.Text" xml:space="preserve">
+    <value>Pool AlwaysRuning</value>
+  </data>
+  <data name="&gt;&gt;chk_pool_alwaysRuning.Name" xml:space="preserve">
+    <value>chk_pool_alwaysRuning</value>
+  </data>
+  <data name="&gt;&gt;chk_pool_alwaysRuning.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;chk_pool_alwaysRuning.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;chk_pool_alwaysRuning.ZOrder" xml:space="preserve">
+    <value>13</value>
+  </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>

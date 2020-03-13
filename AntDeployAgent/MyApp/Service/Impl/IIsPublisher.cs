@@ -27,6 +27,8 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
         private bool _isNoStopWebSite;//是否需要停止website
         private string _physicalPath;//指定的创建的时候用的服务器路径
         private bool _useOfflineHtm = false;//指定用offline.htm
+        private bool _useTempPhysicalPath = false;//是否采用新的模式
+        private bool _poolAlwaysRunning = false;//新建site的时候支持让Pool一直running的配置
 
         public override string ProviderName => "iis";
         public override string ProjectName => _projectName;
@@ -148,7 +150,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     }
 
 
-                    var rt = IISHelper.InstallSite(level1, firstDeployFolder, _port, (string.IsNullOrEmpty(_poolName) ? _projectName : _poolName), isNetcore);
+                    var rt = IISHelper.InstallSite(level1, firstDeployFolder, _port, (string.IsNullOrEmpty(_poolName) ? _projectName : _poolName), isNetcore, _poolAlwaysRunning);
                     if (string.IsNullOrEmpty(rt))
                     {
                         Log($"create website : {level1} success ");
@@ -165,7 +167,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                         var level2Folder = Path.Combine(firstDeployFolder, level2);
                         EnsureProjectFolder(level2Folder);
 
-                        var rt2 = IISHelper.InstallVirtualSite(level1, level2, level2Folder, (string.IsNullOrEmpty(_poolName) ? _projectName : _poolName), isNetcore);
+                        var rt2 = IISHelper.InstallVirtualSite(level1, level2, level2Folder, (string.IsNullOrEmpty(_poolName) ? _projectName : _poolName), isNetcore, _poolAlwaysRunning);
                         if (string.IsNullOrEmpty(rt2))
                         {
                             Log($"create virtualSite :{level2} Of Website : {level1} success ");
@@ -209,7 +211,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     var level2Folder = Path.Combine(firstDeployFolder, level2);
                     EnsureProjectFolder(level2Folder);
 
-                    var rt2 = IISHelper.InstallVirtualSite(level1, level2, level2Folder, (string.IsNullOrEmpty(_poolName) ? _projectName : _poolName), isNetcore);
+                    var rt2 = IISHelper.InstallVirtualSite(level1, level2, level2Folder, (string.IsNullOrEmpty(_poolName) ? _projectName : _poolName), isNetcore, _poolAlwaysRunning);
                     if (string.IsNullOrEmpty(rt2))
                     {
                         Log($"create virtualSite :{level2} Of Website : {level1} success ");
@@ -227,7 +229,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
                 }
 
-
+                //下面的逻辑就是网站已经存在了 所以就有冲突的风险
 
 
                 var projectLocation = IISHelper.GetWebSiteLocationInIIS(level1, level2, Log);
@@ -248,7 +250,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 }
 
                 Log("Start to deploy IIS:");
-                Log("SiteName ===>" + _webSiteName);
+                Log("SiteName ===>" + _webSiteName + $"[{projectLocation.Item2}]");
                 Log("SiteFolder ===> " + projectLocation.Item1);
                 Log("SiteApplicationPoolName ===> " + projectLocation.Item3);
 
@@ -265,7 +267,18 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     NoBackup = !Setting.NeedBackUp
                 };
 
-                if (_useOfflineHtm)
+                //是否采用 每次都更换新的物理路径的方式
+                if (_useTempPhysicalPath)
+                {
+                    args.NoStop = true;
+                    args.NoStart = true;
+                    args.UseTempPhysicalPath = true;
+                    args.Site1 = level1;
+                    args.Site2 = level2;
+                    args.TempPhysicalPath = Path.Combine(_projectPublishFolder, "_deploy_");
+                    EnsureProjectFolder(args.TempPhysicalPath);
+                }
+                else if (_useOfflineHtm)
                 {
                     args.NoStop = true;
                     args.NoStart = true;
@@ -284,7 +297,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     try
                     {
                         //如果是增量的话 要把复制过来
-                        if (_isIncrement)
+                        if (!args.UseTempPhysicalPath && _isIncrement)
                         {
                             Log("Increment deploy start to backup...");
                             //projectLocation.Item1 转到 increment 的目录
@@ -396,7 +409,18 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
             {
                 _useOfflineHtm = true;
             }
-            
+
+            var poolAlwaysRunning = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("poolAlwaysRunning"));
+            if (poolAlwaysRunning != null && !string.IsNullOrEmpty(poolAlwaysRunning.TextValue) && poolAlwaysRunning.TextValue.ToLower().Equals("true"))
+            {
+                _poolAlwaysRunning = true;
+            }
+
+            var useTempPhysicalPath = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("useTempPhysicalPath"));
+            if (useTempPhysicalPath != null && !string.IsNullOrEmpty(useTempPhysicalPath.TextValue) && useTempPhysicalPath.TextValue.ToLower().Equals("true"))
+            {
+                _useTempPhysicalPath = true;
+            }
 
             var isNoStopWebSite = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("isNoStopWebSite"));
             if (isNoStopWebSite != null && !string.IsNullOrEmpty(isNoStopWebSite.TextValue) && isNoStopWebSite.TextValue.ToLower().Equals("true"))

@@ -42,6 +42,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.btn_continue = new AltoControls.AltoButton();
             this.label5 = new System.Windows.Forms.Label();
+            this.chk_pool_alwaysRuning = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label33
@@ -123,6 +124,12 @@
             this.label5.ForeColor = System.Drawing.Color.Red;
             this.label5.Name = "label5";
             // 
+            // chk_pool_alwaysRuning
+            // 
+            resources.ApplyResources(this.chk_pool_alwaysRuning, "chk_pool_alwaysRuning");
+            this.chk_pool_alwaysRuning.Name = "chk_pool_alwaysRuning";
+            this.chk_pool_alwaysRuning.UseVisualStyleBackColor = true;
+            // 
             // FirstCreate
             // 
             resources.ApplyResources(this, "$this");
@@ -140,6 +147,7 @@
             this.Controls.Add(this.label16);
             this.Controls.Add(this.label33);
             this.Controls.Add(this.label4);
+            this.Controls.Add(this.chk_pool_alwaysRuning);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -165,5 +173,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.CheckBox chk_pool_alwaysRuning;
     }
 }
