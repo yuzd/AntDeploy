@@ -83,7 +83,7 @@ namespace AntDeployWinform.Util
                 }
                 //执行特殊的方式
                 var command =
-                    $"\"{batPath}\" && msbuild /v:q /t:Rebuild /p:Configuration=Release /t:WebPublish /p:WebPublishMethod=FileSystem /p:PublishProvider=FileSystem /p:DeleteExistingFiles=False /p:publishUrl=\"{path22}\" \"{path.Replace("\\\\", "\\")}\"";
+                    $"\"{batPath}\" && msbuild /verbosity:minimal /t:Rebuild /p:Configuration=Release /t:WebPublish /p:WebPublishMethod=FileSystem /p:PublishProvider=FileSystem /p:DeleteExistingFiles=False /p:publishUrl=\"{path22}\" \"{path.Replace("\\\\", "\\")}\"";
 
                 //先清空目录
                 ClearPublishFolder(path22);
