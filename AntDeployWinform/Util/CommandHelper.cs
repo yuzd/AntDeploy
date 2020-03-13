@@ -36,6 +36,67 @@ namespace AntDeployWinform.Util
                 return false;
             }
 
+            //针对netframework的webpublish尽量保证和vs的自带的publish一致
+            if (isWeb)
+            {
+                //D:\Program Files (x86)\Vs2019\Enterprise\MSBuild\Current\Bin
+                //查看当前的msbuild.exe的路径
+                //查看是否 包含 vsvars32.bat
+                //如果没有 查看是否 包含 VsDevCmd.bat
+                var msbuildFolder = new FileInfo(msBuild);
+                if (!msbuildFolder.Exists)
+                {
+                    logger.Error($"msbuild.exe path `{msBuild}` not found. please set it in Config tab page.");
+                    goto CONTINUEWEB;
+                }
+
+                var vsfolder = msbuildFolder.Directory?.Parent?.Parent?.Parent;
+                if (vsfolder == null)
+                {
+                    logger.Warn($"can not found visual stuidio install path by `{msBuild}` . please use `msbuild` in visual studio installed path");
+                    goto CONTINUEWEB;
+                }
+
+                var vsfolderToolPath = Path.Combine(vsfolder.FullName, "Common7", "Tools");
+                if (!Directory.Exists(vsfolderToolPath))
+                {
+                    logger.Warn($"can not found visual stuidio tool path  `{vsfolderToolPath}` . please use `msbuild` in visual studio installed path");
+                    goto CONTINUEWEB;
+                }
+
+                var batPath = Path.Combine(vsfolderToolPath, "vsvars32.bat");
+                if (!File.Exists(batPath))
+                {
+                    batPath = Path.Combine(vsfolderToolPath, "VsDevCmd.bat");
+                }
+
+                if (!File.Exists(batPath))
+                {
+                    logger.Warn($"can not found visual stuidio tool path  `{vsfolderToolPath}` . please use `msbuild` in visual studio installed path");
+                    goto CONTINUEWEB;
+                }
+
+                var path22 = publishPath.Replace("\\\\", "\\");
+                if (path22.EndsWith("\\"))
+                {
+                    path22 = path22.Substring(0, path22.Length - 1);
+                }
+                //执行特殊的方式
+                var command =
+                    $"\"{batPath}\" && msbuild /v:q /t:Rebuild /p:Configuration=Release /t:WebPublish /p:WebPublishMethod=FileSystem /p:PublishProvider=FileSystem /p:DeleteExistingFiles=False /p:publishUrl=\"{path22}\" \"{path.Replace("\\\\", "\\")}\"";
+
+                //先清空目录
+                ClearPublishFolder(path22);
+                logger.Info($"current project Path:{path}");
+                logger.Info($"↓↓↓↓　msbuild ↓↓↓↓");
+                logger.Info(command);
+
+                return RunCommand(command, logger, checkCancel);
+            }
+
+            CONTINUEWEB:
+
+
 
 
             var path2 = publishPath.Replace("\\\\", "\\");
@@ -47,7 +108,8 @@ namespace AntDeployWinform.Util
             var buildArg = "\"" + path.Replace("\\\\", "\\") + "\"";
             if (isWeb)
             {
-                buildArg += " /verbosity:minimal /p:Configuration=Release /p:DeployOnBuild=true /p:Platform=AnyCPU /t:WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=False /p:publishUrl=\"" + path2 + "\"";
+                //如果没有bat就用这个模式
+                buildArg += " /t:ResolveReferences /verbosity:minimal /p:BuildingProject=true /p:Configuration=Release /p:DeployOnBuild=true /p:Platform=AnyCPU /t:WebPublish /p:WebPublishMethod=FileSystem /p:PublishProvider=FileSystem /p:DeleteExistingFiles=False /p:publishUrl=\"" + path2 + "\"";
             }
             else
             {
@@ -341,7 +403,205 @@ namespace AntDeployWinform.Util
             }
         }
 
+        /// <summary>
+        /// 运行bash命令
+        /// </summary>
+        public static bool RunCommand(string commandToRun,  NLog.Logger logger, Func<bool> checkCancel = null, string workingDirectory = null)
+        {
+            Process process = null;
+            BuildProgress pr = null;
 
+            try
+            {
+
+                if (string.IsNullOrEmpty(workingDirectory))
+                {
+                    workingDirectory = Directory.GetDirectoryRoot(Directory.GetCurrentDirectory());
+                }
+
+                var processStartInfo = new ProcessStartInfo()
+                {
+                    FileName = "cmd",
+                    RedirectStandardOutput = true,
+                    RedirectStandardInput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true,
+                    UseShellExecute = false,
+                    Verb = "runas",
+                    WorkingDirectory = workingDirectory
+                };
+
+                pr = new BuildProgress(logger);
+
+                process = Process.Start(processStartInfo);
+
+
+                process.OutputDataReceived += (sender, args) =>
+                {
+                    if (checkCancel != null)
+                    {
+                        var r = checkCancel();
+                        if (r)
+                        {
+
+                            try
+                            {
+                                process?.Dispose();
+                            }
+                            catch (Exception)
+                            {
+                                //ignore
+                            }
+
+                            try
+                            {
+                                process?.Kill();
+                            }
+                            catch (Exception)
+                            {
+                                //ignore
+                            }
+                        }
+                    }
+                    if (!string.IsNullOrWhiteSpace(args.Data))
+                    {
+                        if (args.Data.StartsWith(" "))//有这个代表肯定build有出问题
+                        {
+                            logger.Info(args.Data);
+                        }
+                        if (args.Data.Contains(": warning"))
+                        {
+                            pr.Log(new BuildEventArgs
+                            {
+                                level = LogLevel.Warn,
+                                message = args.Data
+                            });
+                        }
+                        else if (args.Data.Contains(": error"))
+                        {
+                            logger.Error(args.Data);
+                        }
+                        else
+                        {
+                            pr.Log(new BuildEventArgs
+                            {
+                                level = LogLevel.Info,
+                                message = args.Data
+                            });
+                        }
+                    }
+                };
+
+
+                process.BeginOutputReadLine();
+
+
+                process.ErrorDataReceived += (sender, data) =>
+                {
+
+                    if (checkCancel != null)
+                    {
+                        var r = checkCancel();
+                        if (r)
+                        {
+
+                            try
+                            {
+                                process?.Dispose();
+                            }
+                            catch (Exception)
+                            {
+                                //ignore
+                            }
+
+                            try
+                            {
+                                process?.Kill();
+                            }
+                            catch (Exception)
+                            {
+                                //ignore
+                            }
+                        }
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(data.Data))
+                    {
+                        pr.Log(new BuildEventArgs
+                        {
+                            level = LogLevel.Error,
+                            message = data.Data
+                        });
+                    }
+                };
+                process.BeginErrorReadLine();
+
+
+                //录入命令
+                process.StandardInput.WriteLine($"{commandToRun} & exit");
+
+
+
+
+
+                process.WaitForExit();
+
+
+                try
+                {
+                    process.Kill();
+                }
+                catch (Exception)
+                {
+                    //ignore
+                }
+                return process.ExitCode == 0;
+
+            }
+            catch (Exception ex)
+            {
+                if (checkCancel != null)
+                {
+                    var r = checkCancel();
+                    if (r)
+                    {
+                        logger?.Error("deploy task was canceled!");
+                        return false;
+                    }
+                }
+
+                logger?.Error(ex.Message);
+                return false;
+            }
+            finally
+            {
+                try
+                {
+                    process?.Kill();
+                }
+                catch (Exception)
+                {
+                    //ignore
+                }
+                try
+                {
+                    pr?.Dispose();
+                }
+                catch (Exception)
+                {
+                    //ignore
+                }
+                try
+                {
+                    process?.Dispose();
+                }
+                catch (Exception)
+                {
+                    //ignore
+                }
+
+            }
+        }
         /// <summary>
         /// 获取Msbuild的路径
         /// </summary>
