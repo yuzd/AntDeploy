@@ -132,6 +132,7 @@ namespace AntDeployWinform.Models
         public string DockerPort { get; set; }
         public string DockerEnvName { get; set; }
         public string DockerVolume { get; set; }
+        public string DockerOther { get; set; }
     }
 
     /// <summary>
@@ -161,6 +162,7 @@ namespace AntDeployWinform.Models
         public string LastEnvName { get; set; }
         public string RemoveDaysFromPublished { get; set; }
         public string Volume { get; set; }
+        public string Other { get; set; }
 
         public List<EnvPairConfig> EnvPairList { get; set; } = new List<EnvPairConfig>();
     }

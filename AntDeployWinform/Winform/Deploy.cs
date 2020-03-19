@@ -56,6 +56,7 @@ namespace AntDeployWinform.Winform
         private string _dockerPort = string.Empty;
         private string _dockerEnvName = string.Empty;
         private string _dockerVolume = string.Empty;
+        private string _dockerOther = string.Empty;
         private string iconPath = string.Empty;
 
         ToastHelper.NotificationService notificationService = new NotificationService();
@@ -103,6 +104,7 @@ namespace AntDeployWinform.Winform
             this.txt_docker_port.DataBindings.Add("Text", this, "BindDockerPort", false,DataSourceUpdateMode.OnPropertyChanged);
             this.txt_docker_envname.DataBindings.Add("Text", this, "BindDockerEnvName", false,DataSourceUpdateMode.OnPropertyChanged);
             this.txt_docker_volume.DataBindings.Add("Text", this, "BindDockerVolume", false,DataSourceUpdateMode.OnPropertyChanged);
+            this.txt_docker_other.DataBindings.Add("Text", this, "BindDockerOther", false,DataSourceUpdateMode.OnPropertyChanged);
 
             notificationService.Init("AntDeploy");
         }
@@ -128,6 +130,34 @@ namespace AntDeployWinform.Winform
                         {
                             EnvName = selectName,
                             DockerVolume = _dockerVolume
+                        });
+                    }
+                }
+            }
+        }
+
+        public string BindDockerOther
+        {
+            get { return _dockerOther; }
+            set
+            {
+                _dockerOther = value;
+
+                var selectName = this.combo_docker_env.SelectedItem as string;
+                if (string.IsNullOrEmpty(selectName)) return;
+                if (DeployConfig.DockerConfig != null && DeployConfig.DockerConfig.EnvPairList != null)
+                {
+                    var first = DeployConfig.DockerConfig.EnvPairList.FirstOrDefault(r => r.EnvName.Equals(selectName));
+                    if (first != null)
+                    {
+                        first.DockerOther = _dockerOther;
+                    }
+                    else
+                    {
+                        DeployConfig.DockerConfig.EnvPairList.Add(new EnvPairConfig
+                        {
+                            EnvName = selectName,
+                            DockerOther = _dockerOther
                         });
                     }
                 }
@@ -566,6 +596,11 @@ namespace AntDeployWinform.Winform
                 {
                     _dockerVolume = this.txt_docker_volume.Text = DeployConfig.DockerConfig.Volume;
                 }
+
+                if (!string.IsNullOrEmpty(DeployConfig.DockerConfig.Other))
+                {
+                    _dockerOther = this.txt_docker_other.Text = DeployConfig.DockerConfig.Other;
+                }
             }
 
             if (PluginConfig.LastTabIndex >= 0 && PluginConfig.LastTabIndex < this.tabcontrol.TabPages.Count)
@@ -717,6 +752,7 @@ namespace AntDeployWinform.Winform
                 this.BindDockerEnvName = DeployConfig.DockerConfig.AspNetCoreEnv = this.txt_docker_envname.Text.Trim();
                 DeployConfig.DockerConfig.RemoveDaysFromPublished = this.t_docker_delete_days.Text.Trim();
                 this.BindDockerVolume = DeployConfig.DockerConfig.Volume = this.txt_docker_volume.Text.Trim();
+                this.BindDockerOther = DeployConfig.DockerConfig.Other = this.txt_docker_other.Text.Trim();
 
 
                 PluginConfig.DockerServiceEnableUpload = this.checkBoxdocker_rep_enable.Checked;
@@ -5374,6 +5410,8 @@ namespace AntDeployWinform.Winform
                 DeployConfig.DockerConfig.Volume = volume;
             }
 
+            DeployConfig.DockerConfig.Other = this.txt_docker_other.Text;
+
             var envName = this.combo_docker_env.SelectedItem as string;
             if (string.IsNullOrEmpty(envName))
             {
@@ -5817,6 +5855,7 @@ namespace AntDeployWinform.Winform
                            ClientDateTimeFolderName = clientDateTimeFolderName,
                            RemoveDaysFromPublished = DeployConfig.DockerConfig.RemoveDaysFromPublished,
                            Volume = DeployConfig.DockerConfig.Volume,
+                           Other = DeployConfig.DockerConfig.Other,
                            Remark = confirmResult.Item2,
                            Increment = this.PluginConfig.DockerEnableIncrement || this.PluginConfig.DockerServiceEnableSelectDeploy,
                            IsSelect = this.PluginConfig.DockerServiceEnableSelectDeploy,
@@ -6291,6 +6330,7 @@ namespace AntDeployWinform.Winform
                 }
                 this.t_docker_delete_days.Enabled = flag;
                 this.txt_docker_volume.Enabled = flag;
+                this.txt_docker_other.Enabled = flag;
                 this.b_docker_rollback.Enabled = flag;
                 this.b_docker_deploy.Enabled = flag;
                 if (!ignore)
@@ -6362,6 +6402,7 @@ namespace AntDeployWinform.Winform
                         if(!string.IsNullOrEmpty(target.DockerPort))this.txt_docker_port.Text = target.DockerPort;
                         if(!string.IsNullOrEmpty(target.DockerEnvName))this.txt_docker_envname.Text = target.DockerEnvName;
                         if(!string.IsNullOrEmpty(target.DockerVolume))this.txt_docker_volume.Text = target.DockerVolume;
+                        if(!string.IsNullOrEmpty(target.DockerOther))this.txt_docker_other.Text = target.DockerOther;
                     }
                 }
 

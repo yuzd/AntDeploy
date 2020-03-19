@@ -152,6 +152,12 @@
   <data name="btn_docker_retry.Text" xml:space="preserve">
     <value>重试</value>
   </data>
+  <data name="label46.Location" type="System.Drawing.Point, System.Drawing">
+    <value>303, 73</value>
+  </data>
+  <data name="label46.Text" xml:space="preserve">
+    <value>Docker Run example: --network xxx -e XXX=YYY</value>
+  </data>
   <data name="checkBoxdocker_rep_uploadOnly.Size" type="System.Drawing.Size, System.Drawing">
     <value>234, 24</value>
   </data>

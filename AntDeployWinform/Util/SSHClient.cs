@@ -19,6 +19,7 @@ namespace AntDeployWinform.Util
     public class SSHClient : IDisposable
     {
         private string volumeProfix = "# volume@";
+        private string otherProfix = "# other@";
         private string serverPortProfix = "# server_port@";
         public string Host { get; set; }
         public string UserName { get; set; }
@@ -102,6 +103,7 @@ namespace AntDeployWinform.Util
         public string RemoveDaysFromPublished { get; set; }
         public string Remark { get; set; }
         public string Volume { get; set; }
+        public string Other { get; set; }
         public string RootFolder { get; set; }
 
         private readonly Func<string, NLog.LogLevel, bool> _logger;
@@ -743,6 +745,37 @@ namespace AntDeployWinform.Util
                         _logger($"Volume in dockerFile is not defined", NLog.LogLevel.Warn);
                     }
 
+
+                    var otherInDockerFile = string.Empty;
+                    var otherExist = dockerFileText.Split(new string[] { otherProfix }, StringSplitOptions.None);
+                    if (otherExist.Length == 2)
+                    {
+                        var temp2 = otherExist[1].Split('@');
+                        if (temp2.Length > 0)
+                        {
+                            otherInDockerFile = temp2[0];
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(otherInDockerFile))
+                    {
+                        //dockerFIle里面有配置 Other Args
+                        if (!string.IsNullOrEmpty(Other) && !Other.Equals(otherInDockerFile))
+                        {
+                            _logger($"Docker Run Other Args in dockerFile is defined,will use【{otherInDockerFile}】replace【{Other}】", NLog.LogLevel.Warn);
+                        }
+                        else
+                        {
+                            _logger($"Docker Run Other Args in dockerFile is : 【{otherInDockerFile}】", NLog.LogLevel.Info);
+                        }
+
+                        Other = otherInDockerFile;
+                    }
+                    else
+                    {
+                        _logger($"Docker Run Other Args in dockerFile is not defined", NLog.LogLevel.Warn);
+                    }
+
                     var serverPostDockerFile = string.Empty;
                     var serverPostDockerFileExist = dockerFileText.Split(new string[] { serverPortProfix }, StringSplitOptions.None);
                     if (serverPostDockerFileExist.Length == 2)
@@ -828,28 +861,51 @@ namespace AntDeployWinform.Util
                                         writer.WriteLine(volumeProfix + this.Volume + "@");
                                         _logger(volumeProfix + this.Volume + "@", LogLevel.Info);
                                     }
+
+                                    if (string.IsNullOrEmpty(otherInDockerFile) && !string.IsNullOrEmpty(this.Other))
+                                    {
+                                        addV = true;
+                                        writer.WriteLine(otherProfix + this.Other + "@");
+                                        _logger(otherProfix + this.Other + "@", LogLevel.Info);
+                                    }
                                     writer.Flush();
                                 }
                             }
                         }
                     }
 
-                    if (!addV && string.IsNullOrEmpty(volumeInDockerFile) && !string.IsNullOrEmpty(this.Volume))
+                    if (!addV)
                     {
-                        //发布的时候界面上有填volume 也存在dockerfile 要记录到dockerfile中 不然回滚的时候就没了
-                        var allLines = _sftpClient.ReadAllLines(dockFilePath).ToList();
-                        _sshClient.RunCommand($"set -e;cd ~;\\rm -rf \"{dockFilePath}\";");
-                        using (var writer = _sftpClient.CreateText(dockFilePath))
-                        {
-                            foreach (var line in allLines)
-                            {
-                                writer.WriteLine(line);
-                            }
 
-                            writer.WriteLine(volumeProfix + this.Volume + "@");
-                            _logger(volumeProfix + this.Volume + "@", LogLevel.Info);
-                            writer.Flush();
+                        if ((string.IsNullOrEmpty(volumeInDockerFile) && !string.IsNullOrEmpty(this.Volume)) ||
+                            (string.IsNullOrEmpty(otherInDockerFile) && !string.IsNullOrEmpty(this.Other)))
+                        {
+                            //发布的时候界面上有填volume 也存在dockerfile 要记录到dockerfile中 不然回滚的时候就没了
+                            var allLines = _sftpClient.ReadAllLines(dockFilePath).ToList();
+                            _sshClient.RunCommand($"set -e;cd ~;\\rm -rf \"{dockFilePath}\";");
+                            using (var writer = _sftpClient.CreateText(dockFilePath))
+                            {
+                                foreach (var line in allLines)
+                                {
+                                    writer.WriteLine(line);
+                                }
+
+                                if (string.IsNullOrEmpty(volumeInDockerFile) && !string.IsNullOrEmpty(this.Volume))
+                                {
+                                    writer.WriteLine(volumeProfix + this.Volume + "@");
+                                    _logger(volumeProfix + this.Volume + "@", LogLevel.Info);
+                                }
+                                
+
+                                if (string.IsNullOrEmpty(otherInDockerFile) && !string.IsNullOrEmpty(this.Other))
+                                {
+                                    writer.WriteLine(otherProfix + this.Other + "@");
+                                    _logger(otherInDockerFile + this.Other + "@", LogLevel.Info);
+                                } 
+                                writer.Flush();
+                            }
                         }
+                       
                     }
 
                     if (!string.IsNullOrEmpty(fromFolder))
@@ -931,7 +987,7 @@ namespace AntDeployWinform.Util
             string volume = GetVolume();
 
             // 根据image启动一个容器
-            var dockerRunRt = RunSheell($"docker run --name {continarName}{volume} -d --restart=always -p {server_port}:{port} {PorjectName}:{ClientDateTimeFolderName}");
+            var dockerRunRt = RunSheell($"docker run -d --name {continarName}{volume}{(string.IsNullOrEmpty(this.Other)?"":$" {this.Other}")} --restart=always -p {server_port}:{port} {PorjectName}:{ClientDateTimeFolderName}");
 
             if (!dockerRunRt)
             {
@@ -1006,7 +1062,10 @@ namespace AntDeployWinform.Util
                 //万一已经存在就删除
                 var uploadImageName =$"{this.RepositoryUrl}/{this.RepositoryNameSpace}/{this.RepositoryImageName}:{currentImageInfo.Item2}";
                 _sshClient.RunCommand($"docker rmi {uploadImageName}");
-                var rr11 = _sshClient.CreateCommand($"set -e;docker login -u {this.RepositoryUserName} -p {this.RepositoryUserPwd} {this.RepositoryUrl}; docker tag {currentImageInfo.Item3} {uploadImageName};docker push {uploadImageName}");
+                var uploadCommand =
+                    $"set -e;docker login -u {this.RepositoryUserName} -p {this.RepositoryUserPwd} {this.RepositoryUrl}; docker tag {currentImageInfo.Item3} {uploadImageName};docker push {uploadImageName}";
+                _logger($"[upload image] - " + uploadCommand, LogLevel.Warn);
+                var rr11 = _sshClient.CreateCommand(uploadCommand);
                 var result = rr11.BeginExecute();
                 using (var reader = new StreamReader(rr11.OutputStream, Encoding.UTF8, true, 1024, true))
                 {
@@ -1023,6 +1082,10 @@ namespace AntDeployWinform.Util
                 if (rr11.ExitStatus != 0)
                 {
                     _logger($"[upload image] - Fail", LogLevel.Error);
+                    if (!string.IsNullOrEmpty(rr11.Error))
+                    {
+                        _logger(rr11.Error, LogLevel.Error);
+                    }
                 }
                 else
                 {
@@ -1194,6 +1257,12 @@ namespace AntDeployWinform.Util
                     {
                         writer.WriteLine(volumeProfix + this.Volume + "@");
                         _logger(volumeProfix + this.Volume + "@", NLog.LogLevel.Info);
+                    }
+
+                    if (!string.IsNullOrEmpty(this.Other))
+                    {
+                        writer.WriteLine(otherProfix + this.Other + "@");
+                        _logger(otherProfix + this.Other + "@", NLog.LogLevel.Info);
                     }
 
                     writer.Flush();
