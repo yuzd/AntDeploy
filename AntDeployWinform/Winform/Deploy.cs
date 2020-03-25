@@ -681,11 +681,11 @@ namespace AntDeployWinform.Winform
                     {
                         if (linktext.StartsWith("file://removeWinServer_"))
                         {
-                            b_env_server_remove_Click(int.Parse(linktext.Split('_')[1]));
+                            b_env_server_remove_Click(linktext.Split('_')[1]);
                         }
                         else if (linktext.StartsWith("file://removeLinuxServer_"))
                         {
-                            b_linux_server_remove_Click(int.Parse(linktext.Split('_')[1]));
+                            b_linux_server_remove_Click(linktext.Split('_')[1]);
                         }
                         else if (linktext.StartsWith("http") || linktext.StartsWith("file:"))
                         {
@@ -1066,11 +1066,19 @@ namespace AntDeployWinform.Winform
             DeployConfig.EnvServerChange(DeployConfig.Env[this.combo_env_list.SelectedIndex]);
         }
 
-        private void b_env_server_remove_Click(int index)
+        private void b_env_server_remove_Click(string server)
         {
-            this.DeployConfig.Env[this.combo_env_list.SelectedIndex].ServerList
-                .RemoveAt(index);
-            this.combo_env_server_list.Items.RemoveAt(index);
+            //先找到 server 对应的 index
+            var existServer = this.combo_env_server_list.Items.Cast<string>().Select((r,index) => new
+                {
+                    Server = r.Split(new string[] { "@_@" }, StringSplitOptions.None)[0],
+                    Index = index
+                })
+                .FirstOrDefault(r => r.Server.Equals(server));
+            if (existServer == null) return;
+
+            this.DeployConfig.Env[this.combo_env_list.SelectedIndex].ServerList.RemoveAt(existServer.Index);
+            this.combo_env_server_list.Items.RemoveAt(existServer.Index);
             DeployConfig.EnvServerChange(DeployConfig.Env[this.combo_env_list.SelectedIndex]);
         }
 
@@ -1222,7 +1230,7 @@ namespace AntDeployWinform.Winform
                                 this.nlog_config.Error($"Connect Fail -> Host:【{server.Item1 + (!string.IsNullOrEmpty(server.Item3)?$"[{server.Item3}]":"")}】,response:{result}");
 
                                 LogEventInfo publisEvent = new LogEventInfo(LogLevel.Warn, "", $"Host:【{server.Item1 + (!string.IsNullOrEmpty(server.Item3) ? $"[{server.Item3}]" : "")}】 -> click to remove -->");
-                                publisEvent.Properties["ShowLink"] = $"file://removeWinServer_"+index;
+                                publisEvent.Properties["ShowLink"] = $"file://removeWinServer_" + server.Item1;
                                 publisEvent.LoggerName = "rich_config_log";
                                 this.nlog_config.Log(publisEvent);
 
@@ -1232,7 +1240,7 @@ namespace AntDeployWinform.Winform
                         {
                             this.nlog_config.Error($"Connect Fail -> Host:【{server.Item1}】,err:{exception.Message}");
                             LogEventInfo publisEvent = new LogEventInfo(LogLevel.Warn, "", $"Host:【{server.Item1 + (!string.IsNullOrEmpty(server.Item3) ? $"[{server.Item3}]" : "")}】 -> click to remove -->");
-                            publisEvent.Properties["ShowLink"] = $"file://removeWinServer_" + index;
+                            publisEvent.Properties["ShowLink"] = $"file://removeWinServer_" + server.Item1;
                             publisEvent.LoggerName = "rich_config_log";
                             this.nlog_config.Log(publisEvent);
                         }
@@ -1538,16 +1546,22 @@ namespace AntDeployWinform.Winform
                 return;
             }
 
-            this.DeployConfig.Env[this.combo_env_list.SelectedIndex].LinuxServerList
-                .RemoveAt(this.combo_linux_server_list.SelectedIndex);
+            this.DeployConfig.Env[this.combo_env_list.SelectedIndex].LinuxServerList.RemoveAt(this.combo_linux_server_list.SelectedIndex);
             this.combo_linux_server_list.Items.Remove(seletedServer);
             DeployConfig.EnvServerChange(DeployConfig.Env[this.combo_env_list.SelectedIndex]);
         }
-        private void b_linux_server_remove_Click(int index)
+        private void b_linux_server_remove_Click(string server)
         {
-            this.DeployConfig.Env[this.combo_env_list.SelectedIndex].LinuxServerList
-                .RemoveAt(index);
-            this.combo_linux_server_list.Items.RemoveAt(index);
+            var existServer = this.combo_linux_server_list.Items.Cast<string>().Select((r, index) => new
+                {
+                    Server = r.Split(new string[] { "@_@" }, StringSplitOptions.None)[0],
+                    Index = index
+                })
+                .FirstOrDefault(r => r.Server.Equals(server));
+            if (existServer == null) return;
+
+            this.DeployConfig.Env[this.combo_env_list.SelectedIndex].LinuxServerList.RemoveAt(existServer.Index);
+            this.combo_linux_server_list.Items.RemoveAt(existServer.Index);
             DeployConfig.EnvServerChange(DeployConfig.Env[this.combo_env_list.SelectedIndex]);
         }
 
@@ -1663,7 +1677,7 @@ namespace AntDeployWinform.Winform
                                         this.nlog_config.Error($"Connect Fail -> Host:【{server.Item1 + (!string.IsNullOrEmpty(server.Item3) ? $"[{server.Item3}]" : "")}】");
 
                                         LogEventInfo publisEvent = new LogEventInfo(LogLevel.Warn, "", $"Host:【{server.Item1 + (!string.IsNullOrEmpty(server.Item3) ? $"[{server.Item3}]" : "")}】 -> click to remove -->");
-                                        publisEvent.Properties["ShowLink"] = $"file://removeLinuxServer_" + index;
+                                        publisEvent.Properties["ShowLink"] = $"file://removeLinuxServer_" + server.Item1;
                                         publisEvent.LoggerName = "rich_config_log";
                                         this.nlog_config.Log(publisEvent);
                                     }
@@ -1674,7 +1688,7 @@ namespace AntDeployWinform.Winform
                         {
                             this.nlog_config.Error($"Connect Fail -> Host:【{server.Item1}】,err:{exception.Message}");
                             LogEventInfo publisEvent = new LogEventInfo(LogLevel.Warn, "", $"Host:【{server.Item1 + (!string.IsNullOrEmpty(server.Item3) ? $"[{server.Item3}]" : "")}】 -> click to remove -->");
-                            publisEvent.Properties["ShowLink"] = $"file://removeLinuxServer_" + index;
+                            publisEvent.Properties["ShowLink"] = $"file://removeLinuxServer_" + server.Item1;
                             publisEvent.LoggerName = "rich_config_log";
                             this.nlog_config.Log(publisEvent);
                         }
