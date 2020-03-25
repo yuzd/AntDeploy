@@ -55,9 +55,6 @@
             this.rich_iis_log = new AntDeployWinform.ExRichTextBox();
             this.page_docker = new System.Windows.Forms.TabPage();
             this.checkBox_select_deploy_docker = new System.Windows.Forms.CheckBox();
-            this.btn_docker_stop = new AltoControls.AltoButton();
-            this.btn_docker_retry = new AltoControls.AltoButton();
-            this.b_docker_deploy = new AltoControls.AltoButton();
             this.label13 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.t_docker_delete_days = new System.Windows.Forms.TextBox();
@@ -96,6 +93,9 @@
             this.txt_docker_rep_name = new System.Windows.Forms.TextBox();
             this.label34 = new System.Windows.Forms.Label();
             this.checkBox_Increment_docker = new System.Windows.Forms.CheckBox();
+            this.btn_docker_stop = new AltoControls.AltoButton();
+            this.btn_docker_retry = new AltoControls.AltoButton();
+            this.b_docker_deploy = new AltoControls.AltoButton();
             this.page_window_service = new System.Windows.Forms.TabPage();
             this.btn_windows_serivce_stop = new AltoControls.AltoButton();
             this.btn_windows_service_retry = new AltoControls.AltoButton();
@@ -117,6 +117,9 @@
             this.rich_windowservice_log = new AntDeployWinform.ExRichTextBox();
             this.b_windows_service_rollback = new AltoControls.AltoButton();
             this.page_set = new System.Windows.Forms.TabPage();
+            this.panel_rich_config_log = new System.Windows.Forms.Panel();
+            this.btn_rich_config_log_close = new AltoControls.AltoButton();
+            this.rich_config_log = new AntDeployWinform.ExRichTextBox();
             this.label_how_to_set = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.b_copy_backup_ignore = new System.Windows.Forms.Button();
@@ -134,6 +137,7 @@
             this.environment = new System.Windows.Forms.GroupBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.page_winserver = new System.Windows.Forms.TabPage();
+            this.btn_win_server_testAll = new AltoControls.AltoButton();
             this.txt_winserver_nickname = new System.Windows.Forms.TextBox();
             this.label32 = new System.Windows.Forms.Label();
             this.label29 = new System.Windows.Forms.Label();
@@ -148,6 +152,7 @@
             this.txt_env_server_token = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.page_linux_server = new System.Windows.Forms.TabPage();
+            this.btn_linux_server_testAll = new AltoControls.AltoButton();
             this.txt_linux_server_nickname = new System.Windows.Forms.TextBox();
             this.loading_linux_server_test = new AltoControls.SpinningCircles();
             this.label20 = new System.Windows.Forms.Label();
@@ -207,6 +212,7 @@
             this.tabPage_windows_service.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.page_set.SuspendLayout();
+            this.panel_rich_config_log.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBoxIgnore.SuspendLayout();
             this.environment.SuspendLayout();
@@ -446,9 +452,6 @@
             // page_docker
             // 
             this.page_docker.Controls.Add(this.checkBox_select_deploy_docker);
-            this.page_docker.Controls.Add(this.btn_docker_stop);
-            this.page_docker.Controls.Add(this.btn_docker_retry);
-            this.page_docker.Controls.Add(this.b_docker_deploy);
             this.page_docker.Controls.Add(this.label13);
             this.page_docker.Controls.Add(this.label12);
             this.page_docker.Controls.Add(this.t_docker_delete_days);
@@ -459,6 +462,9 @@
             this.page_docker.Controls.Add(this.label_docker_demo);
             this.page_docker.Controls.Add(this.tabControl_docker);
             this.page_docker.Controls.Add(this.checkBox_Increment_docker);
+            this.page_docker.Controls.Add(this.btn_docker_stop);
+            this.page_docker.Controls.Add(this.btn_docker_retry);
+            this.page_docker.Controls.Add(this.b_docker_deploy);
             resources.ApplyResources(this.page_docker, "page_docker");
             this.page_docker.Name = "page_docker";
             this.page_docker.UseVisualStyleBackColor = true;
@@ -469,57 +475,6 @@
             this.checkBox_select_deploy_docker.Name = "checkBox_select_deploy_docker";
             this.checkBox_select_deploy_docker.UseVisualStyleBackColor = true;
             this.checkBox_select_deploy_docker.Click += new System.EventHandler(this.checkBox_selectDeplot_docker_CheckedChanged);
-            // 
-            // btn_docker_stop
-            // 
-            this.btn_docker_stop.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
-            this.btn_docker_stop.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
-            this.btn_docker_stop.BackColor = System.Drawing.Color.Transparent;
-            this.btn_docker_stop.DialogResult = System.Windows.Forms.DialogResult.OK;
-            resources.ApplyResources(this.btn_docker_stop, "btn_docker_stop");
-            this.btn_docker_stop.ForeColor = System.Drawing.Color.Red;
-            this.btn_docker_stop.Inactive1 = System.Drawing.SystemColors.Control;
-            this.btn_docker_stop.Inactive2 = System.Drawing.SystemColors.ControlLight;
-            this.btn_docker_stop.Name = "btn_docker_stop";
-            this.btn_docker_stop.Radius = 10;
-            this.btn_docker_stop.Stroke = false;
-            this.btn_docker_stop.StrokeColor = System.Drawing.Color.Gray;
-            this.btn_docker_stop.Transparency = false;
-            this.btn_docker_stop.Click += new System.EventHandler(this.btn_docker_stop_Click);
-            // 
-            // btn_docker_retry
-            // 
-            this.btn_docker_retry.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
-            this.btn_docker_retry.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
-            this.btn_docker_retry.BackColor = System.Drawing.Color.Transparent;
-            this.btn_docker_retry.DialogResult = System.Windows.Forms.DialogResult.OK;
-            resources.ApplyResources(this.btn_docker_retry, "btn_docker_retry");
-            this.btn_docker_retry.ForeColor = System.Drawing.Color.Fuchsia;
-            this.btn_docker_retry.Inactive1 = System.Drawing.SystemColors.Control;
-            this.btn_docker_retry.Inactive2 = System.Drawing.SystemColors.ControlLight;
-            this.btn_docker_retry.Name = "btn_docker_retry";
-            this.btn_docker_retry.Radius = 10;
-            this.btn_docker_retry.Stroke = false;
-            this.btn_docker_retry.StrokeColor = System.Drawing.Color.Gray;
-            this.btn_docker_retry.Transparency = false;
-            this.btn_docker_retry.Click += new System.EventHandler(this.btn_docker_retry_Click);
-            // 
-            // b_docker_deploy
-            // 
-            this.b_docker_deploy.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
-            this.b_docker_deploy.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
-            this.b_docker_deploy.BackColor = System.Drawing.Color.Transparent;
-            this.b_docker_deploy.DialogResult = System.Windows.Forms.DialogResult.OK;
-            resources.ApplyResources(this.b_docker_deploy, "b_docker_deploy");
-            this.b_docker_deploy.ForeColor = System.Drawing.Color.Black;
-            this.b_docker_deploy.Inactive1 = System.Drawing.SystemColors.Control;
-            this.b_docker_deploy.Inactive2 = System.Drawing.SystemColors.ControlLight;
-            this.b_docker_deploy.Name = "b_docker_deploy";
-            this.b_docker_deploy.Radius = 10;
-            this.b_docker_deploy.Stroke = false;
-            this.b_docker_deploy.StrokeColor = System.Drawing.Color.Gray;
-            this.b_docker_deploy.Transparency = false;
-            this.b_docker_deploy.Click += new System.EventHandler(this.b_docker_deploy_Click);
             // 
             // label13
             // 
@@ -780,6 +735,57 @@
             this.checkBox_Increment_docker.UseVisualStyleBackColor = true;
             this.checkBox_Increment_docker.Click += new System.EventHandler(this.checkBox_Increment_docker_CheckedChanged);
             // 
+            // btn_docker_stop
+            // 
+            this.btn_docker_stop.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
+            this.btn_docker_stop.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
+            this.btn_docker_stop.BackColor = System.Drawing.Color.Transparent;
+            this.btn_docker_stop.DialogResult = System.Windows.Forms.DialogResult.OK;
+            resources.ApplyResources(this.btn_docker_stop, "btn_docker_stop");
+            this.btn_docker_stop.ForeColor = System.Drawing.Color.Red;
+            this.btn_docker_stop.Inactive1 = System.Drawing.SystemColors.Control;
+            this.btn_docker_stop.Inactive2 = System.Drawing.SystemColors.ControlLight;
+            this.btn_docker_stop.Name = "btn_docker_stop";
+            this.btn_docker_stop.Radius = 10;
+            this.btn_docker_stop.Stroke = false;
+            this.btn_docker_stop.StrokeColor = System.Drawing.Color.Gray;
+            this.btn_docker_stop.Transparency = false;
+            this.btn_docker_stop.Click += new System.EventHandler(this.btn_docker_stop_Click);
+            // 
+            // btn_docker_retry
+            // 
+            this.btn_docker_retry.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
+            this.btn_docker_retry.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
+            this.btn_docker_retry.BackColor = System.Drawing.Color.Transparent;
+            this.btn_docker_retry.DialogResult = System.Windows.Forms.DialogResult.OK;
+            resources.ApplyResources(this.btn_docker_retry, "btn_docker_retry");
+            this.btn_docker_retry.ForeColor = System.Drawing.Color.Fuchsia;
+            this.btn_docker_retry.Inactive1 = System.Drawing.SystemColors.Control;
+            this.btn_docker_retry.Inactive2 = System.Drawing.SystemColors.ControlLight;
+            this.btn_docker_retry.Name = "btn_docker_retry";
+            this.btn_docker_retry.Radius = 10;
+            this.btn_docker_retry.Stroke = false;
+            this.btn_docker_retry.StrokeColor = System.Drawing.Color.Gray;
+            this.btn_docker_retry.Transparency = false;
+            this.btn_docker_retry.Click += new System.EventHandler(this.btn_docker_retry_Click);
+            // 
+            // b_docker_deploy
+            // 
+            this.b_docker_deploy.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
+            this.b_docker_deploy.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
+            this.b_docker_deploy.BackColor = System.Drawing.Color.Transparent;
+            this.b_docker_deploy.DialogResult = System.Windows.Forms.DialogResult.OK;
+            resources.ApplyResources(this.b_docker_deploy, "b_docker_deploy");
+            this.b_docker_deploy.ForeColor = System.Drawing.Color.Black;
+            this.b_docker_deploy.Inactive1 = System.Drawing.SystemColors.Control;
+            this.b_docker_deploy.Inactive2 = System.Drawing.SystemColors.ControlLight;
+            this.b_docker_deploy.Name = "b_docker_deploy";
+            this.b_docker_deploy.Radius = 10;
+            this.b_docker_deploy.Stroke = false;
+            this.b_docker_deploy.StrokeColor = System.Drawing.Color.Gray;
+            this.b_docker_deploy.Transparency = false;
+            this.b_docker_deploy.Click += new System.EventHandler(this.b_docker_deploy_Click);
+            // 
             // page_window_service
             // 
             this.page_window_service.Controls.Add(this.btn_windows_serivce_stop);
@@ -975,6 +981,7 @@
             // 
             // page_set
             // 
+            this.page_set.Controls.Add(this.panel_rich_config_log);
             this.page_set.Controls.Add(this.label_how_to_set);
             this.page_set.Controls.Add(this.groupBox1);
             this.page_set.Controls.Add(this.label_check_update);
@@ -983,6 +990,37 @@
             resources.ApplyResources(this.page_set, "page_set");
             this.page_set.Name = "page_set";
             this.page_set.UseVisualStyleBackColor = true;
+            // 
+            // panel_rich_config_log
+            // 
+            this.panel_rich_config_log.Controls.Add(this.btn_rich_config_log_close);
+            this.panel_rich_config_log.Controls.Add(this.rich_config_log);
+            resources.ApplyResources(this.panel_rich_config_log, "panel_rich_config_log");
+            this.panel_rich_config_log.Name = "panel_rich_config_log";
+            // 
+            // btn_rich_config_log_close
+            // 
+            this.btn_rich_config_log_close.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.btn_rich_config_log_close.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.btn_rich_config_log_close.BackColor = System.Drawing.Color.Transparent;
+            this.btn_rich_config_log_close.DialogResult = System.Windows.Forms.DialogResult.OK;
+            resources.ApplyResources(this.btn_rich_config_log_close, "btn_rich_config_log_close");
+            this.btn_rich_config_log_close.ForeColor = System.Drawing.Color.Black;
+            this.btn_rich_config_log_close.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.btn_rich_config_log_close.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.btn_rich_config_log_close.Name = "btn_rich_config_log_close";
+            this.btn_rich_config_log_close.Radius = 10;
+            this.btn_rich_config_log_close.Stroke = false;
+            this.btn_rich_config_log_close.StrokeColor = System.Drawing.Color.Gray;
+            this.btn_rich_config_log_close.Transparency = false;
+            this.btn_rich_config_log_close.Click += new System.EventHandler(this.btn_rich_config_log_close_Click);
+            // 
+            // rich_config_log
+            // 
+            this.rich_config_log.HiglightColor = AntDeployWinform.RtfColor.White;
+            resources.ApplyResources(this.rich_config_log, "rich_config_log");
+            this.rich_config_log.Name = "rich_config_log";
+            this.rich_config_log.TextColor = AntDeployWinform.RtfColor.Black;
             // 
             // label_how_to_set
             // 
@@ -1113,6 +1151,7 @@
             // 
             // page_winserver
             // 
+            this.page_winserver.Controls.Add(this.btn_win_server_testAll);
             this.page_winserver.Controls.Add(this.txt_winserver_nickname);
             this.page_winserver.Controls.Add(this.label32);
             this.page_winserver.Controls.Add(this.label29);
@@ -1129,6 +1168,23 @@
             resources.ApplyResources(this.page_winserver, "page_winserver");
             this.page_winserver.Name = "page_winserver";
             this.page_winserver.UseVisualStyleBackColor = true;
+            // 
+            // btn_win_server_testAll
+            // 
+            this.btn_win_server_testAll.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
+            this.btn_win_server_testAll.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
+            this.btn_win_server_testAll.BackColor = System.Drawing.Color.Transparent;
+            this.btn_win_server_testAll.DialogResult = System.Windows.Forms.DialogResult.OK;
+            resources.ApplyResources(this.btn_win_server_testAll, "btn_win_server_testAll");
+            this.btn_win_server_testAll.ForeColor = System.Drawing.Color.Black;
+            this.btn_win_server_testAll.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(188)))), ((int)(((byte)(210)))));
+            this.btn_win_server_testAll.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(167)))), ((int)(((byte)(188)))));
+            this.btn_win_server_testAll.Name = "btn_win_server_testAll";
+            this.btn_win_server_testAll.Radius = 10;
+            this.btn_win_server_testAll.Stroke = false;
+            this.btn_win_server_testAll.StrokeColor = System.Drawing.Color.Gray;
+            this.btn_win_server_testAll.Transparency = false;
+            this.btn_win_server_testAll.Click += new System.EventHandler(this.btn_win_server_testAll_Click);
             // 
             // txt_winserver_nickname
             // 
@@ -1215,6 +1271,7 @@
             // 
             // page_linux_server
             // 
+            this.page_linux_server.Controls.Add(this.btn_linux_server_testAll);
             this.page_linux_server.Controls.Add(this.txt_linux_server_nickname);
             this.page_linux_server.Controls.Add(this.loading_linux_server_test);
             this.page_linux_server.Controls.Add(this.label20);
@@ -1232,6 +1289,23 @@
             resources.ApplyResources(this.page_linux_server, "page_linux_server");
             this.page_linux_server.Name = "page_linux_server";
             this.page_linux_server.UseVisualStyleBackColor = true;
+            // 
+            // btn_linux_server_testAll
+            // 
+            this.btn_linux_server_testAll.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
+            this.btn_linux_server_testAll.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
+            this.btn_linux_server_testAll.BackColor = System.Drawing.Color.Transparent;
+            this.btn_linux_server_testAll.DialogResult = System.Windows.Forms.DialogResult.OK;
+            resources.ApplyResources(this.btn_linux_server_testAll, "btn_linux_server_testAll");
+            this.btn_linux_server_testAll.ForeColor = System.Drawing.Color.Black;
+            this.btn_linux_server_testAll.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(188)))), ((int)(((byte)(210)))));
+            this.btn_linux_server_testAll.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(167)))), ((int)(((byte)(188)))));
+            this.btn_linux_server_testAll.Name = "btn_linux_server_testAll";
+            this.btn_linux_server_testAll.Radius = 10;
+            this.btn_linux_server_testAll.Stroke = false;
+            this.btn_linux_server_testAll.StrokeColor = System.Drawing.Color.Gray;
+            this.btn_linux_server_testAll.Transparency = false;
+            this.btn_linux_server_testAll.Click += new System.EventHandler(this.btn_linux_server_testAll_Click);
             // 
             // txt_linux_server_nickname
             // 
@@ -1576,6 +1650,7 @@
             this.tabPage2.ResumeLayout(false);
             this.page_set.ResumeLayout(false);
             this.page_set.PerformLayout();
+            this.panel_rich_config_log.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBoxIgnore.ResumeLayout(false);
@@ -1757,5 +1832,10 @@
         private System.Windows.Forms.Label label46;
         private System.Windows.Forms.TextBox txt_docker_other;
         private System.Windows.Forms.Label label45;
+        private AltoControls.AltoButton btn_win_server_testAll;
+        private AltoControls.AltoButton btn_linux_server_testAll;
+        private AltoControls.AltoButton btn_rich_config_log_close;
+        private System.Windows.Forms.Panel panel_rich_config_log;
+        private ExRichTextBox rich_config_log;
     }
 }

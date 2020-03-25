@@ -40,6 +40,7 @@ namespace AntDeployWinform.Winform
         private NLog.Logger nlog_iis;
         private NLog.Logger nlog_windowservice;
         private NLog.Logger nlog_docker;
+        private NLog.Logger nlog_config;
 
         private int ProgressPercentage = 0;
         private string ProgressCurrentHost = null;
@@ -428,11 +429,31 @@ namespace AntDeployWinform.Winform
             LoggingRule rule3 = new LoggingRule("*", LogLevel.Debug, richTarget3);
             config.LoggingRules.Add(rule3);
 
+
+            var richTarget4 = new RichTextBoxTarget
+            {
+                Name = "rich_config_log",
+                Layout =
+                    "${date:format=HH\\:mm\\:ss}|${uppercase:${level}}|${message} ${exception:format=tostring} ${rtb-link:inner=${event-properties:item=ShowLink}}",
+                FormName = "Deploy",
+                ControlName = "rich_config_log",
+                AutoScroll = true,
+                MaxLines = 0,
+                AllowAccessoryFormCreation = false,
+                SupportLinks = true,
+                UseDefaultRowColoringRules = true
+
+            };
+            config.AddTarget("rich_config_log", richTarget4);
+            LoggingRule rule4 = new LoggingRule("*", LogLevel.Debug, richTarget4);
+            config.LoggingRules.Add(rule4);
+
             LogManager.Configuration = config;
 
             nlog_iis = NLog.LogManager.GetLogger("rich_iis_log");
             nlog_windowservice = NLog.LogManager.GetLogger("rich_windowservice_log");
             nlog_docker = NLog.LogManager.GetLogger("rich_docker_log");
+            nlog_config = NLog.LogManager.GetLogger("rich_config_log");
 
             RichLogInit();
 
@@ -647,6 +668,7 @@ namespace AntDeployWinform.Winform
             RichTextBoxTarget.GetTargetByControl(rich_iis_log).LinkClicked += LinkClicked;
             RichTextBoxTarget.GetTargetByControl(rich_windowservice_log).LinkClicked += LinkClicked;
             RichTextBoxTarget.GetTargetByControl(rich_docker_log).LinkClicked += LinkClicked;
+            RichTextBoxTarget.GetTargetByControl(rich_config_log).LinkClicked += LinkClicked;
 
         }
 
@@ -657,7 +679,15 @@ namespace AntDeployWinform.Winform
                 {
                     try
                     {
-                        if (linktext.StartsWith("http") || linktext.StartsWith("file:"))
+                        if (linktext.StartsWith("file://removeWinServer_"))
+                        {
+                            b_env_server_remove_Click(int.Parse(linktext.Split('_')[1]));
+                        }
+                        else if (linktext.StartsWith("file://removeLinuxServer_"))
+                        {
+                            b_linux_server_remove_Click(int.Parse(linktext.Split('_')[1]));
+                        }
+                        else if (linktext.StartsWith("http") || linktext.StartsWith("file:"))
                         {
                             ProcessStartInfo sInfo = new ProcessStartInfo(linktext);
                             Process.Start(sInfo);
@@ -1036,6 +1066,16 @@ namespace AntDeployWinform.Winform
             DeployConfig.EnvServerChange(DeployConfig.Env[this.combo_env_list.SelectedIndex]);
         }
 
+        private void b_env_server_remove_Click(int index)
+        {
+            this.DeployConfig.Env[this.combo_env_list.SelectedIndex].ServerList
+                .RemoveAt(index);
+            this.combo_env_server_list.Items.RemoveAt(index);
+            DeployConfig.EnvServerChange(DeployConfig.Env[this.combo_env_list.SelectedIndex]);
+        }
+
+
+
         /// <summary>
         /// 添加window server
         /// </summary>
@@ -1106,6 +1146,116 @@ namespace AntDeployWinform.Winform
         }
 
         /// <summary>
+        /// window server 链接测试全部
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_win_server_testAll_Click(object sender, EventArgs e)
+        {
+            if (this.combo_env_server_list.Items.Count < 1)
+            {
+                MessageBoxEx.Show(this, "Please add the server first");
+                return;
+            }
+
+            List<Tuple<string, string, string>> allServerList = new List<Tuple<string, string, string>>();
+            var existServerList =  this.combo_env_server_list.Items.Cast<string>();
+            foreach (var seletedServer in existServerList)
+            {
+                var arr = seletedServer.Split(new string[] { "@_@" }, StringSplitOptions.None);
+                if (arr.Length >= 2)
+                {
+                    if (arr.Length == 3)
+                    {
+                        allServerList.Add(new Tuple<string, string, string>(arr[0], arr[1], arr[2]));
+                    }
+                    else
+                    {
+                        allServerList.Add(new Tuple<string, string, string>(arr[0], arr[1],""));
+                    }
+                }
+            }
+            if (allServerList.Count < 1)
+            {
+                MessageBoxEx.Show(this, "Please add the server first");
+                return;
+            }
+
+            new Task(() =>
+            {
+                EnableForTestWinServerAll(false);
+                this.nlog_config.Info($"Connect Test All Start");
+                WebClient client = new WebClient();
+                if (!string.IsNullOrEmpty(this.PluginConfig.DeployHttpProxy))
+                {
+                    var arr = this.PluginConfig.DeployHttpProxy.Split(':');
+                    if (arr.Length == 2)
+                    {
+                        this.nlog_config.Info($"Use Proxy：【{this.PluginConfig.DeployHttpProxy}】");
+                        client.Proxy = new WebProxy(this.PluginConfig.DeployHttpProxy);
+                    }
+                    else
+                    {
+                        this.nlog_config.Warn($"Invaild Proxy：【{this.PluginConfig.DeployHttpProxy}】");
+                    }
+                }
+                else
+                {
+                    client.Proxy = null;
+                }
+                
+                try
+                {
+                    var index = 0;
+                    foreach (var server in allServerList)
+                    {
+                        try
+                        {
+                            this.nlog_config.Info($"Connect Start -> Host:【{server.Item1 + (!string.IsNullOrEmpty(server.Item3) ? $"[{server.Item3}]" : "")}】");
+                            var result = client.DownloadString($"http://{server.Item1}/publish?Token={WebUtility.UrlEncode(server.Item2)}");
+                            if (result.Equals("success"))
+                            {
+                                this.nlog_config.Info($"Connect Success -> Host:【{server.Item1 + (!string.IsNullOrEmpty(server.Item3) ? $"[{server.Item3}]" : "")}】,response:{result}");
+                            }
+                            else
+                            {
+                                this.nlog_config.Error($"Connect Fail -> Host:【{server.Item1 + (!string.IsNullOrEmpty(server.Item3)?$"[{server.Item3}]":"")}】,response:{result}");
+
+                                LogEventInfo publisEvent = new LogEventInfo(LogLevel.Warn, "", $"Host:【{server.Item1 + (!string.IsNullOrEmpty(server.Item3) ? $"[{server.Item3}]" : "")}】 -> click to remove -->");
+                                publisEvent.Properties["ShowLink"] = $"file://removeWinServer_"+index;
+                                publisEvent.LoggerName = "rich_config_log";
+                                this.nlog_config.Log(publisEvent);
+
+                            }
+                        }
+                        catch (Exception exception)
+                        {
+                            this.nlog_config.Error($"Connect Fail -> Host:【{server.Item1}】,err:{exception.Message}");
+                            LogEventInfo publisEvent = new LogEventInfo(LogLevel.Warn, "", $"Host:【{server.Item1 + (!string.IsNullOrEmpty(server.Item3) ? $"[{server.Item3}]" : "")}】 -> click to remove -->");
+                            publisEvent.Properties["ShowLink"] = $"file://removeWinServer_" + index;
+                            publisEvent.LoggerName = "rich_config_log";
+                            this.nlog_config.Log(publisEvent);
+                        }
+
+                        index++;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    this.nlog_config.Error($"Fail ex:{ex.Message},Skip to Next");
+                }
+                finally
+                {
+                    EnableForTestWinServer(true);
+                    client.Dispose();
+                    this.nlog_config.Info($"Connect Test All End");
+                }
+
+            }).Start();
+
+        }
+
+        /// <summary>
         /// window server 链接测试
         /// </summary>
         /// <param name="sender"></param>
@@ -1161,6 +1311,31 @@ namespace AntDeployWinform.Winform
                 }
 
             }).Start();
+
+        }
+
+        private void EnableForTestWinServerAll(bool flag)
+        {
+            this.BeginInvokeLambda(() =>
+            {
+                if (!flag)
+                {
+                    this.rich_config_log.Text = "";
+                    this.panel_rich_config_log.Visible = true;
+                    this.btn_rich_config_log_close.Visible = true;
+                }
+                this.txt_env_server_host.Enabled = flag;
+                this.txt_env_server_token.Enabled = flag;
+                this.b_env_server_add.Enabled = flag;
+                this.b_env_server_test.Enabled = flag;
+                this.b_env_server_remove.Enabled = flag;
+                this.combo_env_server_list.Enabled = flag;
+                this.txt_winserver_nickname.Enabled = flag;
+                if (flag)
+                {
+                    this.loading_win_server_test.Visible = false;
+                }
+            });
 
         }
 
@@ -1368,6 +1543,157 @@ namespace AntDeployWinform.Winform
             this.combo_linux_server_list.Items.Remove(seletedServer);
             DeployConfig.EnvServerChange(DeployConfig.Env[this.combo_env_list.SelectedIndex]);
         }
+        private void b_linux_server_remove_Click(int index)
+        {
+            this.DeployConfig.Env[this.combo_env_list.SelectedIndex].LinuxServerList
+                .RemoveAt(index);
+            this.combo_linux_server_list.Items.RemoveAt(index);
+            DeployConfig.EnvServerChange(DeployConfig.Env[this.combo_env_list.SelectedIndex]);
+        }
+
+        /// <summary>
+        /// linux server 测试全部
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_linux_server_testAll_Click(object sender, EventArgs e)
+        {
+            if (this.combo_linux_server_list.Items.Count < 1)
+            {
+                MessageBoxEx.Show(this, "Please add the server first");
+                return;
+            }
+
+            var envName = this.combo_docker_env.SelectedItem as string;
+
+            if (string.IsNullOrEmpty(envName))
+            {
+                MessageBoxEx.Show(this, "Please select env first");
+                return;
+            }
+
+            var serverList = DeployConfig.Env.Where(r => r.Name.Equals(envName)).Select(r => r.LinuxServerList).FirstOrDefault();
+            if (serverList == null || serverList.Count < 1)
+            {
+                MessageBoxEx.Show(this, "Please add the server first");
+                return;
+            }
+
+
+            List<Tuple<string, string, string>> allServerList = new List<Tuple<string, string, string>>();
+            var existServerList = this.combo_linux_server_list.Items.Cast<string>();
+            foreach (var seletedServer in existServerList)
+            {
+                var arr = seletedServer.Split(new string[] { "@_@" }, StringSplitOptions.None);
+                if (arr.Length >= 2)
+                {
+                    if (arr.Length == 3)
+                    {
+                        allServerList.Add(new Tuple<string, string, string>(arr[0], arr[1], arr[2]));
+                    }
+                    else
+                    {
+                        allServerList.Add(new Tuple<string, string, string>(arr[0], arr[1], ""));
+                    }
+                }
+            }
+            if (allServerList.Count < 1)
+            {
+                MessageBoxEx.Show(this, "Please add the server first");
+                return;
+            }
+
+            new Task(() =>
+            {
+                EnableForTestLinuxServerAll(false);
+                this.nlog_config.Info($"Connect Test All Start");
+                if (!string.IsNullOrEmpty(this.PluginConfig.DeployHttpProxy))
+                {
+                    var arr = this.PluginConfig.DeployHttpProxy.Split(':');
+                    if (arr.Length == 2)
+                    {
+                        this.nlog_config.Info($"Use Proxy：【{this.PluginConfig.DeployHttpProxy}】");
+                    }
+                    else
+                    {
+                        this.nlog_config.Warn($"Invaild Proxy：【{this.PluginConfig.DeployHttpProxy}】");
+                    }
+                }
+
+                try
+                {
+                   
+
+                    var index = 0;
+                    foreach (var server in allServerList)
+                    {
+                        try
+                        {
+                            this.nlog_config.Info($"Connect Start -> Host:【{server.Item1 + (!string.IsNullOrEmpty(server.Item3) ? $"[{server.Item3}]" : "")}】");
+
+                            //获取pwd
+                            var pwd = serverList.Where(r => r.Host.Equals(server.Item1)).FirstOrDefault();
+
+                            if (pwd == null || string.IsNullOrEmpty(pwd.Pwd))
+                            {
+                                this.nlog_config.Error($"Get pwd From Config File Fail -> Host:【{server.Item1 + (!string.IsNullOrEmpty(server.Item3) ? $"[{server.Item3}]" : "")}】");
+                                index++;
+                                continue;
+                            }
+
+                            var pwd1 = CodingHelper.AESDecrypt(pwd.Pwd);
+                            if (string.IsNullOrEmpty(pwd1))
+                            {
+                                this.nlog_config.Error($"Get pwd From Config File Fail -> Host:【{server.Item1 + (!string.IsNullOrEmpty(server.Item3) ? $"[{server.Item3}]" : "")}】");
+                                index++;
+                                continue;
+                            }
+
+                            using (SSHClient sshClient = new SSHClient(pwd.Host, pwd.UserName, pwd1, this.PluginConfig.DeployHttpProxy))
+                            {
+                                var r = sshClient.Connect(true);
+                                this.BeginInvokeLambda(() =>
+                                {
+                                    if (r)
+                                    {
+                                        this.nlog_config.Info($"Connect Success -> Host:【{server.Item1 + (!string.IsNullOrEmpty(server.Item3) ? $"[{server.Item3}]" : "")}】");
+                                    }
+                                    else
+                                    {
+                                        this.nlog_config.Error($"Connect Fail -> Host:【{server.Item1 + (!string.IsNullOrEmpty(server.Item3) ? $"[{server.Item3}]" : "")}】");
+
+                                        LogEventInfo publisEvent = new LogEventInfo(LogLevel.Warn, "", $"Host:【{server.Item1 + (!string.IsNullOrEmpty(server.Item3) ? $"[{server.Item3}]" : "")}】 -> click to remove -->");
+                                        publisEvent.Properties["ShowLink"] = $"file://removeLinuxServer_" + index;
+                                        publisEvent.LoggerName = "rich_config_log";
+                                        this.nlog_config.Log(publisEvent);
+                                    }
+                                });
+                            }
+                        }
+                        catch (Exception exception)
+                        {
+                            this.nlog_config.Error($"Connect Fail -> Host:【{server.Item1}】,err:{exception.Message}");
+                            LogEventInfo publisEvent = new LogEventInfo(LogLevel.Warn, "", $"Host:【{server.Item1 + (!string.IsNullOrEmpty(server.Item3) ? $"[{server.Item3}]" : "")}】 -> click to remove -->");
+                            publisEvent.Properties["ShowLink"] = $"file://removeLinuxServer_" + index;
+                            publisEvent.LoggerName = "rich_config_log";
+                            this.nlog_config.Log(publisEvent);
+                        }
+
+                        index++;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    this.nlog_config.Error($"Fail ex:{ex.Message},Skip to Next");
+                }
+                finally
+                {
+                    EnableForTestLinuxServer(true);
+                    this.nlog_config.Info($"Connect Test All End");
+                }
+
+            }).Start();
+        }
 
         /// <summary>
         /// linux server 测试
@@ -1433,7 +1759,31 @@ namespace AntDeployWinform.Winform
             }).Start();
 
         }
+        private void EnableForTestLinuxServerAll(bool flag)
+        {
+            this.BeginInvokeLambda(() =>
+            {
+                if (!flag)
+                {
+                    this.panel_rich_config_log.Visible = true;
+                    this.rich_config_log.Text = "";
+                    this.btn_rich_config_log_close.Visible = true;
+                }
+                this.txt_linux_host.Enabled = flag;
+                this.txt_linux_username.Enabled = flag;
+                this.txt_linux_pwd.Enabled = flag;
+                this.b_add_linux_server.Enabled = flag;
+                this.b_linux_server_test.Enabled = flag;
+                this.b_linux_server_remove.Enabled = flag;
+                this.combo_linux_server_list.Enabled = flag;
+                txt_linux_server_nickname.Enabled = flag;
+                if (flag)
+                {
+                    this.loading_linux_server_test.Visible = false;
+                }
+            });
 
+        }
         private void EnableForTestLinuxServer(bool flag)
         {
             this.BeginInvokeLambda(() =>
@@ -7063,6 +7413,11 @@ namespace AntDeployWinform.Winform
             });
         }
 
-       
+        private void btn_rich_config_log_close_Click(object sender, EventArgs e)
+        {
+            this.panel_rich_config_log.Visible = false;
+            this.rich_config_log.Visible = false;
+            this.rich_config_log.Text = "";
+        }
     }
 }
