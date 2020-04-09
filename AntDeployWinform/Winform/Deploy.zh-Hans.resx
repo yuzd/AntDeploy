@@ -133,12 +133,6 @@
   <data name="label25.Text" xml:space="preserve">
     <value>注意:只能发布Windows服务器</value>
   </data>
-  <data name="label30.Text" xml:space="preserve">
-    <value>指定网站在服务器的路径:</value>
-  </data>
-  <data name="groupBox4.Text" xml:space="preserve">
-    <value> (如果是第一次创建)</value>
-  </data>
   <data name="b_iis_deploy.Text" xml:space="preserve">
     <value>发布</value>
   </data>
@@ -184,11 +178,11 @@
   <data name="label28.Text" xml:space="preserve">
     <value>example:/log:/publish/logs  若多个用;隔开</value>
   </data>
+  <data name="b_docker_rollback.Text" xml:space="preserve">
+    <value>回滚</value>
+  </data>
   <data name="groupBox5.Text" xml:space="preserve">
     <value> (创建DockerFile参数)</value>
-  </data>
-  <data name="b_docker_deploy.Text" xml:space="preserve">
-    <value>发布</value>
   </data>
   <data name="label22.Text" xml:space="preserve">
     <value>环境名称:</value>
@@ -199,17 +193,20 @@
   <data name="tabPage_docker_log.Text" xml:space="preserve">
     <value>发布日志</value>
   </data>
-  <data name="b_docker_rollback.Text" xml:space="preserve">
-    <value>回滚</value>
-  </data>
-  <data name="page_docker.Text" xml:space="preserve">
-    <value>Docker发布</value>
+  <data name="label31.Size" type="System.Drawing.Size, System.Drawing">
+    <value>143, 12</value>
   </data>
   <data name="label31.Text" xml:space="preserve">
     <value>指定服务在服务器的路径:</value>
   </data>
-  <data name="groupBox2.Text" xml:space="preserve">
-    <value> (如果第一次创建)</value>
+  <data name="b_docker_deploy.Text" xml:space="preserve">
+    <value>发布</value>
+  </data>
+  <data name="page_docker.Text" xml:space="preserve">
+    <value>Docker发布</value>
+  </data>
+  <data name="b_windowservice_deploy.Text" xml:space="preserve">
+    <value>发布</value>
   </data>
   <data name="checkBox_Increment_window_service.Size" type="System.Drawing.Size, System.Drawing">
     <value>72, 16</value>
@@ -234,9 +231,6 @@
   </data>
   <data name="label11.Text" xml:space="preserve">
     <value>SDK类型:</value>
-  </data>
-  <data name="b_windowservice_deploy.Text" xml:space="preserve">
-    <value>发布</value>
   </data>
   <data name="label10.Text" xml:space="preserve">
     <value>环境名称:</value>
@@ -367,6 +361,12 @@
   <data name="page_set.Text" xml:space="preserve">
     <value>发布配置</value>
   </data>
+  <data name="label30.Size" type="System.Drawing.Size, System.Drawing">
+    <value>143, 12</value>
+  </data>
+  <data name="label30.Text" xml:space="preserve">
+    <value>指定网站在服务器的路径:</value>
+  </data>
   <data name="label_without_vs.Size" type="System.Drawing.Size, System.Drawing">
     <value>245, 12</value>
   </data>
@@ -390,5 +390,9 @@
   </data>
   <data name="pag_advance_setting.Text" xml:space="preserve">
     <value>其他参数配置</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
 </root>

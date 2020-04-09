@@ -127,6 +127,12 @@
   <data name="checkBox_iis_restart_site.Text" xml:space="preserve">
     <value>不关闭站点</value>
   </data>
+  <data name="btn_iis_stop.Location" type="System.Drawing.Point, System.Drawing">
+    <value>509, 109</value>
+  </data>
+  <data name="btn_iis_retry.Location" type="System.Drawing.Point, System.Drawing">
+    <value>396, 109</value>
+  </data>
   <data name="btn_iis_retry.Text" xml:space="preserve">
     <value>重试</value>
   </data>
@@ -135,6 +141,12 @@
   </data>
   <data name="checkBox_select_deploy_iis.Text" xml:space="preserve">
     <value>选择指定文件发布</value>
+  </data>
+  <data name="btn_docker_stop.Location" type="System.Drawing.Point, System.Drawing">
+    <value>512, 143</value>
+  </data>
+  <data name="btn_docker_retry.Text" xml:space="preserve">
+    <value>重试</value>
   </data>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="checkBox_select_deploy_docker.AutoSize" type="System.Boolean, mscorlib">
@@ -148,9 +160,6 @@
   </data>
   <data name="checkBox_select_deploy_docker.Text" xml:space="preserve">
     <value>选择指定文件发布</value>
-  </data>
-  <data name="btn_docker_retry.Text" xml:space="preserve">
-    <value>重试</value>
   </data>
   <data name="label46.Location" type="System.Drawing.Point, System.Drawing">
     <value>303, 73</value>
@@ -211,6 +220,12 @@
   </data>
   <data name="checkBox_Increment_docker.Text" xml:space="preserve">
     <value>增量发布</value>
+  </data>
+  <data name="btn_windows_serivce_stop.Location" type="System.Drawing.Point, System.Drawing">
+    <value>511, 101</value>
+  </data>
+  <data name="btn_windows_service_retry.Location" type="System.Drawing.Point, System.Drawing">
+    <value>399, 101</value>
   </data>
   <data name="btn_windows_service_retry.Text" xml:space="preserve">
     <value>重试</value>
@@ -301,5 +316,9 @@
   </data>
   <data name="label15.Text" xml:space="preserve">
     <value>指定特定文件夹发布：</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>Inherit</value>
   </data>
 </root>

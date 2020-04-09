@@ -7430,7 +7430,6 @@ namespace AntDeployWinform.Winform
         private void btn_rich_config_log_close_Click(object sender, EventArgs e)
         {
             this.panel_rich_config_log.Visible = false;
-            this.rich_config_log.Visible = false;
             this.rich_config_log.Text = "";
         }
     }
