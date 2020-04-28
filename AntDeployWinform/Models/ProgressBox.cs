@@ -14,6 +14,8 @@ namespace AntDeployWinform.Models
     }
     public class ProgressBox : GroupBox
     {
+        public static bool IsEnableGroup = false;
+
         public CircularProgressBar.CircularProgressBar progress_iis_build;
         public CircularProgressBar.CircularProgressBar progress_iis_package;
         public CircularProgressBar.CircularProgressBar progress_iis_upload;
@@ -23,6 +25,7 @@ namespace AntDeployWinform.Models
         private System.Windows.Forms.Button b_upload_end;
         private System.Windows.Forms.Label label29;
         private System.Windows.Forms.TextBox FireUrlText;
+        public System.Windows.Forms.CheckBox CheckBox;
         private AltoControls.AltoButton HostoryButton;
 
         public ServerType ServerType { get; set; }
@@ -48,7 +51,15 @@ namespace AntDeployWinform.Models
             this.b_package_end = new System.Windows.Forms.Button();
             this.b_upload_end = new System.Windows.Forms.Button();
             this.FireUrlText = new System.Windows.Forms.TextBox();
+            this.CheckBox = new System.Windows.Forms.CheckBox();
             HostoryButton = new AltoButton();
+
+
+            this.CheckBox.Location = new System.Drawing.Point(10, Progressheight - 20);
+            this.CheckBox.Size = new System.Drawing.Size(20, 20);
+            this.CheckBox.Checked = false;
+            this.CheckBox.Visible = IsEnableGroup;
+
             // 
             // label29
             // 
@@ -253,6 +264,7 @@ namespace AntDeployWinform.Models
             // 
             // groupBox_iis_progress
             // 
+            this.Controls.Add(this.CheckBox);
             this.Controls.Add(this.label29);
             this.Controls.Add(this.FireUrlText);
             this.Controls.Add(this.HostoryButton);
@@ -450,10 +462,29 @@ namespace AntDeployWinform.Models
         {
             this.FireUrlText.Enabled = flag;
             this.HostoryButton.Enabled = flag;
+            this.CheckBox.Enabled = flag;
+        }
+
+
+        public BaseServer GetServer()
+        {
+            //当是需要人选的 且有被选 才认为是要发布的服务器
+            if (this.CheckBox.Visible && this.CheckBox.Checked)
+            {
+                return Server;
+            }
+
+            return null;
         }
 
         public bool CheckFireUrl()
         {
+            //当是需要人选的 但是没有被选 那就不去check
+            if (this.CheckBox.Visible && !this.CheckBox.Checked)
+            {
+                return true;
+            }
+
             var url = this.FireUrlText.Text.ToLower();
             if (!string.IsNullOrEmpty(url) && !url.StartsWith("http"))
             {

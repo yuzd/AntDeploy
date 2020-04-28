@@ -488,6 +488,8 @@ namespace AntDeployWinform.Winform
         private void Reload()
         {
             this.checkBox_Chinese.Checked = GlobalConfig.IsChinease;
+            ProgressBox.IsEnableGroup = GlobalConfig.EnableEnvGroup;
+            this.chk_global_useCheckBox.Checked = GlobalConfig.EnableEnvGroup;
             this.checkBox_save_deploy_log.Checked = GlobalConfig.SaveLogs;
             this.checkBox_multi_deploy.Checked = GlobalConfig.MultiInstance;
 
@@ -1918,6 +1920,56 @@ namespace AntDeployWinform.Winform
             return false;
         }
 
+        private List<BaseServer> getSelectedBaseServers(ServerType serverType)
+        {
+            var result = new List<BaseServer>();
+            if (serverType.Equals(ServerType.IIS))
+            {
+                if (this.tabPage_progress.Tag is Dictionary<string, ProgressBox> progressBoxList)
+                {
+                    foreach (var box in progressBoxList)
+                    {
+                        var s = box.Value.GetServer();
+                        if(s == null) continue;
+                        result.Add(s);
+                    }
+                }
+            }
+            if (serverType.Equals(ServerType.DOCKER))
+            {
+                if (this.tabPage_docker.Tag is Dictionary<string, ProgressBox> progressBoxList)
+                {
+                    foreach (var box in progressBoxList)
+                    {
+                        if (!box.Value.CheckFireUrl())
+                        {
+                            var s = box.Value.GetServer();
+                            if (s == null) continue;
+                            result.Add(s);
+                        }
+                    }
+                }
+            }
+
+            if (serverType.Equals(ServerType.WINSERVICE))
+            {
+                //生成进度
+                if (this.tabPage_windows_service.Tag is Dictionary<string, ProgressBox> progressBoxList)
+                {
+                    foreach (var box in progressBoxList)
+                    {
+                        if (!box.Value.CheckFireUrl())
+                        {
+                            var s = box.Value.GetServer();
+                            if (s == null) continue;
+                            result.Add(s);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
         private void combo_iis_env_SelectedIndexChanged(object sender, EventArgs e)
         {
             var selectName = this.combo_iis_env.SelectedItem as string;
@@ -1934,12 +1986,13 @@ namespace AntDeployWinform.Winform
                         this.txt_iis_web_site_name.Text = target.ConfigName;
                     }
                 }
-
+                var dic = new Dictionary<string,bool>();
                 //生成进度
                 if (this.tabPage_progress.Tag is Dictionary<string, ProgressBox> progressBoxList)
                 {
                     foreach (var box in progressBoxList)
                     {
+                        dic.Add(box.Value.Server.Host,box.Value.CheckBox.Checked);
                         box.Value.Dispose();
                         this.tabPage_progress.Controls.Remove(box.Value);
                     }
@@ -1967,6 +2020,12 @@ namespace AntDeployWinform.Winform
                         {
                             Text = serverHost + (!string.IsNullOrWhiteSpace(nickName) ? $"【{nickName}】" : ""),
                         };
+
+                    if(dic.TryGetValue(serverHost,out var chec))
+                    {
+                        newBox.CheckBox.Checked = chec;
+                    }
+                    
 
                     newBoxList.Add(serverHost, newBox);
                     this.tabPage_progress.Controls.Add(newBox);
@@ -2056,9 +2115,29 @@ namespace AntDeployWinform.Winform
                 MessageBoxEx.Show(this,Strings.EnvHaveNoServer);
                 return;
             }
+         
+
+            if (ProgressBox.IsEnableGroup)
+            {
+                //获取所有的选择了的server
+                var selectedList = getSelectedBaseServers(ServerType.IIS);
+                if (!selectedList.Any())
+                {
+                    MessageBoxEx.Show(this, Strings.EnvHaveNoServer);
+                    return;
+                }
+
+                //找到选择了的
+                serverList = serverList.Where(r => selectedList.Any(y => y.Host.Equals(r.Host))).ToList();
+                if (!serverList.Any())
+                {
+                    MessageBoxEx.Show(this, Strings.EnvHaveNoServer);
+                    return;
+                }
+            }
+
 
             var serverHostList = string.Join(Environment.NewLine, serverList.Select(r => r.Host).ToList());
-
             var confirmResult = ShowInputMsgBox(Strings.ConfirmDeploy,
                 Strings.DeployServerConfim + Environment.NewLine + serverHostList);
             //var confirmResult = MessageBoxEx.Show(this,
@@ -2116,7 +2195,7 @@ namespace AntDeployWinform.Winform
                             if (!isSuccess)
                             {
                                 this.nlog_iis.Error("publish error,please check build log");
-                                BuildError(this.tabPage_progress);
+                                BuildError(this.tabPage_progress,serverList.First().Host);
                                 return;
                             }
                         }
@@ -2127,14 +2206,14 @@ namespace AntDeployWinform.Winform
                             if (!isSuccess)
                             {
                                 this.nlog_iis.Error("publish error,please check build log");
-                                BuildError(this.tabPage_progress);
+                                BuildError(this.tabPage_progress, serverList.First().Host);
                                 return;
                             }
 
                         }
                     }
 
-                    BuildEnd(this.tabPage_progress); //第一台结束编译
+                    BuildEnd(this.tabPage_progress, serverList.First().Host); //第一台结束编译
                     LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish success  ==> ");
                     publisEvent.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
                     publisEvent.LoggerName = "rich_iis_log";
@@ -2165,7 +2244,7 @@ namespace AntDeployWinform.Winform
                     if (stop_iis_cancel_token)
                     {
                         this.nlog_iis.Warn($"deploy task was canceled!");
-                        PackageError(this.tabPage_progress);
+                        PackageError(this.tabPage_progress, serverList.First().Host);
                         return;
                     }
 
@@ -2185,7 +2264,7 @@ namespace AntDeployWinform.Winform
                         if (!gitModel.InitSuccess)
                         {
                             this.nlog_iis.Error("package fail,can not init git,please cancel Increment Deploy");
-                            PackageError(this.tabPage_progress);
+                            PackageError(this.tabPage_progress, serverList.First().Host);
                             return;
                         }
                     }
@@ -2204,7 +2283,7 @@ namespace AntDeployWinform.Winform
 
                         if (fileList == null || fileList.Count < 1)
                         {
-                            PackageError(this.tabPage_progress);
+                            PackageError(this.tabPage_progress, serverList.First().Host);
                             return;
                         }
                         gitChangeFileCount = fileList.Count;
@@ -2231,14 +2310,14 @@ namespace AntDeployWinform.Winform
                                 true, ignoreList,
                                 (progressValue) =>
                                 {
-                                    UpdatePackageProgress(this.tabPage_progress, null, progressValue); //打印打包记录
+                                    UpdatePackageProgress(this.tabPage_progress, serverList.First().Host, progressValue); //打印打包记录
                                     return stop_iis_cancel_token;
                                 });
                         }
                         catch (Exception ex)
                         {
                             this.nlog_iis.Error("package fail:" + ex.Message);
-                            PackageError(this.tabPage_progress);
+                            PackageError(this.tabPage_progress, serverList.First().Host);
                             return;
                         }
                     }
@@ -2266,7 +2345,7 @@ namespace AntDeployWinform.Winform
                                 ignoreList,
                                 (progressValue) =>
                                 {
-                                    UpdatePackageProgress(this.tabPage_progress, null, progressValue); //打印打包记录
+                                    UpdatePackageProgress(this.tabPage_progress, serverList.First().Host, progressValue); //打印打包记录
                                     return stop_iis_cancel_token;
                                 });
                         }
@@ -2275,14 +2354,14 @@ namespace AntDeployWinform.Winform
                     catch (Exception ex)
                     {
                         this.nlog_iis.Error("package fail:" + ex.Message);
-                        PackageError(this.tabPage_progress);
+                        PackageError(this.tabPage_progress, serverList.First().Host);
                         return;
                     }
 
                     if (zipBytes == null || zipBytes.Length < 1)
                     {
                         this.nlog_iis.Error("package fail");
-                        PackageError(this.tabPage_progress);
+                        PackageError(this.tabPage_progress, serverList.First().Host);
                         return;
                     }
                     var packageSize = (zipBytes.Length / 1024 / 1024);
@@ -2757,12 +2836,12 @@ namespace AntDeployWinform.Winform
                         if (stop_iis_cancel_token)
                         {
                             this.nlog_iis.Warn($"deploy task was canceled!");
-                            PackageError(this.tabPage_progress);
+                            PackageError(this.tabPage_progress,serverList.First().Host);
                             return;
                         }
                         if (fileList == null || !fileList.Any())
                         {
-                            PackageError(this.tabPage_progress);
+                            PackageError(this.tabPage_progress,serverList.First().Host);
                             this.nlog_iis.Error("Please Select Files");
                             return;
                         }
@@ -2776,21 +2855,21 @@ namespace AntDeployWinform.Winform
                                 ignoreList,
                                 (progressValue) =>
                                 {
-                                    UpdatePackageProgress(this.tabPage_progress, null, progressValue); //打印打包记录
+                                    UpdatePackageProgress(this.tabPage_progress, serverList.First().Host, progressValue); //打印打包记录
                                     return stop_iis_cancel_token;
                                 }, true);
                         }
                         catch (Exception ex)
                         {
                             this.nlog_iis.Error("package fail:" + ex.Message);
-                            PackageError(this.tabPage_progress);
+                            PackageError(this.tabPage_progress,serverList.First().Host);
                             return;
                         }
 
                         if (zipBytes == null || zipBytes.Length < 1)
                         {
                             this.nlog_iis.Error("package fail");
-                            PackageError(this.tabPage_progress);
+                            PackageError(this.tabPage_progress,serverList.First().Host);
                             return;
                         }
                         var packageSize = (zipBytes.Length / 1024 / 1024);
@@ -3456,11 +3535,26 @@ namespace AntDeployWinform.Winform
 
                 if (this.tabPage_progress.Tag is Dictionary<string, ProgressBox> progressBoxList1)
                 {
-                    foreach (var box in progressBoxList1)
+                    if (ProgressBox.IsEnableGroup)
                     {
-                        box.Value.Enable(flag);
-                        break;
+                        foreach (var box in progressBoxList1)
+                        {
+                            if (box.Value.CheckBox.Visible && box.Value.CheckBox.Checked)
+                            {
+                                box.Value.Enable(flag);
+                                break;
+                            }
+                        }
                     }
+                    else
+                    {
+                        foreach (var box in progressBoxList1)
+                        {
+                            box.Value.Enable(flag);
+                            break;
+                        }
+                    }
+                    
                 }
 
                 this.b_iis_rollback.Enabled = flag;
@@ -3494,12 +3588,25 @@ namespace AntDeployWinform.Winform
                     if (ignore) return;
                     if (this.tabPage_progress.Tag is Dictionary<string, ProgressBox> progressBoxList)
                     {
-                        foreach (var box in progressBoxList)
+                        if (ProgressBox.IsEnableGroup)
                         {
-                            box.Value.StartBuild();
-                            break;
+                            foreach (var box in progressBoxList)
+                            {
+                                if (box.Value.CheckBox.Visible && box.Value.CheckBox.Checked)
+                                {
+                                    box.Value.StartBuild();
+                                    break;
+                                }
+                            }
                         }
-
+                        else
+                        {
+                            foreach (var box in progressBoxList)
+                            {
+                                box.Value.StartBuild();
+                                break;
+                            }
+                        }
                     }
                 }
             });
@@ -3899,10 +4006,24 @@ namespace AntDeployWinform.Winform
             {
                 if (this.tabPage_windows_service.Tag is Dictionary<string, ProgressBox> progressBoxList1)
                 {
-                    foreach (var box in progressBoxList1)
+                    if (ProgressBox.IsEnableGroup)
                     {
-                        box.Value.Enable(flag);
-                        break;
+                        foreach (var box in progressBoxList1)
+                        {
+                            if (box.Value.CheckBox.Visible && box.Value.CheckBox.Checked)
+                            {
+                                box.Value.Enable(flag);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (var box in progressBoxList1)
+                        {
+                            box.Value.Enable(flag);
+                            break;
+                        }
                     }
                 }
                 this.b_windows_service_rollback.Enabled = flag;
@@ -3934,12 +4055,25 @@ namespace AntDeployWinform.Winform
                     if (ignore) return;
                     if (this.tabPage_windows_service.Tag is Dictionary<string, ProgressBox> progressBoxList)
                     {
-                        foreach (var box in progressBoxList)
+                        if (ProgressBox.IsEnableGroup)
                         {
-                            box.Value.StartBuild();
-                            break;
+                            foreach (var box in progressBoxList)
+                            {
+                                if (box.Value.CheckBox.Visible && box.Value.CheckBox.Checked)
+                                {
+                                    box.Value.StartBuild();
+                                    break;
+                                }
+                            }
                         }
-
+                        else
+                        {
+                            foreach (var box in progressBoxList)
+                            {
+                                box.Value.StartBuild();
+                                break;
+                            }
+                        }
                     }
                 }
             });
@@ -4098,6 +4232,24 @@ namespace AntDeployWinform.Winform
                 return;
             }
 
+            if (ProgressBox.IsEnableGroup)
+            {
+                //获取所有的选择了的server
+                var selectedList = getSelectedBaseServers(ServerType.WINSERVICE);
+                if (!selectedList.Any())
+                {
+                    MessageBoxEx.Show(this, Strings.EnvHaveNoServer);
+                    return;
+                }
+
+                //找到选择了的
+                serverList = serverList.Where(r => selectedList.Any(y => y.Host.Equals(r.Host))).ToList();
+                if (!serverList.Any())
+                {
+                    MessageBoxEx.Show(this, Strings.EnvHaveNoServer);
+                    return;
+                }
+            }
             var serverHostList = string.Join(Environment.NewLine, serverList.Select(r => r.Host).ToList());
 
             var confirmResult = ShowInputMsgBox(Strings.ConfirmDeploy,
@@ -4167,7 +4319,7 @@ namespace AntDeployWinform.Winform
                             if (!isSuccess)
                             {
                                 this.nlog_windowservice.Error("publish error,please check build log");
-                                BuildError(this.tabPage_windows_service);
+                                BuildError(this.tabPage_windows_service,serverList.First().Host);
                                 return;
                             }
                         }
@@ -4179,7 +4331,7 @@ namespace AntDeployWinform.Winform
                             if (!isSuccess)
                             {
                                 this.nlog_windowservice.Error("publish error,please check build log");
-                                BuildError(this.tabPage_windows_service);
+                                BuildError(this.tabPage_windows_service, serverList.First().Host);
                                 return;
                             }
                         }
@@ -4190,7 +4342,7 @@ namespace AntDeployWinform.Winform
                     if (string.IsNullOrEmpty(publishPath) || !Directory.Exists(publishPath))
                     {
                         this.nlog_windowservice.Error("can not find publishPath");
-                        BuildError(this.tabPage_windows_service);
+                        BuildError(this.tabPage_windows_service, serverList.First().Host);
                         return;
                     }
 
@@ -4202,7 +4354,7 @@ namespace AntDeployWinform.Winform
                         if (!File.Exists(serviceFile))
                         {
                             this.nlog_windowservice.Error($"exe file can not find in publish folder: {serviceFile}");
-                            BuildError(this.tabPage_windows_service);
+                            BuildError(this.tabPage_windows_service, serverList.First().Host);
                             return;
                         }
 
@@ -4244,14 +4396,14 @@ namespace AntDeployWinform.Winform
                         var serviceFile = Path.Combine(publishPath, execFilePath);
                         if (!File.Exists(serviceFile))
                         {
-                            BuildError(this.tabPage_windows_service);
+                            BuildError(this.tabPage_windows_service, serverList.First().Host);
                             this.nlog_windowservice.Error($"exe file can not find in publish folder: {serviceFile}");
                             return;
                         }
                     }
 
 
-                    BuildEnd(this.tabPage_windows_service); //第一台结束编译
+                    BuildEnd(this.tabPage_windows_service, serverList.First().Host); //第一台结束编译
                     LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish success  ==> ");
                     publisEvent.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
                     publisEvent.LoggerName = "rich_windowservice_log";
@@ -4265,7 +4417,7 @@ namespace AntDeployWinform.Winform
                     if (stop_windows_cancel_token)
                     {
                         this.nlog_windowservice.Warn($"deploy task was canceled!");
-                        PackageError(this.tabPage_windows_service);
+                        PackageError(this.tabPage_windows_service,serverList.First().Host);
                         return;
                     }
 
@@ -4278,7 +4430,7 @@ namespace AntDeployWinform.Winform
                         {
                             this.nlog_windowservice.Error(
                                 "package fail,can not init git,please cancel Increment Deploy");
-                            PackageError(this.tabPage_windows_service);
+                            PackageError(this.tabPage_windows_service,serverList.First().Host);
                             return;
                         }
                     }
@@ -4289,7 +4441,7 @@ namespace AntDeployWinform.Winform
                         var fileList = gitModel.GetChanges();
                         if (fileList == null || fileList.Count < 1)
                         {
-                            PackageError(this.tabPage_windows_service);
+                            PackageError(this.tabPage_windows_service,serverList.First().Host);
                             return;
                         }
                         gitChangeFileCount = fileList.Count;
@@ -4318,14 +4470,14 @@ namespace AntDeployWinform.Winform
                                 ignoreList,
                                 (progressValue) =>
                                 {
-                                    UpdatePackageProgress(this.tabPage_windows_service, null, progressValue); //打印打包记录
+                                    UpdatePackageProgress(this.tabPage_windows_service, serverList.First().Host, progressValue); //打印打包记录
                                     return stop_windows_cancel_token;
                                 });
                         }
                         catch (Exception ex)
                         {
                             this.nlog_windowservice.Error("package fail:" + ex.Message);
-                            PackageError(this.tabPage_windows_service);
+                            PackageError(this.tabPage_windows_service,serverList.First().Host);
                             return;
                         }
 
@@ -4354,7 +4506,7 @@ namespace AntDeployWinform.Winform
                                 ignoreList,
                                 (progressValue) =>
                                 {
-                                    UpdatePackageProgress(this.tabPage_windows_service, null, progressValue); //打印打包记录
+                                    UpdatePackageProgress(this.tabPage_windows_service, serverList.First().Host, progressValue); //打印打包记录
                                     return stop_windows_cancel_token;
                                 });
                         }
@@ -4363,14 +4515,14 @@ namespace AntDeployWinform.Winform
                     catch (Exception ex)
                     {
                         this.nlog_windowservice.Error("package fail:" + ex.Message);
-                        PackageError(this.tabPage_windows_service);
+                        PackageError(this.tabPage_windows_service,serverList.First().Host);
                         return;
                     }
 
                     if (zipBytes == null || zipBytes.Length < 1)
                     {
                         this.nlog_windowservice.Error("package fail");
-                        PackageError(this.tabPage_windows_service);
+                        PackageError(this.tabPage_windows_service,serverList.First().Host);
                         return;
                     }
                     var packageSize = (zipBytes.Length / 1024 / 1024);
@@ -4759,14 +4911,14 @@ namespace AntDeployWinform.Winform
                     if (stop_windows_cancel_token)
                     {
                         this.nlog_windowservice.Warn($"deploy task was canceled!");
-                        PackageError(this.tabPage_windows_service);
+                        PackageError(this.tabPage_windows_service,serverList.First().Host);
                         return;
                     }
 
                     byte[] zipBytes = null;
                     if (fileList == null || !fileList.Any())
                     {
-                        PackageError(this.tabPage_windows_service);
+                        PackageError(this.tabPage_windows_service,serverList.First().Host);
                         this.nlog_windowservice.Error("Please Select Files");
                         return;
                     }
@@ -4779,21 +4931,21 @@ namespace AntDeployWinform.Winform
                             ignoreList,
                             (progressValue) =>
                             {
-                                UpdatePackageProgress(this.tabPage_windows_service, null, progressValue); //打印打包记录
+                                UpdatePackageProgress(this.tabPage_windows_service, serverList.First().Host, progressValue); //打印打包记录
                                 return stop_windows_cancel_token;
                             }, true);
                     }
                     catch (Exception ex)
                     {
                         this.nlog_windowservice.Error("package fail:" + ex.Message);
-                        PackageError(this.tabPage_windows_service);
+                        PackageError(this.tabPage_windows_service,serverList.First().Host);
                         return;
                     }
 
                     if (zipBytes == null || zipBytes.Length < 1)
                     {
                         this.nlog_windowservice.Error("package fail");
-                        PackageError(this.tabPage_windows_service);
+                        PackageError(this.tabPage_windows_service,serverList.First().Host);
                         return;
                     }
                     var packageSize = (zipBytes.Length / 1024 / 1024);
@@ -5863,6 +6015,25 @@ namespace AntDeployWinform.Winform
                 return;
             }
 
+            if (ProgressBox.IsEnableGroup)
+            {
+                //获取所有的选择了的server
+                var selectedList = getSelectedBaseServers(ServerType.DOCKER);
+                if (!selectedList.Any())
+                {
+                    MessageBoxEx.Show(this, Strings.EnvHaveNoServer);
+                    return;
+                }
+
+                //找到选择了的
+                serverList = serverList.Where(r => selectedList.Any(y => y.Host.Equals(r.Host))).ToList();
+                if (!serverList.Any())
+                {
+                    MessageBoxEx.Show(this, Strings.EnvHaveNoServer);
+                    return;
+                }
+            }
+
             var serverHostList = string.Join(Environment.NewLine, serverList.Select(r => r.Host).ToList());
 
             var confirmResult = ShowInputMsgBox(Strings.ConfirmDeploy,
@@ -5900,7 +6071,7 @@ namespace AntDeployWinform.Winform
                        if (!isSuccess)
                        {
                            this.nlog_docker.Error("publish error,please check build log");
-                           BuildError(this.tabPage_docker);
+                           BuildError(this.tabPage_docker, serverList.First().Host);
                            return;
                        }
                    }
@@ -5910,11 +6081,11 @@ namespace AntDeployWinform.Winform
                    if (!File.Exists(serviceFile))
                    {
                        this.nlog_docker.Error($"ENTRYPOINT file can not find in publish folder: {serviceFile}");
-                       BuildError(this.tabPage_docker);
+                       BuildError(this.tabPage_docker, serverList.First().Host);
                        return;
                    }
 
-                   BuildEnd(this.tabPage_docker); //第一台结束编译
+                   BuildEnd(this.tabPage_docker, serverList.First().Host); //第一台结束编译
 
                    LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish success  ==> ");
                    publisEvent.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
@@ -5929,7 +6100,7 @@ namespace AntDeployWinform.Winform
                    if (stop_docker_cancel_token)
                    {
                        this.nlog_docker.Warn($"deploy task was canceled!");
-                       PackageError(this.tabPage_docker);
+                       PackageError(this.tabPage_docker,serverList.First().Host);
                        return;
                    }
 
@@ -5941,7 +6112,7 @@ namespace AntDeployWinform.Winform
                        if (!gitModel.InitSuccess)
                        {
                            this.nlog_docker.Error("package fail,can not init git,please cancel Increment Deploy");
-                           PackageError(this.tabPage_docker);
+                           PackageError(this.tabPage_docker,serverList.First().Host);
                            return;
                        }
 
@@ -5955,7 +6126,7 @@ namespace AntDeployWinform.Winform
                        gitChangeFileCount = fileList.Count;
                        if (gitChangeFileCount < 1)
                        {
-                           PackageError(this.tabPage_docker);
+                           PackageError(this.tabPage_docker,serverList.First().Host);
                            return;
                        }
 
@@ -5970,7 +6141,7 @@ namespace AntDeployWinform.Winform
 
                                if (slectFileForm.SelectedFileList == null || !slectFileForm.SelectedFileList.Any())
                                {
-                                   PackageError(this.tabPage_docker);
+                                   PackageError(this.tabPage_docker,serverList.First().Host);
                                    this.nlog_docker.Error("Please Select Files");
                                    return;
                                }
@@ -5987,7 +6158,7 @@ namespace AntDeployWinform.Winform
                        if (stop_docker_cancel_token)
                        {
                            this.nlog_docker.Warn($"deploy task was canceled!");
-                           PackageError(this.tabPage_docker);
+                           PackageError(this.tabPage_docker,serverList.First().Host);
                            return;
                        }
                        try
@@ -5997,13 +6168,13 @@ namespace AntDeployWinform.Winform
                                ignoreList,
                                (progressValue) =>
                                {
-                                   UpdatePackageProgress(this.tabPage_docker, null, progressValue); //打印打包记录
+                                   UpdatePackageProgress(this.tabPage_docker, serverList.First().Host, progressValue); //打印打包记录
                                    return stop_docker_cancel_token;
                                }, this.PluginConfig.DockerServiceEnableSelectDeploy,nlog_docker);
                            if (b_zipBytes.Length < 1)
                            {
                                this.nlog_docker.Error("package fail");
-                               PackageError(this.tabPage_docker);
+                               PackageError(this.tabPage_docker,serverList.First().Host);
                                return;
                            }
                            zipBytes = new MemoryStream(b_zipBytes);
@@ -6011,7 +6182,7 @@ namespace AntDeployWinform.Winform
                        catch (Exception ex)
                        {
                            this.nlog_docker.Error("package fail:" + ex.Message);
-                           PackageError(this.tabPage_docker);
+                           PackageError(this.tabPage_docker,serverList.First().Host);
                            return;
                        }
                    }
@@ -6025,7 +6196,7 @@ namespace AntDeployWinform.Winform
                            slectFileForm.ShowDialog();
                            if (slectFileForm.SelectedFileList == null || !slectFileForm.SelectedFileList.Any())
                            {
-                               PackageError(this.tabPage_docker);
+                               PackageError(this.tabPage_docker,serverList.First().Host);
                                this.nlog_docker.Error("Please Select Files");
                                return;
                            }
@@ -6040,7 +6211,7 @@ namespace AntDeployWinform.Winform
                        if (stop_docker_cancel_token)
                        {
                            this.nlog_docker.Warn($"deploy task was canceled!");
-                           PackageError(this.tabPage_docker);
+                           PackageError(this.tabPage_docker,serverList.First().Host);
                            return;
                        }
                        try
@@ -6050,13 +6221,13 @@ namespace AntDeployWinform.Winform
                                ignoreList,
                                (progressValue) =>
                                {
-                                   UpdatePackageProgress(this.tabPage_docker, null, progressValue); //打印打包记录
+                                   UpdatePackageProgress(this.tabPage_docker, serverList.First().Host, progressValue); //打印打包记录
                                    return stop_docker_cancel_token;
                                }, this.PluginConfig.DockerServiceEnableSelectDeploy, nlog_docker);
                            if (b_zipBytes.Length < 1)
                            {
                                this.nlog_docker.Error("package fail");
-                               PackageError(this.tabPage_docker);
+                               PackageError(this.tabPage_docker,serverList.First().Host);
                                return;
                            }
                            zipBytes = new MemoryStream(b_zipBytes);
@@ -6064,7 +6235,7 @@ namespace AntDeployWinform.Winform
                        catch (Exception ex)
                        {
                            this.nlog_docker.Error("package fail:" + ex.Message);
-                           PackageError(this.tabPage_docker);
+                           PackageError(this.tabPage_docker,serverList.First().Host);
                            return;
                        }
                    }
@@ -6078,13 +6249,13 @@ namespace AntDeployWinform.Winform
                                ignoreList,
                                (progressValue) =>
                                {
-                                   UpdatePackageProgress(this.tabPage_docker, null, progressValue); //打印打包记录
+                                   UpdatePackageProgress(this.tabPage_docker, serverList.First().Host, progressValue); //打印打包记录
                                    return stop_docker_cancel_token;
                                }, nlog_docker);
                            if (b_zipBytes.Length < 1)
                            {
                                this.nlog_docker.Error("package fail");
-                               PackageError(this.tabPage_docker);
+                               PackageError(this.tabPage_docker,serverList.First().Host);
                                return;
                            }
                            zipBytes = new MemoryStream(b_zipBytes);
@@ -6092,7 +6263,7 @@ namespace AntDeployWinform.Winform
                        catch (Exception ex)
                        {
                            this.nlog_docker.Error("package fail:" + ex.Message);
-                           PackageError(this.tabPage_docker);
+                           PackageError(this.tabPage_docker,serverList.First().Host);
                            return;
                        }
                    }
@@ -6101,7 +6272,7 @@ namespace AntDeployWinform.Winform
                    if (zipBytes == null || zipBytes.Length < 1)
                    {
                        this.nlog_docker.Error("package fail");
-                       PackageError(this.tabPage_docker);
+                       PackageError(this.tabPage_docker,serverList.First().Host);
                        return;
                    }
                    var packageSize = (zipBytes.Length / 1024 / 1024);
@@ -6148,7 +6319,7 @@ namespace AntDeployWinform.Winform
                        if (string.IsNullOrEmpty(server.Host))
                        {
                            this.nlog_docker.Error("Server Host is Empty");
-                           UploadError(this.tabPage_docker);
+                           UploadError(this.tabPage_docker,serverList.First().Host);
                            allSuccess = false;
                            failCount++;
                            failServerList.Add(server);
@@ -6158,7 +6329,7 @@ namespace AntDeployWinform.Winform
                        if (string.IsNullOrEmpty(server.UserName))
                        {
                            this.nlog_docker.Error("Server UserName is Empty");
-                           UploadError(this.tabPage_docker);
+                           UploadError(this.tabPage_docker, serverList.First().Host);
                            allSuccess = false;
                            failCount++;
                            failServerList.Add(server);
@@ -6168,7 +6339,7 @@ namespace AntDeployWinform.Winform
                        if (string.IsNullOrEmpty(server.Pwd))
                        {
                            this.nlog_docker.Error("Server Pwd is Empty");
-                           UploadError(this.tabPage_docker);
+                           UploadError(this.tabPage_docker, serverList.First().Host);
                            allSuccess = false;
                            failCount++;
                            failServerList.Add(server);
@@ -6179,7 +6350,7 @@ namespace AntDeployWinform.Winform
                        if (string.IsNullOrEmpty(pwd))
                        {
                            this.nlog_docker.Error("Server Pwd is Empty");
-                           UploadError(this.tabPage_docker);
+                           UploadError(this.tabPage_docker, serverList.First().Host);
                            allSuccess = false;
                            failCount++;
                            failServerList.Add(server);
@@ -6686,10 +6857,24 @@ namespace AntDeployWinform.Winform
             {
                 if (this.tabPage_docker.Tag is Dictionary<string, ProgressBox> progressBoxList1)
                 {
-                    foreach (var box in progressBoxList1)
+                    if (ProgressBox.IsEnableGroup)
                     {
-                        box.Value.Enable(flag);
-                        break;
+                        foreach (var box in progressBoxList1)
+                        {
+                            if (box.Value.CheckBox.Visible && box.Value.CheckBox.Checked)
+                            {
+                                box.Value.Enable(flag);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (var box in progressBoxList1)
+                        {
+                            box.Value.Enable(flag);
+                            break;
+                        }
                     }
                 }
                 this.t_docker_delete_days.Enabled = flag;
@@ -6733,12 +6918,25 @@ namespace AntDeployWinform.Winform
                     if (ignore) return;
                     if (this.tabPage_docker.Tag is Dictionary<string, ProgressBox> progressBoxList)
                     {
-                        foreach (var box in progressBoxList)
+                        if (ProgressBox.IsEnableGroup)
                         {
-                            box.Value.StartBuild();
-                            break;
+                            foreach (var box in progressBoxList)
+                            {
+                                if (box.Value.CheckBox.Visible && box.Value.CheckBox.Checked)
+                                {
+                                    box.Value.StartBuild();
+                                    break;
+                                }
+                            }
                         }
-
+                        else
+                        {
+                            foreach (var box in progressBoxList)
+                            {
+                                box.Value.StartBuild();
+                                break;
+                            }
+                        }
                     }
                 }
             });
@@ -7431,6 +7629,12 @@ namespace AntDeployWinform.Winform
         {
             this.panel_rich_config_log.Visible = false;
             this.rich_config_log.Text = "";
+        }
+
+        private void chk_global_useCheckBox_Click(object sender, EventArgs e)
+        {
+            GlobalConfig.EnableEnvGroup = this.chk_global_useCheckBox.Checked;
+            MessageBoxEx.ShowOk(this, "please reload antdeploy!");
         }
     }
 }

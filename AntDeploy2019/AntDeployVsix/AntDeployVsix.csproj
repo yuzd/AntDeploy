@@ -87,6 +87,7 @@
     <Content Include="AntDeployWinform.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="AntDeployWinform.pdb" />
     <Content Include="CircularProgressBar.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>

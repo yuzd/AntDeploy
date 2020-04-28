@@ -142,11 +142,11 @@
   <data name="checkBox_select_deploy_iis.Text" xml:space="preserve">
     <value>选择指定文件发布</value>
   </data>
-  <data name="btn_docker_stop.Location" type="System.Drawing.Point, System.Drawing">
-    <value>512, 143</value>
-  </data>
   <data name="btn_docker_retry.Text" xml:space="preserve">
     <value>重试</value>
+  </data>
+  <data name="btn_docker_stop.Location" type="System.Drawing.Point, System.Drawing">
+    <value>512, 143</value>
   </data>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="checkBox_select_deploy_docker.AutoSize" type="System.Boolean, mscorlib">
@@ -242,6 +242,12 @@
   <data name="btn_linux_server_testAll.Text" xml:space="preserve">
     <value>测试连接全部</value>
   </data>
+  <data name="chk_global_useCheckBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>180, 16</value>
+  </data>
+  <data name="chk_global_useCheckBox.Text" xml:space="preserve">
+    <value>开启环境下服务器可分组功能</value>
+  </data>
   <data name="checkBox_multi_deploy.Location" type="System.Drawing.Point, System.Drawing">
     <value>409, 37</value>
   </data>
@@ -316,9 +322,5 @@
   </data>
   <data name="label15.Text" xml:space="preserve">
     <value>指定特定文件夹发布：</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>Inherit</value>
   </data>
 </root>
