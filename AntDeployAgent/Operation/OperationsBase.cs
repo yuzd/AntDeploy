@@ -74,9 +74,18 @@ namespace AntDeployAgentWindows.Operation
         public virtual void Deploy()
         {
             logger("Start to Deploy");
-            CopyHelper.ProcessXcopy(this.args.DeployFolder, this.args.AppFolder, logger);
+            var re = CopyHelper.ProcessXcopy(this.args.DeployFolder, this.args.AppFolder, logger);
+            if (re)
+            {
+                logger("Success Deploy from folder:[" + this.args.DeployFolder + "] to folder [" + this.args.AppFolder + "]");
+            }
+            else
+            {
+                logger("【Error】 Deploy from folder:[" + this.args.DeployFolder + "] to folder [" + this.args.AppFolder + "]");
+                throw new Exception("copy files fail");
+            }
             //CopyHelper.DirectoryCopy(this.args.DeployFolder, this.args.AppFolder, true);
-            logger("Success Deploy from folder:[" + this.args.DeployFolder + "] to folder [" + this.args.AppFolder + "]");
+
         }
 
         public virtual void Start()

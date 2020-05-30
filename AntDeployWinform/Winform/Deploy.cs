@@ -1935,35 +1935,28 @@ namespace AntDeployWinform.Winform
                     }
                 }
             }
-            if (serverType.Equals(ServerType.DOCKER))
+            else if (serverType.Equals(ServerType.DOCKER))
             {
                 if (this.tabPage_docker.Tag is Dictionary<string, ProgressBox> progressBoxList)
                 {
                     foreach (var box in progressBoxList)
                     {
-                        if (!box.Value.CheckFireUrl())
-                        {
-                            var s = box.Value.GetServer();
-                            if (s == null) continue;
-                            result.Add(s);
-                        }
+                        var s = box.Value.GetServer();
+                        if (s == null) continue;
+                        result.Add(s);
                     }
                 }
             }
-
-            if (serverType.Equals(ServerType.WINSERVICE))
+            else if (serverType.Equals(ServerType.WINSERVICE))
             {
                 //生成进度
                 if (this.tabPage_windows_service.Tag is Dictionary<string, ProgressBox> progressBoxList)
                 {
                     foreach (var box in progressBoxList)
                     {
-                        if (!box.Value.CheckFireUrl())
-                        {
-                            var s = box.Value.GetServer();
-                            if (s == null) continue;
-                            result.Add(s);
-                        }
+                        var s = box.Value.GetServer();
+                        if (s == null) continue;
+                        result.Add(s);
                     }
                 }
             }
@@ -3908,12 +3901,13 @@ namespace AntDeployWinform.Winform
                         this.txt_windowservice_name.Text = target.ConfigName;
                     }
                 }
-
+                var dic = new Dictionary<string, bool>();
                 //生成进度
                 if (this.tabPage_windows_service.Tag is Dictionary<string, ProgressBox> progressBoxList)
                 {
                     foreach (var box in progressBoxList)
                     {
+                        dic.Add(box.Value.Server.Host, box.Value.CheckBox.Checked);
                         box.Value.Dispose();
                         this.tabPage_windows_service.Controls.Remove(box.Value);
                     }
@@ -3941,6 +3935,11 @@ namespace AntDeployWinform.Winform
                         {
                             Text = serverHost + (!string.IsNullOrWhiteSpace(nickName) ? $"【{nickName}】" : ""),
                         };
+
+                    if (dic.TryGetValue(serverHost, out var chec))
+                    {
+                        newBox.CheckBox.Checked = chec;
+                    }
 
                     newBoxList.Add(serverHost, newBox);
                     this.tabPage_windows_service.Controls.Add(newBox);
@@ -6968,11 +6967,13 @@ namespace AntDeployWinform.Winform
                     }
                 }
 
+                var dic = new Dictionary<string, bool>();
                 //生成进度
                 if (this.tabPage_docker.Tag is Dictionary<string, ProgressBox> progressBoxList)
                 {
                     foreach (var box in progressBoxList)
                     {
+                        dic.Add(box.Value.Server.Host, box.Value.CheckBox.Checked);
                         box.Value.Dispose();
                         this.tabPage_docker.Controls.Remove(box.Value);
                     }
@@ -7000,6 +7001,11 @@ namespace AntDeployWinform.Winform
                         {
                             Text = serverHost + (!string.IsNullOrWhiteSpace(nickName) ? $"【{nickName}】" : ""),
                         };
+
+                    if (dic.TryGetValue(serverHost, out var chec))
+                    {
+                        newBox.CheckBox.Checked = chec;
+                    }
 
                     newBoxList.Add(serverHost, newBox);
                     this.tabPage_docker.Controls.Add(newBox);
