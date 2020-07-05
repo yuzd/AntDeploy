@@ -5973,7 +5973,7 @@ namespace AntDeployWinform.Winform
 
             if (PluginConfig.DockerServiceEnableUpload)
             {
-                if (string.IsNullOrEmpty(PluginConfig.RepositoryUrl) ||
+                if (
                     string.IsNullOrEmpty(PluginConfig.RepositoryUserName) ||
                     string.IsNullOrEmpty(PluginConfig.RepositoryUserPwd) ||
                     string.IsNullOrEmpty(PluginConfig.RepositoryNameSpace) ||
@@ -6020,7 +6020,7 @@ namespace AntDeployWinform.Winform
                 var selectedList = getSelectedBaseServers(ServerType.DOCKER);
                 if (!selectedList.Any())
                 {
-                    MessageBoxEx.Show(this, Strings.EnvHaveNoServer);
+                    MessageBoxEx.Show(this, Strings.NoLinuxServer);
                     return;
                 }
 
@@ -6028,7 +6028,7 @@ namespace AntDeployWinform.Winform
                 serverList = serverList.Where(r => selectedList.Any(y => y.Host.Equals(r.Host))).ToList();
                 if (!serverList.Any())
                 {
-                    MessageBoxEx.Show(this, Strings.EnvHaveNoServer);
+                    MessageBoxEx.Show(this, Strings.NoLinuxServer);
                     return;
                 }
             }

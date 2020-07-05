@@ -830,7 +830,7 @@ namespace AntDeployWinform.Util
                         if (entryPointIndex>0)
                         {
                             var add = false;
-                            if (needAddPort)
+                            if (needAddPort && !port.Equals("0"))
                             {
                                 add = true;
                                 allLines.Insert(entryPointIndex, "EXPOSE " + port);
@@ -987,7 +987,7 @@ namespace AntDeployWinform.Util
             string volume = GetVolume();
 
             // 根据image启动一个容器
-            var dockerRunRt = RunSheell($"docker run -d --name {continarName}{volume}{(string.IsNullOrEmpty(this.Other)?"":$" {this.Other}")} --restart=always -p {server_port}:{port} {PorjectName}:{ClientDateTimeFolderName}");
+            var dockerRunRt = RunSheell($"docker run -d --name {continarName}{volume}{(string.IsNullOrEmpty(this.Other)?"":$" {this.Other}")} --restart=always {(!server_port.Equals("0") && !port.Equals("0")? $"-p {server_port}:{port}":"")} {PorjectName}:{ClientDateTimeFolderName}");
 
             if (!dockerRunRt)
             {
@@ -1060,10 +1060,20 @@ namespace AntDeployWinform.Util
                 //第四步 删除
                 //第五步 退出登录
                 //万一已经存在就删除
-                var uploadImageName =$"{this.RepositoryUrl}/{this.RepositoryNameSpace}/{this.RepositoryImageName}:{currentImageInfo.Item2}";
+                var uploadImageName =$"{(string.IsNullOrEmpty(this.RepositoryUrl)?"": this.RepositoryUrl+"/")}{this.RepositoryNameSpace}/{this.RepositoryImageName.ToLower()}:{currentImageInfo.Item2}";
                 _sshClient.RunCommand($"docker rmi {uploadImageName}");
-                var uploadCommand =
-                    $"set -e;docker login -u {this.RepositoryUserName} -p {this.RepositoryUserPwd} {this.RepositoryUrl}; docker tag {currentImageInfo.Item3} {uploadImageName};docker push {uploadImageName}";
+                string uploadCommand;
+                if (string.IsNullOrEmpty(this.RepositoryUrl))
+                {
+                    uploadCommand =
+                        $"set -e;docker login -u {this.RepositoryUserName} -p {this.RepositoryUserPwd}; docker tag {currentImageInfo.Item3} {uploadImageName};docker push {uploadImageName}";
+                }
+                else
+                {
+                    uploadCommand =
+                        $"set -e;docker login -u {this.RepositoryUserName} -p {this.RepositoryUserPwd} {this.RepositoryUrl}; docker tag {currentImageInfo.Item3} {uploadImageName};docker push {uploadImageName}";
+                }
+                
                 _logger($"[upload image] - " + uploadCommand, LogLevel.Warn);
                 var rr11 = _sshClient.CreateCommand(uploadCommand);
                 var result = rr11.BeginExecute();
@@ -1231,8 +1241,16 @@ namespace AntDeployWinform.Util
                         _logger($"ENV ASPNETCORE_ENVIRONMENT={environment}", NLog.LogLevel.Info);
                     }
 
-                    writer.WriteLine($"EXPOSE {this.ContainerPort}");
-                    _logger($"EXPOSE {this.ContainerPort}", NLog.LogLevel.Info);
+                    if (!this.ContainerPort.Equals("0"))
+                    {
+                        writer.WriteLine($"EXPOSE {this.ContainerPort}");
+                        _logger($"EXPOSE {this.ContainerPort}", NLog.LogLevel.Info);
+                    }
+                    else
+                    {
+                        _logger($"Ignore EXPOSE", NLog.LogLevel.Info);
+                    }
+                   
 
                     var excuteLine = $"ENTRYPOINT [\"dotnet\", \"{dllName}\"]";
                     //var excuteCMDLine = $"CMD [\"--server.urls\", \"http://*:{port}\"";
