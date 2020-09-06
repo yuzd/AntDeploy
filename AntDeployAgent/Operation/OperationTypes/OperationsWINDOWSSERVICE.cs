@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AntDeployAgent.Util;
 using AntDeployAgentWindows.Util;
+using ServiceInstaller = AntDeployAgentWindows.Util.ServiceInstaller;
 
 namespace AntDeployAgentWindows.Operation.OperationTypes
 {
@@ -66,7 +67,10 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
                         logger("【Error】 Windows Service Stop :" + this.args.AppName + ",Err: windows service could not be stopped,please check the service status!");
                     }
                 }
-               
+
+                Thread.Sleep(2000);
+                //执行kill逻辑
+                ServiceInstaller.KillWindowsService(service, logger);
             }
             else
             {

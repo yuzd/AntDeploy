@@ -5859,7 +5859,7 @@ namespace AntDeployWinform.Winform
                 if (!port.Contains(":"))
                 {
                     int.TryParse(port, out var dockerPort);
-                    if (dockerPort <= 0)
+                    if (dockerPort < 0)
                     {
                         MessageBoxEx.Show(this,Strings.PortValueInvaid);
                         return;
@@ -5881,7 +5881,7 @@ namespace AntDeployWinform.Winform
                     foreach (var aPort in arr)
                     {
                         int.TryParse(aPort, out var dockerPort);
-                        if (dockerPort <= 0)
+                        if (dockerPort < 0)
                         {
                             MessageBoxEx.Show(this,Strings.PortValueInvaid);
                             return;
@@ -6876,6 +6876,8 @@ namespace AntDeployWinform.Winform
                         }
                     }
                 }
+
+                this.checkBoxdocker_rep_uploadOnly.Enabled = flag;
                 this.t_docker_delete_days.Enabled = flag;
                 this.txt_docker_volume.Enabled = flag;
                 this.txt_docker_other.Enabled = flag;

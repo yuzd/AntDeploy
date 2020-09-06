@@ -10,6 +10,7 @@ namespace AntDeployAgentWindows.Model
     {
         private static readonly System.Threading.Timer mDetectionTimer;
         private static readonly int _clearOldPublishFolderOverDays = 10;
+        private static readonly int _oldPulishLimit = 10;
         private static readonly List<string> MacWhiteList = new List<string>();
         /// <summary>
         /// 是否开启备份
@@ -23,6 +24,12 @@ namespace AntDeployAgentWindows.Model
 #else
              mDetectionTimer = new System.Threading.Timer(OnVerify, null, 1000 * 60 * 30, 1000 * 60 * 30);
 #endif
+
+            var oldPulishLimit = System.Configuration.ConfigurationManager.AppSettings["OldPulishLimit"];
+            if (int.TryParse(oldPulishLimit, out int value1) && value1 > 0)
+            {
+                _oldPulishLimit = value1;
+            }
 
             var clearOldPublishFolderOverDaysStr = System.Configuration.ConfigurationManager.AppSettings["ClearOldPublishFolderOverDays"];
             if (int.TryParse(clearOldPublishFolderOverDaysStr, out int value) && value>0)
@@ -145,7 +152,8 @@ namespace AntDeployAgentWindows.Model
                 foreach (var applicationFolder in applicationFolders)
                 {
                     var subFolders = Directory.GetDirectories(applicationFolder);
-                    if (subFolders.Length < 10) continue;//保留10个
+                    if (subFolders.Length < _oldPulishLimit) continue;//还没超过最低的保留记录数
+                    //超过了就要比对文件夹的日期 把超过了x天数的就要删掉
                     var oldFolderList = new List<OldFolder>();
                     foreach (var subFolder in subFolders)
                     {
@@ -164,7 +172,7 @@ namespace AntDeployAgentWindows.Model
                             Name = folder.Name,
                             FullName = subFolder,
                             DateTime = createDate,
-                            DiffDays = days
+                            DiffDays = days//这个是当前日期和文件夹日期(也就是发布日期)进行相比的天数
                         });
                     }
 
@@ -175,9 +183,9 @@ namespace AntDeployAgentWindows.Model
 
                     var diff = subFolders.Length - targetList.Count;
 
-                    if (diff >= 0 && diff < 10)
+                    if (diff >= 0 && diff < _oldPulishLimit)
                     {
-                        targetList = targetList.Skip(10 - diff).ToList();
+                        targetList = targetList.Skip(_oldPulishLimit - diff).ToList();
                     }
 
                     foreach (var target in targetList)

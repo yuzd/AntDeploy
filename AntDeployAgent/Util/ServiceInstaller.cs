@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Management;
 using System.Runtime.InteropServices;
+using System.ServiceProcess;
 using System.Threading;
 
 namespace AntDeployAgentWindows.Util
@@ -9,6 +12,8 @@ namespace AntDeployAgentWindows.Util
         private const int STANDARD_RIGHTS_REQUIRED = 0xF0000;
         private const int SERVICE_WIN32_OWN_PROCESS = 0x00000010;
         private const int SERVICE_CONFIG_DESCRIPTION = 1;
+        internal const int ERROR_INSUFFICIENT_BUFFER = 0x7a;
+        internal const int SC_STATUS_PROCESS_INFO = 0;
         [StructLayout(LayoutKind.Sequential)]
         private class SERVICE_STATUS
         {
@@ -37,6 +42,10 @@ namespace AntDeployAgentWindows.Util
         #endregion
         [DllImport("advapi32.dll", SetLastError = true)]
         private static extern int ChangeServiceConfig2(IntPtr hService, uint dwInfoLevel, ref SERVICE_DESCRIPTION info);
+
+        [DllImport("advapi32.dll", SetLastError = true)]
+        internal static extern bool QueryServiceStatusEx(SafeHandle hService, int infoLevel, IntPtr lpBuffer, uint cbBufSize, out uint pcbBytesNeeded);
+
         #region CloseServiceHandle
         [DllImport("advapi32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -63,6 +72,105 @@ namespace AntDeployAgentWindows.Util
         [DllImport("advapi32.dll", SetLastError = true)]
         private static extern int StartService(IntPtr hService, int dwNumServiceArgs, int lpServiceArgVectors);
         #endregion
+
+
+        /// <summary>
+        /// kill windows服务的进程
+        /// </summary>
+        /// <returns></returns>
+        public static bool KillWindowsService(ServiceController sc, Action<string> logger)
+        {
+            var servicePid = GetServiceProcessId(sc, logger);
+            if (servicePid < 1) return false;
+            return KillProcessAndChildren(servicePid, logger);
+        }
+
+
+
+        /// <summary>
+        /// Kill a process, and all of its children, grandchildren, etc.
+        /// </summary>
+        /// <param name="pid">Process ID.</param>
+        public static bool KillProcessAndChildren(int pid, Action<string> logger)
+        {
+            try
+            {
+                ManagementObjectSearcher searcher = new ManagementObjectSearcher("Select * From Win32_Process Where ParentProcessID=" + pid);
+                ManagementObjectCollection moc = searcher.Get();
+                foreach (var o in moc)
+                {
+                    var mo = o as ManagementObject;
+                    if (mo == null) continue;
+                    KillProcessAndChildren(Convert.ToInt32(mo["ProcessID"]), logger);
+                }
+            }
+            catch (Exception e)
+            {
+                //ignore
+            }
+            
+
+            try
+            {
+                Process proc = Process.GetProcessById(pid);
+                proc.Kill();
+                return true;
+            }
+            catch (ArgumentException)
+            {
+                // Process already exited.
+                return true;
+            }
+            catch (Exception e)
+            {
+                logger("【Warn】Windows Service Kill Fail :" + e.Message);
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 找到这个windows服务对应的服务进程id
+        /// </summary>
+        /// <param name="sc"></param>
+        /// <returns></returns>
+        public static int GetServiceProcessId( ServiceController sc, Action<string> logger)
+        {
+            if (sc == null)
+                throw new ArgumentNullException("sc");
+
+            IntPtr zero = IntPtr.Zero;
+            try
+            {
+                UInt32 dwBytesNeeded;
+                // Call once to figure the size of the output buffer.
+                QueryServiceStatusEx(sc.ServiceHandle, SC_STATUS_PROCESS_INFO, zero, 0, out dwBytesNeeded);
+                if (Marshal.GetLastWin32Error() == ERROR_INSUFFICIENT_BUFFER)
+                {
+                    // Allocate required buffer and call again.
+                    zero = Marshal.AllocHGlobal((int)dwBytesNeeded);
+
+                    if (QueryServiceStatusEx(sc.ServiceHandle, SC_STATUS_PROCESS_INFO, zero, dwBytesNeeded, out dwBytesNeeded))
+                    {
+                        var ssp = new SERVICE_STATUS_PROCESS();
+                        Marshal.PtrToStructure(zero, ssp);
+                        var pid = (int) ssp.dwProcessId;
+                        logger("Windows Service get process pid : " + pid);
+                        return pid;
+                    }
+                }
+            }
+            finally
+            {
+                if (zero != IntPtr.Zero)
+                {
+                    Marshal.FreeHGlobal(zero);
+                }
+            }
+
+            logger("【Warn】Windows Service get process pid Fail " );
+            return -1;
+        }
 
         public static void Uninstall(string serviceName)
         {
@@ -310,9 +418,31 @@ namespace AntDeployAgentWindows.Util
 
             return scm;
         }
+
     }
 
-
+    [StructLayout(LayoutKind.Sequential)]
+    internal sealed class SERVICE_STATUS_PROCESS
+    {
+        [MarshalAs(UnmanagedType.U4)]
+        public uint dwServiceType;
+        [MarshalAs(UnmanagedType.U4)]
+        public uint dwCurrentState;
+        [MarshalAs(UnmanagedType.U4)]
+        public uint dwControlsAccepted;
+        [MarshalAs(UnmanagedType.U4)]
+        public uint dwWin32ExitCode;
+        [MarshalAs(UnmanagedType.U4)]
+        public uint dwServiceSpecificExitCode;
+        [MarshalAs(UnmanagedType.U4)]
+        public uint dwCheckPoint;
+        [MarshalAs(UnmanagedType.U4)]
+        public uint dwWaitHint;
+        [MarshalAs(UnmanagedType.U4)]
+        public uint dwProcessId;
+        [MarshalAs(UnmanagedType.U4)]
+        public uint dwServiceFlags;
+    }
     public enum ServiceState
     {
         Unknown = -1, // The state cannot be (has not been) retrieved.

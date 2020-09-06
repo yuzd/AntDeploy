@@ -469,7 +469,7 @@ namespace AntDeployWinform.Models
         public BaseServer GetServer()
         {
             //当是需要人选的 且有被选 才认为是要发布的服务器
-            if (this.CheckBox.Visible && this.CheckBox.Checked)
+            if (this.CheckBox.Checked)
             {
                 return Server;
             }
@@ -480,7 +480,7 @@ namespace AntDeployWinform.Models
         public bool CheckFireUrl()
         {
             //当是需要人选的 但是没有被选 那就不去check
-            if (this.CheckBox.Visible && !this.CheckBox.Checked)
+            if (!this.CheckBox.Checked)
             {
                 return true;
             }

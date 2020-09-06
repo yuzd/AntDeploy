@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace AntDeployAgentWindows.MyApp.Service.Impl
 {
@@ -327,7 +328,11 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                             string fullName = directoryInfo.FullName;
                             if (directoryInfo.Parent != null)
                                 fullName = directoryInfo.Parent.FullName;
-                            CopyHelper.DirectoryCopy(projectLocation.Item1, incrementFolder, true, fullName,directoryInfo.Name, this._backUpIgnoreList);
+                            new Task(() =>
+                            {
+                                CopyHelper.DirectoryCopy(projectLocation.Item1, incrementFolder, true, fullName, directoryInfo.Name, this._backUpIgnoreList);
+                            }).Start();
+                           
                             Log("Increment deploy backup success...");
                         }
                     }
