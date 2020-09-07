@@ -61,7 +61,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
                         service.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(timeout));
                         logger("Success to Windows Service Stop :" + this.args.AppName);
                         var stopProcessFlag = ProcessHepler.KillServiceProcess(pid);
-                        logger("kill Windows Service Process");
+                        logger($"kill Windows Service Process {pid}");
                         Thread.Sleep(2000);
                     }
                     else
