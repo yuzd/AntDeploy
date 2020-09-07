@@ -13,8 +13,8 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
     class OperationsWINDOWSSERVICE : OperationsBase
     {
         private int retryTimes = 0;
-        public OperationsWINDOWSSERVICE(Arguments args,Action<string> log)
-            : base(args,log)
+        public OperationsWINDOWSSERVICE(Arguments args, Action<string> log)
+            : base(args, log)
         {
         }
 
@@ -42,9 +42,9 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
                 logger($"【Error】{serviceR.Item2}");
             }
             var service = serviceR.Item1;
-            if (service!=null)
+            if (service != null)
             {
-                if(service.Status == ServiceControllerStatus.Stopped)
+                if (service.Status == ServiceControllerStatus.Stopped)
                 {
                     logger("Success to Windows Service Stop :" + this.args.AppName);
                 }
@@ -56,9 +56,12 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
                             ? this.args.WaitForWindowsServiceStopTimeOut
                             : 10);
                         logger("Start to Windows Service Stop wait for " + timeout + "senconds :" + this.args.AppName);
+                        var pid = ProcessHepler.GetServiceProcessId(service);
                         service.Stop();
                         service.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(timeout));
                         logger("Success to Windows Service Stop :" + this.args.AppName);
+                        var stopProcessFlag = ProcessHepler.KillServiceProcess(pid);
+                        logger("kill Windows Service Process");
                         Thread.Sleep(2000);
                     }
                     else
@@ -66,7 +69,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
                         logger("【Error】 Windows Service Stop :" + this.args.AppName + ",Err: windows service could not be stopped,please check the service status!");
                     }
                 }
-               
+
             }
             else
             {
@@ -136,7 +139,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
                 {
                     service = WindowServiceHelper.GetWindowServiceByName(this.args.AppName).Item1;
                     service.Refresh();
-                    if (service.Status != ServiceControllerStatus.Running&&service.Status != ServiceControllerStatus.StartPending)
+                    if (service.Status != ServiceControllerStatus.Running && service.Status != ServiceControllerStatus.StartPending)
                     {
                         logger("【Error】 Windows Service Start :" + this.args.AppName + ",Err: service can not start");
                     }
@@ -150,7 +153,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
                     service = WindowServiceHelper.GetWindowServiceByName(this.args.AppName).Item1;
                     service.Refresh();
 
-                    if (service.Status != ServiceControllerStatus.Running&&service.Status != ServiceControllerStatus.StartPending)
+                    if (service.Status != ServiceControllerStatus.Running && service.Status != ServiceControllerStatus.StartPending)
                     {
                         throw new Exception("【Error】 Windows Service Start :" + this.args.AppName + ",Err:" + re + "=>[suggestion]if this is your first time,you can try again!");
                     }
@@ -168,7 +171,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
             {
                 logger($"Windows Service:{this.args.AppName} Status is not Stopped ");
             }
-           
+
         }
 
         public override void Execute()
