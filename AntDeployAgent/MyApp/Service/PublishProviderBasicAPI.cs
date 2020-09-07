@@ -107,13 +107,33 @@ namespace AntDeployAgentWindows.MyApp.Service
                     var content = JsonConvert.SerializeObject(formArgs);
                     File.WriteAllText(path,content,Encoding.UTF8);
                 }
+
+                SaveCurrentVersion(ProjectPublishFolder);
             }
             catch (Exception)
             {
                //ignore
             }
 
+            var projectRootPath = new DirectoryInfo(ProjectPublishFolder).Parent;
+            if (projectRootPath == null || !projectRootPath.Exists) return re;
+            //每次发布完成后清理老的发布历史记录 只清理自己项目的 
+            //防止别的项目正在回滚到某个版本，你这边发现这个版本已经过时了就删除了
+            Setting.ClearOldFolders(ProviderName.Equals("iis"), projectRootPath.Name);
             return re;
+        }
+
+        /// <summary>
+        /// 记录当前正在使用的文件记录 目的是为了让删除任务排除这个文件夹
+        /// </summary>
+        /// <param name="projectPublishFolder">当前发布的版本目录 或者 回滚成的版本目录</param>
+        protected void SaveCurrentVersion(string projectPublishFolder)
+        {
+            var projectRootPath = new DirectoryInfo(projectPublishFolder).Parent;
+            if (projectRootPath == null || !projectRootPath.Exists) return;
+            var currentVersionName = new DirectoryInfo(projectPublishFolder).Name;
+            if (string.IsNullOrEmpty(currentVersionName)) return;
+            File.WriteAllText(Path.Combine(projectRootPath.FullName, "current.txt"), currentVersionName, Encoding.UTF8);
         }
 
         public string Check(FormHandler formHandler)

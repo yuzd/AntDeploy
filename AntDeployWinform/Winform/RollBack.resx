@@ -170,30 +170,6 @@
   <data name="&gt;&gt;b_rollback_Rollback.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="listView_rollback_version.Location" type="System.Drawing.Point, System.Drawing">
-    <value>2, 1</value>
-  </data>
-  <data name="listView_rollback_version.Size" type="System.Drawing.Size, System.Drawing">
-    <value>497, 247</value>
-  </data>
-  <data name="listView_rollback_version.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
-  </data>
-  <data name="listView_rollback_version.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="&gt;&gt;listView_rollback_version.Name" xml:space="preserve">
-    <value>listView_rollback_version</value>
-  </data>
-  <data name="&gt;&gt;listView_rollback_version.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ListView, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;listView_rollback_version.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;listView_rollback_version.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
   <data name="version.Text" xml:space="preserve">
     <value>version</value>
   </data>
@@ -234,6 +210,30 @@
   <data name="ip.Width" type="System.Int32, mscorlib">
     <value>80</value>
   </data>
+  <data name="listView_rollback_version.Location" type="System.Drawing.Point, System.Drawing">
+    <value>2, 1</value>
+  </data>
+  <data name="listView_rollback_version.Size" type="System.Drawing.Size, System.Drawing">
+    <value>497, 247</value>
+  </data>
+  <data name="listView_rollback_version.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="listView_rollback_version.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;listView_rollback_version.Name" xml:space="preserve">
+    <value>listView_rollback_version</value>
+  </data>
+  <data name="&gt;&gt;listView_rollback_version.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ListView, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;listView_rollback_version.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;listView_rollback_version.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
   <data name="label_server_name.Font" type="System.Drawing.Font, System.Drawing">
     <value>宋体, 8pt</value>
   </data>
@@ -261,9 +261,6 @@
   <data name="&gt;&gt;label_server_name.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>zh-CN</value>
-  </metadata>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -277,7 +274,7 @@
     <value>CenterParent</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>Select RollBack Version</value>
+    <value>Select RollBack Version(Blue is CurrentVersion)</value>
   </data>
   <data name="&gt;&gt;version.Name" xml:space="preserve">
     <value>version</value>

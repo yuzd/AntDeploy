@@ -45,7 +45,8 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
             var service = serviceR.Item1;
             if (service!=null)
             {
-                if(service.Status == ServiceControllerStatus.Stopped)
+                var servicePid = ServiceInstaller.GetServiceProcessId(service, logger);
+                if (service.Status == ServiceControllerStatus.Stopped)
                 {
                     logger("Success to Windows Service Stop :" + this.args.AppName);
                 }
@@ -70,7 +71,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
 
                 Thread.Sleep(2000);
                 //执行kill逻辑
-                ServiceInstaller.KillWindowsService(service, logger);
+                if(servicePid>0)ServiceInstaller.KillProcessAndChildren(servicePid, logger);
             }
             else
             {

@@ -130,19 +130,11 @@
   <data name="version.Text" xml:space="preserve">
     <value>版本号</value>
   </data>
-  <data name="remark.Text" xml:space="preserve">
-    <value>备注</value>
-  </data>
   <data name="date.Text" xml:space="preserve">
     <value>发布时间</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="date.TextAlign" type="System.Windows.Forms.HorizontalAlignment, System.Windows.Forms">
-    <value>Center</value>
-  </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="date.Width" type="System.Int32, mscorlib">
-    <value>140</value>
+  <data name="remark.Text" xml:space="preserve">
+    <value>备注</value>
   </data>
   <data name="pc.Text" xml:space="preserve">
     <value>发布者Pc</value>
@@ -150,6 +142,7 @@
   <data name="mac.Text" xml:space="preserve">
     <value>发布者Mac地址</value>
   </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="mac.Width" type="System.Int32, mscorlib">
     <value>90</value>
   </data>
@@ -163,6 +156,6 @@
     <value>422, 46</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>请选择要回滚的版本</value>
+    <value>请选择要回滚的版本(蓝色为当前版本)</value>
   </data>
 </root>

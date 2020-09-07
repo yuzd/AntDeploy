@@ -115,6 +115,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 try
                 {
                     ops.Execute();
+                    SaveCurrentVersion(new DirectoryInfo(deployFolder).Parent.FullName);
                     Log("Rollback WindowsService Execute Success");
                 }
                 catch (Exception ex)

@@ -3314,7 +3314,7 @@ namespace AntDeployWinform.Winform
 
                         this.BeginInvokeLambda(() =>
                         {
-                            RollBack rolleback = new RollBack(versionList.Skip(1).ToList());
+                            RollBack rolleback = new RollBack(versionList.ToList());
                             rolleback.SetTitle($"Current Server:{getHostDisplayName(server)}");
                             var r = rolleback.ShowDialog();
                             if (r == DialogResult.Cancel)
@@ -5328,7 +5328,7 @@ namespace AntDeployWinform.Winform
                         this.nlog_windowservice.Info($"Host:{getHostDisplayName(server)} get rollBack version list count:{versionList.Count}");
                         this.BeginInvokeLambda(() =>
                         {
-                            RollBack rolleback = new RollBack(versionList.Skip(1).ToList());
+                            RollBack rolleback = new RollBack(versionList.ToList());
                             rolleback.SetTitle($"Current Server:{getHostDisplayName(server)}");
                             var r = rolleback.ShowDialog();
                             if (r == DialogResult.Cancel)

@@ -140,6 +140,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     {
                         Log("Change Site PhysicalPath Success:" + (level1 + "/" + level2));
                         Log("NewSiteFolder ===> " + deployFolder);
+                        SaveCurrentVersion(new DirectoryInfo(deployFolder).Parent.FullName);
                     }
                     else
                     {
@@ -166,7 +167,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 try
                 {
                     ops.Execute();
-
+                    SaveCurrentVersion(new DirectoryInfo(deployFolder).Parent.FullName);
                     Log("Rollback IIS Execute Success");
                 }
                 catch (Exception ex)

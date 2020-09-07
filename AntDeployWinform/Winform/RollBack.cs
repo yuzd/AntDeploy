@@ -89,7 +89,7 @@ namespace AntDeployWinform.Winform
 
         public RollBack(List<string> list, bool isNotRollback = false) : this()
         {
-            
+            var currentVersion = "";
             foreach (var li in list)
             {
                 if (!isNotRollback)
@@ -108,6 +108,10 @@ namespace AntDeployWinform.Winform
                     }
                     else
                     {
+                        if (!string.IsNullOrEmpty(content.Current))
+                        {
+                            currentVersion = content.Current;
+                        }
                         if (!string.IsNullOrEmpty(content.Version))
                         {
                             version = content.Version;
@@ -160,7 +164,10 @@ namespace AntDeployWinform.Winform
                     catch (Exception)
                     {
                     }
-                 
+                    if (version.Equals(currentVersion))
+                    {
+                        lv.ForeColor = Color.Blue;//当前的版本是蓝色展示
+                    }
                     lv.SubItems.Add(remark);
                     lv.SubItems.Add(pc);
                     lv.SubItems.Add(mac);
@@ -231,7 +238,7 @@ namespace AntDeployWinform.Winform
 
         public void ShowAsHistory(string name)
         {
-            this.Text = (!string.IsNullOrEmpty(_lang) && _lang.StartsWith("zh-") ?"[发布历史]": "[History]") +name;
+            this.Text = (!string.IsNullOrEmpty(_lang) && _lang.StartsWith("zh-") ?"[发布历史(蓝色为当前版本)]": "[History(blue is currenVersion)]") +name;
             this.label_server_name.Visible = false;
             this.b_rollback_Rollback.Visible = false;
             listView_rollback_version.Dock = DockStyle.Fill;
@@ -268,6 +275,7 @@ namespace AntDeployWinform.Winform
 
         private string _args;
         public string Version { get; set; }
+        public string Current { get; set; }
 
         public string Args
         {

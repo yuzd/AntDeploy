@@ -194,7 +194,12 @@ namespace AntDeployAgentWindows.MyApp
                 WriteError("there is no rollback version yet in publisher folder:" + projectPath);
                 return;
             }
-
+            var currentVersionText = Path.Combine(projectPath, "current.txt");
+            var currrentVersion = "";
+            if (File.Exists(currentVersionText))
+            {
+                currrentVersion = File.ReadAllText(currentVersionText);
+            }
             var dic = new Dictionary<string,Tuple<string,DateTime,string>>();
             foreach (var item in all)
             {
@@ -208,7 +213,8 @@ namespace AntDeployAgentWindows.MyApp
                         var data = new
                         {
                             Version = itemD.Name,
-                            Args = args
+                            Args = args,
+                            Current = currrentVersion
                         };
                         var dataInfo = JsonConvert.SerializeObject(data);
                         if (dic.ContainsKey(temp))
@@ -264,6 +270,13 @@ namespace AntDeployAgentWindows.MyApp
                 return;
             }
 
+            var currentVersionText = Path.Combine(projectPath, "current.txt");
+            var currrentVersion = "";
+            if (File.Exists(currentVersionText))
+            {
+                currrentVersion = File.ReadAllText(currentVersionText);
+            }
+
             var dic = new Dictionary<string,Tuple<string,DateTime,string>>();
             foreach (var item in all)
             {
@@ -277,8 +290,10 @@ namespace AntDeployAgentWindows.MyApp
                         var data = new
                         {
                             Version = itemD.Name,
-                            Args = args
+                            Args = args,
+                            Current = currrentVersion
                         };
+
                         var dataInfo = JsonConvert.SerializeObject(data);
                         if (dic.ContainsKey(temp))
                         {
