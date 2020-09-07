@@ -52,17 +52,17 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
                 {
                     if (service.CanStop)
                     {
+                        var pid = ProcessHepler.GetServiceProcessId(service);
                         var timeout = (this.args.WaitForWindowsServiceStopTimeOut > 0
                             ? this.args.WaitForWindowsServiceStopTimeOut
                             : 10);
                         logger("Start to Windows Service Stop wait for " + timeout + "senconds :" + this.args.AppName);
-                        var pid = ProcessHepler.GetServiceProcessId(service);
                         service.Stop();
                         service.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(timeout));
                         logger("Success to Windows Service Stop :" + this.args.AppName);
-                        var stopProcessFlag = ProcessHepler.KillServiceProcess(pid);
-                        logger($"kill Windows Service Process {pid}");
                         Thread.Sleep(2000);
+                        var killProcessFlag = ProcessHepler.Kill(pid);
+                        logger($"kill Windows Service Process {pid}:{killProcessFlag}");
                     }
                     else
                     {

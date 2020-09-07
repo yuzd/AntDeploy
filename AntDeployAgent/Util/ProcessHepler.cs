@@ -86,6 +86,7 @@ namespace AntDeployAgent.Util
             }
         }
 
+        #region 根据服务获取对应的进程id
         [StructLayout(LayoutKind.Sequential)]
         private sealed class SERVICE_STATUS_PROCESS
         {
@@ -148,19 +149,21 @@ namespace AntDeployAgent.Util
                 }
             }
             return -1;
-        }
+        } 
+        #endregion
 
-        public static string KillServiceProcess(int pid)
+        public static bool Kill(int pid)
         {
             try
             {
                 var p = Process.GetProcessById(pid);
                 p.Kill();
+                return true;
             }
             catch (Exception)
             {
             }
-            return string.Empty;
+            return false;
         }
     }
 }
