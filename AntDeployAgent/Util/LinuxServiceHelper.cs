@@ -54,20 +54,20 @@ namespace AntDeployAgentWindows.Util
             return string.Empty;
 
         }
-        public static string CreateServiceFileAndRun(string serviceName, string deployFolder, string fileName, string desc,string env, Action<string> logger = null)
+        public static string CreateServiceFileAndRun(string serviceName, string deployFolder, string fileName, string desc,string env, bool autoStart,Action<string> logger = null)
         {
             string filePath = Path.Combine(deployFolder, $"{serviceName}.service");
 
             CreateServiceFile(serviceName, deployFolder, fileName, desc, env, logger);
 
-            ServiceRun(serviceName, filePath, logger);
+            ServiceRun(serviceName, filePath, autoStart, logger);
 
             return string.Empty;
 
         }
 
 
-        public static string ServiceRun(string serviceName, string filePath,  Action<string> logger = null)
+        public static string ServiceRun(string serviceName, string filePath,bool autoStart,  Action<string> logger = null)
         {
             CopyHelper.RunCommand($"sudo systemctl stop {serviceName}.service", null, null);
 
@@ -75,11 +75,11 @@ namespace AntDeployAgentWindows.Util
             if (!string.IsNullOrEmpty(filePath))
             {
                 //非回滚
-                logger?.Invoke("【Command】" + $"sudo cp {filePath} /etc/systemd/system/{serviceName}.service");
-                result = CopyHelper.RunCommand($"sudo cp {filePath} /etc/systemd/system/{serviceName}.service", null, logger);
+                logger?.Invoke("【Command】" + $"sudo cp -f {filePath} /etc/systemd/system/{serviceName}.service");
+                result = CopyHelper.RunCommand($"sudo cp -f {filePath} /etc/systemd/system/{serviceName}.service", null, logger);
                 if (!result)
                 {
-                    logger?.Invoke("【Command】" + $"sudo cp {filePath} /etc/systemd/system/{serviceName}.service" + "--->Fail");
+                    logger?.Invoke("【Command】" + $"sudo cp -f {filePath} /etc/systemd/system/{serviceName}.service" + "--->Fail");
                     return "Excute command Fail";
                 }
 
@@ -102,7 +102,7 @@ namespace AntDeployAgentWindows.Util
                 return "Excute command Fail";
             }
 
-            CopyHelper.RunCommand($"sudo systemctl enable {serviceName}.service", null, null);
+            if(autoStart) CopyHelper.RunCommand($"sudo systemctl enable {serviceName}.service", null, null);
             return string.Empty;
 
         }

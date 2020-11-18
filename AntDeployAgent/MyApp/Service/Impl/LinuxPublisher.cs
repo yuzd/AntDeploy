@@ -20,7 +20,8 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
         private string _serviceName;//服务名称
         private string _serviceExecName;//服务可执行程序名称
         private string _serviceDescription;//服务描述
-        private string _serviceStartType;//环境变量？
+        private string _serviceStartType;//是否设置重启机器自动重启
+        private string _env;//环境变量？
         private List<string> _backUpIgnoreList = new List<string>();//需要排除backup的列表
         private string _projectPublishFolder;//发布目录
         private string _dateTimeFolderName;//版本
@@ -142,11 +143,34 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     try
                     {
                         var err = LinuxServiceHelper.CreateServiceFileAndRun(this._serviceName, firstDeployFolder, _serviceExecName,
-                            (_serviceDescription ?? string.Empty), _serviceStartType, Log);
+                            (_serviceDescription ?? string.Empty), _env, string.IsNullOrEmpty(_serviceStartType)|| _serviceStartType.Equals("Auto"), Log);
                         if (!string.IsNullOrEmpty(err))
                         {
                             return err;
                         }
+                        //检查是否成功了？
+                        var runSuccess = false;
+
+                        Thread.Sleep(5000);
+
+                        CopyHelper.RunCommand($"systemctl status {this._serviceName}", null, (msg) =>
+                        {
+                            if (!string.IsNullOrEmpty(msg))
+                            {
+                                this.Log("【Command】" + msg);
+                                var msg1 = msg.ToLower();
+                                if (msg1.Contains("active:") && msg1.Contains("running"))
+                                {
+                                    runSuccess = true;
+                                }
+                            }
+                        });
+
+                        if (!runSuccess)
+                        {
+                            return $"install linux service fail";
+                        }
+
                         Log($"install systemctl service success");
                         Log($"start systemctl service success");
                         return string.Empty;
@@ -177,8 +201,8 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 }
 
                 //保证有service描述文件 等后面实际要用到
-                LinuxServiceHelper.CreateServiceFileAndRun(this._serviceName, deployFolder, _serviceExecName,
-                    (_serviceDescription ?? string.Empty), _serviceStartType, Log);
+                LinuxServiceHelper.CreateServiceFile(this._serviceName, deployFolder, _serviceExecName,
+                    (_serviceDescription ?? string.Empty), _env, Log);
 
                 Arguments args = new Arguments
                 {
@@ -189,6 +213,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     TempPhysicalPath = Path.Combine(deployFolder, $"{_serviceName}.service"),//服务文件描述
                     DeployFolder = deployFolder,
                     BackUpIgnoreList = this._backUpIgnoreList,
+                    UseOfflineHtm = string.IsNullOrEmpty(_serviceStartType) || _serviceStartType.Equals("Auto"),
                     NoBackup = !Setting.NeedBackUp
                 };
 
@@ -327,6 +352,12 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
             if (startType != null && !string.IsNullOrEmpty(startType.TextValue))
             {
                 _serviceStartType = startType.TextValue;
+            }
+
+            var envType = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("env"));
+            if (envType != null && !string.IsNullOrEmpty(envType.TextValue))
+            {
+                _env = envType.TextValue;
             }
 
             var backUpIgnoreList = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("backUpIgnore"));

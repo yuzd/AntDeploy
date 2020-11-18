@@ -71,7 +71,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
         {
             logger("Start to linux Service Start :" + this.args.AppName);
 
-            LinuxServiceHelper.ServiceRun(this.args.AppName, this.args.TempPhysicalPath, this.logger);
+            LinuxServiceHelper.ServiceRun(this.args.AppName, this.args.TempPhysicalPath,this.args.UseOfflineHtm, this.logger);
 
             var runSuccess = false;
 
