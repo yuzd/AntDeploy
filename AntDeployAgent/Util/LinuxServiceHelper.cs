@@ -69,7 +69,7 @@ namespace AntDeployAgentWindows.Util
 
         public static string ServiceRun(string serviceName, string filePath,  Action<string> logger = null)
         {
-            CopyHelper.RunCommand($"sudo systemctl stop {serviceName}", null, null);
+            CopyHelper.RunCommand($"sudo systemctl stop {serviceName}.service", null, null);
 
             var result = false;
             if (!string.IsNullOrEmpty(filePath))
@@ -95,13 +95,14 @@ namespace AntDeployAgentWindows.Util
             //sudo systemctl daemon - reload
             //sudo systemctl start Worker
             //防止有存在并运行中相同名字的有冲突
-            result = CopyHelper.RunCommand($"sudo systemctl start {serviceName}", null, logger);
+            result = CopyHelper.RunCommand($"sudo systemctl start {serviceName}.service", null, logger);
             if (!result)
             {
-                logger?.Invoke("【Command】" + $"sudo systemctl start {serviceName}" + "--->Fail");
+                logger?.Invoke("【Command】" + $"sudo systemctl start {serviceName}.service" + "--->Fail");
                 return "Excute command Fail";
             }
 
+            CopyHelper.RunCommand($"sudo systemctl enable {serviceName}.service", null, null);
             return string.Empty;
 
         }
@@ -118,7 +119,7 @@ namespace AntDeployAgentWindows.Util
             try
             {
                 var folder = string.Empty;
-                var result = CopyHelper.RunCommand($"systemctl status {serviceName}", null, logger);
+                var result = CopyHelper.RunCommand($"sudo systemctl status {serviceName}.service", null, logger);
                 if (!result)
                 {
                     logger?.Invoke($"【Warn】【systemctl】 {serviceName} not exist");

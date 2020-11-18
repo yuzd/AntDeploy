@@ -53,6 +53,12 @@ namespace AntDeployAgentWindows.MyApp
 
                 switch (request.Type.ToLower())
                 {
+                    case "linux":
+                        GetLinuxVersionList(request);
+                        break;
+                    case "checklinux":
+                        CheckLinux(request);
+                        break;
                     case "iis":
                         GetIisVersionList(request);
                         break;
@@ -104,6 +110,33 @@ namespace AntDeployAgentWindows.MyApp
             }
 
             CheckExistResult result = new CheckExistResult {WebSiteName = serviceName, Success = service.Item1!=null};
+            WriteSuccess(result);
+        }
+
+        private void CheckLinux(GetVersionVm request)
+        {
+            if (string.IsNullOrEmpty(request.Name))
+            {
+                WriteError("service name required!");
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(request.Mac) && !Setting.CheckIsInWhiteMacList(request.Mac))
+            {
+                WriteError($"macAddress:[{request.Mac}] invalid");
+                return;
+            }
+
+            var serviceName = request.Name.Trim();
+            var service = LinuxServiceHelper.GetLinuxService(serviceName);
+
+            if (!string.IsNullOrEmpty(service.Item1))
+            {
+                WriteError(service.Item2);
+                return;
+            }
+
+            CheckExistResult result = new CheckExistResult { WebSiteName = serviceName, Success = service.Item2 != null };
             WriteSuccess(result);
         }
 
@@ -236,6 +269,78 @@ namespace AntDeployAgentWindows.MyApp
                     else
                     {
                         dic.Add(temp,new Tuple<string, DateTime,string>(itemD.Name, d,itemD.Name));
+                    }
+                }
+            }
+
+            var result = dic.Values.ToList().OrderByDescending(r => r.Item2).Select(r => r.Item1).Take(11).ToList();
+            WriteSuccess(result);
+        }
+
+        private void GetLinuxVersionList(GetVersionVm request)
+        {
+            if (!string.IsNullOrEmpty(request.Mac) && !Setting.CheckIsInWhiteMacList(request.Mac))
+            {
+                WriteError($"macAddress:[{request.Mac}] invalid");
+                return;
+            }
+
+            string requestName = request.Name;
+            var projectPath = Path.Combine(Setting.PublishLinuxPathFolder, requestName);
+            if (!Directory.Exists(projectPath))
+            {
+                WriteError("publisher folder not found:" + projectPath + ",please deploy first!");
+                return;
+            }
+
+            var all = Directory.GetDirectories(projectPath).ToList();
+            if (all.Count < 1)
+            {
+                WriteError("there is no rollback version yet in publisher folder:" + projectPath);
+                return;
+            }
+            var currentVersionText = Path.Combine(projectPath, "current.txt");
+            var currrentVersion = "";
+            if (File.Exists(currentVersionText))
+            {
+                currrentVersion = File.ReadAllText(currentVersionText);
+            }
+            var dic = new Dictionary<string, Tuple<string, DateTime, string>>();
+            foreach (var item in all)
+            {
+                var itemD = new DirectoryInfo(item);
+                var temp = itemD.Name.Replace("_", "");
+                if (DateTime.TryParseExact(temp, "yyyyMMddHHmmss", null, DateTimeStyles.None, out DateTime d))
+                {
+                    if (request.WithArgs)
+                    {
+                        var args = GetParamInArgsFile(request, item);
+                        var data = new
+                        {
+                            Version = itemD.Name,
+                            Args = args,
+                            Current = currrentVersion
+                        };
+                        var dataInfo = JsonConvert.SerializeObject(data);
+                        if (dic.ContainsKey(temp))
+                        {
+                            //是重试版本 看下已存在的length是否
+                            var infoValue = dic[temp];
+                            if (infoValue.Item3.Length < itemD.Name.Length)
+                            {
+                                //是旧的 替换掉
+                                dic[temp] = new Tuple<string, DateTime, string>(dataInfo, d, itemD.Name);
+                            }
+                        }
+                        else
+                        {
+                            //添加
+                            dic.Add(temp, new Tuple<string, DateTime, string>(dataInfo, d, itemD.Name));
+                        }
+                    }
+                    else
+                    {
+                        dic.Add(temp, new Tuple<string, DateTime, string>(itemD.Name, d, itemD.Name));
                     }
                 }
             }

@@ -21,7 +21,6 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
         private string _serviceExecName;//服务可执行程序名称
         private string _serviceDescription;//服务描述
         private string _serviceStartType;//环境变量？
-        private int _waitForServiceStopTimeOut = 15;
         private List<string> _backUpIgnoreList = new List<string>();//需要排除backup的列表
         private string _projectPublishFolder;//发布目录
         private string _dateTimeFolderName;//版本
