@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace AntDeployAgentWindows.Model
@@ -60,6 +61,9 @@ namespace AntDeployAgentWindows.Model
         public static string BackUpIIsPathFolder = "";
 
 
+        public static string PublishLinuxPathFolder = "";
+        public static string BackUpLinuxPathFolder = "";
+
         public static string PublishWindowServicePathFolder = "";
         public static string BackUpWindowServicePathFolder = "";
 
@@ -80,6 +84,21 @@ namespace AntDeployAgentWindows.Model
                 Directory.CreateDirectory(PublishPathFolder);
             }
 
+            if (!System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                //linux环境下
+                PublishLinuxPathFolder = Path.Combine(PublishPathFolder, "linux");
+                if (!Directory.Exists(PublishLinuxPathFolder))
+                {
+                    Directory.CreateDirectory(PublishLinuxPathFolder);
+                }
+                BackUpLinuxPathFolder = Path.Combine(PublishPathFolder, "linux_backup");
+                if (!Directory.Exists(BackUpLinuxPathFolder))
+                {
+                    Directory.CreateDirectory(BackUpLinuxPathFolder);
+                }
+                return;
+            }
 
             PublishIIsPathFolder = Path.Combine(PublishPathFolder, "iis");
 
@@ -117,6 +136,14 @@ namespace AntDeployAgentWindows.Model
             {
                 if (isIis)
                 {
+                    //是否是linux下的
+                    if (!System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    {
+                        CheckOldFolder(PublishLinuxPathFolder, projectFolderName);
+                        CheckOldFolder(BackUpLinuxPathFolder, projectFolderName);
+                        return;
+                    }
+
                     CheckOldFolder(PublishIIsPathFolder, projectFolderName);
                     CheckOldFolder(BackUpIIsPathFolder, projectFolderName);
                 }

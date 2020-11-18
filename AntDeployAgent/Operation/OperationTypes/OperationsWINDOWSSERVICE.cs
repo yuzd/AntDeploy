@@ -89,14 +89,14 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
             {
                 logger("Copy File Fail :" + exception.Message);
                 retryTimes++;
-                logger("Wait 5Senconds to Retry :" + retryTimes);
+                logger("Wait 5Seconds to Retry :" + retryTimes);
                 Thread.Sleep(5000);
                 if (retryTimes > 3)
                 {
                     //执行终极方法 用sc命令执行
                     var r1 = ProcessHepler.RuSCCmd($"stop \"{this.args.AppName}\"", logger);
                     logger($"sc stop {this.args.AppName} ===> {(r1 ? "Success" : "Fail")}");
-                    logger("Wait 5Senconds to Try deploy again");
+                    logger("Wait 5Seconds to Try deploy again");
                     Thread.Sleep(5000);
                     try
                     {
@@ -107,7 +107,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
                     {
                         try
                         {
-                            logger("Wait 5Senconds to Try deploy again+1");
+                            logger("Wait 5Seconds to Try deploy again+1");
                             Thread.Sleep(5000);
                             base.Deploy();
                             return;

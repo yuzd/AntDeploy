@@ -11,6 +11,10 @@ namespace AntDeployAgentWindows.MyApp.Service
         {
             switch (key)
             {
+                case "linux":
+                    return new LinuxPublisher();
+                case "linux_rollback":
+                    return new LinuxRollback();
                 case "iis":
                     return new IIsPublisher();
                 case "iis_rollback":

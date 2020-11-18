@@ -50,6 +50,11 @@ namespace AntDeployAgentWindows.Util
             }
         }
 
+        public static bool ProcessXcopy(string SolutionDirectory, string TargetDirectory, string exculedFile,Action<string> logger = null)
+        {
+            return RunCommand($"sudo rsync -av --exclude-from={exculedFile} ${SolutionDirectory}/ ${TargetDirectory}", null, logger);
+        }
+
         /// <summary>
         /// 利用xcopy复制源文件夹到目标文件夹，覆盖
         /// 选用/S时对源目录下及其子目录下的所有文件进行COPY 除非指定/E参数，否则/S不会拷贝空目录
@@ -62,6 +67,13 @@ namespace AntDeployAgentWindows.Util
         /// <returns></returns>
         public static bool ProcessXcopy(string SolutionDirectory, string TargetDirectory,Action<string> logger = null)
         {
+            if (!System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                //linux服务器需要换别的命令
+                return RunCommand($"sudo rsync -av ${SolutionDirectory}/ ${TargetDirectory}", null, logger);
+            }
+
+
             return RunCommand($" xcopy " + "\"" + SolutionDirectory + "\"" + " " + "\"" + TargetDirectory + "\"" +
                        @" /s /e /Q /Y /I",null, logger);
 
