@@ -168,6 +168,9 @@
   <data name="SelectSdkType" xml:space="preserve">
     <value>请选择Sdk类型!</value>
   </data>
+  <data name="ServiceNameMustBeNature" xml:space="preserve">
+    <value>服务名称只能是英文和数字组成</value>
+  </data>
   <data name="ServiceNameRequired" xml:space="preserve">
     <value>请填写服务名称!</value>
   </data>

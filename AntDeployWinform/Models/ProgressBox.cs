@@ -10,7 +10,8 @@ namespace AntDeployWinform.Models
     {
         IIS,
         DOCKER,
-        WINSERVICE
+        WINSERVICE,
+        LINUXSERVICE
     }
     public class ProgressBox : GroupBox
     {
@@ -81,6 +82,10 @@ namespace AntDeployWinform.Models
             if (serverType.Equals(ServerType.DOCKER))
             {
                 this.FireUrlText.Text = server.DockerFireUrl;
+            }
+            if (serverType.Equals(ServerType.LINUXSERVICE))
+            {
+                this.FireUrlText.Text = server.LinuxServiceFireUrl;
             }
             if (serverType.Equals(ServerType.WINSERVICE))
             {
@@ -302,6 +307,10 @@ namespace AntDeployWinform.Models
                     {
                         Server.DockerFireUrl = this.FireUrlText.Text;
                     }
+                    if (ServerType.Equals(ServerType.LINUXSERVICE))
+                    {
+                        Server.LinuxServiceFireUrl = this.FireUrlText.Text;
+                    }
                     if (ServerType.Equals(ServerType.WINSERVICE))
                     {
                         Server.WindowsServiceFireUrl = this.FireUrlText.Text;
@@ -498,6 +507,10 @@ namespace AntDeployWinform.Models
             if (ServerType.Equals(ServerType.DOCKER))
             {
                 Server.DockerFireUrl = this.FireUrlText.Text;
+            }
+            if (ServerType.Equals(ServerType.LINUXSERVICE))
+            {
+                Server.LinuxServiceFireUrl = this.FireUrlText.Text;
             }
             if (ServerType.Equals(ServerType.WINSERVICE))
             {

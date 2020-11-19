@@ -26,7 +26,9 @@ namespace AntDeployWinform.Models
         public bool IISEnableNotStopSiteDeploy { get; set; }
         public bool IISEnableUseOfflineHtm { get; set; }
         public bool WindowsServiceEnableIncrement { get; set; }
+        public bool LinuxServiceEnableIncrement { get; set; }
         public bool WindowsServiceEnableSelectDeploy { get; set; }
+        public bool LinuxServiceEnableSelectDeploy { get; set; }
 
         public bool DockerEnableIncrement { get; set; }
         public bool DockerServiceEnableSelectDeploy { get; set; }
@@ -98,6 +100,7 @@ namespace AntDeployWinform.Models
         #endregion
 
         public WindowsServiveConfig WindowsServiveConfig { get; set; } = new WindowsServiveConfig();
+        public LinuxServiveConfig LinuxServiveConfig { get; set; } = new LinuxServiveConfig();
         public DockerConfig DockerConfig { get; set; } = new DockerConfig();
 
     }
@@ -126,6 +129,7 @@ namespace AntDeployWinform.Models
         /// iis名称和环境走 windows服务名称和环境走
         /// </summary>
         public string ConfigName { get; set; }
+        public string LinuxEnvParam { get; set; }
 
         /// <summary>
         /// Docker的配置和环境走
@@ -155,6 +159,15 @@ namespace AntDeployWinform.Models
         public List<EnvPairConfig> EnvPairList { get; set; } = new List<EnvPairConfig>();
     }
 
+    public class LinuxServiveConfig
+    {
+        public string ServiceName { get; set; }
+        public string EnvParam { get; set; }
+
+        public string LastEnvName { get; set; }
+
+        public List<EnvPairConfig> EnvPairList { get; set; } = new List<EnvPairConfig>();
+    }
 
     public class DockerConfig
     {
@@ -186,6 +199,7 @@ namespace AntDeployWinform.Models
         public string IIsFireUrl { get; set; }
         public string DockerFireUrl { get; set; }
         public string WindowsServiceFireUrl { get; set; }
+        public string LinuxServiceFireUrl { get; set; }
     }
 
 

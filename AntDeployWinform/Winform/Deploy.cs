@@ -41,19 +41,25 @@ namespace AntDeployWinform.Winform
         private NLog.Logger nlog_windowservice;
         private NLog.Logger nlog_docker;
         private NLog.Logger nlog_config;
+        private NLog.Logger nlog_linux;
 
         private int ProgressPercentage = 0;
         private string ProgressCurrentHost = null;
         private string ProgressCurrentHostForWindowsService = null;
+        private string ProgressCurrentHostForLinuxService = null;
         private int ProgressPercentageForWindowsService = 0;
+        private int ProgressPercentageForLinuxService = 0;
         private int ProgressBoxLocationLeft = 30;
 
         private volatile bool stop_iis_cancel_token;
         private volatile bool stop_windows_cancel_token;
+        private volatile bool stop_linux_cancel_token;
         private volatile bool stop_docker_cancel_token;
 
         private string _webSiteName = string.Empty;
         private string _windowsServiceName = string.Empty;
+        private string _linuxServiceName = string.Empty;
+        private string _linuxEnvName = string.Empty;
         private string _dockerPort = string.Empty;
         private string _dockerEnvName = string.Empty;
         private string _dockerVolume = string.Empty;
@@ -106,6 +112,8 @@ namespace AntDeployWinform.Winform
             this.txt_docker_envname.DataBindings.Add("Text", this, "BindDockerEnvName", false,DataSourceUpdateMode.OnPropertyChanged);
             this.txt_docker_volume.DataBindings.Add("Text", this, "BindDockerVolume", false,DataSourceUpdateMode.OnPropertyChanged);
             this.txt_docker_other.DataBindings.Add("Text", this, "BindDockerOther", false,DataSourceUpdateMode.OnPropertyChanged);
+            this.txt_linuxservice_name.DataBindings.Add("Text", this, "BindLinuxServiceName", false,DataSourceUpdateMode.OnPropertyChanged);
+            this.txt_linux_service_env.DataBindings.Add("Text", this, "BindLinuxEnvName", false,DataSourceUpdateMode.OnPropertyChanged);
 
             notificationService.Init("AntDeploy");
         }
@@ -272,6 +280,60 @@ namespace AntDeployWinform.Winform
             }
         }
 
+        public string BindLinuxServiceName
+        {
+            get { return _linuxServiceName; }
+            set
+            {
+                _linuxServiceName = value;
+                var selectName = this.combo_linux_env.SelectedItem as string;
+                if (string.IsNullOrEmpty(selectName)) return;
+                if (DeployConfig.LinuxServiveConfig != null && DeployConfig.LinuxServiveConfig.EnvPairList != null)
+                {
+                    var first = DeployConfig.LinuxServiveConfig.EnvPairList.FirstOrDefault(r => r.EnvName.Equals(selectName));
+                    if (first != null)
+                    {
+                        first.ConfigName = _linuxServiceName;
+                    }
+                    else
+                    {
+                        DeployConfig.LinuxServiveConfig.EnvPairList.Add(new EnvPairConfig
+                        {
+                            EnvName = selectName,
+                            ConfigName = _linuxServiceName
+                        });
+                    }
+                }
+            }
+        }
+
+        public string BindLinuxEnvName
+        {
+            get { return _linuxEnvName; }
+            set
+            {
+                _linuxEnvName = value;
+                var selectName = this.combo_linux_env.SelectedItem as string;
+                if (string.IsNullOrEmpty(selectName)) return;
+                if (DeployConfig.LinuxServiveConfig != null && DeployConfig.LinuxServiveConfig.EnvPairList != null)
+                {
+                    var first = DeployConfig.LinuxServiveConfig.EnvPairList.FirstOrDefault(r => r.EnvName.Equals(selectName));
+                    if (first != null)
+                    {
+                        first.LinuxEnvParam = _linuxEnvName;
+                    }
+                    else
+                    {
+                        DeployConfig.LinuxServiveConfig.EnvPairList.Add(new EnvPairConfig
+                        {
+                            EnvName = selectName,
+                            LinuxEnvParam = _linuxEnvName
+                        });
+                    }
+                }
+            }
+        }
+
         public DeployConfig DeployConfig { get; set; } = new DeployConfig();
         public PluginConfig PluginConfig { get; set; } = new PluginConfig();
         public GlobalConfig GlobalConfig { get; set; } = new GlobalConfig();
@@ -291,6 +353,7 @@ namespace AntDeployWinform.Winform
                 this.page_docker.Enabled = false;
                 this.page_window_service.Enabled = false;
                 this.page_web_iis.Enabled = false;
+                this.page_linux_service.Enabled = false;
                 this.pag_advance_setting.Enabled = false;
                 SelectProject selectProject = new SelectProject(GlobalConfig.ProjectPathList);
                 var r = selectProject.ShowDialog();
@@ -308,6 +371,7 @@ namespace AntDeployWinform.Winform
                     this.page_set.Enabled = true;
                     this.page_docker.Enabled = true;
                     this.page_window_service.Enabled = true;
+                    this.page_linux_service.Enabled = true;
                     this.page_web_iis.Enabled = true;
                     this.pag_advance_setting.Enabled = true;
 
@@ -411,6 +475,25 @@ namespace AntDeployWinform.Winform
             LoggingRule rule2 = new LoggingRule("*", LogLevel.Debug, richTarget2);
             config.LoggingRules.Add(rule2);
 
+
+            var richTarget22 = new RichTextBoxTarget
+            {
+                Name = "rich_linuxservice_log",
+                Layout =
+                    "${date:format=HH\\:mm\\:ss}|${uppercase:${level}}|${message} ${exception:format=tostring} ${rtb-link:inner=${event-properties:item=ShowLink}}",
+                FormName = "Deploy",
+                ControlName = "rich_linuxservice_log",
+                AutoScroll = true,
+                MaxLines = 0,
+                AllowAccessoryFormCreation = false,
+                SupportLinks = true,
+                UseDefaultRowColoringRules = true
+
+            };
+            config.AddTarget("rich_linuxservice_log", richTarget22);
+            LoggingRule rule22 = new LoggingRule("*", LogLevel.Debug, richTarget22);
+            config.LoggingRules.Add(rule22);
+
             var richTarget3 = new RichTextBoxTarget
             {
                 Name = "rich_docker_log",
@@ -452,6 +535,7 @@ namespace AntDeployWinform.Winform
 
             nlog_iis = NLog.LogManager.GetLogger("rich_iis_log");
             nlog_windowservice = NLog.LogManager.GetLogger("rich_windowservice_log");
+            nlog_linux = NLog.LogManager.GetLogger("rich_linuxservice_log");
             nlog_docker = NLog.LogManager.GetLogger("rich_docker_log");
             nlog_config = NLog.LogManager.GetLogger("rich_config_log");
 
@@ -530,6 +614,7 @@ namespace AntDeployWinform.Winform
                     this.combo_env_list.Items.Add(env.Name);
                     this.combo_iis_env.Items.Add(env.Name);
                     this.combo_windowservice_env.Items.Add(env.Name);
+                    this.combo_linux_env.Items.Add(env.Name);
                     this.combo_docker_env.Items.Add(env.Name);
                 }
 
@@ -588,6 +673,28 @@ namespace AntDeployWinform.Winform
 
             }
 
+            if (DeployConfig.LinuxServiveConfig != null)
+            {
+                if (this.combo_linux_env.Items.Count > 0 &&
+                    !string.IsNullOrEmpty(DeployConfig.LinuxServiveConfig.LastEnvName)
+                    && this.combo_linux_env.Items.Cast<string>()
+                        .Contains(DeployConfig.LinuxServiveConfig.LastEnvName))
+                {
+                    this.combo_linux_env.SelectedItem = DeployConfig.LinuxServiveConfig.LastEnvName;
+                }
+
+                if (!string.IsNullOrEmpty(DeployConfig.LinuxServiveConfig.ServiceName))
+                {
+                    _linuxServiceName = this.txt_linuxservice_name.Text = DeployConfig.LinuxServiveConfig.ServiceName;
+                }
+                if (!string.IsNullOrEmpty(DeployConfig.LinuxServiveConfig.EnvParam))
+                {
+                    _linuxEnvName = this.txt_linux_service_env.Text = DeployConfig.LinuxServiveConfig.EnvParam;
+                }
+                
+
+            }
+
             if (DeployConfig.DockerConfig != null)
             {
                 if (this.combo_docker_env.Items.Count > 0 &&
@@ -642,7 +749,9 @@ namespace AntDeployWinform.Winform
             this.checkBox_Increment_docker.Checked = PluginConfig.DockerEnableIncrement;
             this.checkBox_select_deploy_docker.Checked = PluginConfig.DockerServiceEnableSelectDeploy;
             this.checkBox_Increment_window_service.Checked = PluginConfig.WindowsServiceEnableIncrement;
+            this.checkBox_Increment_linux_service.Checked = PluginConfig.LinuxServiceEnableIncrement;
             this.checkBox_select_deploy_service.Checked = PluginConfig.WindowsServiceEnableSelectDeploy;
+            this.checkBox_select_deploy_linuxservice.Checked = PluginConfig.LinuxServiceEnableSelectDeploy;
             this.checkBox_select_deploy_iis.Checked = PluginConfig.IISEnableSelectDeploy;
             this.txt_folder_deploy.Text = PluginConfig.DeployFolderPath;
             this.txt_http_proxy.Text = PluginConfig.DeployHttpProxy;
@@ -671,6 +780,7 @@ namespace AntDeployWinform.Winform
             RichTextBoxTarget.GetTargetByControl(rich_windowservice_log).LinkClicked += LinkClicked;
             RichTextBoxTarget.GetTargetByControl(rich_docker_log).LinkClicked += LinkClicked;
             RichTextBoxTarget.GetTargetByControl(rich_config_log).LinkClicked += LinkClicked;
+            RichTextBoxTarget.GetTargetByControl(rich_linuxservice_log).LinkClicked += LinkClicked;
 
         }
 
@@ -716,12 +826,14 @@ namespace AntDeployWinform.Winform
             RichTextBoxTarget.GetTargetByControl(rich_iis_log)?.Dispose();
             RichTextBoxTarget.GetTargetByControl(rich_windowservice_log)?.Dispose();
             RichTextBoxTarget.GetTargetByControl(rich_docker_log)?.Dispose();
+            RichTextBoxTarget.GetTargetByControl(rich_linuxservice_log)?.Dispose();
 
 
 
             this.b_iis_rollback.Dispose();
             this.b_docker_rollback.Dispose();
             this.b_windows_service_rollback.Dispose();
+            this.b_linux_service_rollback.Dispose();
 
             this.txt_docker_volume.Dispose();
 
@@ -731,6 +843,7 @@ namespace AntDeployWinform.Winform
             this.rich_docker_log.Dispose();
             this.rich_iis_log.Dispose();
             this.rich_windowservice_log.Dispose();
+            this.rich_linuxservice_log.Dispose();
         }
 
         private void Unload()
@@ -763,22 +876,33 @@ namespace AntDeployWinform.Winform
                         //this.tabPage_windows_service.Controls.Remove(box.Value);
                     }
                 }
+                if (this.tabPage_linux_service.Tag is Dictionary<string, ProgressBox> progressBoxList4)
+                {
+                    foreach (var box in progressBoxList4)
+                    {
+                        box.Value.Dispose();
+                        //this.tabPage_windows_service.Controls.Remove(box.Value);
+                    }
+                }
 
-               
 
                 GlobalConfig.MsBuildPath = this.txt_msbuild_path.Text.Trim();
                 GlobalConfig.ProjectPathList = GlobalConfig.ProjectPathList.Take(10).ToList();
                 PluginConfig.LastTabIndex = this.tabcontrol.SelectedIndex;
                 PluginConfig.IISEnableIncrement = this.checkBox_Increment_iis.Checked;
                 PluginConfig.WindowsServiceEnableIncrement = this.checkBox_Increment_window_service.Checked;
+                PluginConfig.LinuxServiceEnableIncrement = this.checkBox_Increment_linux_service.Checked;
                 PluginConfig.IISEnableSelectDeploy = this.checkBox_select_deploy_iis.Checked;
                 PluginConfig.WindowsServiceEnableSelectDeploy = this.checkBox_select_deploy_service.Checked;
+                PluginConfig.LinuxServiceEnableSelectDeploy = this.checkBox_select_deploy_linuxservice.Checked;
                 PluginConfig.DeployFolderPath = this.txt_folder_deploy.Text.Trim();
                 PluginConfig.DeployHttpProxy = this.txt_http_proxy.Text.Trim();
 
                 this.BindWebSiteName = DeployConfig.IIsConfig.WebSiteName = this.txt_iis_web_site_name.Text.Trim();
 
                 this.BindWindowsServiceName = DeployConfig.WindowsServiveConfig.ServiceName = this.txt_windowservice_name.Text.Trim();
+                this.BindLinuxServiceName = DeployConfig.LinuxServiveConfig.ServiceName = this.txt_linuxservice_name.Text.Trim();
+                this.BindLinuxEnvName = DeployConfig.LinuxServiveConfig.EnvParam = this.txt_linux_service_env.Text.Trim();
 
                 this.BindDockerPort =  DeployConfig.DockerConfig.Prot = this.txt_docker_port.Text.Trim();
                 this.BindDockerEnvName = DeployConfig.DockerConfig.AspNetCoreEnv = this.txt_docker_envname.Text.Trim();
@@ -1917,6 +2041,21 @@ namespace AntDeployWinform.Winform
                 }
             }
 
+            if (serverType.Equals(ServerType.LINUXSERVICE))
+            {
+                //生成进度
+                if (this.tabPage_linux_service.Tag is Dictionary<string, ProgressBox> progressBoxList)
+                {
+                    foreach (var box in progressBoxList)
+                    {
+                        if (!box.Value.CheckFireUrl())
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
             return false;
         }
 
@@ -1951,6 +2090,19 @@ namespace AntDeployWinform.Winform
             {
                 //生成进度
                 if (this.tabPage_windows_service.Tag is Dictionary<string, ProgressBox> progressBoxList)
+                {
+                    foreach (var box in progressBoxList)
+                    {
+                        var s = box.Value.GetServer();
+                        if (s == null) continue;
+                        result.Add(s);
+                    }
+                }
+            }
+            else if (serverType.Equals(ServerType.LINUXSERVICE))
+            {
+                //生成进度
+                if (this.tabPage_linux_service.Tag is Dictionary<string, ProgressBox> progressBoxList)
                 {
                     foreach (var box in progressBoxList)
                     {
@@ -2807,7 +2959,14 @@ namespace AntDeployWinform.Winform
                     });
                     publisEvent2.LoggerName = "rich_windowservice_log";
                 }
-
+                else if (nlog == nlog_linux)
+                {
+                    this.BeginInvokeLambda(() =>
+                    {
+                        rich_linuxservice_log.SaveFile(currentLogPath, RichTextBoxStreamType.PlainText);
+                    });
+                    publisEvent2.LoggerName = "rich_linuxservice_log";
+                }
                 publisEvent2.Properties["ShowLink"] = "file://" + currentLogPath.Replace("\\", "\\\\");
                 nlog.Log(publisEvent2);
             }
@@ -3521,6 +3680,15 @@ namespace AntDeployWinform.Winform
 
             });
         }
+        private void EnableLinuxServiceRetry(bool flag)
+        {
+            this.BeginInvokeLambda(() =>
+            {
+
+                btn_linux_service_retry.Visible = flag;//隐藏发布按钮
+
+            });
+        }
         private void Enable(bool flag, bool ignore = false)
         {
             this.BeginInvokeLambda(() =>
@@ -3566,12 +3734,15 @@ namespace AntDeployWinform.Winform
                 this.combo_iis_sdk_type.Enabled = flag;
                 this.page_set.Enabled = flag;
                 this.page_docker.Enabled = flag;
+                this.page_linux_service.Enabled = flag;
                 this.page_window_service.Enabled = flag;
                 this.pag_advance_setting.Enabled = flag;
                 this.checkBox_select_deploy_iis.Enabled = flag;
                 if (flag)
                 {
                     this.rich_windowservice_log.Text = "";
+                    this.rich_linuxservice_log.Text = "";
+                    this.rich_docker_log.Text = "";
                     btn_iis_stop.Enabled = true;
                     btn_iis_stop.Text = "Stop";
                 }
@@ -3763,8 +3934,11 @@ namespace AntDeployWinform.Winform
                     this.btn_iis_stop.Tag = "false";
                     this.btn_windows_serivce_stop.Visible = false;
                     this.btn_windows_serivce_stop.Tag = "false";
+                    this.btn_linux_serivce_stop.Visible = false;
+                    this.btn_linux_serivce_stop.Tag = "false";
                     stop_iis_cancel_token = false;
                     stop_windows_cancel_token = false;
+                    stop_linux_cancel_token = false;
                 }
 
                 if (tabPage.Tag is Dictionary<string, ProgressBox> progressBoxList)
@@ -3835,6 +4009,21 @@ namespace AntDeployWinform.Winform
                             this.btn_windows_serivce_stop.Visible = true;
                         }
                     }
+                    else if (tabPage == this.tabPage_linux_service)
+                    {
+                        if (progressBoxList.Count == 1)
+                        {
+
+                            if (!this.btn_linux_serivce_stop.Visible) this.btn_linux_serivce_stop.Visible = true;
+                            return;
+                        }
+                        var flag = this.btn_linux_serivce_stop.Tag as string;
+                        if (!string.IsNullOrEmpty(flag) && flag == "false")
+                        {
+                            this.btn_linux_serivce_stop.Tag = null;
+                            this.btn_linux_serivce_stop.Visible = true;
+                        }
+                    }
                 }
             });
         }
@@ -3884,7 +4073,86 @@ namespace AntDeployWinform.Winform
             }
         }
 
+        private void combo_linux_env_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var selectName = this.combo_linux_env.SelectedItem as string;
+            if (!string.IsNullOrEmpty(selectName))
+            {
+                DeployConfig.LinuxServiveConfig.LastEnvName = selectName;
 
+                //设置对应的websitename
+                if (DeployConfig.LinuxServiveConfig.EnvPairList != null && DeployConfig.LinuxServiveConfig.EnvPairList.Any())
+                {
+                    var target = DeployConfig.LinuxServiveConfig.EnvPairList.FirstOrDefault(r => r.EnvName.Equals(selectName));
+                    if (target != null && !string.IsNullOrEmpty(target.ConfigName))
+                    {
+                        this.txt_linuxservice_name.Text = target.ConfigName;
+                    }
+
+                    if(target != null && !string.IsNullOrEmpty(target.LinuxEnvParam))
+                    {
+                        this.txt_linux_service_env.Text = target.LinuxEnvParam;
+                    }
+                }
+                var dic = new Dictionary<string, bool>();
+                //生成进度
+                if (this.tabPage_linux_service.Tag is Dictionary<string, ProgressBox> progressBoxList)
+                {
+                    foreach (var box in progressBoxList)
+                    {
+                        dic.Add(box.Value.Server.Host, box.Value.CheckBox.Checked);
+                        box.Value.Dispose();
+                        this.tabPage_linux_service.Controls.Remove(box.Value);
+                    }
+                    this.tabPage_linux_service.Tag = null;
+                }
+
+                var newBoxList = new Dictionary<string, ProgressBox>();
+
+                var serverList = DeployConfig.Env.Where(r => r.Name.Equals(selectName)).Select(r => r.ServerList)
+                    .FirstOrDefault();
+
+                if (serverList == null || !serverList.Any())
+                {
+                    return;
+                }
+
+                var serverHostList = serverList.Select(r => r.Host).ToList();
+
+                for (int i = 0; i < serverHostList.Count; i++)
+                {
+                    var serverHost = serverHostList[i];
+                    var nickName = serverList[i].NickName;
+                    ProgressBox newBox =
+                        new ProgressBox(new System.Drawing.Point(ProgressBoxLocationLeft, 15 + (i * 140)), serverList[i], ServerType.LINUXSERVICE, HostoryButtonSearch)
+                        {
+                            Text = serverHost + (!string.IsNullOrWhiteSpace(nickName) ? $"【{nickName}】" : ""),
+                        };
+
+                    if (dic.TryGetValue(serverHost, out var chec))
+                    {
+                        newBox.CheckBox.Checked = chec;
+                    }
+
+                    newBoxList.Add(serverHost, newBox);
+                    this.tabPage_linux_service.Controls.Add(newBox);
+                }
+
+                this.progress_linux_service_tip.SendToBack();
+                this.tabPage_linux_service.Tag = newBoxList;
+            }
+            else
+            {
+                if (this.tabPage_linux_service.Tag is Dictionary<string, ProgressBox> progressBoxList)
+                {
+                    foreach (var box in progressBoxList)
+                    {
+                        box.Value.Dispose();
+                        this.tabPage_linux_service.Controls.Remove(box.Value);
+                    }
+                }
+            }
+        }
         private void combo_windowservice_env_SelectedIndexChanged(object sender, EventArgs e)
         {
             var selectName = this.combo_windowservice_env.SelectedItem as string;
@@ -4038,6 +4306,7 @@ namespace AntDeployWinform.Winform
                 this.txt_windowservice_name.Enabled = flag;
                 this.page_set.Enabled = flag;
                 this.page_docker.Enabled = flag;
+                this.page_linux_service.Enabled = flag;
                 this.page_web_iis.Enabled = flag;
                 this.pag_advance_setting.Enabled = flag;
                 checkBox_select_deploy_service.Enabled = flag;
@@ -4045,6 +4314,7 @@ namespace AntDeployWinform.Winform
                 {
                     this.rich_iis_log.Text = "";
                     this.rich_docker_log.Text = "";
+                    this.rich_linuxservice_log.Text = "";
                     btn_windows_serivce_stop.Enabled = true;
                     btn_windows_serivce_stop.Text = "Stop";
                 }
@@ -4080,7 +4350,86 @@ namespace AntDeployWinform.Winform
         }
 
 
+        private void EnableForLinuxService(bool flag, bool ignore = false)
+        {
+            this.BeginInvokeLambda(() =>
+            {
+                if (this.tabPage_linux_service.Tag is Dictionary<string, ProgressBox> progressBoxList1)
+                {
+                    if (ProgressBox.IsEnableGroup)
+                    {
+                        foreach (var box in progressBoxList1)
+                        {
+                            if (box.Value.CheckBox.Visible && box.Value.CheckBox.Checked)
+                            {
+                                box.Value.Enable(flag);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (var box in progressBoxList1)
+                        {
+                            box.Value.Enable(flag);
+                            break;
+                        }
+                    }
+                }
+                this.b_linux_service_rollback.Enabled = flag;
+                this.checkBox_Increment_linux_service.Enabled = flag;
+                this.b_linuxservice_deploy.Enabled = flag;
+                if (!ignore)
+                {
+                    this.b_linuxservice_deploy.Visible = flag;
+                    btn_linux_serivce_stop.Visible = !flag;//是否展示停止按钮
+                }
+                this.combo_linux_env.Enabled = flag;
+                this.txt_linuxservice_name.Enabled = flag;
+                this.txt_linux_service_env.Enabled = flag;
+                this.page_set.Enabled = flag;
+                this.page_docker.Enabled = flag;
+                this.page_web_iis.Enabled = flag;
+                this.page_window_service.Enabled = flag;
+                this.pag_advance_setting.Enabled = flag;
+                checkBox_select_deploy_linuxservice.Enabled = flag;
+                if (flag)
+                {
+                    this.rich_iis_log.Text = "";
+                    this.rich_docker_log.Text = "";
+                    btn_linux_serivce_stop.Enabled = true;
+                    btn_linux_serivce_stop.Text = "Stop";
+                }
+                else
+                {
+                    tabcontrol.Tag = "3";
+                    if (ignore) return;
+                    if (this.tabPage_linux_service.Tag is Dictionary<string, ProgressBox> progressBoxList)
+                    {
+                        if (ProgressBox.IsEnableGroup)
+                        {
+                            foreach (var box in progressBoxList)
+                            {
+                                if (box.Value.CheckBox.Visible && box.Value.CheckBox.Checked)
+                                {
+                                    box.Value.StartBuild();
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            foreach (var box in progressBoxList)
+                            {
+                                box.Value.StartBuild();
+                                break;
+                            }
+                        }
+                    }
+                }
+            });
 
+        }
         private void b_windowservice_deploy_Click(object sender, EventArgs e)
         {
             stop_windows_cancel_token = false;
@@ -5494,6 +5843,13 @@ namespace AntDeployWinform.Winform
                     this.rich_windowservice_log.Text = "";
                 }
             }
+            else if (tabcontrol.SelectedIndex == 3)
+            {
+                if (excutePageIndex != tabcontrol.SelectedIndex)
+                {
+                    this.rich_linuxservice_log.Text = "";
+                }
+            }
         }
 
         private void DeployConfigOnEnvChangeEvent(Env changeEnv, bool isServerChange,bool isRemove)
@@ -5502,6 +5858,7 @@ namespace AntDeployWinform.Winform
             var item1 = this.combo_iis_env.SelectedItem as string;
             var item2 = this.combo_windowservice_env.SelectedItem as string;
             var item3 = this.combo_docker_env.SelectedItem as string;
+            var item4 = this.combo_linux_env.SelectedItem as string;
             if (isServerChange)
             {
 
@@ -5518,6 +5875,11 @@ namespace AntDeployWinform.Winform
                 if (!string.IsNullOrEmpty(item3) && item3.Equals(changeEnv.Name))
                 {
                     combo_docker_env_SelectedIndexChanged(null, null);
+                }
+
+                if (!string.IsNullOrEmpty(item4) && item4.Equals(changeEnv.Name))
+                {
+                    combo_linux_env_SelectedIndexChanged(null, null);
                 }
 
                 return;
@@ -5538,6 +5900,18 @@ namespace AntDeployWinform.Winform
                     {
                         var toRemove = DeployConfig.WindowsServiveConfig.EnvPairList.FirstOrDefault(r => r.EnvName.Equals(changeEnv.Name));
                         if (toRemove != null) DeployConfig.WindowsServiveConfig.EnvPairList.Remove(toRemove);
+                    }
+
+                    if (DeployConfig.DockerConfig != null && DeployConfig.DockerConfig.EnvPairList != null)
+                    {
+                        var toRemove = DeployConfig.DockerConfig.EnvPairList.FirstOrDefault(r => r.EnvName.Equals(changeEnv.Name));
+                        if (toRemove != null) DeployConfig.DockerConfig.EnvPairList.Remove(toRemove);
+                    }
+
+                    if (DeployConfig.LinuxServiveConfig != null && DeployConfig.LinuxServiveConfig.EnvPairList != null)
+                    {
+                        var toRemove = DeployConfig.LinuxServiveConfig.EnvPairList.FirstOrDefault(r => r.EnvName.Equals(changeEnv.Name));
+                        if (toRemove != null) DeployConfig.LinuxServiveConfig.EnvPairList.Remove(toRemove);
                     }
                 }
                 else
@@ -5609,6 +5983,41 @@ namespace AntDeployWinform.Winform
                             ConfigName = this.txt_windowservice_name.Text
                         });
                     }
+
+
+                    if (DeployConfig.LinuxServiveConfig == null)
+                    {
+                        DeployConfig.LinuxServiveConfig = new LinuxServiveConfig
+                        {
+                            EnvPairList = new List<EnvPairConfig>
+                            {
+                                new EnvPairConfig
+                                {
+                                    EnvName = changeEnv.Name,
+                                    ConfigName = this.txt_linuxservice_name.Text
+                                }
+                            }
+                        };
+                    }
+                    else if (DeployConfig.LinuxServiveConfig.EnvPairList == null)
+                    {
+                        DeployConfig.LinuxServiveConfig.EnvPairList = new List<EnvPairConfig>
+                        {
+                            new EnvPairConfig
+                            {
+                                EnvName = changeEnv.Name,
+                                ConfigName = this.txt_linuxservice_name.Text
+                            }
+                        };
+                    }
+                    else if (!DeployConfig.LinuxServiveConfig.EnvPairList.Exists(r => r.EnvName.Equals(changeEnv.Name)))
+                    {
+                        DeployConfig.LinuxServiveConfig.EnvPairList.Add(new EnvPairConfig
+                        {
+                            EnvName = changeEnv.Name,
+                            ConfigName = this.txt_linuxservice_name.Text
+                        });
+                    }
                 }
 
                 #endregion
@@ -5617,6 +6026,7 @@ namespace AntDeployWinform.Winform
             this.combo_iis_env.Items.Clear();
             this.combo_windowservice_env.Items.Clear();
             this.combo_docker_env.Items.Clear();
+            this.combo_linux_env.Items.Clear();
             if (DeployConfig.Env.Any())
             {
                 foreach (var env in DeployConfig.Env)
@@ -5624,6 +6034,7 @@ namespace AntDeployWinform.Winform
                     this.combo_iis_env.Items.Add(env.Name);
                     this.combo_windowservice_env.Items.Add(env.Name);
                     this.combo_docker_env.Items.Add(env.Name);
+                    this.combo_linux_env.Items.Add(env.Name);
                 }
 
                 //重新选中原来的
@@ -5662,10 +6073,19 @@ namespace AntDeployWinform.Winform
                     {
                         combo_docker_env_SelectedIndexChanged(null, null);
                     }
-
                 }
 
-
+                if (!string.IsNullOrEmpty(item4))
+                {
+                    if (this.combo_linux_env.Items.Cast<string>().Contains(item3))
+                    {
+                        this.combo_linux_env.SelectedItem = item3;
+                    }
+                    else
+                    {
+                        combo_linux_env_SelectedIndexChanged(null, null);
+                    }
+                }
             }
 
         }
@@ -6902,6 +7322,7 @@ namespace AntDeployWinform.Winform
                 this.page_set.Enabled = flag;
                 this.page_window_service.Enabled = flag;
                 this.page_web_iis.Enabled = flag;
+                this.page_linux_service.Enabled = flag;
                 this.pag_advance_setting.Enabled = flag;
 
                 this.checkBox_Increment_docker.Enabled = flag;
@@ -6910,6 +7331,7 @@ namespace AntDeployWinform.Winform
                 {
                     this.rich_iis_log.Text = "";
                     this.rich_windowservice_log.Text = "";
+                    this.rich_linuxservice_log.Text = "";
                     btn_docker_stop.Enabled = true;
                     btn_docker_stop.Text = "Stop";
                 }
@@ -7643,6 +8065,680 @@ namespace AntDeployWinform.Winform
         {
             GlobalConfig.EnableEnvGroup = this.chk_global_useCheckBox.Checked;
             MessageBoxEx.ShowOk(this, "please reload antdeploy!");
+        }
+
+        private void checkBox_Increment_linux_service_CheckedChanged(object sender, EventArgs e)
+        {
+            PluginConfig.LinuxServiceEnableIncrement = checkBox_Increment_linux_service.Checked;
+        }
+
+        private void checkBox_select_deploy_linuxservice_CheckedChanged(object sender, EventArgs e)
+        {
+            PluginConfig.LinuxServiceEnableSelectDeploy = checkBox_select_deploy_linuxservice.Checked;
+        }
+
+        private void btn_linux_service_retry_Click(object sender, EventArgs e)
+        {
+            btn_linux_service_retry.Visible = false;
+            Condition.Set();
+        }
+
+        private void btn_linux_serivce_stop_Click(object sender, EventArgs e)
+        {
+            btn_linux_serivce_stop.Text = "Stoping";
+            btn_linux_serivce_stop.Enabled = false;
+            stop_linux_cancel_token = true;
+            btn_linux_service_retry.Visible = false;
+            Condition.Set();
+        }
+
+        private void b_linux_service_rollback_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void b_linuxservice_deploy_Click(object sender, EventArgs e)
+        {
+            stop_linux_cancel_token = false;
+            Condition = new AutoResetEvent(false);
+
+            if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath) && !_project.IsNetcorePorject)
+            {
+                MessageBoxEx.Show(this, Strings.NowNetcoreProject);
+                return;
+            }
+
+            var serviceName = this.txt_linuxservice_name.Text.Trim();
+            if (serviceName.Length < 1)
+            {
+                MessageBoxEx.Show(this, Strings.ServiceNameRequired);
+                return;
+            }
+            if (!CodingHelper.IsNatural_Number(serviceName))
+            {
+                MessageBoxEx.Show(this, Strings.ServiceNameMustBeNature);
+                return;
+            }
+
+            DeployConfig.LinuxServiveConfig.ServiceName = serviceName;
+
+            var linuxEnvParam = this.txt_linux_service_env.Text.Trim();
+            if (linuxEnvParam.Length > 0)
+            {
+                DeployConfig.LinuxServiveConfig.EnvParam = linuxEnvParam;
+            }
+            var PhysicalPath = "";
+            var ServiceStartType = "";
+            var ServiceDescription = "";
+
+            var envName = this.combo_linux_env.SelectedItem as string;
+            if (string.IsNullOrEmpty(envName))
+            {
+                MessageBoxEx.Show(this, Strings.SelectEnv);
+                return;
+            }
+
+            //fire url
+            if (CheckFireUri(ServerType.LINUXSERVICE))
+            {
+                MessageBoxEx.Show(this, Strings.FireUrlInvaid);
+                return;
+            }
+
+
+            var ignoreList = DeployConfig.Env.First(r => r.Name.Equals(envName)).IgnoreList;
+            var backUpIgnoreList = DeployConfig.Env.First(r => r.Name.Equals(envName)).WindowsBackUpIgnoreList;
+
+#if DEBUG
+
+            var execFilePath = (!string.IsNullOrEmpty(PluginConfig.DeployFolderPath) ? serviceName : this.ProjectName);
+#else
+            //如果是特定文件夹发布 得选择一个exe
+            if (!string.IsNullOrEmpty(PluginConfig.DeployFolderPath) && string.IsNullOrEmpty(_project.OutPutName))
+            {
+                var exePath = string.Empty;
+                //找当前根目录下 有没有 .deps.json 文件
+                var depsJsonFile = CodingHelper.FindDepsJsonFile(PluginConfig.DeployFolderPath);
+                if (!string.IsNullOrEmpty(depsJsonFile))
+                {
+                    var exeTempName = depsJsonFile.Replace(".deps.json", ".exe");
+                    if (File.Exists(exeTempName))
+                    {
+                        exePath = exeTempName;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(exePath))
+                {
+                    _project.OutPutName = new FileInfo(exePath).Name;
+                }
+               
+            }
+            var execFilePath = _project.OutPutName;
+            if (string.IsNullOrEmpty(execFilePath))
+            {
+                execFilePath = this.ProjectName;
+            }
+
+#endif
+            var serverList = DeployConfig.Env.Where(r => r.Name.Equals(envName)).Select(r => r.ServerList)
+                .FirstOrDefault();
+
+            if (serverList == null || !serverList.Any())
+            {
+                MessageBoxEx.Show(this, Strings.EnvHaveNoServer);
+                return;
+            }
+
+            if (ProgressBox.IsEnableGroup)
+            {
+                //获取所有的选择了的server
+                var selectedList = getSelectedBaseServers(ServerType.LINUXSERVICE);
+                if (!selectedList.Any())
+                {
+                    MessageBoxEx.Show(this, Strings.EnvHaveNoServer);
+                    return;
+                }
+
+                //找到选择了的
+                serverList = serverList.Where(r => selectedList.Any(y => y.Host.Equals(r.Host))).ToList();
+                if (!serverList.Any())
+                {
+                    MessageBoxEx.Show(this, Strings.EnvHaveNoServer);
+                    return;
+                }
+            }
+            var serverHostList = string.Join(Environment.NewLine, serverList.Select(r => r.Host).ToList());
+
+            var confirmResult = ShowInputMsgBox(Strings.ConfirmDeploy,
+                Strings.DeployServerConfim + Environment.NewLine + serverHostList);
+
+            if (!confirmResult.Item1)
+            {
+                return;
+            }
+
+            combo_linux_env_SelectedIndexChanged(null, null);
+
+            this.rich_linuxservice_log.Text = "";
+            this.nlog_linux.Info($"linux Service excute name:{execFilePath}");
+
+            if (string.IsNullOrEmpty(_project.NetCoreSDKVersion))
+            {
+                _project.NetCoreSDKVersion = ProjectHelper.GetProjectSkdInNetCoreProject(ProjectPath);
+            }
+            if (!string.IsNullOrEmpty(_project.NetCoreSDKVersion))
+            {
+                this.nlog_linux.Info($"DotNetSDK.Version:{_project.NetCoreSDKVersion}");
+            }
+
+            _CreateParam = new FirstCreateParam();
+            new Task(async () =>
+            {
+                this.nlog_linux.Info($"-----------------Start publish[Ver:{Vsix.VERSION}]-----------------");
+                
+
+                PrintCommonLog(this.nlog_linux);
+                EnableForLinuxService(false); //第一台开始编译
+                GitClient gitModel = null;
+                var isRuningSelectDeploy = false;
+                var publishPath = !string.IsNullOrEmpty(PluginConfig.DeployFolderPath) ? PluginConfig.DeployFolderPath : Path.Combine(ProjectFolderPath, "bin", "Release", "deploy_linux", envName);
+                var dateTimeFolderNameParent = string.Empty;
+                try
+                {
+                    var runtime = "";
+                    if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath))
+                    {
+                        var path = publishPath + "\\";
+                       
+                        if (string.IsNullOrEmpty(PluginConfig.NetCorePublishMode))
+                        {
+                            runtime = " --runtime linux-x64";
+                        }
+                        else
+                        {
+                            runtime = PluginConfig.GetNetCorePublishRuntimeArg();
+                        }
+
+                        //如果runtime 为空的话 代表服务端需要用dotnet 来运行了
+
+                        //执行 publish
+                        var isSuccess = CommandHelper.RunDotnetExe(ProjectPath, ProjectFolderPath, path.Replace("\\\\", "\\"),
+                            $"publish \"{ProjectPath}\" -c Release{runtime}", nlog_linux, () => stop_linux_cancel_token);
+
+                        if (!isSuccess)
+                        {
+                            this.nlog_linux.Error("publish error,please check build log");
+                            BuildError(this.tabPage_linux_service, serverList.First().Host);
+                            return;
+                        }
+                    }
+
+
+                    if (string.IsNullOrEmpty(publishPath) || !Directory.Exists(publishPath))
+                    {
+                        this.nlog_linux.Error("can not find publishPath");
+                        BuildError(this.tabPage_linux_service, serverList.First().Host);
+                        return;
+                    }
+
+                    execFilePath = !string.IsNullOrEmpty(runtime) && runtime.Contains("linux")
+                        ? execFilePath
+                        : execFilePath + ".dll";
+
+                    var serviceFile = Path.Combine(publishPath, execFilePath);
+                    if (!File.Exists(serviceFile))
+                    {
+                        BuildError(this.tabPage_linux_service, serverList.First().Host);
+                        this.nlog_linux.Error($"exe file can not find in publish folder: {serviceFile}");
+                        return;
+                    }
+                    
+
+                    BuildEnd(this.tabPage_linux_service, serverList.First().Host); //第一台结束编译
+                    LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish success  ==> ");
+                    publisEvent.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
+                    publisEvent.LoggerName = "rich_linuxservice_log";
+                    this.nlog_linux.Log(publisEvent);
+
+
+
+                    //执行 打包
+                    this.nlog_linux.Info("-----------------Start package-----------------");
+
+                    if (stop_linux_cancel_token)
+                    {
+                        this.nlog_linux.Warn($"deploy task was canceled!");
+                        PackageError(this.tabPage_linux_service, serverList.First().Host);
+                        return;
+                    }
+
+                    //查看是否开启了增量
+                    if (this.PluginConfig.LinuxServiceEnableIncrement)
+                    {
+                        this.nlog_linux.Info("Enable Increment Deploy:true");
+                        gitModel = new GitClient(publishPath, this.nlog_linux);
+                        if (!gitModel.InitSuccess)
+                        {
+                            this.nlog_linux.Error(
+                                "package fail,can not init git,please cancel Increment Deploy");
+                            PackageError(this.tabPage_linux_service, serverList.First().Host);
+                            return;
+                        }
+                    }
+                    var gitChangeFileCount = 0;
+                    byte[] zipBytes = null;
+                    if (gitModel != null)
+                    {
+                        var fileList = gitModel.GetChanges();
+                        if (fileList == null || fileList.Count < 1)
+                        {
+                            PackageError(this.tabPage_linux_service, serverList.First().Host);
+                            return;
+                        }
+                        gitChangeFileCount = fileList.Count;
+                        this.nlog_linux.Info("【git】Increment package file count:" + gitChangeFileCount);
+
+                        if (PluginConfig.LinuxServiceEnableSelectDeploy)
+                        {
+                            isRuningSelectDeploy = true;
+                            this.nlog_linux.Info("-----------------Select File Start-----------------");
+                            this.BeginInvokeLambda(() =>
+                            {
+                                var slectFileForm = new SelectFile(fileList, publishPath);
+                                slectFileForm.ShowDialog();
+                                
+                                //增量 选择特定文件发布
+                            });
+                            return;
+                        }
+
+                        try
+                        {
+                            this.nlog_linux.Info($"package ignoreList Count:{ignoreList.Count},backUp IgnoreList Count:{backUpIgnoreList.Count}");
+                            zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, fileList, CompressionLevel.Optimal,
+                                true,
+                                ignoreList,
+                                (progressValue) =>
+                                {
+                                    UpdatePackageProgress(this.tabPage_linux_service, serverList.First().Host, progressValue); //打印打包记录
+                                    return stop_linux_cancel_token;
+                                });
+                        }
+                        catch (Exception ex)
+                        {
+                            this.nlog_linux.Error("package fail:" + ex.Message);
+                            PackageError(this.tabPage_linux_service, serverList.First().Host);
+                            return;
+                        }
+                    }
+                    else if (PluginConfig.LinuxServiceEnableSelectDeploy)
+                    {
+                        isRuningSelectDeploy = true;
+                        this.nlog_linux.Info("-----------------Select File Start-----------------");
+                        this.BeginInvokeLambda(() =>
+                        {
+                            var slectFileForm = new SelectFile(publishPath);
+                            slectFileForm.ShowDialog();
+                           
+                            //选择特定文件发布
+                        });
+                        return;
+                    }
+
+                    try
+                    {
+                        if (zipBytes == null)
+                        {
+                            this.nlog_linux.Info($"package ignoreList Count:{ignoreList.Count},backUp IgnoreList Count:{backUpIgnoreList.Count}");
+                            zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, CompressionLevel.Optimal, true,
+                                ignoreList,
+                                (progressValue) =>
+                                {
+                                    UpdatePackageProgress(this.tabPage_linux_service, serverList.First().Host, progressValue); //打印打包记录
+                                    return stop_linux_cancel_token;
+                                });
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        this.nlog_linux.Error("package fail:" + ex.Message);
+                        PackageError(this.tabPage_linux_service, serverList.First().Host);
+                        return;
+                    }
+
+                    if (zipBytes == null || zipBytes.Length < 1)
+                    {
+                        this.nlog_linux.Error("package fail");
+                        PackageError(this.tabPage_linux_service, serverList.First().Host);
+                        return;
+                    }
+                    var packageSize = (zipBytes.Length / 1024 / 1024);
+                    this.nlog_linux.Info($"package success,package size:{(packageSize > 0 ? (packageSize + "") : "<1")}M");
+                    var loggerId = Guid.NewGuid().ToString("N");
+                    //执行 上传
+                    this.nlog_linux.Info("-----------------Deploy Start-----------------");
+                    dateTimeFolderNameParent = DateTime.Now.ToString("yyyyMMddHHmmss");
+                    var retryTimes = 0;
+                    var allfailServerList = new List<Server>();
+                    RETRY_WINDOWSSERVICE:
+                    var failServerList = new List<Server>();
+                    var index = 0;
+                    var allSuccess = true;
+                    var failCount = 0;
+                    var dateTimeFolderName = string.Empty;
+                    var isRetry = allfailServerList.Count > 0;
+                    if (isRetry)
+                    {
+                        dateTimeFolderName = dateTimeFolderNameParent + (retryTimes.AppendRetryStrings());
+                    }
+                    else
+                    {
+                        dateTimeFolderName = dateTimeFolderNameParent;
+                    }
+
+                    //重试了 但是没有发现错误的Server List
+                    if (retryTimes > 0 && allfailServerList.Count == 0) return;
+                    foreach (var server in isRetry ? allfailServerList : serverList)
+                    {
+                        if (isRetry) UploadReset(this.tabPage_linux_service, server.Host);
+                        if (!isRetry && index != 0) //因为编译和打包只会占用第一台服务器的时间
+                        {
+                            BuildEnd(this.tabPage_linux_service, server.Host);
+                            UpdatePackageProgress(this.tabPage_linux_service, server.Host, 100);
+                        }
+                        if (stop_linux_cancel_token)
+                        {
+                            this.nlog_linux.Warn($"deploy task was canceled!");
+                            UploadError(this.tabPage_linux_service, server.Host);
+                            return;
+                        }
+                        index++;
+                        if (string.IsNullOrEmpty(server.Token))
+                        {
+                            this.nlog_linux.Warn($"{server.Host} Deploy skip,Token is null or empty!");
+                            UploadError(this.tabPage_linux_service, server.Host);
+                            allSuccess = false;
+                            failCount++;
+                            failServerList.Add(server);
+                            continue;
+                        }
+                        this.nlog_linux.Info("Start Check Linux Service IsExist In Remote Server:" + server.Host);
+                        var checkResult = await WebUtil.HttpPostAsync<IIsSiteCheck>(
+                            $"http://{server.Host}/version", new
+                            {
+                                Token = server.Token,
+                                Type = "checklinux",
+                                Mac = CodingHelper.GetMacAddress(),
+                                Name = serviceName
+                            }, nlog_linux, true);
+
+
+                        if (checkResult == null || checkResult.Data == null)
+                        {
+                            this.nlog_linux.Error($"Check IsExist In Remote Server Fail!");
+                            UploadError(this.tabPage_linux_service, server.Host);
+                            allSuccess = false;
+                            failCount++;
+                            failServerList.Add(server);
+                            continue;
+                        }
+
+                        if (!string.IsNullOrEmpty(checkResult.Msg))
+                        {
+                            this.nlog_linux.Error($"Check IsExist In Remote Server Fail：" + checkResult.Msg);
+                            UploadError(this.tabPage_linux_service, server.Host);
+                            allSuccess = false;
+                            failCount++;
+                            failServerList.Add(server);
+                            continue;
+                        }
+
+                         if (checkResult.Data.Success)
+                        {
+                            this.nlog_linux.Info($"Linux Service Is Exist In Remote Server:" + server.Host);
+                        }
+                        else
+                        {
+                            if (this.PluginConfig.LinuxServiceEnableIncrement)
+                            {
+                                this.nlog_linux.Error($"Linux Service Is Not Exist In Remote Server,Can not use [Increment deplpoy]");
+                                UploadError(this.tabPage_linux_service, server.Host);
+                                allSuccess = false;
+                                failCount++;
+                                failServerList.Add(server);
+                                continue;
+                            }
+
+                            this.BeginInvokeLambda(() =>
+                            {
+                                //级别一不存在
+                                FirstService creatFrom = new FirstService();
+                                var data = creatFrom.ShowDialog();
+                                if (data == DialogResult.Cancel)
+                                {
+                                    _CreateParam = null;
+                                }
+                                else
+                                {
+                                    _CreateParam = creatFrom.WindowsServiceCreateParam;
+                                }
+                                Condition.Set();
+                            });
+                            Condition.WaitOne();
+
+                            if (_CreateParam == null)
+                            {
+                                this.nlog_linux.Error($"Create Linux Service Param Required!");
+                                UploadError(this.tabPage_linux_service, server.Host);
+                                allSuccess = false;
+                                failCount++;
+                                failServerList.Add(server);
+                                continue;
+                            }
+                            else
+                            {
+                                ServiceStartType = _CreateParam.StartUp;
+                                PhysicalPath = _CreateParam.PhysicalPath;
+                                ServiceDescription = _CreateParam.Desc;
+                                this.nlog_linux.Info($"LinuxService Create Description:{_CreateParam.Desc},StartType:{_CreateParam.StartUp},PhysicalPath:{PhysicalPath}");
+                            }
+                        }
+
+
+                        ProgressPercentageForLinuxService = 0;
+                        ProgressCurrentHostForLinuxService = server.Host;
+                        this.nlog_linux.Info($"Start Uppload,Host:{getHostDisplayName(server)}");
+                        HttpRequestClient httpRequestClient = new HttpRequestClient();
+                        httpRequestClient.SetFieldValue("publishType", "linux");
+                        httpRequestClient.SetFieldValue("isIncrement", this.PluginConfig.LinuxServiceEnableIncrement  ? "true" : "");
+                        httpRequestClient.SetFieldValue("serviceName", serviceName);
+                        httpRequestClient.SetFieldValue("id", loggerId);
+                        httpRequestClient.SetFieldValue("execFilePath", execFilePath);
+                        httpRequestClient.SetFieldValue("remark", confirmResult.Item2);
+                        httpRequestClient.SetFieldValue("mac", CodingHelper.GetMacAddress());
+                        httpRequestClient.SetFieldValue("pc", System.Environment.MachineName);
+                        httpRequestClient.SetFieldValue("localIp", CodingHelper.GetLocalIPAddress());
+                        httpRequestClient.SetFieldValue("deployFolderName", dateTimeFolderName);
+                        httpRequestClient.SetFieldValue("physicalPath", PhysicalPath);
+                        httpRequestClient.SetFieldValue("env", DeployConfig.LinuxServiveConfig.EnvParam);
+                        httpRequestClient.SetFieldValue("startType", ServiceStartType);
+                        httpRequestClient.SetFieldValue("desc", ServiceDescription);
+                        httpRequestClient.SetFieldValue("Token", server.Token);
+                        httpRequestClient.SetFieldValue("backUpIgnore", (backUpIgnoreList != null && backUpIgnoreList.Any()) ? string.Join("@_@", backUpIgnoreList) : "");
+                        httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream", zipBytes);
+                        HttpLogger HttpLogger = new HttpLogger
+                        {
+                            Key = loggerId,
+                            Url = $"http://{server.Host}/logger?key=" + loggerId
+                        };
+                        IDisposable _subcribe = null;
+                        WebSocketClient webSocket = new WebSocketClient(this.nlog_linux, HttpLogger);
+                        var haveError = false;
+                        try
+                        {
+                            if (stop_linux_cancel_token)
+                            {
+                                this.nlog_linux.Warn($"deploy task was canceled!");
+                                UploadError(this.tabPage_linux_service, server.Host);
+                                UpdateDeployProgress(this.tabPage_linux_service, server.Host, false);
+                                return;
+                            }
+
+                            var hostKey = await webSocket.Connect($"ws://{server.Host}/socket");
+                            httpRequestClient.SetFieldValue("wsKey", hostKey);
+
+                            var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/publish",
+                                (client) =>
+                                {
+                                    client.Proxy = GetProxy(this.nlog_linux);
+                                    _subcribe = System.Reactive.Linq.Observable
+                                        .FromEventPattern<UploadProgressChangedEventArgs>(client, "UploadProgressChanged")
+                                        .Sample(TimeSpan.FromMilliseconds(100))
+                                        .Subscribe(arg => { ClientOnUploadProgressChanged2(arg.Sender, arg.EventArgs); });
+                                    //client.UploadProgressChanged += ClientOnUploadProgressChanged2;
+                                });
+                            if (ProgressPercentageForLinuxService == 0 && !uploadResult.Item1) UploadError(this.tabPage_linux_service, server.Host);
+                            if ((ProgressPercentageForLinuxService > 0 && ProgressPercentageForLinuxService < 100))
+                                UpdateUploadProgress(this.tabPage_linux_service, ProgressCurrentHostForLinuxService, 100); //结束上传
+                            webSocket.ReceiveHttpAction(true);
+                            haveError = webSocket.HasError;
+                            if (haveError)
+                            {
+                                allSuccess = false;
+                                failCount++;
+                                failServerList.Add(server);
+                                this.nlog_linux.Error($"Host:{getHostDisplayName(server)},Deploy Fail,Skip to Next");
+                                UploadError(this.tabPage_linux_service, server.Host);
+                                UpdateDeployProgress(this.tabPage_linux_service, server.Host, false);
+                            }
+                            else
+                            {
+                                if (uploadResult.Item1)
+                                {
+                                    UpdateUploadProgress(this.tabPage_linux_service, ProgressCurrentHostForLinuxService, 100); //结束上传
+                                    this.nlog_linux.Info($"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2}");
+
+                                    //fire the website
+                                    if (!string.IsNullOrEmpty(server.LinuxServiceFireUrl))
+                                    {
+                                        LogEventInfo publisEvent22 = new LogEventInfo(LogLevel.Info, "", "Start to Fire Url,TimeOut：10senconds  ==> ");
+                                        publisEvent22.Properties["ShowLink"] = server.LinuxServiceFireUrl;
+                                        publisEvent22.LoggerName = "rich_linuxservice_log";
+                                        this.nlog_linux.Log(publisEvent22);
+
+                                        var fireRt = WebUtil.IsHttpGetOk(server.LinuxServiceFireUrl, this.nlog_linux);
+                                        if (fireRt)
+                                        {
+                                            UpdateDeployProgress(this.tabPage_linux_service, server.Host, true);
+                                            this.nlog_linux.Info($"Host:{getHostDisplayName(server)},Success Fire Url");
+                                        }
+                                        else
+                                        {
+                                            failCount++;
+                                            failServerList.Add(server);
+                                            allSuccess = false;
+                                            UpdateDeployProgress(this.tabPage_linux_service, server.Host, false);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        UpdateDeployProgress(this.tabPage_linux_service, server.Host, true);
+                                    }
+                                }
+                                else
+                                {
+                                    allSuccess = false;
+                                    failCount++;
+                                    failServerList.Add(server);
+                                    this.nlog_linux.Error($"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2},Skip to Next");
+                                    UploadError(this.tabPage_linux_service, server.Host);
+                                    UpdateDeployProgress(this.tabPage_linux_service, server.Host, false);
+                                }
+                            }
+
+                        }
+                        catch (Exception ex)
+                        {
+                            failCount++;
+                            failServerList.Add(server);
+                            allSuccess = false;
+                            this.nlog_linux.Error(
+                                $"Fail Deploy,Host:{getHostDisplayName(server)},Response:{ex.Message},Skip to Next");
+                            UpdateDeployProgress(this.tabPage_linux_service, server.Host, false);
+                            if (stop_linux_cancel_token)
+                            {
+                                this.nlog_linux.Warn($"deploy task was canceled!");
+                                UploadError(this.tabPage_linux_service, server.Host);
+                                return;
+                            }
+                        }
+                        finally
+                        {
+                            await webSocket?.Dispose();
+                            _subcribe?.Dispose();
+                        }
+
+                    }
+
+                    //交互
+                    if (allSuccess)
+                    {
+                        this.nlog_linux.Info("Deploy Version：" + dateTimeFolderNameParent);
+                        if (gitModel != null) gitModel.SubmitChanges(gitChangeFileCount);
+                        allfailServerList = new List<Server>();
+                        Notice("Deploy Success", $"[Total]:{serverList.Count},[Fail]:{failCount}");
+
+                    }
+                    else
+                    {
+                        Notice("Deploy End With Error", $"[Total]:{serverList.Count},[Fail]:{failCount}");
+                        if (!stop_linux_cancel_token)
+                        {
+                            allfailServerList = new List<Server>();
+                            allfailServerList.AddRange(failServerList);
+                            EnableLinuxServiceRetry(true);
+                            //看是否要重试
+                            Condition.WaitOne();
+                            if (!stop_linux_cancel_token)
+                            {
+                                retryTimes++;
+                                goto RETRY_WINDOWSSERVICE;
+                            }
+                        }
+
+                    }
+
+                    zipBytes = null;
+                    LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local publish folder  ==> ");
+                    publisEvent2.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
+                    publisEvent2.LoggerName = "rich_linuxservice_log";
+                    this.nlog_linux.Log(publisEvent2);
+                    this.nlog_linux.Info($"-----------------Deploy End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
+                }
+                catch (Exception ex1)
+                {
+                    this.nlog_linux.Error(ex1);
+                }
+                finally
+                {
+                    //记录发布日志
+                    SaveLog(publishPath, dateTimeFolderNameParent, nlog_linux);
+
+                    if (!isRuningSelectDeploy)
+                    {
+                        ProgressPercentageForLinuxService = 0;
+                        ProgressCurrentHostForLinuxService = null;
+                        EnableForLinuxService(true);
+                        gitModel?.Dispose();
+                    }
+
+                }
+
+
+
+            }, System.Threading.Tasks.TaskCreationOptions.LongRunning).Start();
         }
     }
 }

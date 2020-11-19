@@ -214,6 +214,15 @@ namespace AntDeployWinform {
         }
         
         /// <summary>
+        ///   查找类似 servicename must be [A-Za-z0-9] 的本地化字符串。
+        /// </summary>
+        public static string ServiceNameMustBeNature {
+            get {
+                return ResourceManager.GetString("ServiceNameMustBeNature", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 please input serviceName! 的本地化字符串。
         /// </summary>
         public static string ServiceNameRequired {

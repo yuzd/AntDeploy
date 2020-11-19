@@ -168,6 +168,9 @@
   <data name="SelectSdkType" xml:space="preserve">
     <value>please select sdk type！</value>
   </data>
+  <data name="ServiceNameMustBeNature" xml:space="preserve">
+    <value>servicename must be [A-Za-z0-9]</value>
+  </data>
   <data name="ServiceNameRequired" xml:space="preserve">
     <value>please input serviceName!</value>
   </data>

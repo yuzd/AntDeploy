@@ -24,6 +24,7 @@ namespace AntDeployAgentWindows.Util
                 all.Add("Description=" + desc.Trim());
                 all.Add("[Service]");
                 all.Add("Type=notify");
+                all.Add("User=root");
                 all.Add("WorkingDirectory=" + deployFolder);
                 all.Add("ExecStart=" + Path.Combine(deployFolder, fileName));
                 all.Add("SyslogIdentifier=" + serviceName);

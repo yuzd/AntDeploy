@@ -288,6 +288,16 @@ namespace AntDeployWinform.Util
             }
         }
 
+        /// <summary>
+        /// 正则表达式验证只能输入数字或字母
+        /// </summary>
+        /// <param name="pendingString"></param>
+        /// <returns></returns>
+        public static bool IsNatural_Number(string pendingString)
+        {
+            System.Text.RegularExpressions.Regex reg1 = new System.Text.RegularExpressions.Regex(@"^[A-Za-z0-9]+$");
+            return reg1.IsMatch(pendingString);
+        }
 
         public static int Digit(char value, int radix)
         {

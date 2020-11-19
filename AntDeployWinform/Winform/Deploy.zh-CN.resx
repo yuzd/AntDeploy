@@ -128,7 +128,7 @@
     <value>不关闭站点</value>
   </data>
   <data name="btn_iis_stop.Location" type="System.Drawing.Point, System.Drawing">
-    <value>509, 109</value>
+    <value>507, 108</value>
   </data>
   <data name="btn_iis_retry.Location" type="System.Drawing.Point, System.Drawing">
     <value>396, 109</value>
@@ -141,6 +141,9 @@
   </data>
   <data name="checkBox_select_deploy_iis.Text" xml:space="preserve">
     <value>选择指定文件发布</value>
+  </data>
+  <data name="b_iis_deploy.Location" type="System.Drawing.Point, System.Drawing">
+    <value>509, 107</value>
   </data>
   <data name="btn_docker_retry.Text" xml:space="preserve">
     <value>重试</value>
@@ -166,9 +169,6 @@
   </data>
   <data name="label46.Text" xml:space="preserve">
     <value>Docker Run example: --network xxx -e XXX=YYY</value>
-  </data>
-  <data name="tabPage_docker_repo.Text" xml:space="preserve">
-    <value>配置镜像上传</value>
   </data>
   <data name="checkBoxdocker_rep_uploadOnly.Size" type="System.Drawing.Size, System.Drawing">
     <value>234, 24</value>
@@ -209,6 +209,9 @@
   <data name="label34.Text" xml:space="preserve">
     <value>密码:</value>
   </data>
+  <data name="tabPage_docker_repo.Text" xml:space="preserve">
+    <value>配置镜像上传</value>
+  </data>
   <data name="checkBox_Increment_docker.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -235,6 +238,60 @@
   </data>
   <data name="checkBox_select_deploy_service.Text" xml:space="preserve">
     <value>选择指定文件发布</value>
+  </data>
+  <data name="b_linuxservice_deploy.Text" xml:space="preserve">
+    <value>发布</value>
+  </data>
+  <data name="label49.Location" type="System.Drawing.Point, System.Drawing">
+    <value>26, 96</value>
+  </data>
+  <data name="label49.Size" type="System.Drawing.Size, System.Drawing">
+    <value>59, 12</value>
+  </data>
+  <data name="label49.Text" xml:space="preserve">
+    <value>环境变量:</value>
+  </data>
+  <data name="btn_linux_service_retry.Text" xml:space="preserve">
+    <value>重试</value>
+  </data>
+  <data name="tabPage_linux_service.Text" xml:space="preserve">
+    <value>进度展示</value>
+  </data>
+  <data name="tabPage3.Text" xml:space="preserve">
+    <value>发布日志</value>
+  </data>
+  <data name="checkBox_select_deploy_linuxservice.Size" type="System.Drawing.Size, System.Drawing">
+    <value>120, 16</value>
+  </data>
+  <data name="checkBox_select_deploy_linuxservice.Text" xml:space="preserve">
+    <value>选择指定文件发布</value>
+  </data>
+  <data name="checkBox_Increment_linux_service.Size" type="System.Drawing.Size, System.Drawing">
+    <value>72, 16</value>
+  </data>
+  <data name="checkBox_Increment_linux_service.Text" xml:space="preserve">
+    <value>增量发布</value>
+  </data>
+  <data name="label47.Size" type="System.Drawing.Size, System.Drawing">
+    <value>149, 12</value>
+  </data>
+  <data name="label47.Text" xml:space="preserve">
+    <value>注意:只能发布linux服务器</value>
+  </data>
+  <data name="label48.Size" type="System.Drawing.Size, System.Drawing">
+    <value>77, 12</value>
+  </data>
+  <data name="label48.Text" xml:space="preserve">
+    <value>   服务名称:</value>
+  </data>
+  <data name="label50.Text" xml:space="preserve">
+    <value>环境名称:</value>
+  </data>
+  <data name="b_linux_service_rollback.Text" xml:space="preserve">
+    <value>回滚</value>
+  </data>
+  <data name="page_linux_service.Text" xml:space="preserve">
+    <value>Linux服务发布</value>
   </data>
   <data name="btn_win_server_testAll.Text" xml:space="preserve">
     <value>测试连接全部</value>
@@ -322,5 +379,9 @@
   </data>
   <data name="label15.Text" xml:space="preserve">
     <value>指定特定文件夹发布：</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>Inherit</value>
   </data>
 </root>
