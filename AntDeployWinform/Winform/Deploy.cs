@@ -4265,7 +4265,40 @@ namespace AntDeployWinform.Winform
             }
         }
 
+        private void ClientOnUploadProgressChanged3(object sender, UploadProgressChangedEventArgs e)
+        {
 
+            if (e.ProgressPercentage > ProgressPercentageForLinuxService && e.ProgressPercentage != 100)
+            {
+                ProgressPercentageForLinuxService = e.ProgressPercentage;
+                var showValue = (e.ProgressPercentage != 100 ? e.ProgressPercentage * 2 : e.ProgressPercentage);
+                if (!string.IsNullOrEmpty(ProgressCurrentHostForLinuxService))
+                    UpdateUploadProgress(this.tabPage_linux_service, ProgressCurrentHostForLinuxService, showValue);
+                this.nlog_linux.Info($"Upload {showValue} % complete...");
+            }
+
+            if (ProgressPercentageForLinuxService > 95)
+            {
+                return;
+            }
+
+            if (stop_linux_cancel_token)
+            {
+                try
+                {
+                    var client = sender as WebClient;
+                    if (client != null)
+                    {
+
+                        client.CancelAsync();
+                    }
+                }
+                catch (Exception)
+                {
+                    //ignore
+                }
+            }
+        }
 
         private void EnableForWindowsService(bool flag, bool ignore = false)
         {
@@ -8186,7 +8219,7 @@ namespace AntDeployWinform.Winform
 
             if (serverList == null || !serverList.Any())
             {
-                MessageBoxEx.Show(this, Strings.EnvHaveNoServer);
+                MessageBoxEx.Show(this, Strings.NoLinuxServer);
                 return;
             }
 
@@ -8196,7 +8229,7 @@ namespace AntDeployWinform.Winform
                 var selectedList = getSelectedBaseServers(ServerType.LINUXSERVICE);
                 if (!selectedList.Any())
                 {
-                    MessageBoxEx.Show(this, Strings.EnvHaveNoServer);
+                    MessageBoxEx.Show(this, Strings.NoLinuxServer);
                     return;
                 }
 
@@ -8204,7 +8237,7 @@ namespace AntDeployWinform.Winform
                 serverList = serverList.Where(r => selectedList.Any(y => y.Host.Equals(r.Host))).ToList();
                 if (!serverList.Any())
                 {
-                    MessageBoxEx.Show(this, Strings.EnvHaveNoServer);
+                    MessageBoxEx.Show(this, Strings.NoLinuxServer);
                     return;
                 }
             }
@@ -8600,7 +8633,7 @@ namespace AntDeployWinform.Winform
                                     _subcribe = System.Reactive.Linq.Observable
                                         .FromEventPattern<UploadProgressChangedEventArgs>(client, "UploadProgressChanged")
                                         .Sample(TimeSpan.FromMilliseconds(100))
-                                        .Subscribe(arg => { ClientOnUploadProgressChanged2(arg.Sender, arg.EventArgs); });
+                                        .Subscribe(arg => { ClientOnUploadProgressChanged3(arg.Sender, arg.EventArgs); });
                                     //client.UploadProgressChanged += ClientOnUploadProgressChanged2;
                                 });
                             if (ProgressPercentageForLinuxService == 0 && !uploadResult.Item1) UploadError(this.tabPage_linux_service, server.Host);
@@ -8891,7 +8924,7 @@ namespace AntDeployWinform.Winform
                                     _subcribe = System.Reactive.Linq.Observable
                                         .FromEventPattern<UploadProgressChangedEventArgs>(client, "UploadProgressChanged")
                                         .Sample(TimeSpan.FromMilliseconds(100))
-                                        .Subscribe(arg => { ClientOnUploadProgressChanged2(arg.Sender, arg.EventArgs); });
+                                        .Subscribe(arg => { ClientOnUploadProgressChanged3(arg.Sender, arg.EventArgs); });
                                     //client.UploadProgressChanged += ClientOnUploadProgressChanged2;
                                 });
                             if (ProgressPercentageForLinuxService == 0 && !uploadResult.Item1) UploadError(this.tabPage_linux_service, server.Host);

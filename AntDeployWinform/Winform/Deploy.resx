@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="label5.Text" xml:space="preserve">
+    <value>Server List：</value>
+  </data>
   <data name="&gt;&gt;tabcontrol.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
@@ -151,10 +154,10 @@
   <data name="rich_docker_log.Text" xml:space="preserve">
     <value />
   </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="txt_linux_server_nickname.TabIndex" type="System.Int32, mscorlib">
-    <value>12</value>
+  <data name="&gt;&gt;combo_linux_server_list.Parent" xml:space="preserve">
+    <value>page_linux_server</value>
   </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="label40.TabIndex" type="System.Int32, mscorlib">
     <value>23</value>
   </data>
@@ -276,14 +279,17 @@
   <data name="&gt;&gt;checkBox_select_deploy_service.Type" xml:space="preserve">
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;b_iis_rollback.ZOrder" xml:space="preserve">
-    <value>5</value>
+  <data name="label50.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
   <data name="&gt;&gt;b_env_add_by_name.Parent" xml:space="preserve">
     <value>environment</value>
   </data>
   <data name="&gt;&gt;label29.Name" xml:space="preserve">
     <value>label29</value>
+  </data>
+  <data name="label_docker_demo.Text" xml:space="preserve">
+    <value>Demo</value>
   </data>
   <data name="&gt;&gt;rich_linuxservice_log.Name" xml:space="preserve">
     <value>rich_linuxservice_log</value>
@@ -336,6 +342,9 @@
   <data name="&gt;&gt;tabPage_docker.Type" xml:space="preserve">
     <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="label18.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
   <data name="&gt;&gt;label48.Parent" xml:space="preserve">
     <value>page_linux_service</value>
   </data>
@@ -371,9 +380,6 @@
   </data>
   <data name="txt_docker_volume.Size" type="System.Drawing.Size, System.Drawing">
     <value>230, 25</value>
-  </data>
-  <data name="&gt;&gt;combo_iis_env.Parent" xml:space="preserve">
-    <value>page_web_iis</value>
   </data>
   <data name="btn_docker_retry.Text" xml:space="preserve">
     <value>Retry</value>
@@ -450,6 +456,9 @@
   <data name="&gt;&gt;combo_linux_server_list.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
+  <data name="tabPage2.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
+  </data>
   <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
     <value>CenterScreen</value>
   </data>
@@ -471,6 +480,12 @@
   <data name="label_without_vs.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
+  <data name="tabPage3.Text" xml:space="preserve">
+    <value>LOG</value>
+  </data>
+  <data name="checkBox_Chinese.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
   <data name="checkBox_select_deploy_service.TabIndex" type="System.Int32, mscorlib">
     <value>37</value>
   </data>
@@ -479,6 +494,9 @@
   </data>
   <data name="&gt;&gt;tabPage_linux_service.ZOrder" xml:space="preserve">
     <value>0</value>
+  </data>
+  <data name="label8.Location" type="System.Drawing.Point, System.Drawing">
+    <value>98, 53</value>
   </data>
   <data name="&gt;&gt;btn_linux_service_retry.Parent" xml:space="preserve">
     <value>page_linux_service</value>
@@ -498,6 +516,9 @@
   <data name="label39.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
+  <data name="tabPage_iis_log.Text" xml:space="preserve">
+    <value>LOG</value>
+  </data>
   <data name="rich_iis_log.Size" type="System.Drawing.Size, System.Drawing">
     <value>602, 286</value>
   </data>
@@ -509,9 +530,6 @@
   </data>
   <data name="&gt;&gt;btn_folder_clear.Parent" xml:space="preserve">
     <value>pag_advance_setting</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_rep_image.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;b_linux_server_test.Name" xml:space="preserve">
     <value>b_linux_server_test</value>
@@ -537,6 +555,9 @@
   <data name="txt_docker_rep_image.Size" type="System.Drawing.Size, System.Drawing">
     <value>175, 21</value>
   </data>
+  <data name="checkBox_Increment_linux_service.TabIndex" type="System.Int32, mscorlib">
+    <value>47</value>
+  </data>
   <data name="checkBox_Increment_docker.Location" type="System.Drawing.Point, System.Drawing">
     <value>143, 145</value>
   </data>
@@ -549,11 +570,14 @@
   <data name="b_env_ignore_add.Enabled" type="System.Boolean, mscorlib">
     <value>False</value>
   </data>
-  <data name="label_how_to_set.Size" type="System.Drawing.Size, System.Drawing">
-    <value>71, 12</value>
+  <data name="label41.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
   <data name="&gt;&gt;label28.ZOrder" xml:space="preserve">
     <value>2</value>
+  </data>
+  <data name="&gt;&gt;txt_msbuild_path.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;label3.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -585,9 +609,6 @@
   <data name="label34.Size" type="System.Drawing.Size, System.Drawing">
     <value>29, 12</value>
   </data>
-  <data name="tabPage_docker.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
   <data name="&gt;&gt;b_backUp_ignore_remove.Parent" xml:space="preserve">
     <value>groupBox1</value>
   </data>
@@ -614,6 +635,9 @@
   </data>
   <data name="txt_http_proxy.Size" type="System.Drawing.Size, System.Drawing">
     <value>181, 21</value>
+  </data>
+  <data name="&gt;&gt;tabPage_docker_repo.ZOrder" xml:space="preserve">
+    <value>2</value>
   </data>
   <data name="label11.Size" type="System.Drawing.Size, System.Drawing">
     <value>59, 12</value>
@@ -648,8 +672,14 @@
   <data name="&gt;&gt;txt_docker_port.ZOrder" xml:space="preserve">
     <value>8</value>
   </data>
+  <data name="&gt;&gt;label40.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
   <data name="&gt;&gt;combo_env_server_list.Type" xml:space="preserve">
     <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rich_docker_log.Type" xml:space="preserve">
+    <value>AntDeployWinform.ExRichTextBox, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;txt_msbuild_path.Parent" xml:space="preserve">
     <value>pag_advance_setting</value>
@@ -669,9 +699,6 @@
   <data name="txt_iis_web_site_name.Size" type="System.Drawing.Size, System.Drawing">
     <value>161, 21</value>
   </data>
-  <data name="&gt;&gt;txt_folder_deploy.ZOrder" xml:space="preserve">
-    <value>9</value>
-  </data>
   <data name="&gt;&gt;page_linux_server.Name" xml:space="preserve">
     <value>page_linux_server</value>
   </data>
@@ -687,6 +714,9 @@
   <data name="combo_linux_env.Location" type="System.Drawing.Point, System.Drawing">
     <value>91, 23</value>
   </data>
+  <data name="&gt;&gt;b_env_add_by_name.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="&gt;&gt;label41.Name" xml:space="preserve">
     <value>label41</value>
   </data>
@@ -698,6 +728,9 @@
   </data>
   <data name="txt_linux_pwd.PasswordChar" type="System.Char, mscorlib" xml:space="preserve">
     <value>*</value>
+  </data>
+  <data name="&gt;&gt;txt_docker_rep_pwd.Name" xml:space="preserve">
+    <value>txt_docker_rep_pwd</value>
   </data>
   <data name="btn_rich_config_log_close.Size" type="System.Drawing.Size, System.Drawing">
     <value>39, 25</value>
@@ -735,9 +768,6 @@
   <data name="label46.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="&gt;&gt;txt_http_proxy.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
   <data name="label_windows_serivce_demo.Size" type="System.Drawing.Size, System.Drawing">
     <value>29, 12</value>
   </data>
@@ -764,6 +794,9 @@
   </data>
   <data name="label8.Text" xml:space="preserve">
     <value>Env Name:</value>
+  </data>
+  <data name="label10.TabIndex" type="System.Int32, mscorlib">
+    <value>12</value>
   </data>
   <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
     <value>1</value>
@@ -800,6 +833,9 @@
   </data>
   <data name="loading_win_server_test.Visible" type="System.Boolean, mscorlib">
     <value>False</value>
+  </data>
+  <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
+    <value>47, 12</value>
   </data>
   <data name="&gt;&gt;btn_linux_server_testAll.ZOrder" xml:space="preserve">
     <value>0</value>
@@ -861,6 +897,9 @@
   <data name="checkBox_select_deploy_iis.Location" type="System.Drawing.Point, System.Drawing">
     <value>370, 34</value>
   </data>
+  <data name="&gt;&gt;page_window_service.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
   <data name="&gt;&gt;b_windows_service_rollback.ZOrder" xml:space="preserve">
     <value>14</value>
   </data>
@@ -887,6 +926,9 @@
   </data>
   <data name="&gt;&gt;label25.ZOrder" xml:space="preserve">
     <value>7</value>
+  </data>
+  <data name="&gt;&gt;txt_docker_other.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="label_without_vs.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -939,9 +981,6 @@
   <data name="checkBox_Increment_linux_service.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="label49.Size" type="System.Drawing.Size, System.Drawing">
-    <value>29, 12</value>
-  </data>
   <data name="&gt;&gt;b_iis_deploy.ZOrder" xml:space="preserve">
     <value>9</value>
   </data>
@@ -951,6 +990,9 @@
   <data name="&gt;&gt;b_docker_deploy.Parent" xml:space="preserve">
     <value>page_docker</value>
   </data>
+  <data name="b_docker_deploy.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
   <data name="b_linux_server_remove.Size" type="System.Drawing.Size, System.Drawing">
     <value>140, 23</value>
   </data>
@@ -959,6 +1001,9 @@
   </data>
   <data name="txt_linux_pwd.Location" type="System.Drawing.Point, System.Drawing">
     <value>323, 10</value>
+  </data>
+  <data name="b_linuxservice_deploy.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="checkBox_Chinese.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -989,6 +1034,9 @@
   </data>
   <data name="&gt;&gt;b_env_ignore_add.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label2.Parent" xml:space="preserve">
+    <value>environment</value>
   </data>
   <data name="page_web_iis.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>3, 3, 3, 3</value>
@@ -1047,11 +1095,11 @@
   <data name="b_windowservice_deploy.Text" xml:space="preserve">
     <value>Deploy</value>
   </data>
-  <data name="label27.TabIndex" type="System.Int32, mscorlib">
-    <value>16</value>
-  </data>
   <data name="&gt;&gt;groupBoxIgnore.Type" xml:space="preserve">
     <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="b_docker_deploy.Location" type="System.Drawing.Point, System.Drawing">
+    <value>512, 143</value>
   </data>
   <data name="&gt;&gt;label21.ZOrder" xml:space="preserve">
     <value>5</value>
@@ -1070,6 +1118,9 @@
   </data>
   <data name="&gt;&gt;txt_winserver_nickname.Name" xml:space="preserve">
     <value>txt_winserver_nickname</value>
+  </data>
+  <data name="list_env_ignore.ItemHeight" type="System.Int32, mscorlib">
+    <value>12</value>
   </data>
   <data name="&gt;&gt;label_check_update.Parent" xml:space="preserve">
     <value>page_set</value>
@@ -1104,9 +1155,6 @@
   <data name="label_without_vs.TabIndex" type="System.Int32, mscorlib">
     <value>33</value>
   </data>
-  <data name="label9.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
   <data name="&gt;&gt;label26.ZOrder" xml:space="preserve">
     <value>6</value>
   </data>
@@ -1119,17 +1167,17 @@
   <data name="&gt;&gt;txt_docker_rep_domain.ZOrder" xml:space="preserve">
     <value>7</value>
   </data>
-  <data name="&gt;&gt;page_linux_server.Parent" xml:space="preserve">
-    <value>tabControl1</value>
-  </data>
-  <data name="checkBox_save_deploy_log.TabIndex" type="System.Int32, mscorlib">
-    <value>50</value>
+  <data name="label21.Size" type="System.Drawing.Size, System.Drawing">
+    <value>35, 12</value>
   </data>
   <data name="&gt;&gt;label34.ZOrder" xml:space="preserve">
     <value>11</value>
   </data>
   <data name="&gt;&gt;rich_iis_log.ZOrder" xml:space="preserve">
     <value>0</value>
+  </data>
+  <data name="label2.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
   <data name="&gt;&gt;label27.ZOrder" xml:space="preserve">
     <value>4</value>
@@ -1167,14 +1215,8 @@
   <data name="&gt;&gt;txt_linux_service_env.Parent" xml:space="preserve">
     <value>page_linux_service</value>
   </data>
-  <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 25</value>
-  </data>
   <data name="&gt;&gt;progress_docker_tip.Parent" xml:space="preserve">
     <value>tabPage_docker</value>
-  </data>
-  <data name="&gt;&gt;page_web_iis.Name" xml:space="preserve">
-    <value>page_web_iis</value>
   </data>
   <data name="b_env_ignore_add.Location" type="System.Drawing.Point, System.Drawing">
     <value>72, 70</value>
@@ -1203,9 +1245,6 @@
   <data name="b_env_server_test.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="btn_docker_stop.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
   <data name="label28.Text" xml:space="preserve">
     <value>example:/log:/publish/logs  Multiple split with ;</value>
   </data>
@@ -1227,8 +1266,8 @@
   <data name="&gt;&gt;btn_docker_stop.Parent" xml:space="preserve">
     <value>page_docker</value>
   </data>
-  <data name="b_docker_deploy.TabIndex" type="System.Int32, mscorlib">
-    <value>12</value>
+  <data name="label40.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="&gt;&gt;btn_rich_config_log_close.Name" xml:space="preserve">
     <value>btn_rich_config_log_close</value>
@@ -1251,9 +1290,6 @@
   <data name="checkBox_select_deploy_linuxservice.Location" type="System.Drawing.Point, System.Drawing">
     <value>309, 54</value>
   </data>
-  <data name="&gt;&gt;checkBoxdocker_rep_enable.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
   <data name="&gt;&gt;tabPage_linux_service.Type" xml:space="preserve">
     <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -1265,9 +1301,6 @@
   </data>
   <data name="label2.TabIndex" type="System.Int32, mscorlib">
     <value>6</value>
-  </data>
-  <data name="label43.Location" type="System.Drawing.Point, System.Drawing">
-    <value>122, 146</value>
   </data>
   <data name="&gt;&gt;panel_rich_config_log.Type" xml:space="preserve">
     <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -1341,8 +1374,11 @@
   <data name="&gt;&gt;tabPage3.Name" xml:space="preserve">
     <value>tabPage3</value>
   </data>
-  <data name="&gt;&gt;b_env_remove.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="page_set.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="label37.Size" type="System.Drawing.Size, System.Drawing">
+    <value>131, 12</value>
   </data>
   <data name="groupBoxIgnore.Size" type="System.Drawing.Size, System.Drawing">
     <value>294, 179</value>
@@ -1374,8 +1410,8 @@
   <data name="label32.Text" xml:space="preserve">
     <value>Why connect Fail?</value>
   </data>
-  <data name="label16.Location" type="System.Drawing.Point, System.Drawing">
-    <value>166, 122</value>
+  <data name="&gt;&gt;b_docker_rollback.ZOrder" xml:space="preserve">
+    <value>10</value>
   </data>
   <data name="&gt;&gt;tabPage_iis_log.Type" xml:space="preserve">
     <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -1425,6 +1461,9 @@
   <data name="btn_folder_clear.Text" xml:space="preserve">
     <value>Clear</value>
   </data>
+  <data name="&gt;&gt;t_docker_delete_days.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="checkBox_iis_restart_site.Size" type="System.Drawing.Size, System.Drawing">
     <value>120, 16</value>
   </data>
@@ -1461,14 +1500,14 @@
   <data name="progress_window_service_tip.Size" type="System.Drawing.Size, System.Drawing">
     <value>345, 30</value>
   </data>
-  <data name="&gt;&gt;page_docker.Name" xml:space="preserve">
-    <value>page_docker</value>
+  <data name="label31.TabIndex" type="System.Int32, mscorlib">
+    <value>19</value>
+  </data>
+  <data name="label28.Location" type="System.Drawing.Point, System.Drawing">
+    <value>16, 77</value>
   </data>
   <data name="t_docker_delete_days.Size" type="System.Drawing.Size, System.Drawing">
     <value>37, 21</value>
-  </data>
-  <data name="&gt;&gt;txt_linuxservice_name.Name" xml:space="preserve">
-    <value>txt_linuxservice_name</value>
   </data>
   <data name="&gt;&gt;b_docker_deploy.Name" xml:space="preserve">
     <value>b_docker_deploy</value>
@@ -1482,8 +1521,8 @@
   <data name="checkBox_iis_use_offlinehtm.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="label40.Location" type="System.Drawing.Point, System.Drawing">
-    <value>112, 85</value>
+  <data name="&gt;&gt;b_linuxservice_deploy.Parent" xml:space="preserve">
+    <value>page_linux_service</value>
   </data>
   <data name="btn_choose_folder.Size" type="System.Drawing.Size, System.Drawing">
     <value>69, 25</value>
@@ -1499,6 +1538,9 @@
   </data>
   <data name="txt_docker_rep_domain.Size" type="System.Drawing.Size, System.Drawing">
     <value>269, 21</value>
+  </data>
+  <data name="&gt;&gt;txt_docker_rep_pwd.ZOrder" xml:space="preserve">
+    <value>8</value>
   </data>
   <data name="page_winserver.Size" type="System.Drawing.Size, System.Drawing">
     <value>576, 121</value>
@@ -1524,9 +1566,6 @@
   <data name="label28.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="&gt;&gt;checkBox_select_deploy_iis.Parent" xml:space="preserve">
-    <value>page_web_iis</value>
-  </data>
   <data name="list_env_ignore.TabIndex" type="System.Int32, mscorlib">
     <value>15</value>
   </data>
@@ -1548,6 +1587,9 @@
   <data name="groupBox5.Size" type="System.Drawing.Size, System.Drawing">
     <value>589, 92</value>
   </data>
+  <data name="b_linux_server_test.Size" type="System.Drawing.Size, System.Drawing">
+    <value>129, 23</value>
+  </data>
   <data name="label30.Size" type="System.Drawing.Size, System.Drawing">
     <value>71, 12</value>
   </data>
@@ -1562,6 +1604,9 @@
   </data>
   <data name="label48.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
+  </data>
+  <data name="btn_linux_service_retry.Location" type="System.Drawing.Point, System.Drawing">
+    <value>392, 93</value>
   </data>
   <data name="&gt;&gt;label17.Parent" xml:space="preserve">
     <value>page_linux_server</value>
@@ -1587,11 +1632,20 @@
   <data name="b_linux_server_test.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
+  <data name="&gt;&gt;checkBox_Increment_window_service.Name" xml:space="preserve">
+    <value>checkBox_Increment_window_service</value>
+  </data>
   <data name="t_docker_delete_days.TabIndex" type="System.Int32, mscorlib">
     <value>15</value>
   </data>
+  <data name="label23.Location" type="System.Drawing.Point, System.Drawing">
+    <value>152, 23</value>
+  </data>
   <data name="tabControl_docker.TabIndex" type="System.Int32, mscorlib">
     <value>18</value>
+  </data>
+  <data name="&gt;&gt;checkBox_Increment_window_service.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;label12.Parent" xml:space="preserve">
     <value>page_docker</value>
@@ -1601,9 +1655,6 @@
   </data>
   <data name="&gt;&gt;combo_windowservice_sdk_type.ZOrder" xml:space="preserve">
     <value>9</value>
-  </data>
-  <data name="combo_netcore_publish_mode.Items" xml:space="preserve">
-    <value>FDD(runtime)</value>
   </data>
   <data name="&gt;&gt;label51.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -1616,9 +1667,6 @@
   </data>
   <data name="label11.Location" type="System.Drawing.Point, System.Drawing">
     <value>30, 28</value>
-  </data>
-  <data name="b_linux_service_rollback.Location" type="System.Drawing.Point, System.Drawing">
-    <value>552, 3</value>
   </data>
   <data name="&gt;&gt;txt_docker_volume.Type" xml:space="preserve">
     <value>AltoControls.AltoTextBox, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -1643,9 +1691,6 @@
   </data>
   <data name="tabPage_iis_log.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>3, 3, 3, 3</value>
-  </data>
-  <data name="txt_backUp_ignore.Size" type="System.Drawing.Size, System.Drawing">
-    <value>115, 21</value>
   </data>
   <data name="page_linux_service.Size" type="System.Drawing.Size, System.Drawing">
     <value>622, 456</value>
@@ -1686,9 +1731,6 @@
   <data name="&gt;&gt;page_set.Name" xml:space="preserve">
     <value>page_set</value>
   </data>
-  <data name="tabPage_docker_repo.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 22</value>
-  </data>
   <data name="label50.Size" type="System.Drawing.Size, System.Drawing">
     <value>59, 12</value>
   </data>
@@ -1718,6 +1760,9 @@
   </data>
   <data name="&gt;&gt;combo_iis_env.ZOrder" xml:space="preserve">
     <value>10</value>
+  </data>
+  <data name="btn_iis_stop.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
   </data>
   <data name="&gt;&gt;groupBox5.ZOrder" xml:space="preserve">
     <value>8</value>
@@ -1767,9 +1812,6 @@
   <data name="&gt;&gt;label15.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;tabControl_docker.ZOrder" xml:space="preserve">
-    <value>12</value>
-  </data>
   <data name="txt_docker_rep_namespace.TabIndex" type="System.Int32, mscorlib">
     <value>25</value>
   </data>
@@ -1790,6 +1832,9 @@
   </data>
   <data name="label13.TabIndex" type="System.Int32, mscorlib">
     <value>35</value>
+  </data>
+  <data name="checkBoxdocker_rep_uploadOnly.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="label29.Location" type="System.Drawing.Point, System.Drawing">
     <value>378, 22</value>
@@ -1812,9 +1857,6 @@
   <data name="b_iis_deploy.TabIndex" type="System.Int32, mscorlib">
     <value>9</value>
   </data>
-  <data name="rich_iis_log.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Fill</value>
-  </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>Deploy</value>
   </data>
@@ -1827,8 +1869,8 @@
   <data name="combo_netcore_publish_mode.Items3" xml:space="preserve">
     <value>SCD(oxs-x64)</value>
   </data>
-  <data name="combo_netcore_publish_mode.Items1" xml:space="preserve">
-    <value>SCD(win-x86)</value>
+  <data name="&gt;&gt;label4.Name" xml:space="preserve">
+    <value>label4</value>
   </data>
   <data name="btn_shang.TabIndex" type="System.Int32, mscorlib">
     <value>46</value>
@@ -1841,9 +1883,6 @@
   </data>
   <data name="label30.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
-  </data>
-  <data name="label8.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
   </data>
   <data name="label43.TabIndex" type="System.Int32, mscorlib">
     <value>25</value>
@@ -1926,6 +1965,9 @@
   <data name="b_env_server_remove.TabIndex" type="System.Int32, mscorlib">
     <value>8</value>
   </data>
+  <data name="btn_shang.Text" xml:space="preserve">
+    <value>开源不易打赏1元鼓励一下</value>
+  </data>
   <data name="&gt;&gt;list_backUp_ignore.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
@@ -2001,9 +2043,6 @@
   <data name="label47.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="&gt;&gt;label_iis_demo.Name" xml:space="preserve">
-    <value>label_iis_demo</value>
-  </data>
   <data name="&gt;&gt;tabPage2.Name" xml:space="preserve">
     <value>tabPage2</value>
   </data>
@@ -2061,6 +2100,9 @@
   <data name="tabControl_linux_service.Size" type="System.Drawing.Size, System.Drawing">
     <value>622, 329</value>
   </data>
+  <data name="&gt;&gt;label32.Name" xml:space="preserve">
+    <value>label32</value>
+  </data>
   <data name="pag_advance_setting.Text" xml:space="preserve">
     <value>Config</value>
   </data>
@@ -2072,9 +2114,6 @@
   </data>
   <data name="b_copy_backup_ignore.TabIndex" type="System.Int32, mscorlib">
     <value>19</value>
-  </data>
-  <data name="txt_docker_other.Location" type="System.Drawing.Point, System.Drawing">
-    <value>352, 49</value>
   </data>
   <data name="btn_docker_retry.Visible" type="System.Boolean, mscorlib">
     <value>False</value>
@@ -2121,9 +2160,6 @@
   <data name="&gt;&gt;label31.ZOrder" xml:space="preserve">
     <value>9</value>
   </data>
-  <data name="txt_windowservice_name.Location" type="System.Drawing.Point, System.Drawing">
-    <value>90, 100</value>
-  </data>
   <data name="txt_docker_rep_domain.Location" type="System.Drawing.Point, System.Drawing">
     <value>219, 79</value>
   </data>
@@ -2133,8 +2169,8 @@
   <data name="&gt;&gt;label40.Parent" xml:space="preserve">
     <value>tabPage_docker_repo</value>
   </data>
-  <data name="&gt;&gt;label_check_update.ZOrder" xml:space="preserve">
-    <value>3</value>
+  <data name="label16.Location" type="System.Drawing.Point, System.Drawing">
+    <value>166, 122</value>
   </data>
   <data name="b_iis_deploy.Size" type="System.Drawing.Size, System.Drawing">
     <value>107, 43</value>
@@ -2160,32 +2196,23 @@
   <data name="btn_linux_server_testAll.Font" type="System.Drawing.Font, System.Drawing">
     <value>Comic Sans MS, 10pt, style=Bold</value>
   </data>
-  <data name="&gt;&gt;tabControl_linux_service.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="&gt;&gt;label40.Name" xml:space="preserve">
     <value>label40</value>
+  </data>
+  <data name="b_linux_server_remove.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
   </data>
   <data name="b_env_ignore_remove.Size" type="System.Drawing.Size, System.Drawing">
     <value>117, 23</value>
   </data>
-  <data name="b_env_server_add.Enabled" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
   <data name="checkBox_select_deploy_linuxservice.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
-  </data>
-  <data name="b_env_server_remove.Location" type="System.Drawing.Point, System.Drawing">
-    <value>414, 53</value>
   </data>
   <data name="label7.Location" type="System.Drawing.Point, System.Drawing">
     <value>74, 95</value>
   </data>
-  <data name="&gt;&gt;b_env_add_by_name.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="b_windowservice_deploy.Location" type="System.Drawing.Point, System.Drawing">
-    <value>512, 100</value>
+  <data name="&gt;&gt;b_iis_deploy.Parent" xml:space="preserve">
+    <value>page_web_iis</value>
   </data>
   <data name="label45.Location" type="System.Drawing.Point, System.Drawing">
     <value>308, 55</value>
@@ -2223,11 +2250,11 @@
   <data name="label17.Location" type="System.Drawing.Point, System.Drawing">
     <value>6, 19</value>
   </data>
+  <data name="b_env_server_remove.Text" xml:space="preserve">
+    <value>Remove Selected</value>
+  </data>
   <data name="&gt;&gt;combo_iis_env.Type" xml:space="preserve">
     <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label_docker_demo.ZOrder" xml:space="preserve">
-    <value>11</value>
   </data>
   <data name="txt_linux_server_nickname.Size" type="System.Drawing.Size, System.Drawing">
     <value>94, 21</value>
@@ -2268,9 +2295,6 @@
   <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
     <value>41, 12</value>
   </data>
-  <data name="&gt;&gt;combo_linux_server_list.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="label_windows_serivce_demo.Text" xml:space="preserve">
     <value>Demo</value>
   </data>
@@ -2283,14 +2307,8 @@
   <data name="&gt;&gt;txt_env_name.Type" xml:space="preserve">
     <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;label8.ZOrder" xml:space="preserve">
-    <value>11</value>
-  </data>
   <data name="&gt;&gt;b_linux_server_remove.Name" xml:space="preserve">
     <value>b_linux_server_remove</value>
-  </data>
-  <data name="page_window_service.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
   </data>
   <data name="&gt;&gt;label49.Parent" xml:space="preserve">
     <value>page_linux_service</value>
@@ -2343,8 +2361,8 @@
   <data name="&gt;&gt;list_env_ignore.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
-  <data name="txt_docker_rep_name.Size" type="System.Drawing.Size, System.Drawing">
-    <value>118, 21</value>
+  <data name="label35.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
   <data name="combo_windowservice_env.Size" type="System.Drawing.Size, System.Drawing">
     <value>167, 20</value>
@@ -2357,9 +2375,6 @@
   </data>
   <data name="&gt;&gt;b_linux_server_remove.ZOrder" xml:space="preserve">
     <value>9</value>
-  </data>
-  <data name="tabPage_progress.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>3, 3, 3, 3</value>
   </data>
   <data name="&gt;&gt;b_env_ignore_add.Parent" xml:space="preserve">
     <value>groupBoxIgnore</value>
@@ -2400,11 +2415,8 @@
   <data name="page_window_service.Text" xml:space="preserve">
     <value>WindowsService</value>
   </data>
-  <data name="label9.TabIndex" type="System.Int32, mscorlib">
-    <value>10</value>
-  </data>
-  <data name="&gt;&gt;btn_linux_server_testAll.Parent" xml:space="preserve">
-    <value>page_linux_server</value>
+  <data name="&gt;&gt;page_docker.Name" xml:space="preserve">
+    <value>page_docker</value>
   </data>
   <data name="b_docker_rollback.Font" type="System.Drawing.Font, System.Drawing">
     <value>Comic Sans MS, 10pt, style=Bold</value>
@@ -2427,8 +2439,11 @@
   <data name="combo_iis_sdk_type.Items1" xml:space="preserve">
     <value>netcore</value>
   </data>
-  <data name="&gt;&gt;txt_msbuild_path.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;txt_http_proxy.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;label37.ZOrder" xml:space="preserve">
+    <value>15</value>
   </data>
   <data name="label19.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -2478,6 +2493,9 @@
   <data name="&gt;&gt;label36.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="page_linux_server.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
+  </data>
   <data name="checkBox_select_deploy_iis.Size" type="System.Drawing.Size, System.Drawing">
     <value>102, 16</value>
   </data>
@@ -2486,6 +2504,9 @@
   </data>
   <data name="&gt;&gt;tabPage_windows_service.Parent" xml:space="preserve">
     <value>tabControl_window_service</value>
+  </data>
+  <data name="b_env_server_add.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="&gt;&gt;b_env_ignore_add.ZOrder" xml:space="preserve">
     <value>2</value>
@@ -2528,6 +2549,9 @@
   </data>
   <data name="txt_docker_rep_name.Location" type="System.Drawing.Point, System.Drawing">
     <value>219, 112</value>
+  </data>
+  <data name="&gt;&gt;b_windowservice_deploy.Name" xml:space="preserve">
+    <value>b_windowservice_deploy</value>
   </data>
   <data name="&gt;&gt;label49.Name" xml:space="preserve">
     <value>label49</value>
@@ -2589,9 +2613,6 @@
   <data name="btn_windows_serivce_stop.Visible" type="System.Boolean, mscorlib">
     <value>False</value>
   </data>
-  <data name="&gt;&gt;label6.Parent" xml:space="preserve">
-    <value>page_web_iis</value>
-  </data>
   <data name="checkBox_Increment_window_service.Size" type="System.Drawing.Size, System.Drawing">
     <value>120, 16</value>
   </data>
@@ -2628,9 +2649,6 @@
   <data name="label34.Text" xml:space="preserve">
     <value>Pwd:</value>
   </data>
-  <data name="&gt;&gt;label49.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
   <data name="&gt;&gt;tabControl1.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
@@ -2655,11 +2673,11 @@
   <data name="&gt;&gt;b_iis_rollback.Parent" xml:space="preserve">
     <value>page_web_iis</value>
   </data>
+  <data name="&gt;&gt;tabPage_windows_service.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="&gt;&gt;btn_iis_retry.Type" xml:space="preserve">
     <value>AltoControls.AltoButton, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;tabPage_linux_service.Parent" xml:space="preserve">
-    <value>tabControl_linux_service</value>
   </data>
   <data name="&gt;&gt;groupBoxIgnore.Parent" xml:space="preserve">
     <value>page_set</value>
@@ -2679,14 +2697,11 @@
   <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="label_docker_demo.Text" xml:space="preserve">
-    <value>Demo</value>
+  <data name="&gt;&gt;label37.Parent" xml:space="preserve">
+    <value>pag_advance_setting</value>
   </data>
   <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
     <value>16, 29</value>
-  </data>
-  <data name="&gt;&gt;btn_iis_retry.Parent" xml:space="preserve">
-    <value>page_web_iis</value>
   </data>
   <data name="b_backUp_ignore_remove.Enabled" type="System.Boolean, mscorlib">
     <value>False</value>
@@ -2748,8 +2763,8 @@
   <data name="&gt;&gt;checkBox_select_deploy_linuxservice.Name" xml:space="preserve">
     <value>checkBox_select_deploy_linuxservice</value>
   </data>
-  <data name="rich_linuxservice_log.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 3</value>
+  <data name="txt_linux_server_nickname.TabIndex" type="System.Int32, mscorlib">
+    <value>12</value>
   </data>
   <data name="&gt;&gt;btn_choose_msbuild.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -2763,6 +2778,9 @@
   <data name="&gt;&gt;checkBox_iis_restart_site.Name" xml:space="preserve">
     <value>checkBox_iis_restart_site</value>
   </data>
+  <data name="&gt;&gt;tabPage3.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="b_linux_service_rollback.Text" xml:space="preserve">
     <value>RollBack</value>
   </data>
@@ -2771,9 +2789,6 @@
   </data>
   <data name="&gt;&gt;rich_windowservice_log.Type" xml:space="preserve">
     <value>AntDeployWinform.ExRichTextBox, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="label21.Size" type="System.Drawing.Size, System.Drawing">
-    <value>35, 12</value>
   </data>
   <data name="&gt;&gt;tabControl_linux_service.Parent" xml:space="preserve">
     <value>page_linux_service</value>
@@ -2814,9 +2829,6 @@
   <data name="label_iis_demo.Text" xml:space="preserve">
     <value>Demo</value>
   </data>
-  <data name="page_set.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
   <data name="&gt;&gt;txt_docker_rep_image.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
@@ -2853,17 +2865,11 @@
   <data name="&gt;&gt;txt_docker_rep_name.ZOrder" xml:space="preserve">
     <value>10</value>
   </data>
-  <data name="txt_docker_rep_namespace.Size" type="System.Drawing.Size, System.Drawing">
-    <value>175, 21</value>
-  </data>
-  <data name="tabPage_linux_service.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
+  <data name="label15.TabIndex" type="System.Int32, mscorlib">
+    <value>42</value>
   </data>
   <data name="tabPage_linux_service.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 22</value>
-  </data>
-  <data name="btn_win_server_testAll.Size" type="System.Drawing.Size, System.Drawing">
-    <value>116, 30</value>
   </data>
   <data name="&gt;&gt;txt_linux_host.ZOrder" xml:space="preserve">
     <value>10</value>
@@ -2888,9 +2894,6 @@
   </data>
   <data name="combo_env_list.Size" type="System.Drawing.Size, System.Drawing">
     <value>248, 20</value>
-  </data>
-  <data name="&gt;&gt;rich_docker_log.ZOrder" xml:space="preserve">
-    <value>0</value>
   </data>
   <data name="page_docker.Size" type="System.Drawing.Size, System.Drawing">
     <value>622, 456</value>
@@ -2924,6 +2927,9 @@
   </data>
   <data name="label37.Location" type="System.Drawing.Point, System.Drawing">
     <value>49, 237</value>
+  </data>
+  <data name="btn_choose_msbuild.Size" type="System.Drawing.Size, System.Drawing">
+    <value>69, 27</value>
   </data>
   <data name="&gt;&gt;environment.Type" xml:space="preserve">
     <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -2973,9 +2979,6 @@
   <data name="tabPage_windows_service.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
-  <data name="label3.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
   <data name="&gt;&gt;combo_env_list.Type" xml:space="preserve">
     <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -2985,14 +2988,14 @@
   <data name="checkBoxdocker_rep_enable.Location" type="System.Drawing.Point, System.Drawing">
     <value>114, 49</value>
   </data>
-  <data name="&gt;&gt;combo_linux_env.Name" xml:space="preserve">
-    <value>combo_linux_env</value>
-  </data>
   <data name="b_windows_service_rollback.Size" type="System.Drawing.Size, System.Drawing">
     <value>60, 30</value>
   </data>
   <data name="label19.Size" type="System.Drawing.Size, System.Drawing">
     <value>35, 12</value>
+  </data>
+  <data name="txt_http_proxy.Location" type="System.Drawing.Point, System.Drawing">
+    <value>168, 337</value>
   </data>
   <data name="txt_env_name.Location" type="System.Drawing.Point, System.Drawing">
     <value>92, 20</value>
@@ -3030,8 +3033,14 @@
   <data name="b_docker_deploy.Text" xml:space="preserve">
     <value>Deploy</value>
   </data>
+  <data name="&gt;&gt;label_check_update.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
   <data name="&gt;&gt;b_env_ignore_remove.ZOrder" xml:space="preserve">
     <value>1</value>
+  </data>
+  <data name="&gt;&gt;label45.Parent" xml:space="preserve">
+    <value>groupBox5</value>
   </data>
   <data name="&gt;&gt;label7.Parent" xml:space="preserve">
     <value>page_web_iis</value>
@@ -3059,6 +3068,9 @@
   </data>
   <data name="&gt;&gt;txt_linux_username.Parent" xml:space="preserve">
     <value>page_linux_server</value>
+  </data>
+  <data name="combo_netcore_publish_mode.Size" type="System.Drawing.Size, System.Drawing">
+    <value>161, 20</value>
   </data>
   <data name="label27.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -3096,14 +3108,23 @@
   <data name="&gt;&gt;list_backUp_ignore.Type" xml:space="preserve">
     <value>System.Windows.Forms.ListBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;b_copy_pack_ignore.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="btn_shang.Size" type="System.Drawing.Size, System.Drawing">
     <value>189, 40</value>
   </data>
-  <data name="&gt;&gt;label46.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="progress_docker_tip.Location" type="System.Drawing.Point, System.Drawing">
+    <value>127, 54</value>
   </data>
-  <data name="groupBox1.TabIndex" type="System.Int32, mscorlib">
-    <value>18</value>
+  <data name="&gt;&gt;label6.ZOrder" xml:space="preserve">
+    <value>15</value>
+  </data>
+  <data name="txt_docker_port.Size" type="System.Drawing.Size, System.Drawing">
+    <value>62, 21</value>
+  </data>
+  <data name="b_env_remove.Size" type="System.Drawing.Size, System.Drawing">
+    <value>140, 23</value>
   </data>
   <data name="checkBoxdocker_rep_enable.Text" xml:space="preserve">
     <value>Enable upload to docker registry</value>
@@ -3120,9 +3141,6 @@
   <data name="&gt;&gt;b_env_add_by_name.Name" xml:space="preserve">
     <value>b_env_add_by_name</value>
   </data>
-  <data name="tabcontrol.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
   <data name="&gt;&gt;pag_advance_setting.Type" xml:space="preserve">
     <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -3132,17 +3150,14 @@
   <data name="label27.Text" xml:space="preserve">
     <value>Volume:</value>
   </data>
+  <data name="&gt;&gt;b_env_remove.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="&gt;&gt;btn_choose_folder.Parent" xml:space="preserve">
     <value>pag_advance_setting</value>
   </data>
-  <data name="&gt;&gt;label4.Name" xml:space="preserve">
-    <value>label4</value>
-  </data>
   <data name="&gt;&gt;combo_netcore_publish_mode.Parent" xml:space="preserve">
     <value>pag_advance_setting</value>
-  </data>
-  <data name="checkBox_select_deploy_service.Location" type="System.Drawing.Point, System.Drawing">
-    <value>311, 56</value>
   </data>
   <data name="tabControl_linux_service.TabIndex" type="System.Int32, mscorlib">
     <value>52</value>
@@ -3180,11 +3195,17 @@
   <data name="&gt;&gt;combo_env_list.ZOrder" xml:space="preserve">
     <value>6</value>
   </data>
+  <data name="label38.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
   <data name="&gt;&gt;checkBox_iis_use_offlinehtm.Type" xml:space="preserve">
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="label31.TabIndex" type="System.Int32, mscorlib">
-    <value>19</value>
+  <data name="&gt;&gt;combo_netcore_publish_mode.ZOrder" xml:space="preserve">
+    <value>14</value>
+  </data>
+  <data name="txt_backUp_ignore.Size" type="System.Drawing.Size, System.Drawing">
+    <value>115, 21</value>
   </data>
   <data name="label20.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -3234,6 +3255,9 @@
   <data name="&gt;&gt;combo_iis_sdk_type.Parent" xml:space="preserve">
     <value>page_web_iis</value>
   </data>
+  <data name="combo_netcore_publish_mode.Items1" xml:space="preserve">
+    <value>SCD(win-x86)</value>
+  </data>
   <data name="&gt;&gt;tabPage_progress.Name" xml:space="preserve">
     <value>tabPage_progress</value>
   </data>
@@ -3248,9 +3272,6 @@
   </data>
   <data name="&gt;&gt;checkBox_iis_restart_site.Parent" xml:space="preserve">
     <value>page_web_iis</value>
-  </data>
-  <data name="btn_iis_retry.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Comic Sans MS, 10pt, style=Bold</value>
   </data>
   <data name="label4.Text" xml:space="preserve">
     <value>Token：</value>
@@ -3267,14 +3288,14 @@
   <data name="label23.Text" xml:space="preserve">
     <value>ASPNETCORE_ENVIRONMENT:</value>
   </data>
+  <data name="btn_shang.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Comic Sans MS, 10pt, style=Bold</value>
+  </data>
   <data name="checkBox_iis_restart_site.TabIndex" type="System.Int32, mscorlib">
     <value>37</value>
   </data>
   <data name="&gt;&gt;panel_rich_config_log.Name" xml:space="preserve">
     <value>panel_rich_config_log</value>
-  </data>
-  <data name="&gt;&gt;txt_linux_pwd.Name" xml:space="preserve">
-    <value>txt_linux_pwd</value>
   </data>
   <data name="&gt;&gt;btn_shang.ZOrder" xml:space="preserve">
     <value>22</value>
@@ -3299,12 +3320,6 @@
   </data>
   <data name="&gt;&gt;combo_windowservice_sdk_type.Type" xml:space="preserve">
     <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="b_env_add_by_name.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;label_iis_demo.Parent" xml:space="preserve">
-    <value>page_web_iis</value>
   </data>
   <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
     <value>65, 12</value>
@@ -3336,9 +3351,6 @@
   <data name="&gt;&gt;b_linuxservice_deploy.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="label50.Location" type="System.Drawing.Point, System.Drawing">
-    <value>25, 26</value>
-  </data>
   <data name="&gt;&gt;b_env_remove.Name" xml:space="preserve">
     <value>b_env_remove</value>
   </data>
@@ -3366,6 +3378,9 @@
   <data name="checkBox_save_deploy_log.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
+  <data name="&gt;&gt;label26.Name" xml:space="preserve">
+    <value>label26</value>
+  </data>
   <data name="b_env_remove.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
@@ -3390,14 +3405,11 @@
   <data name="&gt;&gt;progress_window_service_tip.Parent" xml:space="preserve">
     <value>tabPage_windows_service</value>
   </data>
-  <data name="&gt;&gt;tab_iis.Parent" xml:space="preserve">
-    <value>page_web_iis</value>
-  </data>
-  <data name="label28.Location" type="System.Drawing.Point, System.Drawing">
-    <value>16, 77</value>
-  </data>
   <data name="label_check_update.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
+  </data>
+  <data name="txt_docker_envname.Location" type="System.Drawing.Point, System.Drawing">
+    <value>300, 20</value>
   </data>
   <data name="label16.Size" type="System.Drawing.Size, System.Drawing">
     <value>323, 33</value>
@@ -3419,9 +3431,6 @@
   </data>
   <data name="label_windows_serivce_demo.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
-  </data>
-  <data name="tabControl_window_service.TabIndex" type="System.Int32, mscorlib">
-    <value>24</value>
   </data>
   <data name="&gt;&gt;progress_iis_tip.Parent" xml:space="preserve">
     <value>tabPage_progress</value>
@@ -3456,8 +3465,8 @@
   <data name="&gt;&gt;tabControl_docker.Parent" xml:space="preserve">
     <value>page_docker</value>
   </data>
-  <data name="page_linux_server.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>3, 3, 3, 3</value>
+  <data name="rich_linuxservice_log.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 3</value>
   </data>
   <data name="page_linux_server.Size" type="System.Drawing.Size, System.Drawing">
     <value>576, 121</value>
@@ -3519,14 +3528,11 @@
   <data name="&gt;&gt;label39.Name" xml:space="preserve">
     <value>label39</value>
   </data>
-  <data name="combo_windowservice_sdk_type.Location" type="System.Drawing.Point, System.Drawing">
-    <value>90, 25</value>
-  </data>
   <data name="&gt;&gt;btn_windows_serivce_stop.Type" xml:space="preserve">
     <value>AltoControls.AltoButton, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;checkBox_save_deploy_log.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="btn_rich_config_log_close.Location" type="System.Drawing.Point, System.Drawing">
+    <value>554, 3</value>
   </data>
   <data name="&gt;&gt;btn_docker_retry.Name" xml:space="preserve">
     <value>btn_docker_retry</value>
@@ -3564,17 +3570,23 @@
   <data name="b_linux_server_test.TabIndex" type="System.Int32, mscorlib">
     <value>14</value>
   </data>
+  <data name="b_iis_rollback.Location" type="System.Drawing.Point, System.Drawing">
+    <value>554, 3</value>
+  </data>
   <data name="tabPage_windows_service.AutoScroll" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="&gt;&gt;combo_linux_server_list.Parent" xml:space="preserve">
-    <value>page_linux_server</value>
+  <data name="&gt;&gt;label_iis_demo.Name" xml:space="preserve">
+    <value>label_iis_demo</value>
   </data>
   <data name="progress_iis_tip.Size" type="System.Drawing.Size, System.Drawing">
     <value>345, 29</value>
   </data>
   <data name="&gt;&gt;combo_netcore_publish_mode.Type" xml:space="preserve">
     <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabControl1.Parent" xml:space="preserve">
+    <value>environment</value>
   </data>
   <data name="label51.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -3612,17 +3624,17 @@
   <data name="b_env_server_test.Size" type="System.Drawing.Size, System.Drawing">
     <value>129, 23</value>
   </data>
-  <data name="&gt;&gt;label25.Name" xml:space="preserve">
-    <value>label25</value>
+  <data name="&gt;&gt;label3.Name" xml:space="preserve">
+    <value>label3</value>
   </data>
   <data name="&gt;&gt;txt_linux_server_nickname.Type" xml:space="preserve">
     <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="label34.TabIndex" type="System.Int32, mscorlib">
-    <value>21</value>
-  </data>
   <data name="&gt;&gt;txt_linuxservice_name.ZOrder" xml:space="preserve">
     <value>10</value>
+  </data>
+  <data name="label1.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
   <data name="tabControl_docker.Size" type="System.Drawing.Size, System.Drawing">
     <value>622, 292</value>
@@ -3648,17 +3660,14 @@
   <data name="label33.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="&gt;&gt;label44.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="groupBoxIgnore.Text" xml:space="preserve">
     <value>Package IgnoreRule</value>
   </data>
   <data name="txt_docker_rep_domain.TabIndex" type="System.Int32, mscorlib">
     <value>22</value>
   </data>
-  <data name="&gt;&gt;t_docker_delete_days.Parent" xml:space="preserve">
-    <value>page_docker</value>
+  <data name="tabPage_docker_repo.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
   </data>
   <data name="txt_docker_other.TabIndex" type="System.Int32, mscorlib">
     <value>19</value>
@@ -3717,11 +3726,11 @@
   <data name="&gt;&gt;progress_docker_tip.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;tabPage_windows_service.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;tab_iis.Parent" xml:space="preserve">
+    <value>page_web_iis</value>
   </data>
-  <data name="&gt;&gt;label32.Name" xml:space="preserve">
-    <value>label32</value>
+  <data name="&gt;&gt;checkBox_save_deploy_log.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;label14.Name" xml:space="preserve">
     <value>label14</value>
@@ -3771,8 +3780,8 @@
   <data name="&gt;&gt;loading_linux_server_test.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="checkBox_Increment_linux_service.TabIndex" type="System.Int32, mscorlib">
-    <value>47</value>
+  <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 25</value>
   </data>
   <data name="&gt;&gt;combo_windowservice_sdk_type.Parent" xml:space="preserve">
     <value>page_window_service</value>
@@ -3791,9 +3800,6 @@
   </data>
   <data name="b_docker_rollback.Location" type="System.Drawing.Point, System.Drawing">
     <value>524, 10</value>
-  </data>
-  <data name="label40.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
   </data>
   <data name="btn_folder_clear.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -3867,14 +3873,11 @@
   <data name="tabcontrol.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
-  <data name="label15.TabIndex" type="System.Int32, mscorlib">
-    <value>42</value>
+  <data name="btn_win_server_testAll.Size" type="System.Drawing.Size, System.Drawing">
+    <value>116, 30</value>
   </data>
   <data name="b_linuxservice_deploy.Location" type="System.Drawing.Point, System.Drawing">
     <value>505, 93</value>
-  </data>
-  <data name="btn_iis_retry.Location" type="System.Drawing.Point, System.Drawing">
-    <value>396, 103</value>
   </data>
   <data name="page_docker.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 22</value>
@@ -3894,9 +3897,6 @@
   <data name="&gt;&gt;page_set.Type" xml:space="preserve">
     <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="label7.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
   <data name="&gt;&gt;label10.Name" xml:space="preserve">
     <value>label10</value>
   </data>
@@ -3906,8 +3906,14 @@
   <data name="&gt;&gt;b_backUp_ignore_remove.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="label41.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="label9.TabIndex" type="System.Int32, mscorlib">
+    <value>10</value>
+  </data>
+  <data name="&gt;&gt;label27.Name" xml:space="preserve">
+    <value>label27</value>
+  </data>
+  <data name="groupBox1.TabIndex" type="System.Int32, mscorlib">
+    <value>18</value>
   </data>
   <data name="btn_rich_config_log_close.Visible" type="System.Boolean, mscorlib">
     <value>False</value>
@@ -3915,8 +3921,8 @@
   <data name="&gt;&gt;label26.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="combo_docker_env.Size" type="System.Drawing.Size, System.Drawing">
-    <value>193, 20</value>
+  <data name="&gt;&gt;combo_windowservice_env.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>AntDeploy</value>
@@ -3945,8 +3951,14 @@
   <data name="&gt;&gt;label_check_update.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="btn_linux_service_retry.Size" type="System.Drawing.Size, System.Drawing">
+    <value>107, 43</value>
+  </data>
   <data name="label48.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
+  </data>
+  <data name="tabPage_linux_service.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
   </data>
   <data name="label22.Location" type="System.Drawing.Point, System.Drawing">
     <value>41, 107</value>
@@ -3993,17 +4005,11 @@
   <data name="&gt;&gt;b_linux_service_rollback.Name" xml:space="preserve">
     <value>b_linux_service_rollback</value>
   </data>
-  <data name="&gt;&gt;b_docker_rollback.ZOrder" xml:space="preserve">
-    <value>10</value>
-  </data>
   <data name="label12.Location" type="System.Drawing.Point, System.Drawing">
     <value>352, 97</value>
   </data>
   <data name="loading_win_server_test.TabIndex" type="System.Int32, mscorlib">
     <value>12</value>
-  </data>
-  <data name="label15.Text" xml:space="preserve">
-    <value>Folder Deploy Path：</value>
   </data>
   <data name="label2.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -4013,9 +4019,6 @@
   </data>
   <data name="label4.TabIndex" type="System.Int32, mscorlib">
     <value>9</value>
-  </data>
-  <data name="&gt;&gt;txt_env_server_token.Name" xml:space="preserve">
-    <value>txt_env_server_token</value>
   </data>
   <data name="label34.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -4077,6 +4080,12 @@
   <data name="&gt;&gt;label36.Parent" xml:space="preserve">
     <value>pag_advance_setting</value>
   </data>
+  <data name="label40.Location" type="System.Drawing.Point, System.Drawing">
+    <value>112, 85</value>
+  </data>
+  <data name="&gt;&gt;txt_env_name.Parent" xml:space="preserve">
+    <value>environment</value>
+  </data>
   <data name="groupBoxIgnore.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
   </data>
@@ -4098,8 +4107,8 @@
   <data name="&gt;&gt;combo_docker_env.Parent" xml:space="preserve">
     <value>page_docker</value>
   </data>
-  <data name="label35.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="&gt;&gt;txt_folder_deploy.ZOrder" xml:space="preserve">
+    <value>9</value>
   </data>
   <data name="&gt;&gt;label9.Name" xml:space="preserve">
     <value>label9</value>
@@ -4122,9 +4131,6 @@
   <data name="b_docker_deploy.Font" type="System.Drawing.Font, System.Drawing">
     <value>Comic Sans MS, 10pt, style=Bold</value>
   </data>
-  <data name="&gt;&gt;b_iis_deploy.Parent" xml:space="preserve">
-    <value>page_web_iis</value>
-  </data>
   <data name="tabPage_progress.Size" type="System.Drawing.Size, System.Drawing">
     <value>608, 292</value>
   </data>
@@ -4140,8 +4146,8 @@
   <data name="&gt;&gt;txt_docker_rep_pwd.Parent" xml:space="preserve">
     <value>tabPage_docker_repo</value>
   </data>
-  <data name="label8.Location" type="System.Drawing.Point, System.Drawing">
-    <value>98, 53</value>
+  <data name="b_docker_deploy.TabIndex" type="System.Int32, mscorlib">
+    <value>12</value>
   </data>
   <data name="&gt;&gt;tabPage_progress.Type" xml:space="preserve">
     <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -4160,6 +4166,9 @@
   </data>
   <data name="label47.Location" type="System.Drawing.Point, System.Drawing">
     <value>89, 46</value>
+  </data>
+  <data name="&gt;&gt;checkBox_save_deploy_log.Name" xml:space="preserve">
+    <value>checkBox_save_deploy_log</value>
   </data>
   <data name="label51.TabIndex" type="System.Int32, mscorlib">
     <value>56</value>
@@ -4221,14 +4230,14 @@
   <data name="&gt;&gt;page_docker.Type" xml:space="preserve">
     <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="txt_docker_port.Size" type="System.Drawing.Size, System.Drawing">
-    <value>62, 21</value>
+  <data name="b_linux_server_test.Text" xml:space="preserve">
+    <value>Connect Test</value>
+  </data>
+  <data name="label15.Text" xml:space="preserve">
+    <value>Folder Deploy Path：</value>
   </data>
   <data name="b_env_server_remove.Size" type="System.Drawing.Size, System.Drawing">
     <value>140, 23</value>
-  </data>
-  <data name="&gt;&gt;b_linuxservice_deploy.Parent" xml:space="preserve">
-    <value>page_linux_service</value>
   </data>
   <data name="&gt;&gt;page_window_service.Parent" xml:space="preserve">
     <value>tabcontrol</value>
@@ -4254,17 +4263,11 @@
   <data name="label24.Text" xml:space="preserve">
     <value>PS:Linux Server Only And Required Docker installed</value>
   </data>
-  <data name="checkBox_Increment_iis.Size" type="System.Drawing.Size, System.Drawing">
-    <value>120, 16</value>
-  </data>
   <data name="label32.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
   <data name="&gt;&gt;btn_docker_stop.Name" xml:space="preserve">
     <value>btn_docker_stop</value>
-  </data>
-  <data name="&gt;&gt;label37.Parent" xml:space="preserve">
-    <value>pag_advance_setting</value>
   </data>
   <data name="b_add_linux_server.TabIndex" type="System.Int32, mscorlib">
     <value>12</value>
@@ -4290,8 +4293,8 @@
   <data name="b_linuxservice_deploy.Size" type="System.Drawing.Size, System.Drawing">
     <value>107, 43</value>
   </data>
-  <data name="btn_rich_config_log_close.Location" type="System.Drawing.Point, System.Drawing">
-    <value>554, 3</value>
+  <data name="&gt;&gt;label44.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;btn_linux_serivce_stop.Type" xml:space="preserve">
     <value>AltoControls.AltoButton, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -4299,8 +4302,8 @@
   <data name="b_backUp_ignore_add.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="btn_shang.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Comic Sans MS, 10pt, style=Bold</value>
+  <data name="combo_windowservice_sdk_type.Location" type="System.Drawing.Point, System.Drawing">
+    <value>90, 25</value>
   </data>
   <data name="txt_linux_username.TabIndex" type="System.Int32, mscorlib">
     <value>10</value>
@@ -4326,8 +4329,8 @@
   <data name="&gt;&gt;page_linux_service.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
-  <data name="label18.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="rich_iis_log.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
   </data>
   <data name="&gt;&gt;txt_docker_rep_namespace.Name" xml:space="preserve">
     <value>txt_docker_rep_namespace</value>
@@ -4338,8 +4341,8 @@
   <data name="&gt;&gt;txt_docker_rep_namespace.Parent" xml:space="preserve">
     <value>tabPage_docker_repo</value>
   </data>
-  <data name="list_env_ignore.ItemHeight" type="System.Int32, mscorlib">
-    <value>12</value>
+  <data name="&gt;&gt;combo_linux_server_list.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;btn_iis_retry.Name" xml:space="preserve">
     <value>btn_iis_retry</value>
@@ -4356,14 +4359,14 @@
   <data name="tabPage2.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
   </data>
-  <data name="&gt;&gt;t_docker_delete_days.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="b_env_server_add.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
   </data>
   <data name="&gt;&gt;checkBox_Increment_linux_service.Type" xml:space="preserve">
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;checkBox_save_deploy_log.Name" xml:space="preserve">
-    <value>checkBox_save_deploy_log</value>
+  <data name="b_linux_service_rollback.Location" type="System.Drawing.Point, System.Drawing">
+    <value>552, 3</value>
   </data>
   <data name="page_web_iis.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 22</value>
@@ -4371,8 +4374,8 @@
   <data name="&gt;&gt;txt_linux_server_nickname.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="label50.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="label43.Location" type="System.Drawing.Point, System.Drawing">
+    <value>122, 146</value>
   </data>
   <data name="&gt;&gt;b_backUp_ignore_add.Parent" xml:space="preserve">
     <value>groupBox1</value>
@@ -4380,8 +4383,8 @@
   <data name="&gt;&gt;checkBox_Increment_linux_service.ZOrder" xml:space="preserve">
     <value>8</value>
   </data>
-  <data name="tabPage_linux_service.Size" type="System.Drawing.Size, System.Drawing">
-    <value>614, 303</value>
+  <data name="&gt;&gt;tabControl_docker.ZOrder" xml:space="preserve">
+    <value>12</value>
   </data>
   <data name="b_linux_server_remove.Location" type="System.Drawing.Point, System.Drawing">
     <value>418, 49</value>
@@ -4389,8 +4392,8 @@
   <data name="pag_advance_setting.Size" type="System.Drawing.Size, System.Drawing">
     <value>622, 456</value>
   </data>
-  <data name="btn_choose_msbuild.Size" type="System.Drawing.Size, System.Drawing">
-    <value>69, 27</value>
+  <data name="b_env_add_by_name.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
   </data>
   <data name="&gt;&gt;tabPage_docker.ZOrder" xml:space="preserve">
     <value>0</value>
@@ -4437,14 +4440,17 @@
   <data name="environment.Location" type="System.Drawing.Point, System.Drawing">
     <value>19, 17</value>
   </data>
-  <data name="&gt;&gt;b_copy_pack_ignore.ZOrder" xml:space="preserve">
-    <value>0</value>
+  <data name="&gt;&gt;btn_iis_retry.Parent" xml:space="preserve">
+    <value>page_web_iis</value>
   </data>
   <data name="list_backUp_ignore.TabIndex" type="System.Int32, mscorlib">
     <value>15</value>
   </data>
   <data name="&gt;&gt;txt_linuxservice_name.Parent" xml:space="preserve">
     <value>page_linux_service</value>
+  </data>
+  <data name="txt_linux_service_env.Size" type="System.Drawing.Size, System.Drawing">
+    <value>277, 21</value>
   </data>
   <data name="tabcontrol.Size" type="System.Drawing.Size, System.Drawing">
     <value>630, 482</value>
@@ -4454,9 +4460,6 @@
   </data>
   <data name="&gt;&gt;label34.Parent" xml:space="preserve">
     <value>tabPage_docker_repo</value>
-  </data>
-  <data name="&gt;&gt;label2.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;label43.ZOrder" xml:space="preserve">
     <value>4</value>
@@ -4470,8 +4473,8 @@
   <data name="txt_folder_deploy.TabIndex" type="System.Int32, mscorlib">
     <value>41</value>
   </data>
-  <data name="&gt;&gt;label37.ZOrder" xml:space="preserve">
-    <value>15</value>
+  <data name="combo_netcore_publish_mode.Items" xml:space="preserve">
+    <value>FDD(runtime)</value>
   </data>
   <data name="&gt;&gt;checkBox_Increment_linux_service.Parent" xml:space="preserve">
     <value>page_linux_service</value>
@@ -4494,26 +4497,23 @@
   <data name="checkBox_Increment_iis.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="b_iis_rollback.Location" type="System.Drawing.Point, System.Drawing">
-    <value>554, 3</value>
+  <data name="label_how_to_set.Size" type="System.Drawing.Size, System.Drawing">
+    <value>71, 12</value>
   </data>
   <data name="label7.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="checkBox_iis_use_offlinehtm.TabIndex" type="System.Int32, mscorlib">
-    <value>38</value>
-  </data>
   <data name="progress_linux_service_tip.Location" type="System.Drawing.Point, System.Drawing">
     <value>132, 59</value>
   </data>
-  <data name="label5.Text" xml:space="preserve">
-    <value>Server List：</value>
+  <data name="&gt;&gt;t_docker_delete_days.Parent" xml:space="preserve">
+    <value>page_docker</value>
   </data>
   <data name="&gt;&gt;label41.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="btn_shang.Text" xml:space="preserve">
-    <value>开源不易打赏1元鼓励一下</value>
+  <data name="&gt;&gt;btn_linux_server_testAll.Parent" xml:space="preserve">
+    <value>page_linux_server</value>
   </data>
   <data name="&gt;&gt;label48.ZOrder" xml:space="preserve">
     <value>11</value>
@@ -4524,11 +4524,11 @@
   <data name="&gt;&gt;btn_shang.Parent" xml:space="preserve">
     <value>pag_advance_setting</value>
   </data>
-  <data name="b_env_server_remove.Text" xml:space="preserve">
-    <value>Remove Selected</value>
+  <data name="txt_docker_other.Location" type="System.Drawing.Point, System.Drawing">
+    <value>352, 49</value>
   </data>
-  <data name="label23.Location" type="System.Drawing.Point, System.Drawing">
-    <value>152, 23</value>
+  <data name="&gt;&gt;label2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="txt_docker_volume.TabIndex" type="System.Int32, mscorlib">
     <value>13</value>
@@ -4545,29 +4545,29 @@
   <data name="label16.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="&gt;&gt;page_window_service.ZOrder" xml:space="preserve">
-    <value>2</value>
+  <data name="btn_iis_retry.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Comic Sans MS, 10pt, style=Bold</value>
   </data>
   <data name="btn_folder_clear.TabIndex" type="System.Int32, mscorlib">
     <value>44</value>
   </data>
-  <data name="checkBoxdocker_rep_uploadOnly.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
+  <data name="&gt;&gt;label46.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;btn_choose_folder.Name" xml:space="preserve">
     <value>btn_choose_folder</value>
   </data>
-  <data name="tabPage_iis_log.Text" xml:space="preserve">
-    <value>LOG</value>
+  <data name="label50.Location" type="System.Drawing.Point, System.Drawing">
+    <value>25, 26</value>
   </data>
-  <data name="&gt;&gt;tabPage_docker_repo.ZOrder" xml:space="preserve">
-    <value>2</value>
+  <data name="&gt;&gt;combo_iis_env.Parent" xml:space="preserve">
+    <value>page_web_iis</value>
   </data>
   <data name="combo_env_server_list.Size" type="System.Drawing.Size, System.Drawing">
     <value>320, 20</value>
   </data>
-  <data name="combo_netcore_publish_mode.Size" type="System.Drawing.Size, System.Drawing">
-    <value>161, 20</value>
+  <data name="&gt;&gt;label49.ZOrder" xml:space="preserve">
+    <value>4</value>
   </data>
   <data name="&gt;&gt;txt_env_ignore.ZOrder" xml:space="preserve">
     <value>3</value>
@@ -4581,8 +4581,8 @@
   <data name="&gt;&gt;btn_choose_msbuild.Parent" xml:space="preserve">
     <value>pag_advance_setting</value>
   </data>
-  <data name="label37.Size" type="System.Drawing.Size, System.Drawing">
-    <value>131, 12</value>
+  <data name="label3.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
   <data name="label31.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -4605,8 +4605,8 @@
   <data name="btn_linux_serivce_stop.Location" type="System.Drawing.Point, System.Drawing">
     <value>505, 93</value>
   </data>
-  <data name="&gt;&gt;label2.Parent" xml:space="preserve">
-    <value>environment</value>
+  <data name="btn_docker_stop.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
   </data>
   <data name="&gt;&gt;btn_windows_serivce_stop.ZOrder" xml:space="preserve">
     <value>0</value>
@@ -4626,11 +4626,11 @@
   <data name="label41.Size" type="System.Drawing.Size, System.Drawing">
     <value>191, 12</value>
   </data>
-  <data name="btn_iis_stop.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="label38.AutoSize" type="System.Boolean, mscorlib">
+  <data name="label8.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
+  </data>
+  <data name="&gt;&gt;b_iis_rollback.ZOrder" xml:space="preserve">
+    <value>5</value>
   </data>
   <data name="&gt;&gt;b_add_linux_server.ZOrder" xml:space="preserve">
     <value>8</value>
@@ -4662,8 +4662,8 @@
   <data name="label39.Text" xml:space="preserve">
     <value>what is publish mode?</value>
   </data>
-  <data name="&gt;&gt;rich_docker_log.Type" xml:space="preserve">
-    <value>AntDeployWinform.ExRichTextBox, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="tabcontrol.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
   </data>
   <data name="label42.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -4677,8 +4677,8 @@
   <data name="&gt;&gt;txt_env_ignore.Name" xml:space="preserve">
     <value>txt_env_ignore</value>
   </data>
-  <data name="&gt;&gt;txt_docker_other.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;label8.ZOrder" xml:space="preserve">
+    <value>11</value>
   </data>
   <data name="&gt;&gt;b_env_ignore_remove.Name" xml:space="preserve">
     <value>b_env_ignore_remove</value>
@@ -4689,8 +4689,8 @@
   <data name="&gt;&gt;label4.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;label3.Name" xml:space="preserve">
-    <value>label3</value>
+  <data name="&gt;&gt;txt_docker_rep_image.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="label12.TabIndex" type="System.Int32, mscorlib">
     <value>16</value>
@@ -4698,20 +4698,17 @@
   <data name="rich_linuxservice_log.Size" type="System.Drawing.Size, System.Drawing">
     <value>608, 297</value>
   </data>
-  <data name="&gt;&gt;b_windowservice_deploy.Name" xml:space="preserve">
-    <value>b_windowservice_deploy</value>
+  <data name="combo_docker_env.Size" type="System.Drawing.Size, System.Drawing">
+    <value>193, 20</value>
   </data>
   <data name="&gt;&gt;list_env_ignore.Type" xml:space="preserve">
     <value>System.Windows.Forms.ListBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;txt_docker_rep_pwd.ZOrder" xml:space="preserve">
-    <value>8</value>
+  <data name="b_env_server_remove.Location" type="System.Drawing.Point, System.Drawing">
+    <value>414, 53</value>
   </data>
-  <data name="b_linux_server_remove.Enabled" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="txt_env_server_host.Location" type="System.Drawing.Point, System.Drawing">
-    <value>46, 16</value>
+  <data name="&gt;&gt;txt_env_server_token.Name" xml:space="preserve">
+    <value>txt_env_server_token</value>
   </data>
   <data name="label26.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -4734,8 +4731,8 @@
   <data name="label1.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="&gt;&gt;combo_windowservice_env.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="tabControl_window_service.TabIndex" type="System.Int32, mscorlib">
+    <value>24</value>
   </data>
   <data name="b_windows_service_rollback.TabIndex" type="System.Int32, mscorlib">
     <value>35</value>
@@ -4767,14 +4764,14 @@
   <data name="checkBox_Increment_window_service.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="&gt;&gt;combo_netcore_publish_mode.ZOrder" xml:space="preserve">
-    <value>14</value>
+  <data name="&gt;&gt;page_web_iis.Name" xml:space="preserve">
+    <value>page_web_iis</value>
   </data>
   <data name="&gt;&gt;environment.Parent" xml:space="preserve">
     <value>page_set</value>
   </data>
-  <data name="&gt;&gt;checkBox_Increment_window_service.Name" xml:space="preserve">
-    <value>checkBox_Increment_window_service</value>
+  <data name="txt_windowservice_name.Location" type="System.Drawing.Point, System.Drawing">
+    <value>90, 100</value>
   </data>
   <data name="label6.Location" type="System.Drawing.Point, System.Drawing">
     <value>98, 20</value>
@@ -4785,17 +4782,17 @@
   <data name="&gt;&gt;label43.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="b_linuxservice_deploy.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+  <data name="label7.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="b_docker_deploy.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
+  <data name="&gt;&gt;combo_linux_env.Name" xml:space="preserve">
+    <value>combo_linux_env</value>
   </data>
   <data name="label32.Location" type="System.Drawing.Point, System.Drawing">
     <value>220, 79</value>
   </data>
-  <data name="label1.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="b_windowservice_deploy.Location" type="System.Drawing.Point, System.Drawing">
+    <value>512, 100</value>
   </data>
   <data name="&gt;&gt;tabControl_docker.Name" xml:space="preserve">
     <value>tabControl_docker</value>
@@ -4817,6 +4814,9 @@
   </data>
   <data name="label6.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
+  </data>
+  <data name="label38.TabIndex" type="System.Int32, mscorlib">
+    <value>36</value>
   </data>
   <data name="label35.Location" type="System.Drawing.Point, System.Drawing">
     <value>421, 17</value>
@@ -4854,8 +4854,8 @@
   <data name="txt_linux_username.Location" type="System.Drawing.Point, System.Drawing">
     <value>194, 11</value>
   </data>
-  <data name="&gt;&gt;label6.ZOrder" xml:space="preserve">
-    <value>15</value>
+  <data name="tabPage_linux_service.Size" type="System.Drawing.Size, System.Drawing">
+    <value>614, 303</value>
   </data>
   <data name="&gt;&gt;list_backUp_ignore.Parent" xml:space="preserve">
     <value>groupBox1</value>
@@ -4917,8 +4917,8 @@
   <data name="label12.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="&gt;&gt;checkBox_Increment_window_service.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="label9.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="&gt;&gt;b_windowservice_deploy.ZOrder" xml:space="preserve">
     <value>2</value>
@@ -4944,8 +4944,8 @@
   <data name="tabControl_window_service.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Bottom</value>
   </data>
-  <data name="btn_linux_service_retry.Location" type="System.Drawing.Point, System.Drawing">
-    <value>392, 93</value>
+  <data name="&gt;&gt;label_docker_demo.ZOrder" xml:space="preserve">
+    <value>11</value>
   </data>
   <data name="&gt;&gt;tabControl_linux_service.ZOrder" xml:space="preserve">
     <value>6</value>
@@ -4968,11 +4968,11 @@
   <data name="label21.Text" xml:space="preserve">
     <value>Port:</value>
   </data>
-  <data name="txt_http_proxy.Location" type="System.Drawing.Point, System.Drawing">
-    <value>168, 337</value>
+  <data name="&gt;&gt;label25.Name" xml:space="preserve">
+    <value>label25</value>
   </data>
-  <data name="b_linux_server_test.Text" xml:space="preserve">
-    <value>Connect Test</value>
+  <data name="&gt;&gt;tabPage_linux_service.Parent" xml:space="preserve">
+    <value>tabControl_linux_service</value>
   </data>
   <data name="&gt;&gt;b_linux_server_test.ZOrder" xml:space="preserve">
     <value>7</value>
@@ -4989,8 +4989,8 @@
   <data name="label4.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="&gt;&gt;txt_env_name.Parent" xml:space="preserve">
-    <value>environment</value>
+  <data name="&gt;&gt;page_linux_server.Parent" xml:space="preserve">
+    <value>tabControl1</value>
   </data>
   <data name="label24.TabIndex" type="System.Int32, mscorlib">
     <value>15</value>
@@ -5004,23 +5004,23 @@
   <data name="txt_linux_username.Size" type="System.Drawing.Size, System.Drawing">
     <value>99, 21</value>
   </data>
-  <data name="tabPage2.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>3, 3, 3, 3</value>
+  <data name="txt_docker_rep_name.Size" type="System.Drawing.Size, System.Drawing">
+    <value>118, 21</value>
   </data>
-  <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
-    <value>47, 12</value>
+  <data name="btn_iis_retry.Location" type="System.Drawing.Point, System.Drawing">
+    <value>396, 103</value>
   </data>
   <data name="&gt;&gt;checkBox_select_deploy_linuxservice.Type" xml:space="preserve">
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="label38.TabIndex" type="System.Int32, mscorlib">
-    <value>36</value>
+  <data name="label27.TabIndex" type="System.Int32, mscorlib">
+    <value>16</value>
   </data>
   <data name="btn_rich_config_log_close.Text" xml:space="preserve">
     <value>X</value>
   </data>
-  <data name="&gt;&gt;label45.Parent" xml:space="preserve">
-    <value>groupBox5</value>
+  <data name="&gt;&gt;checkBoxdocker_rep_enable.ZOrder" xml:space="preserve">
+    <value>1</value>
   </data>
   <data name="&gt;&gt;tabControl_docker.Type" xml:space="preserve">
     <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -5028,8 +5028,8 @@
   <data name="&gt;&gt;label35.Name" xml:space="preserve">
     <value>label35</value>
   </data>
-  <data name="&gt;&gt;label40.ZOrder" xml:space="preserve">
-    <value>6</value>
+  <data name="&gt;&gt;txt_linuxservice_name.Name" xml:space="preserve">
+    <value>txt_linuxservice_name</value>
   </data>
   <data name="&gt;&gt;b_copy_backup_ignore.ZOrder" xml:space="preserve">
     <value>0</value>
@@ -5049,8 +5049,8 @@
   <data name="&gt;&gt;label34.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="label2.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="checkBox_iis_use_offlinehtm.TabIndex" type="System.Int32, mscorlib">
+    <value>38</value>
   </data>
   <data name="environment.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -5067,8 +5067,8 @@
   <data name="&gt;&gt;label24.Name" xml:space="preserve">
     <value>label24</value>
   </data>
-  <data name="&gt;&gt;txt_docker_rep_pwd.Name" xml:space="preserve">
-    <value>txt_docker_rep_pwd</value>
+  <data name="tabPage_progress.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
   </data>
   <data name="b_add_linux_server.Location" type="System.Drawing.Point, System.Drawing">
     <value>18, 49</value>
@@ -5094,11 +5094,11 @@
   <data name="txt_backUp_ignore.TabIndex" type="System.Int32, mscorlib">
     <value>6</value>
   </data>
-  <data name="checkBox_Chinese.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
+  <data name="checkBox_select_deploy_service.Location" type="System.Drawing.Point, System.Drawing">
+    <value>311, 56</value>
   </data>
-  <data name="b_docker_deploy.Location" type="System.Drawing.Point, System.Drawing">
-    <value>512, 143</value>
+  <data name="checkBox_save_deploy_log.TabIndex" type="System.Int32, mscorlib">
+    <value>50</value>
   </data>
   <data name="&gt;&gt;loading_linux_server_test.Name" xml:space="preserve">
     <value>loading_linux_server_test</value>
@@ -5118,8 +5118,8 @@
   <data name="btn_linux_service_retry.Visible" type="System.Boolean, mscorlib">
     <value>False</value>
   </data>
-  <data name="b_env_remove.Size" type="System.Drawing.Size, System.Drawing">
-    <value>140, 23</value>
+  <data name="page_window_service.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
   </data>
   <data name="&gt;&gt;tabcontrol.Parent" xml:space="preserve">
     <value>$this</value>
@@ -5163,14 +5163,14 @@
   <data name="&gt;&gt;txt_iis_web_site_name.Type" xml:space="preserve">
     <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="txt_docker_envname.Location" type="System.Drawing.Point, System.Drawing">
-    <value>300, 20</value>
+  <data name="&gt;&gt;checkBox_select_deploy_iis.Parent" xml:space="preserve">
+    <value>page_web_iis</value>
   </data>
   <data name="label39.TabIndex" type="System.Int32, mscorlib">
     <value>37</value>
   </data>
-  <data name="&gt;&gt;tabControl1.Parent" xml:space="preserve">
-    <value>environment</value>
+  <data name="tabPage_docker.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
   </data>
   <data name="tabPage_linux_service.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>3, 3, 3, 3</value>
@@ -5178,35 +5178,35 @@
   <data name="&gt;&gt;btn_rich_config_log_close.Parent" xml:space="preserve">
     <value>panel_rich_config_log</value>
   </data>
-  <data name="tabPage3.Text" xml:space="preserve">
-    <value>LOG</value>
+  <data name="&gt;&gt;txt_linux_pwd.Name" xml:space="preserve">
+    <value>txt_linux_pwd</value>
   </data>
   <data name="&gt;&gt;b_add_linux_server.Name" xml:space="preserve">
     <value>b_add_linux_server</value>
   </data>
-  <data name="txt_linux_service_env.Size" type="System.Drawing.Size, System.Drawing">
-    <value>277, 21</value>
+  <data name="&gt;&gt;rich_docker_log.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="checkBox_select_deploy_service.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="btn_linux_service_retry.Size" type="System.Drawing.Size, System.Drawing">
-    <value>107, 43</value>
+  <data name="txt_env_server_host.Location" type="System.Drawing.Point, System.Drawing">
+    <value>46, 16</value>
   </data>
-  <data name="&gt;&gt;label26.Name" xml:space="preserve">
-    <value>label26</value>
+  <data name="txt_docker_rep_namespace.Size" type="System.Drawing.Size, System.Drawing">
+    <value>175, 21</value>
   </data>
   <data name="&gt;&gt;combo_linux_env.Parent" xml:space="preserve">
     <value>page_linux_service</value>
   </data>
-  <data name="b_env_server_add.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
+  <data name="&gt;&gt;tabControl_linux_service.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="rich_windowservice_log.Text" xml:space="preserve">
     <value />
   </data>
-  <data name="&gt;&gt;tabPage3.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="label34.TabIndex" type="System.Int32, mscorlib">
+    <value>21</value>
   </data>
   <data name="label14.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -5235,14 +5235,14 @@
   <data name="txt_docker_port.TabIndex" type="System.Int32, mscorlib">
     <value>11</value>
   </data>
-  <data name="&gt;&gt;label27.Name" xml:space="preserve">
-    <value>label27</value>
+  <data name="label49.Size" type="System.Drawing.Size, System.Drawing">
+    <value>29, 12</value>
   </data>
   <data name="label_iis_demo.TabIndex" type="System.Int32, mscorlib">
     <value>28</value>
   </data>
-  <data name="progress_docker_tip.Location" type="System.Drawing.Point, System.Drawing">
-    <value>127, 54</value>
+  <data name="checkBox_Increment_iis.Size" type="System.Drawing.Size, System.Drawing">
+    <value>120, 16</value>
   </data>
   <data name="txt_docker_volume.Location" type="System.Drawing.Point, System.Drawing">
     <value>69, 49</value>
@@ -5262,8 +5262,8 @@
   <data name="&gt;&gt;txt_linux_host.Name" xml:space="preserve">
     <value>txt_linux_host</value>
   </data>
-  <data name="label10.TabIndex" type="System.Int32, mscorlib">
-    <value>12</value>
+  <data name="&gt;&gt;label6.Parent" xml:space="preserve">
+    <value>page_web_iis</value>
   </data>
   <data name="txt_docker_envname.Size" type="System.Drawing.Size, System.Drawing">
     <value>170, 21</value>
@@ -5280,8 +5280,8 @@
   <data name="&gt;&gt;tabControl_window_service.Name" xml:space="preserve">
     <value>tabControl_window_service</value>
   </data>
-  <data name="b_linux_server_test.Size" type="System.Drawing.Size, System.Drawing">
-    <value>129, 23</value>
+  <data name="&gt;&gt;label_iis_demo.Parent" xml:space="preserve">
+    <value>page_web_iis</value>
   </data>
   <data name="&gt;&gt;page_set.Parent" xml:space="preserve">
     <value>tabcontrol</value>

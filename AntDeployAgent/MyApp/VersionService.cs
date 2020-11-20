@@ -132,11 +132,11 @@ namespace AntDeployAgentWindows.MyApp
 
             if (!string.IsNullOrEmpty(service.Item1))
             {
-                WriteError(service.Item2);
+                WriteError(service.Item1);
                 return;
             }
 
-            CheckExistResult result = new CheckExistResult { WebSiteName = serviceName, Success = service.Item2 != null };
+            CheckExistResult result = new CheckExistResult { WebSiteName = serviceName, Success = !string.IsNullOrEmpty(service.Item2) };
             WriteSuccess(result);
         }
 

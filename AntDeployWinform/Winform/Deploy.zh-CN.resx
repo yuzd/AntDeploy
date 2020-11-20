@@ -296,6 +296,9 @@
   <data name="btn_win_server_testAll.Text" xml:space="preserve">
     <value>测试连接全部</value>
   </data>
+  <data name="page_winserver.Text" xml:space="preserve">
+    <value>Token服务器</value>
+  </data>
   <data name="btn_linux_server_testAll.Text" xml:space="preserve">
     <value>测试连接全部</value>
   </data>
@@ -379,9 +382,5 @@
   </data>
   <data name="label15.Text" xml:space="preserve">
     <value>指定特定文件夹发布：</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>Inherit</value>
   </data>
 </root>

@@ -134,7 +134,7 @@ namespace AntDeployAgentWindows.Util
                     if (!File.Exists(filePath))
                     {
                         logger?.Invoke($"【Warn】【systemctl】 {filePath} not exist");
-                        return null;
+                        return new Tuple<string, string>(null, folder); 
                     }
 
                     var content = File.ReadAllLines(filePath);
@@ -149,7 +149,7 @@ namespace AntDeployAgentWindows.Util
                             if (folderArr.Length != 2)
                             {
                                 logger?.Invoke($"【Warn】【systemctl】 WorkingDirectory not found");
-                                return null;
+                                return new Tuple<string, string>(null, folder);
                             }
 
                             folder = folderArr[1].Trim();
