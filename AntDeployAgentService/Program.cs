@@ -40,20 +40,21 @@ namespace AntDeployAgentService
             var pathToContentRoot = Path.GetDirectoryName(pathToExe);
             Directory.SetCurrentDirectory(pathToContentRoot);
 
-#if NETSTANDARD
-            Startup.RootPath = pathToContentRoot;
-            TinyFoxService.WebRoot = Path.Combine(pathToContentRoot,"wwwroot");
-            ConfigurationManager.Initialize(pathToExe);
-#endif
             var isService = !(Debugger.IsAttached || args.Contains("--console"));
 
             if (HaveVisibleConsole()) isService = false;
 
-           
+            if (isService)
+            {
+                Startup.RootPath = pathToContentRoot;
+                TinyFoxService.WebRoot = Path.Combine(pathToContentRoot, "wwwroot");
+                ConfigurationManager.Initialize(pathToExe);
+            }
+
             var builder = Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddLogging(configure => configure.AddConsole());
+                    if(!isService)services.AddLogging(configure => configure.AddConsole());
                     services.AddHostedService<AntDeployAgentWindowsService>();
                 });
 

@@ -33,6 +33,7 @@ using System.Collections.Specialized;
 using System.Configuration.Internal;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace System.Configuration
 {
@@ -173,10 +174,22 @@ namespace System.Configuration
 
         private static string TryAutoDetectConfigFile(string appDirectory, Assembly callingAssembly)
         {
+            var configFile = Path.Combine(appDirectory, callingAssembly.GetName().Name + ".config");
+            if (File.Exists(configFile))
+            {
+                return configFile;
+            }
+
             var exeConfigFile = Path.Combine(appDirectory, callingAssembly.GetName().Name + ".exe.config");
             if (File.Exists(exeConfigFile))
             {
                 return exeConfigFile;
+            }
+
+            var dllConfigFile = Path.Combine(appDirectory, callingAssembly.GetName().Name + ".dll.config");
+            if (File.Exists(dllConfigFile))
+            {
+                return dllConfigFile;
             }
 
             var appConfigFile = Path.Combine(appDirectory, "App.config");
