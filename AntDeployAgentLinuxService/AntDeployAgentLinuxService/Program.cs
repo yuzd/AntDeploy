@@ -17,7 +17,7 @@ namespace AntDeployAgentLinuxService
             var pathToContentRoot = Path.GetDirectoryName(pathToExe);
             Directory.SetCurrentDirectory(pathToContentRoot);
 
-#if NETSTANDARD
+#if !DEBUG
             Startup.RootPath = pathToContentRoot;
             TinyFoxService.WebRoot = Path.Combine(pathToContentRoot,"wwwroot");
             ConfigurationManager.Initialize(pathToExe);

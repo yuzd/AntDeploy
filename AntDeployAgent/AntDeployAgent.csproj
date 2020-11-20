@@ -51,12 +51,12 @@
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
-    <PackageReference Include="TinyFox" Version="4.0.1.38" />
+    <PackageReference Include="TinyFox" Version="4.0.4" />
     <Reference Include="System.Net" />
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-    <PackageReference Include="TinyFox" Version="4.0.1.38" />
+    <PackageReference Include="TinyFox" Version="4.0.4" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="4.5.0" />
   </ItemGroup>
 </Project>

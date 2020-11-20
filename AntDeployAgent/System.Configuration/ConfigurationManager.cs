@@ -76,7 +76,7 @@ namespace System.Configuration
                 exePath = Path.GetFullPath(exePath);
             if (!File.Exists(exePath))
             {
-                Exception cause = new ArgumentException("The specified path does not exist.", "exePath");
+                Exception cause = new ArgumentException("The specified path does not exist."+ exePath, "exePath");
                 throw new ConfigurationErrorsException("Error Initializing the configuration system:", cause);
             }
 
@@ -114,7 +114,7 @@ namespace System.Configuration
                 exePath = Path.GetFullPath(exePath);
             if (!File.Exists(exePath))
             {
-                Exception cause = new ArgumentException("The specified path does not exist.", "exePath");
+                Exception cause = new ArgumentException("The specified path does not exist."+ exePath, "exePath");
                 throw new ConfigurationErrorsException("Error Initializing the configuration system:", cause);
             }
             if (!exePath.EndsWith(".config"))

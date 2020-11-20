@@ -8282,7 +8282,8 @@ namespace AntDeployWinform.Winform
                         return;
                     }
 
-                    execFilePath = !string.IsNullOrEmpty(runtime) && runtime.Contains("linux")
+                    var useDotnet = !string.IsNullOrEmpty(runtime) && runtime.Contains("linux");
+                    execFilePath = useDotnet
                         ? execFilePath
                         : execFilePath + ".dll";
 
@@ -8347,8 +8348,9 @@ namespace AntDeployWinform.Winform
                             {
                                 var slectFileForm = new SelectFile(fileList, publishPath);
                                 slectFileForm.ShowDialog();
-                                
+
                                 //增量 选择特定文件发布
+                                DoLinuxServiceSelectDeploy(slectFileForm.SelectedFileList, publishPath, serverList, serviceName, DeployConfig.LinuxServiveConfig.EnvParam, useDotnet, execFilePath, PhysicalPath, backUpIgnoreList, gitModel, confirmResult.Item2);
                             });
                             return;
                         }
@@ -8380,8 +8382,9 @@ namespace AntDeployWinform.Winform
                         {
                             var slectFileForm = new SelectFile(publishPath);
                             slectFileForm.ShowDialog();
-                           
+
                             //选择特定文件发布
+                            DoLinuxServiceSelectDeploy(slectFileForm.SelectedFileList, publishPath, serverList, serviceName, DeployConfig.LinuxServiveConfig.EnvParam, useDotnet, execFilePath, PhysicalPath, backUpIgnoreList, null, confirmResult.Item2);
                         });
                         return;
                     }
@@ -8563,6 +8566,7 @@ namespace AntDeployWinform.Winform
                         httpRequestClient.SetFieldValue("deployFolderName", dateTimeFolderName);
                         httpRequestClient.SetFieldValue("physicalPath", PhysicalPath);
                         httpRequestClient.SetFieldValue("env", DeployConfig.LinuxServiveConfig.EnvParam);
+                        httpRequestClient.SetFieldValue("useDotnet", !useDotnet?"true":"");//true 代表需要 服务器上用dotnet xxx.dll的方式启动服务
                         httpRequestClient.SetFieldValue("startType", ServiceStartType);
                         httpRequestClient.SetFieldValue("desc", ServiceDescription);
                         httpRequestClient.SetFieldValue("Token", server.Token);
@@ -8740,5 +8744,285 @@ namespace AntDeployWinform.Winform
 
             }, System.Threading.Tasks.TaskCreationOptions.LongRunning).Start();
         }
+
+
+        private void DoLinuxServiceSelectDeploy(List<string> fileList, string publishPath, List<Server> serverList, string serviceName,string envParam, bool useDotnet, string execFilePath, string PhysicalPath, List<string> backUpIgnoreList, GitClient gitModel, string remark)
+        {
+            new Task(async () =>
+            {
+                var dateTimeFolderNameParent = string.Empty;
+                try
+                {
+                    if (stop_linux_cancel_token)
+                    {
+                        this.nlog_linux.Warn($"deploy task was canceled!");
+                        PackageError(this.tabPage_linux_service, serverList.First().Host);
+                        return;
+                    }
+
+                    byte[] zipBytes = null;
+                    if (fileList == null || !fileList.Any())
+                    {
+                        PackageError(this.tabPage_linux_service, serverList.First().Host);
+                        this.nlog_linux.Error("Please Select Files");
+                        return;
+                    }
+                    this.nlog_linux.Info("Select Files count:" + fileList.Count);
+                    this.nlog_linux.Debug("ignore package ignoreList");
+                    List<string> ignoreList = new List<string>();
+                    try
+                    {
+                        zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, fileList, CompressionLevel.Optimal, true,
+                            ignoreList,
+                            (progressValue) =>
+                            {
+                                UpdatePackageProgress(this.tabPage_linux_service, serverList.First().Host, progressValue); //打印打包记录
+                                return stop_linux_cancel_token;
+                            }, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        this.nlog_linux.Error("package fail:" + ex.Message);
+                        PackageError(this.tabPage_linux_service, serverList.First().Host);
+                        return;
+                    }
+
+                    if (zipBytes == null || zipBytes.Length < 1)
+                    {
+                        this.nlog_linux.Error("package fail");
+                        PackageError(this.tabPage_linux_service, serverList.First().Host);
+                        return;
+                    }
+                    var packageSize = (zipBytes.Length / 1024 / 1024);
+                    this.nlog_linux.Info($"package success,package size:{(packageSize > 0 ? (packageSize + "") : "<1")}M");
+                    var loggerId = Guid.NewGuid().ToString("N");
+                    //执行 上传
+                    this.nlog_linux.Info("-----------------Deploy Start-----------------");
+                    dateTimeFolderNameParent = DateTime.Now.ToString("yyyyMMddHHmmss");
+                    var retryTimes = 0;
+                    var allfailServerList = new List<Server>();
+                    RETRY_WINDOWSSERVICE2:
+                    var failServerList = new List<Server>();
+                    var index = 0;
+                    var allSuccess = true;
+                    var failCount = 0;
+                    var dateTimeFolderName = string.Empty;
+                    var isRetry = allfailServerList.Count > 0;
+                    if (isRetry)
+                    {
+                        dateTimeFolderName = dateTimeFolderNameParent + (retryTimes.AppendRetryStrings());
+                    }
+                    else
+                    {
+                        dateTimeFolderName = dateTimeFolderNameParent;
+                    }
+                    //重试了 但是没有发现错误的Server List
+                    if (retryTimes > 0 && allfailServerList.Count == 0) return;
+                    foreach (var server in isRetry ? allfailServerList : serverList)
+                    {
+                        if (isRetry) UploadReset(this.tabPage_linux_service, server.Host);
+                        if (!isRetry && index != 0) //因为编译和打包只会占用第一台服务器的时间
+                        {
+                            BuildEnd(this.tabPage_linux_service, server.Host);
+                            UpdatePackageProgress(this.tabPage_linux_service, server.Host, 100);
+                        }
+                        if (stop_linux_cancel_token)
+                        {
+                            this.nlog_linux.Warn($"deploy task was canceled!");
+                            UploadError(this.tabPage_linux_service, server.Host);
+                            return;
+                        }
+                        index++;
+                        if (string.IsNullOrEmpty(server.Token))
+                        {
+                            this.nlog_linux.Warn($"{server.Host} Deploy skip,Token is null or empty!");
+                            UploadError(this.tabPage_linux_service, server.Host);
+                            allSuccess = false;
+                            failCount++;
+                            failServerList.Add(server);
+                            continue;
+                        }
+
+
+                        ProgressPercentageForLinuxService = 0;
+                        ProgressCurrentHostForLinuxService = server.Host;
+                        this.nlog_linux.Info($"Start Uppload,Host:{getHostDisplayName(server)}");
+                        HttpRequestClient httpRequestClient = new HttpRequestClient();
+                        httpRequestClient.SetFieldValue("publishType", "linux");
+                        httpRequestClient.SetFieldValue("isIncrement", "true");
+                        httpRequestClient.SetFieldValue("serviceName", serviceName);
+                        httpRequestClient.SetFieldValue("id", loggerId);
+                        httpRequestClient.SetFieldValue("execFilePath", execFilePath);
+                        httpRequestClient.SetFieldValue("remark", remark);
+                        httpRequestClient.SetFieldValue("mac", CodingHelper.GetMacAddress());
+                        httpRequestClient.SetFieldValue("pc", System.Environment.MachineName);
+                        httpRequestClient.SetFieldValue("localIp", CodingHelper.GetLocalIPAddress());
+                        httpRequestClient.SetFieldValue("deployFolderName", dateTimeFolderName);
+                        httpRequestClient.SetFieldValue("physicalPath", PhysicalPath);
+                        httpRequestClient.SetFieldValue("env", envParam);
+                        httpRequestClient.SetFieldValue("useDotnet", !useDotnet ? "true" : "");//true 代表需要 服务器上用dotnet xxx.dll的方式启动服务
+                        httpRequestClient.SetFieldValue("Token", server.Token);
+                        httpRequestClient.SetFieldValue("backUpIgnore", (backUpIgnoreList != null && backUpIgnoreList.Any()) ? string.Join("@_@", backUpIgnoreList) : "");
+                        httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream", zipBytes);
+                        HttpLogger HttpLogger = new HttpLogger
+                        {
+                            Key = loggerId,
+                            Url = $"http://{server.Host}/logger?key=" + loggerId
+                        };
+                        IDisposable _subcribe = null;
+                        WebSocketClient webSocket = new WebSocketClient(this.nlog_linux, HttpLogger);
+                        var haveError = false;
+                        try
+                        {
+                            if (stop_linux_cancel_token)
+                            {
+                                this.nlog_linux.Warn($"deploy task was canceled!");
+                                UploadError(this.tabPage_linux_service, server.Host);
+                                UpdateDeployProgress(this.tabPage_linux_service, server.Host, false);
+                                return;
+                            }
+                            var hostKey = await webSocket.Connect($"ws://{server.Host}/socket");
+                            httpRequestClient.SetFieldValue("wsKey", hostKey);
+
+                            var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/publish",
+                                (client) =>
+                                {
+                                    client.Proxy = GetProxy(this.nlog_linux);
+                                    _subcribe = System.Reactive.Linq.Observable
+                                        .FromEventPattern<UploadProgressChangedEventArgs>(client, "UploadProgressChanged")
+                                        .Sample(TimeSpan.FromMilliseconds(100))
+                                        .Subscribe(arg => { ClientOnUploadProgressChanged2(arg.Sender, arg.EventArgs); });
+                                    //client.UploadProgressChanged += ClientOnUploadProgressChanged2;
+                                });
+                            if (ProgressPercentageForLinuxService == 0 && !uploadResult.Item1) UploadError(this.tabPage_linux_service, server.Host);
+                            if ((ProgressPercentageForLinuxService > 0 && ProgressPercentageForLinuxService < 100))
+                                UpdateUploadProgress(this.tabPage_linux_service, ProgressCurrentHostForLinuxService, 100); //结束上传
+                            webSocket.ReceiveHttpAction(true);
+                            haveError = webSocket.HasError;
+                            if (haveError)
+                            {
+                                allSuccess = false;
+                                failCount++;
+                                failServerList.Add(server);
+                                this.nlog_linux.Error($"Host:{getHostDisplayName(server)},Deploy Fail,Skip to Next");
+                                UploadError(this.tabPage_linux_service, server.Host);
+                                UpdateDeployProgress(this.tabPage_linux_service, server.Host, false);
+                            }
+                            else
+                            {
+                                if (uploadResult.Item1)
+                                {
+                                    UpdateUploadProgress(this.tabPage_linux_service, ProgressCurrentHostForLinuxService, 100); //结束上传
+
+                                    this.nlog_linux.Info($"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2}");
+
+                                    //fire the website
+                                    if (!string.IsNullOrEmpty(server.LinuxServiceFireUrl))
+                                    {
+                                        LogEventInfo publisEvent22 = new LogEventInfo(LogLevel.Info, "", "Start to Fire Url,TimeOut：10senconds  ==> ");
+                                        publisEvent22.Properties["ShowLink"] = server.LinuxServiceFireUrl;
+                                        publisEvent22.LoggerName = "rich_linuxservice_log";
+                                        this.nlog_linux.Log(publisEvent22);
+
+                                        var fireRt = WebUtil.IsHttpGetOk(server.LinuxServiceFireUrl, this.nlog_linux);
+                                        if (fireRt)
+                                        {
+                                            UpdateDeployProgress(this.tabPage_linux_service, server.Host, true);
+                                            this.nlog_linux.Info($"Host:{getHostDisplayName(server)},Success Fire Url");
+                                        }
+                                        else
+                                        {
+                                            failCount++;
+                                            failServerList.Add(server);
+                                            allSuccess = false;
+                                            UpdateDeployProgress(this.tabPage_linux_service, server.Host, false);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        UpdateDeployProgress(this.tabPage_linux_service, server.Host, true);
+                                    }
+                                }
+                                else
+                                {
+                                    allSuccess = false;
+                                    failCount++;
+                                    failServerList.Add(server);
+                                    this.nlog_linux.Error($"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2},Skip to Next");
+                                    UploadError(this.tabPage_linux_service, server.Host);
+                                    UpdateDeployProgress(this.tabPage_linux_service, server.Host, false);
+                                }
+                            }
+
+                        }
+                        catch (Exception ex)
+                        {
+                            failCount++;
+                            failServerList.Add(server);
+                            allSuccess = false;
+                            this.nlog_linux.Error(
+                                $"Fail Deploy,Host:{getHostDisplayName(server)},Response:{ex.Message},Skip to Next");
+                            UpdateDeployProgress(this.tabPage_linux_service, server.Host, false);
+                        }
+                        finally
+                        {
+                            await webSocket?.Dispose();
+                            _subcribe?.Dispose();
+                        }
+
+                    }
+
+                    //交互
+                    if (allSuccess)
+                    {
+                        this.nlog_linux.Info("Deploy Version：" + dateTimeFolderNameParent);
+                        if (gitModel != null) gitModel.SubmitSelectedChanges(fileList, publishPath);
+                        allfailServerList = new List<Server>();
+                        Notice("Deploy Success", $"[Total]:{serverList.Count},[Fail]:{failCount}");
+
+                    }
+                    else
+                    {
+                        Notice("Deploy End With Error", $"[Total]:{serverList.Count},[Fail]:{failCount}");
+                        if (!stop_linux_cancel_token)
+                        {
+                            allfailServerList = new List<Server>();
+                            allfailServerList.AddRange(failServerList);
+                            EnableLinuxServiceRetry(true);
+                            //看是否要重试
+                            Condition.WaitOne();
+                            if (!stop_linux_cancel_token)
+                            {
+                                retryTimes++;
+                                goto RETRY_WINDOWSSERVICE2;
+                            }
+                        }
+
+                    }
+
+                    zipBytes = null;
+                    LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local publish folder  ==> ");
+                    publisEvent2.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
+                    publisEvent2.LoggerName = "rich_linuxservice_log";
+                    this.nlog_linux.Log(publisEvent2);
+                    this.nlog_linux.Info($"-----------------Deploy End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
+
+                }
+                catch (Exception ex1)
+                {
+                    this.nlog_linux.Error(ex1);
+                }
+                finally
+                {
+                    //记录发布日志
+                    SaveLog(publishPath, dateTimeFolderNameParent, nlog_linux);
+                    ProgressPercentageForLinuxService = 0;
+                    ProgressCurrentHostForLinuxService = null;
+                    EnableForLinuxService(true);
+                    gitModel?.Dispose();
+                }
+            }, System.Threading.Tasks.TaskCreationOptions.LongRunning).Start();
+        }
+
     }
 }
