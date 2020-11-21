@@ -151,7 +151,8 @@ namespace AntDeployAgentWindows.Util
 
                 foreach (var item in File.ReadAllLines(filePath))
                 {
-                    logger?.Invoke("【systemctl】" + item);
+                    if(!string.IsNullOrEmpty(item))
+                        logger?.Invoke("【systemctl】" + item);
                 }
 
                 return string.Empty;

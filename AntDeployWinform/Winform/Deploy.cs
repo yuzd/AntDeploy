@@ -8475,7 +8475,7 @@ namespace AntDeployWinform.Winform
             }
 
             combo_linux_env_SelectedIndexChanged(null, null);
-
+            execFilePath = execFilePath.Replace(".dll", "");
             this.rich_linuxservice_log.Text = "";
             this.nlog_linux.Info($"linux Service excute name:{execFilePath}");
 
