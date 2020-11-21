@@ -29,6 +29,7 @@ namespace AntDeployWinform.Models
         public bool LinuxServiceEnableIncrement { get; set; }
         public bool WindowsServiceEnableSelectDeploy { get; set; }
         public bool LinuxServiceEnableSelectDeploy { get; set; }
+        public bool LinuxServiceNotifySystemd { get; set; }
 
         public bool DockerEnableIncrement { get; set; }
         public bool DockerServiceEnableSelectDeploy { get; set; }

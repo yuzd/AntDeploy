@@ -73,11 +73,11 @@
             // 
             // btn_continue
             // 
+            resources.ApplyResources(this.btn_continue, "btn_continue");
             this.btn_continue.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
             this.btn_continue.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
             this.btn_continue.BackColor = System.Drawing.Color.Transparent;
             this.btn_continue.DialogResult = System.Windows.Forms.DialogResult.OK;
-            resources.ApplyResources(this.btn_continue, "btn_continue");
             this.btn_continue.ForeColor = System.Drawing.Color.Black;
             this.btn_continue.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(188)))), ((int)(((byte)(210)))));
             this.btn_continue.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(167)))), ((int)(((byte)(188)))));
@@ -100,11 +100,11 @@
             // 
             // comboBox_service_start_type
             // 
+            resources.ApplyResources(this.comboBox_service_start_type, "comboBox_service_start_type");
             this.comboBox_service_start_type.FormattingEnabled = true;
             this.comboBox_service_start_type.Items.AddRange(new object[] {
             resources.GetString("comboBox_service_start_type.Items"),
             resources.GetString("comboBox_service_start_type.Items1")});
-            resources.ApplyResources(this.comboBox_service_start_type, "comboBox_service_start_type");
             this.comboBox_service_start_type.Name = "comboBox_service_start_type";
             // 
             // FirstService

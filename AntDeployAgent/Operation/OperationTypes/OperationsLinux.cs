@@ -71,19 +71,25 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
         {
             logger("Start to linux Service Start :" + this.args.AppName);
 
-            LinuxServiceHelper.ServiceRun(this.args.AppName, this.args.TempPhysicalPath,this.args.UseOfflineHtm, this.logger);
+
+            LinuxServiceHelper.ServiceRun(this.args.AppName, this.args.TempPhysicalPath,this.args.UseOfflineHtm,this.args.ApplicationPoolName, this.logger);
 
             var runSuccess = false;
 
+            logger("Wait 5Senconds to Check service state :" + retryTimes);
             Thread.Sleep(5000);
 
-            CopyHelper.RunCommand($"systemctl status {this.args.AppName}", null, (msg) =>
+            CopyHelper.RunCommand($"sudo systemctl status {this.args.AppName}", null, (msg) =>
             {
                 if (!string.IsNullOrEmpty(msg))
                 {
-                    this.logger.Invoke("【Command】"+msg);
+                    this.logger.Invoke(msg);
                     var msg1 = msg.ToLower();
-                    if (msg1.Contains("active:") && msg1.Contains("running"))
+                    if (msg1.Contains("activating (start)"))
+                    {
+                        runSuccess = true;
+                    }
+                    else if (msg1.Contains("active:") && ( msg1.Contains("running")))
                     {
                         runSuccess = true;
                     }
@@ -92,7 +98,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
 
             if (!runSuccess)
             {
-                throw new Exception("【Error】Start service Fail ");
+                throw new Exception("Start service Fail ");
             }
         }
 

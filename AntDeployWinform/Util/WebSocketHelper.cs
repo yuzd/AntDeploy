@@ -33,6 +33,12 @@ namespace AntDeployWinform.Util
         private ClientWebSocket webSocket = null;
         private bool _dispose = false;
         private WebClient client;
+
+        /// <summary>
+        /// 每隔2s获取一次
+        /// </summary>
+        private static System.Threading.Timer mDetectionTimer;
+
         public WebSocketClient(Logger _receiveAction, HttpLogger _loggerKey)
         {
             this.receiveAction = _receiveAction;
@@ -48,6 +54,8 @@ namespace AntDeployWinform.Util
                 if (_dispose) return;
 
                 _dispose = true;
+
+                mDetectionTimer?.Dispose();
 
                 HttpLogger?.Dispose();
 
@@ -89,6 +97,10 @@ namespace AntDeployWinform.Util
                 receiveAction.Debug(!string.IsNullOrEmpty(key)
                     ? $"WebSocket Connect Success:{key},Server excute logs will accept from websocket"
                     : $"WebSocket Connect Fail,Server excute logs will accept from http request");
+                if (!string.IsNullOrEmpty(key))
+                {
+                    mDetectionTimer = new System.Threading.Timer(Ping, null, 1000 * 2, 1000 * 2);
+                }
                 new Task(async () =>
                 {
                     try
@@ -155,7 +167,26 @@ namespace AntDeployWinform.Util
             return string.Empty;
         }
 
-
+        private void Ping(object state)
+        {
+            try
+            {
+                if (_dispose) return;
+                mDetectionTimer?.Change(-1, -1);
+                try
+                {
+                    SendText("ping").ConfigureAwait(false);
+                }
+                finally
+                {
+                    mDetectionTimer?.Change(1000 * 2, 1000 * 2);
+                }
+            }
+            catch (Exception)
+            {
+            }
+          
+        }
         public async Task SendText(string text)
         {
             try

@@ -52,7 +52,8 @@ namespace AntDeployAgentWindows.Util
 
         public static bool ProcessXcopy(string SolutionDirectory, string TargetDirectory, string exculedFile,Action<string> logger = null)
         {
-            return RunCommand($"sudo rsync -av --exclude-from={exculedFile} ${SolutionDirectory}/ ${TargetDirectory}", null, logger);
+            logger?.Invoke($"sudo rsync -a --exclude-from={exculedFile} {SolutionDirectory}/ {TargetDirectory}");
+            return RunCommand($"sudo rsync -a --exclude-from={exculedFile} {SolutionDirectory}/ {TargetDirectory}", null, logger);
         }
 
         /// <summary>
@@ -69,8 +70,9 @@ namespace AntDeployAgentWindows.Util
         {
             if (!System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
+                logger?.Invoke($"sudo rsync -a {SolutionDirectory}/ {TargetDirectory}");
                 //linux服务器需要换别的命令
-                return RunCommand($"sudo rsync -av ${SolutionDirectory}/ ${TargetDirectory}", null, logger);
+                return RunCommand($"sudo rsync -a {SolutionDirectory}/ {TargetDirectory}", null, logger);
             }
 
 
@@ -164,13 +166,9 @@ namespace AntDeployAgentWindows.Util
                     var outputArr = output.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                     foreach (var outPut in outputArr)
                     {
+                        if(string.IsNullOrEmpty(outPut)) continue;
                         logger?.Invoke(prefix + "【Command】 " + outPut);
                     }
-                }
-                else
-                {
-                    output = "return empty info.";
-                    logger?.Invoke("【Command】 " + output);
                 }
 
                 try

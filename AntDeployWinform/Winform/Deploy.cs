@@ -752,6 +752,7 @@ namespace AntDeployWinform.Winform
             this.checkBox_Increment_linux_service.Checked = PluginConfig.LinuxServiceEnableIncrement;
             this.checkBox_select_deploy_service.Checked = PluginConfig.WindowsServiceEnableSelectDeploy;
             this.checkBox_select_deploy_linuxservice.Checked = PluginConfig.LinuxServiceEnableSelectDeploy;
+            this.checkBox_select_type_linuxservice.Checked = PluginConfig.LinuxServiceNotifySystemd;
             this.checkBox_select_deploy_iis.Checked = PluginConfig.IISEnableSelectDeploy;
             this.txt_folder_deploy.Text = PluginConfig.DeployFolderPath;
             this.txt_http_proxy.Text = PluginConfig.DeployHttpProxy;
@@ -895,6 +896,7 @@ namespace AntDeployWinform.Winform
                 PluginConfig.IISEnableSelectDeploy = this.checkBox_select_deploy_iis.Checked;
                 PluginConfig.WindowsServiceEnableSelectDeploy = this.checkBox_select_deploy_service.Checked;
                 PluginConfig.LinuxServiceEnableSelectDeploy = this.checkBox_select_deploy_linuxservice.Checked;
+                PluginConfig.LinuxServiceNotifySystemd = this.checkBox_select_type_linuxservice.Checked;
                 PluginConfig.DeployFolderPath = this.txt_folder_deploy.Text.Trim();
                 PluginConfig.DeployHttpProxy = this.txt_http_proxy.Text.Trim();
 
@@ -3696,26 +3698,10 @@ namespace AntDeployWinform.Winform
 
                 if (this.tabPage_progress.Tag is Dictionary<string, ProgressBox> progressBoxList1)
                 {
-                    if (ProgressBox.IsEnableGroup)
+                    foreach (var box in progressBoxList1)
                     {
-                        foreach (var box in progressBoxList1)
-                        {
-                            if (box.Value.CheckBox.Visible && box.Value.CheckBox.Checked)
-                            {
-                                box.Value.Enable(flag);
-                                break;
-                            }
-                        }
+                        box.Value.Enable(flag);
                     }
-                    else
-                    {
-                        foreach (var box in progressBoxList1)
-                        {
-                            box.Value.Enable(flag);
-                            break;
-                        }
-                    }
-                    
                 }
 
                 this.b_iis_rollback.Enabled = flag;
@@ -4306,24 +4292,9 @@ namespace AntDeployWinform.Winform
             {
                 if (this.tabPage_windows_service.Tag is Dictionary<string, ProgressBox> progressBoxList1)
                 {
-                    if (ProgressBox.IsEnableGroup)
+                    foreach (var box in progressBoxList1)
                     {
-                        foreach (var box in progressBoxList1)
-                        {
-                            if (box.Value.CheckBox.Visible && box.Value.CheckBox.Checked)
-                            {
-                                box.Value.Enable(flag);
-                                break;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        foreach (var box in progressBoxList1)
-                        {
-                            box.Value.Enable(flag);
-                            break;
-                        }
+                        box.Value.Enable(flag);
                     }
                 }
                 this.b_windows_service_rollback.Enabled = flag;
@@ -4389,24 +4360,9 @@ namespace AntDeployWinform.Winform
             {
                 if (this.tabPage_linux_service.Tag is Dictionary<string, ProgressBox> progressBoxList1)
                 {
-                    if (ProgressBox.IsEnableGroup)
+                    foreach (var box in progressBoxList1)
                     {
-                        foreach (var box in progressBoxList1)
-                        {
-                            if (box.Value.CheckBox.Visible && box.Value.CheckBox.Checked)
-                            {
-                                box.Value.Enable(flag);
-                                break;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        foreach (var box in progressBoxList1)
-                        {
-                            box.Value.Enable(flag);
-                            break;
-                        }
+                        box.Value.Enable(flag);
                     }
                 }
                 this.b_linux_service_rollback.Enabled = flag;
@@ -4426,6 +4382,7 @@ namespace AntDeployWinform.Winform
                 this.page_window_service.Enabled = flag;
                 this.pag_advance_setting.Enabled = flag;
                 checkBox_select_deploy_linuxservice.Enabled = flag;
+                checkBox_select_type_linuxservice.Enabled = flag;
                 if (flag)
                 {
                     this.rich_iis_log.Text = "";
@@ -7309,24 +7266,9 @@ namespace AntDeployWinform.Winform
             {
                 if (this.tabPage_docker.Tag is Dictionary<string, ProgressBox> progressBoxList1)
                 {
-                    if (ProgressBox.IsEnableGroup)
+                    foreach (var box in progressBoxList1)
                     {
-                        foreach (var box in progressBoxList1)
-                        {
-                            if (box.Value.CheckBox.Visible && box.Value.CheckBox.Checked)
-                            {
-                                box.Value.Enable(flag);
-                                break;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        foreach (var box in progressBoxList1)
-                        {
-                            box.Value.Enable(flag);
-                            break;
-                        }
+                        box.Value.Enable(flag);
                     }
                 }
 
@@ -7938,6 +7880,12 @@ namespace AntDeployWinform.Winform
                     return;
                 }
 
+                if (ServerType == ServerType.LINUXSERVICE && string.IsNullOrEmpty(DeployConfig.LinuxServiveConfig.ServiceName))
+                {
+                    MessageBoxEx.Show(this, "ServiceName is not correct!");
+                    return;
+                }
+
                 var server = Server as Server;
                 if (server == null)
                 {
@@ -7967,6 +7915,10 @@ namespace AntDeployWinform.Winform
                         {
                             Enable(false, true);
                         }
+                        else if (ServerType == ServerType.LINUXSERVICE)
+                        {
+                            EnableForLinuxService(false, true);
+                        }
                         else
                         {
                             EnableForWindowsService(false, true);
@@ -7976,10 +7928,10 @@ namespace AntDeployWinform.Winform
                             {
                                 Token = server.Token,
                                 Mac = CodingHelper.GetMacAddress(),
-                                Type = ServerType == ServerType.IIS ? "iis" : "winservice",
-                                Name = ServerType == ServerType.IIS ? DeployConfig.IIsConfig.WebSiteName : DeployConfig.WindowsServiveConfig.ServiceName,
+                                Type = ServerType == ServerType.LINUXSERVICE ? "linux": ServerType == ServerType.IIS ? "iis" : "winservice",
+                                Name = ServerType == ServerType.LINUXSERVICE ? DeployConfig.LinuxServiveConfig.ServiceName : ServerType == ServerType.IIS ? DeployConfig.IIsConfig.WebSiteName : DeployConfig.WindowsServiveConfig.ServiceName,
                                 WithArgs = true
-                            }, ServerType == ServerType.IIS ? nlog_iis : nlog_windowservice);
+                            }, ServerType == ServerType.LINUXSERVICE ?nlog_linux : ServerType == ServerType.IIS ? nlog_iis : nlog_windowservice);
 
                         if (getVersionResult == null)
                         {
@@ -8010,6 +7962,10 @@ namespace AntDeployWinform.Winform
                         if (ServerType == ServerType.IIS)
                         {
                             Enable(true);
+                        }
+                        else if (ServerType == ServerType.LINUXSERVICE)
+                        {
+                            EnableForLinuxService(true);
                         }
                         else
                         {
@@ -8109,7 +8065,10 @@ namespace AntDeployWinform.Winform
         {
             PluginConfig.LinuxServiceEnableSelectDeploy = checkBox_select_deploy_linuxservice.Checked;
         }
-
+        private void checkBox_select_type_linuxservice_CheckedChanged(object sender, EventArgs e)
+        {
+            PluginConfig.LinuxServiceNotifySystemd = checkBox_select_type_linuxservice.Checked;
+        }
         private void btn_linux_service_retry_Click(object sender, EventArgs e)
         {
             btn_linux_service_retry.Visible = false;
@@ -8127,7 +8086,271 @@ namespace AntDeployWinform.Winform
 
         private void b_linux_service_rollback_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath) && !_project.IsNetcorePorject)
+            {
+                MessageBoxEx.Show(this, Strings.NowNetcoreProject);
+                return;
+            }
 
+            var serviceName = this.txt_linuxservice_name.Text.Trim();
+            if (serviceName.Length < 1)
+            {
+                MessageBoxEx.Show(this, Strings.ServiceNameRequired);
+                return;
+            }
+            if (!CodingHelper.IsNatural_Number(serviceName))
+            {
+                MessageBoxEx.Show(this, Strings.ServiceNameMustBeNature);
+                return;
+            }
+
+            DeployConfig.LinuxServiveConfig.ServiceName = serviceName;
+
+
+            var envName = this.combo_linux_env.SelectedItem as string;
+            if (string.IsNullOrEmpty(envName))
+            {
+                MessageBoxEx.Show(this, Strings.SelectEnv);
+                return;
+            }
+
+            //fire url
+            if (CheckFireUri(ServerType.LINUXSERVICE))
+            {
+                MessageBoxEx.Show(this, Strings.FireUrlInvaid);
+                return;
+            }
+
+            var serverList = DeployConfig.Env.Where(r => r.Name.Equals(envName)).Select(r => r.ServerList)
+                .FirstOrDefault();
+
+            if (serverList == null || !serverList.Any())
+            {
+                MessageBoxEx.Show(this, Strings.EnvHaveNoServer);
+                return;
+            }
+
+            var serverHostList = string.Join(Environment.NewLine, serverList.Select(r => r.Host).ToList());
+
+            var confirmResult = MessageBoxEx.Show(this,
+                Strings.DeployRollBackConfirm + Environment.NewLine + serverHostList,
+                Strings.RollBackConfirm,
+                MessageBoxButtons.YesNo);
+            if (confirmResult != DialogResult.Yes)
+            {
+                return;
+            }
+
+            combo_linux_env_SelectedIndexChanged(null, null);
+
+            this.rich_linuxservice_log.Text = "";
+            this.nlog_linux.Info($"linux Service name:{DeployConfig.LinuxServiveConfig.ServiceName}");
+            //this.tabControl_window_service.SelectedIndex = 1;
+            PrintCommonLog(this.nlog_linux);
+
+            new Task(async () =>
+            {
+                try
+                {
+                    EnableForLinuxService(false, true);
+
+                    var loggerId = Guid.NewGuid().ToString("N");
+
+                    this.nlog_linux.Info($"-----------------Rollback Start[Ver:{Vsix.VERSION}]-----------------");
+                    var allSuccess = true;
+                    var failCount = 0;
+                    foreach (var server in serverList)
+                    {
+                        BuildEnd(this.tabPage_linux_service, server.Host);
+                        UpdatePackageProgress(this.tabPage_linux_service, server.Host, 100);
+                        UpdateUploadProgress(this.tabPage_linux_service, server.Host, 100);
+
+
+                        if (string.IsNullOrEmpty(server.Token))
+                        {
+                            this.nlog_linux.Error($"Host:{getHostDisplayName(server)} Rollback skip,Token is null or empty!");
+                            UpdateDeployProgress(this.tabPage_linux_service, server.Host, false);
+                            allSuccess = false;
+                            failCount++;
+                            continue;
+                        }
+
+                        if (string.IsNullOrEmpty(server.Host))
+                        {
+                            this.nlog_linux.Error($"Host:{getHostDisplayName(server)} Rollback fail,Server Host is Empty!");
+                            UpdateDeployProgress(this.tabPage_linux_service, server.Host, false);
+                            allSuccess = false;
+                            failCount++;
+                            continue;
+                        }
+
+                        this.nlog_linux.Info($"Host:{getHostDisplayName(server)} Start get rollBack version list");
+
+
+                        var getVersionResult = await WebUtil.HttpPostAsync<GetVersionResult>(
+                            $"http://{server.Host}/version", new
+                            {
+                                Token = server.Token,
+                                Type = "linux",
+                                Mac = CodingHelper.GetMacAddress(),
+                                Name = DeployConfig.LinuxServiveConfig.ServiceName,
+                                WithArgs = true
+                            }, nlog_linux);
+
+                        if (getVersionResult == null)
+                        {
+                            this.nlog_linux.Error($"Host:{getHostDisplayName(server)} get rollBack version list fail");
+                            UpdateDeployProgress(this.tabPage_linux_service, server.Host, false);
+                            allSuccess = false;
+                            failCount++;
+                            continue;
+                        }
+
+                        if (!string.IsNullOrEmpty(getVersionResult.Msg))
+                        {
+                            this.nlog_linux.Error($"Host:{getHostDisplayName(server)} get rollBack version list fail：" + getVersionResult.Msg);
+                            UpdateDeployProgress(this.tabPage_linux_service, server.Host, false);
+                            allSuccess = false;
+                            failCount++;
+                            continue;
+                        }
+
+                        var versionList = getVersionResult.Data;
+
+                        if (versionList == null || versionList.Count <= 1)
+                        {
+                            this.nlog_linux.Error($"Host:{getHostDisplayName(server)} get rollBack version list count:0");
+                            UpdateDeployProgress(this.tabPage_linux_service, server.Host, false);
+                            allSuccess = false;
+                            failCount++;
+                            continue;
+                        }
+                        this.nlog_linux.Info($"Host:{getHostDisplayName(server)} get rollBack version list count:{versionList.Count}");
+                        this.BeginInvokeLambda(() =>
+                        {
+                            RollBack rolleback = new RollBack(versionList.ToList());
+                            rolleback.SetTitle($"Current Server:{getHostDisplayName(server)}");
+                            var r = rolleback.ShowDialog();
+                            if (r == DialogResult.Cancel)
+                            {
+                                _rollBackVersion = null;
+                            }
+                            else
+                            {
+                                _rollBackVersion = new RollBackVersion
+                                {
+                                    Version = rolleback.SelectRollBackVersion
+                                };
+                            }
+                            Condition.Set();
+                        });
+                        Condition.WaitOne();
+                        if (_rollBackVersion == null || string.IsNullOrEmpty(_rollBackVersion.Version))
+                        {
+                            this.nlog_linux.Error($"Host:{getHostDisplayName(server)} Rollback canceled!");
+                            UpdateDeployProgress(this.tabPage_linux_service, server.Host, false);
+                            allSuccess = false;
+                            failCount++;
+                            continue;
+                        }
+                        HttpRequestClient httpRequestClient = new HttpRequestClient();
+                        httpRequestClient.SetFieldValue("publishType", "linux_rollback");
+                        httpRequestClient.SetFieldValue("id", loggerId);
+                        httpRequestClient.SetFieldValue("serviceName", DeployConfig.LinuxServiveConfig.ServiceName);
+                        httpRequestClient.SetFieldValue("deployFolderName", _rollBackVersion.Version);
+                        httpRequestClient.SetFieldValue("Token", server.Token);
+                        HttpLogger HttpLogger = new HttpLogger
+                        {
+                            Key = loggerId,
+                            Url = $"http://{server.Host}/logger?key=" + loggerId
+                        };
+                        WebSocketClient webSocket = new WebSocketClient(this.nlog_linux, HttpLogger);
+
+                        var haveError = false;
+                        try
+                        {
+                            var hostKey = await webSocket.Connect($"ws://{server.Host}/socket");
+                            httpRequestClient.SetFieldValue("wsKey", hostKey);
+
+                            var uploadResult = await httpRequestClient.Upload($"http://{server.Host}/rollback",
+                                (client) => { client.Proxy = GetProxy(this.nlog_linux); });
+                            webSocket.ReceiveHttpAction(true);
+                            haveError = webSocket.HasError;
+                            if (haveError)
+                            {
+                                allSuccess = false;
+                                failCount++;
+                                this.nlog_linux.Error($"Host:{getHostDisplayName(server)},Rollback Fail,Skip to Next");
+                                UpdateDeployProgress(this.tabPage_linux_service, server.Host, false);
+                            }
+                            else
+                            {
+                                if (uploadResult.Item1)
+                                {
+                                    this.nlog_linux.Info($"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2}");
+                                    //fire the website
+                                    if (!string.IsNullOrEmpty(server.LinuxServiceFireUrl))
+                                    {
+                                        LogEventInfo publisEvent22 = new LogEventInfo(LogLevel.Info, "", "Start to Fire Url,TimeOut：10senconds  ==> ");
+                                        publisEvent22.Properties["ShowLink"] = server.LinuxServiceFireUrl;
+                                        publisEvent22.LoggerName = "rich_linuxservice_log";
+                                        this.nlog_linux.Log(publisEvent22);
+
+                                        var fireRt = WebUtil.IsHttpGetOk(server.LinuxServiceFireUrl, this.nlog_linux);
+                                        if (fireRt)
+                                        {
+                                            UpdateDeployProgress(this.tabPage_linux_service, server.Host, true);
+                                            this.nlog_linux.Info($"Host:{getHostDisplayName(server)},Success Fire Url");
+                                        }
+                                        else
+                                        {
+                                            failCount++;
+                                            allSuccess = false;
+                                            UpdateDeployProgress(this.tabPage_linux_service, server.Host, false);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        UpdateDeployProgress(this.tabPage_linux_service, server.Host, true);
+                                    }
+                                }
+                                else
+                                {
+                                    allSuccess = false;
+                                    failCount++;
+                                    this.nlog_linux.Error($"Host:{getHostDisplayName(server)},Response:{uploadResult.Item2},Skip to Next");
+                                    UpdateDeployProgress(this.tabPage_linux_service, server.Host, false);
+                                }
+                            }
+
+                        }
+                        catch (Exception ex)
+                        {
+                            allSuccess = false;
+                            failCount++;
+                            this.nlog_linux.Error($"Fail Rollback,Host:{getHostDisplayName(server)},Response:{ex.Message},Skip to Next");
+                            UpdateDeployProgress(this.tabPage_linux_service, server.Host, false);
+                        }
+                        finally
+                        {
+                            await webSocket?.Dispose();
+                        }
+                    }
+
+                    this.nlog_linux.Info($"-----------------Rollback End,[Total]:{serverList.Count},[Fail]:{failCount}-----------------");
+                    Notice("Rollback End", $"[Total]:{serverList.Count},[Fail]:{failCount}");
+                }
+                catch (Exception ex1)
+                {
+                    this.nlog_linux.Error(ex1);
+                    return;
+                }
+                finally
+                {
+                    EnableForLinuxService(true);
+                }
+
+            }, System.Threading.Tasks.TaskCreationOptions.LongRunning).Start();
         }
 
         private void b_linuxservice_deploy_Click(object sender, EventArgs e)
@@ -8597,6 +8820,7 @@ namespace AntDeployWinform.Winform
                         httpRequestClient.SetFieldValue("pc", System.Environment.MachineName);
                         httpRequestClient.SetFieldValue("localIp", CodingHelper.GetLocalIPAddress());
                         httpRequestClient.SetFieldValue("deployFolderName", dateTimeFolderName);
+                        httpRequestClient.SetFieldValue("notify", this.PluginConfig.LinuxServiceNotifySystemd?"true":"");
                         httpRequestClient.SetFieldValue("physicalPath", PhysicalPath);
                         httpRequestClient.SetFieldValue("env", DeployConfig.LinuxServiveConfig.EnvParam);
                         httpRequestClient.SetFieldValue("useDotnet", !useDotnet?"true":"");//true 代表需要 服务器上用dotnet xxx.dll的方式启动服务
@@ -8887,6 +9111,7 @@ namespace AntDeployWinform.Winform
                         httpRequestClient.SetFieldValue("id", loggerId);
                         httpRequestClient.SetFieldValue("execFilePath", execFilePath);
                         httpRequestClient.SetFieldValue("remark", remark);
+                        httpRequestClient.SetFieldValue("notify", this.PluginConfig.LinuxServiceNotifySystemd ? "true" : "");
                         httpRequestClient.SetFieldValue("mac", CodingHelper.GetMacAddress());
                         httpRequestClient.SetFieldValue("pc", System.Environment.MachineName);
                         httpRequestClient.SetFieldValue("localIp", CodingHelper.GetLocalIPAddress());

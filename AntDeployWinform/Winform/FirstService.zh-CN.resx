@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="label1.Text" xml:space="preserve">
-    <value>您填写的Windows服务名称在远程服务器没有找到，如果您想要新创建的话，请填写下面的值：(选填)</value>
+    <value>您填写的服务名称在远程服务器没有找到，如果您想要新创建的话，请填写下面的值：(选填)</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="txt_service_description.Location" type="System.Drawing.Point, System.Drawing">
@@ -152,6 +152,6 @@
     <value>87, 73</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>Windows服务不存在需要创建</value>
+    <value>服务不存在需要创建</value>
   </data>
 </root>

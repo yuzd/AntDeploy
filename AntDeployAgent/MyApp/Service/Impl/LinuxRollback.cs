@@ -24,7 +24,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
         {
             try
             {
-                var projectPath = Path.Combine(Setting.PublishWindowServicePathFolder, _serviceName);
+                var projectPath = Path.Combine(Setting.PublishLinuxPathFolder, _serviceName);
                 _projectPublishFolder = Path.Combine(projectPath, _dateTimeFolderName);
                 if (!Directory.Exists(_projectPublishFolder))
                 {
@@ -76,26 +76,25 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     return service.Item1;
                 }
 
-                var projectLocation = service.Item2;
-                if (string.IsNullOrEmpty(projectLocation))
+                var projectLocationFolder = service.Item2;
+                if (string.IsNullOrEmpty(projectLocationFolder))
+                {
+                    return $"can not find executable folder of service:{_serviceName}";
+                }
+
+                if (!Directory.Exists(projectLocationFolder))
+                {
+                    //如果目录不存在 那么就重新建立
+                    return $"can not find executable folder of service:{_serviceName}";
+                }
+
+                if (string.IsNullOrEmpty(service.Item3))
                 {
                     return $"can not find executable path of service:{_serviceName}";
                 }
-
-                var projectLocationFolder = string.Empty;
-                try
+                if (!File.Exists(service.Item3))
                 {
-                    projectLocation = projectLocation.Replace("\"", "");
-                    projectLocationFolder = new FileInfo(projectLocation).DirectoryName;
-                    if (!Directory.Exists(projectLocationFolder))
-                    {
-                        //如果目录不存在 那么就重新建立
-                        return $"can not find executable path of service:{_serviceName}";
-                    }
-                }
-                catch (Exception)
-                {
-                    return "ServiceFolder is not correct ===> " + projectLocationFolder;
+                    return $"can not find executable path of service:{_serviceName}";
                 }
 
                 Log("Start to rollback Linux Service:");
@@ -109,6 +108,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     AppName = _serviceName,
                     AppFolder = projectLocationFolder,
                     DeployFolder = deployFolder,
+                    ApplicationPoolName = service.Item3,//执行文件
                     NoBackup = true,
                 };
                 var ops = new OperationsLinux(args, Log);

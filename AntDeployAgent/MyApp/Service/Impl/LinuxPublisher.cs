@@ -22,6 +22,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
         private string _serviceDescription;//服务描述
         private string _serviceStartType;//是否设置重启机器自动重启
         private string _env;//环境变量？
+        private bool _notify;//是否设置需要通知systemd
         private List<string> _backUpIgnoreList = new List<string>();//需要排除backup的列表
         private string _projectPublishFolder;//发布目录
         private string _dateTimeFolderName;//版本
@@ -33,7 +34,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
         public override string DeployExcutor(FormHandler.FormItem fileItem)
         {
-            var projectPath = Path.Combine(Setting.PublishWindowServicePathFolder, _serviceName);
+            var projectPath = Path.Combine(Setting.PublishLinuxPathFolder, _serviceName);
             _projectPublishFolder = Path.Combine(projectPath, !string.IsNullOrEmpty(_dateTimeFolderName) ? _dateTimeFolderName : DateTime.Now.ToString("yyyyMMddHHmmss"));
             EnsureProjectFolder(projectPath);
             EnsureProjectFolder(_projectPublishFolder);
@@ -130,8 +131,8 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     var execFullPath = Path.Combine(firstDeployFolder, _serviceExecName);
                     if (!File.Exists(execFullPath))
                     {
-                        try { Directory.Delete(firstDeployFolder, true); } catch (Exception) { }
-                        return $"systemctl service exec file not found : {execFullPath} ";
+                        //try { Directory.Delete(firstDeployFolder, true); } catch (Exception) { }
+                        return $"systemctl service exec file not found : {execFullPath}";
                     }
 
                     //安装服务
@@ -143,7 +144,8 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     try
                     {
                         var err = LinuxServiceHelper.CreateServiceFileAndRun(this._serviceName, firstDeployFolder, _serviceExecName,
-                            (_serviceDescription ?? string.Empty), _env, string.IsNullOrEmpty(_serviceStartType)|| _serviceStartType.Equals("Auto"), Log);
+                            (_serviceDescription ?? string.Empty), _env, execFullPath,
+                            string.IsNullOrEmpty(_serviceStartType)|| _serviceStartType.Equals("Auto"), _notify, Log);
                         if (!string.IsNullOrEmpty(err))
                         {
                             return err;
@@ -153,13 +155,17 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
                         Thread.Sleep(5000);
 
-                        CopyHelper.RunCommand($"systemctl status {this._serviceName}", null, (msg) =>
+                        CopyHelper.RunCommand($"sudo systemctl status {this._serviceName}", null, (msg) =>
                         {
                             if (!string.IsNullOrEmpty(msg))
                             {
-                                this.Log("【Command】" + msg);
+                                this.Log(msg);
                                 var msg1 = msg.ToLower();
-                                if (msg1.Contains("active:") && msg1.Contains("running"))
+                                if (msg1.Contains("activating (start)"))
+                                {
+                                    runSuccess = true;
+                                }
+                                else if (msg1.Contains("active:") && msg1.Contains("running"))
                                 {
                                     runSuccess = true;
                                 }
@@ -172,23 +178,19 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                         }
 
                         Log($"install systemctl service success");
-                        Log($"start systemctl service success");
                         return string.Empty;
                     }
                     catch (Exception e2)
                     {
-                        return $"install windows service fail:" + e2.Message;
+                        return $"install linux service fail:" + e2.Message;
                     }
 
                 }
 
-                var projectLocationFolder = string.Empty;
-                var projectLocation = service.Item2;
+                var projectLocationFolder = service.Item2;
 
                 try
                 {
-                    projectLocation = projectLocation.Replace("\"", "");
-                    projectLocationFolder = new FileInfo(projectLocation).DirectoryName;
                     if (!Directory.Exists(projectLocationFolder))
                     {
                         //如果目录不存在 那么就重新建立
@@ -200,9 +202,20 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     return "ServiceFolder is not correct ===> " + projectLocationFolder;
                 }
 
+                if (string.IsNullOrEmpty(projectLocationFolder))
+                {
+                    return "ServiceFolder is not correct ===> " + projectLocationFolder;
+                }
+
+                var fullExcutePath = Path.Combine(projectLocationFolder, _serviceExecName);
+                if (!File.Exists(fullExcutePath))
+                {
+                    return $"systemctl service exec file not found : {fullExcutePath}";
+                }
+
                 //保证有service描述文件 等后面实际要用到
-                LinuxServiceHelper.CreateServiceFile(this._serviceName, deployFolder, _serviceExecName,
-                    (_serviceDescription ?? string.Empty), _env, Log);
+                LinuxServiceHelper.CreateServiceFile(this._serviceName, projectLocationFolder, _serviceExecName,
+                    (_serviceDescription ?? string.Empty), _env,this._notify, Log);
 
                 Arguments args = new Arguments
                 {
@@ -210,11 +223,13 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     BackupFolder = Setting.BackUpLinuxPathFolder,
                     AppName = _serviceName,
                     AppFolder = projectLocationFolder,
-                    TempPhysicalPath = Path.Combine(deployFolder, $"{_serviceName}.service"),//服务文件描述
+                    TempPhysicalPath = Path.Combine(projectLocationFolder, $"{_serviceName}.service"),//服务文件描述
                     DeployFolder = deployFolder,
+                    ApplicationPoolName = fullExcutePath,
                     BackUpIgnoreList = this._backUpIgnoreList,
                     UseOfflineHtm = string.IsNullOrEmpty(_serviceStartType) || _serviceStartType.Equals("Auto"),
-                    NoBackup = !Setting.NeedBackUp
+                    NoBackup = !Setting.NeedBackUp,
+                    Site1 =_env
                 };
 
                 Log("Start to deploy linux Service:");
@@ -358,6 +373,12 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
             if (envType != null && !string.IsNullOrEmpty(envType.TextValue))
             {
                 _env = envType.TextValue;
+            }
+
+            var notify = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("notify"));
+            if (notify != null && !string.IsNullOrEmpty(notify.TextValue) && notify.TextValue.ToLower() == "true")
+            {
+                _notify = true;
             }
 
             var backUpIgnoreList = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("backUpIgnore"));

@@ -129,32 +129,28 @@ namespace AntDeployAgentWindows.Model
             }
         }
 
-        public static void ClearOldFolders(bool isIis,string projectFolderName)
+        public static void ClearOldFolders(bool isIis,string projectFolderName,Action<string> logger = null)
         {
-
-            new Task(() =>
+            logger?.Invoke($"start check old published folder :{projectFolderName}");
+            if (isIis)
             {
-                if (isIis)
+                //是否是linux下的
+                if (!System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
-                    //是否是linux下的
-                    if (!System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                    {
-                        CheckOldFolder(PublishLinuxPathFolder, projectFolderName);
-                        CheckOldFolder(BackUpLinuxPathFolder, projectFolderName);
-                        return;
-                    }
-
-                    CheckOldFolder(PublishIIsPathFolder, projectFolderName);
-                    CheckOldFolder(BackUpIIsPathFolder, projectFolderName);
+                    CheckOldFolder(PublishLinuxPathFolder, projectFolderName, logger);
+                    CheckOldFolder(BackUpLinuxPathFolder, projectFolderName, logger);
+                    return;
                 }
-                else
-                {
 
-                    CheckOldFolder(PublishWindowServicePathFolder, projectFolderName);
-                    CheckOldFolder(BackUpWindowServicePathFolder, projectFolderName);
-                }
-            
-            }).Start();
+                CheckOldFolder(PublishIIsPathFolder, projectFolderName, logger);
+                CheckOldFolder(BackUpIIsPathFolder, projectFolderName, logger);
+            }
+            else
+            {
+
+                CheckOldFolder(PublishWindowServicePathFolder, projectFolderName);
+                CheckOldFolder(BackUpWindowServicePathFolder, projectFolderName);
+            }
         }
 
         //        private static void OnVerify(object state)
@@ -185,7 +181,7 @@ namespace AntDeployAgentWindows.Model
         /// </summary>
         /// <param name="path"></param>
         /// <param name="projectFolder"></param>
-        private static void CheckOldFolder(string path, string projectFolder)
+        private static void CheckOldFolder(string path, string projectFolder, Action<string> logger = null)
         {
             try
             {
@@ -252,6 +248,7 @@ namespace AntDeployAgentWindows.Model
                         }
                         try
                         {
+                            logger?.Invoke($"delete old folder:{target.FullName}");
                             Directory.Delete(target.FullName, true);
                         }
                         catch
