@@ -8506,15 +8506,15 @@ namespace AntDeployWinform.Winform
                     if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath))
                     {
                         var path = publishPath + "\\";
-                       
-                        if (string.IsNullOrEmpty(PluginConfig.NetCorePublishMode))
-                        {
-                            runtime = " --runtime linux-x64";
-                        }
-                        else
-                        {
-                            runtime = PluginConfig.GetNetCorePublishRuntimeArg();
-                        }
+                        runtime = " --runtime linux-x64";
+                        //if (string.IsNullOrEmpty(PluginConfig.NetCorePublishMode))
+                        //{
+                        
+                        //}
+                        //else
+                        //{
+                        //    runtime = PluginConfig.GetNetCorePublishRuntimeArg();
+                        //}
 
                         //如果runtime 为空的话 代表服务端需要用dotnet 来运行了
 

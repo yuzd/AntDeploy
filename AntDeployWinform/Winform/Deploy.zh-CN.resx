@@ -239,8 +239,8 @@
   <data name="checkBox_select_deploy_service.Text" xml:space="preserve">
     <value>选择指定文件发布</value>
   </data>
-  <data name="b_linuxservice_deploy.Text" xml:space="preserve">
-    <value>发布</value>
+  <data name="btn_linux_service_retry.Text" xml:space="preserve">
+    <value>重试</value>
   </data>
   <data name="label49.Location" type="System.Drawing.Point, System.Drawing">
     <value>26, 96</value>
@@ -250,9 +250,6 @@
   </data>
   <data name="label49.Text" xml:space="preserve">
     <value>环境变量:</value>
-  </data>
-  <data name="btn_linux_service_retry.Text" xml:space="preserve">
-    <value>重试</value>
   </data>
   <data name="tabPage_linux_service.Text" xml:space="preserve">
     <value>进度展示</value>
@@ -287,6 +284,9 @@
   <data name="label50.Text" xml:space="preserve">
     <value>环境名称:</value>
   </data>
+  <data name="b_linuxservice_deploy.Text" xml:space="preserve">
+    <value>发布</value>
+  </data>
   <data name="b_linux_service_rollback.Text" xml:space="preserve">
     <value>回滚</value>
   </data>
@@ -301,6 +301,9 @@
   </data>
   <data name="btn_linux_server_testAll.Text" xml:space="preserve">
     <value>测试连接全部</value>
+  </data>
+  <data name="label52.Location" type="System.Drawing.Point, System.Drawing">
+    <value>415, 287</value>
   </data>
   <data name="chk_global_useCheckBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>180, 16</value>
@@ -382,9 +385,5 @@
   </data>
   <data name="label15.Text" xml:space="preserve">
     <value>指定特定文件夹发布：</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>Inherit</value>
   </data>
 </root>
