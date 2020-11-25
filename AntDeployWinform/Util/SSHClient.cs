@@ -462,7 +462,7 @@ namespace AntDeployWinform.Util
             return dic.Values.ToList().OrderByDescending(r => r.Item3).Select(r => new Tuple<string, string>(r.Item1, r.Item2)).ToList();
         }
 
-        public void PublishZip(Stream stream, string destinationFolder, string destinationfileName,Func<bool> continuetask = null)
+        public void PublishZip(Stream stream, string destinationFolder, string destinationfileName,Func<bool> continuetask = null,Dictionary<string,Tuple<string,bool>> chineseMapper = null)
         {
             bool CheckCancel()
             {
@@ -498,6 +498,7 @@ namespace AntDeployWinform.Util
                 }
                 CreateServerDirectoryIfItDoesntExist(deploySaveFolder);
                 Upload(stream, destinationFolder, destinationfileName);
+
             }
             catch (Exception)
             {
@@ -537,6 +538,13 @@ namespace AntDeployWinform.Util
                 return;
             }
             _logger($"unzip success: {publishFolder}", NLog.LogLevel.Info);
+
+            if (chineseMapper != null && chineseMapper.Any())
+            {
+                //中文解压乱码问题
+                ChineseMapping(publishFolder,chineseMapper);
+            }
+           
 
             var isExistDockFile = true;
             if (!Increment)
@@ -1363,6 +1371,44 @@ namespace AntDeployWinform.Util
             }
         }
 
+        private void ChineseMapping(string from,Dictionary<string, Tuple<string, bool>> chineseMapper)
+        {
+            if (!from.EndsWith("/")) from = from + "/";
+            //先改文件夹
+            foreach (var mapper in chineseMapper.Where(r => r.Value.Item2))
+            {
+                //找到服务器上的 用mv命令
+                var frompath = from + mapper.Value.Item1;
+                var topath = from + mapper.Key;
+                var command = $"sudo \\mv -rf {frompath} {topath}";
+                var cmd =_sshClient.RunCommand(command);
+                if (cmd.ExitStatus != 0)
+                {
+                    this._logger($"change name From [{frompath}] To [{topath}] fail", LogLevel.Error);
+                }
+                else
+                {
+                    this._logger($"change name Files From [{frompath}] To [{topath}]", LogLevel.Info);
+                }
+            }
+            //再改文件
+            foreach (var mapper in chineseMapper.Where(r => !r.Value.Item2))
+            {
+                //找到服务器上的 用mv命令
+                var frompath = from + mapper.Value.Item1;
+                var topath = from + mapper.Key;
+                var command = $"sudo \\mv -rf {frompath} {topath}";
+                var cmd = _sshClient.RunCommand(command);
+                if (cmd.ExitStatus != 0)
+                {
+                    this._logger($"change name From [{frompath}] To [{topath}] fail", LogLevel.Error);
+                }
+                else
+                {
+                    this._logger($"change name Files From [{frompath}] To [{topath}]", LogLevel.Info);
+                }
+            }
+        }
 
         private void CopyCpFolder(string from ,string to)
         {

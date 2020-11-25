@@ -12,6 +12,7 @@ namespace AntDeployWinform.Util
     {
         private static readonly char s_pathSeperator = '/';
 
+        private static Regex ChineseReg = new Regex(@"[\u4e00-\u9fa5]");
 
         public static List<FileSystemInfo> GetSelectDeployFiles(List<string> fileList)
         {
@@ -110,14 +111,15 @@ namespace AntDeployWinform.Util
                 foreach (string s in dl)
                 {
                     if (s.EndsWith("\\.git")) continue;
-                    list.Add(new DirectoryInfo(s));
+                    var d = new DirectoryInfo(s);
+                    list.Add(d);
                     RecurseFind(s, list);
                 }
             }
         }
 
 
-        public static byte[] DoCreateFromDirectory(string sourceDirectoryName, List<string> fileList, CompressionLevel? compressionLevel, bool includeBaseDirectory, List<string> ignoreList = null, Func<int,bool> progress = null,bool isSelectDeploy = false, Logger logger = null)
+        public static byte[] DoCreateFromDirectory(string sourceDirectoryName, List<string> fileList, CompressionLevel? compressionLevel, bool includeBaseDirectory, List<string> ignoreList = null, Func<int,bool> progress = null,bool isSelectDeploy = false, Logger logger = null, Dictionary<string, Tuple<string,bool>> chineseFileParser = null)
         {
             //if (ignoreList != null)
             //{
@@ -137,7 +139,6 @@ namespace AntDeployWinform.Util
                     var allFile = isSelectDeploy? GetSelectDeployFiles(fileList) : GetFullFileInfo(fileList, sourceDirectoryName);
                     var allFileLength = allFile.Count();
                     var index = 0;
-
                     foreach (FileSystemInfo enumerateFileSystemInfo in allFile)
                     {
                         index++;
@@ -153,7 +154,9 @@ namespace AntDeployWinform.Util
                       
                         flag = false;
                         int length = enumerateFileSystemInfo.FullName.Length - fullName.Length;
+                      
                         string entryName = EntryFromPath(enumerateFileSystemInfo.FullName, fullName.Length, length);
+                        //相对地址
                         var mathchEntryName = includeBaseDirectory? entryName.Substring(directoryInfo.Name.Length): "/"+entryName;
                         if (ignoreList != null && ignoreList.Count > 0)
                         {
@@ -200,13 +203,93 @@ namespace AntDeployWinform.Util
                             {
                                 logger?.Info($"Find Dockerfile In Package: {mathchEntryName}");
                             }
-                            DoCreateEntryFromFile(destination, enumerateFileSystemInfo.FullName, entryName, compressionLevel);
+
+
+
+                            //如果文件名称包含中文的 记录下
+                            if (chineseFileParser != null)
+                            {
+                                var newName = enumerateFileSystemInfo.Name;
+                                var isChinese = false;
+                                //只需要看文件有没有中文
+                                if (ChineseReg.IsMatch(newName))
+                                {
+                                    newName = CodingHelper.MD5(enumerateFileSystemInfo.Name);
+                                    isChinese = true;
+                                }
+
+                                var newFolder = entryName.Replace(enumerateFileSystemInfo.Name, "");
+                                //是哪个文件夹下的
+                                var temp = "";
+                                if (chineseFileParser.TryGetValue(newFolder, out var folderChinese))
+                                {
+                                    temp = newFolder;//说明文件夹有中文 被替换 temp 是有中文的
+                                    //文件夹被转化过
+                                    newFolder = folderChinese.Item1 + "/";
+                                    isChinese = true;
+                                }
+
+                                var newmathchEntryName = !string.IsNullOrEmpty(newFolder) ? newFolder + newName : newName;
+                                if (isChinese)
+                                {
+                                    if (!string.IsNullOrEmpty(temp))
+                                    {
+                                        newmathchEntryName = temp + newName;
+                                        if (!entryName.Equals(newmathchEntryName))
+                                        {
+                                            chineseFileParser.Add(entryName, new Tuple<string, bool>(newmathchEntryName, false));
+                                        }
+                                    }
+                                    else
+                                    {
+                                        chineseFileParser.Add(entryName, new Tuple<string, bool>(newmathchEntryName, false));
+                                    }
+                                }
+                                DoCreateEntryFromFile(destination, enumerateFileSystemInfo.FullName, newmathchEntryName, compressionLevel);
+
+                            }
+                            else
+                            {
+                                DoCreateEntryFromFile(destination, enumerateFileSystemInfo.FullName, entryName, compressionLevel);
+                            }
                         }
                         else
                         {
+                            //文件夹名称也会乱码
                             DirectoryInfo possiblyEmptyDir = enumerateFileSystemInfo as DirectoryInfo;
+                            if (chineseFileParser != null)
+                            {
+                                var arr = entryName.Split('/');
+                                var newarr = new List<string>();
+                                var isChinese = false;
+                                foreach (var item in arr)
+                                {
+                                    if (string.IsNullOrEmpty(item))
+                                    {
+                                        newarr.Add(item);
+                                        continue;
+                                    }
+                                    //如果文件夹里面含有中文
+                                    if (ChineseReg.IsMatch(item))
+                                    {
+                                        newarr.Add(CodingHelper.MD5(item));
+                                        isChinese = true;
+                                    }
+                                    else
+                                    {
+                                        newarr.Add(item);
+                                    }
+                                }
+
+                                if (isChinese)
+                                {
+                                    var newmathchEntryName = string.Join("/", newarr);
+                                    chineseFileParser.Add(entryName + "/", new Tuple<string, bool>(newmathchEntryName, true));
+                                }
+                            }
                             if (possiblyEmptyDir != null && IsDirEmpty(possiblyEmptyDir))
                                 destination.CreateEntry(entryName + s_pathSeperator.ToString());
+
                         }
                     }
 
@@ -231,7 +314,7 @@ namespace AntDeployWinform.Util
         /// <param name="compressionLevel"></param>
         /// <param name="includeBaseDirectory"></param>
         /// <returns></returns>
-        public static byte[] DoCreateFromDirectory(string sourceDirectoryName, CompressionLevel? compressionLevel, bool includeBaseDirectory, List<string> ignoreList = null, Func<int,bool> progress = null, Logger logger = null)
+        public static byte[] DoCreateFromDirectory(string sourceDirectoryName, CompressionLevel? compressionLevel, bool includeBaseDirectory, List<string> ignoreList = null, Func<int,bool> progress = null, Logger logger = null, Dictionary<string, Tuple<string, bool>> chineseFileParser = null)
         {
             //if (ignoreList != null)
             //{
@@ -313,13 +396,91 @@ namespace AntDeployWinform.Util
                                 logger?.Info($"Find Dockerfile In Package: {entryName}");
                             }
                             haveFile = true;
-                            DoCreateEntryFromFile(destination, enumerateFileSystemInfo.FullName, entryName, compressionLevel);
+
+                            //如果文件名称包含中文的 记录下
+                            if (chineseFileParser != null)
+                            {
+                                var newName = enumerateFileSystemInfo.Name;
+                                var isChinese = false;
+                                //只需要看文件有没有中文
+                                if (ChineseReg.IsMatch(newName))
+                                {
+                                    newName = CodingHelper.MD5(enumerateFileSystemInfo.Name);
+                                    isChinese = true;
+                                }
+
+                                var newFolder = entryName.Replace(enumerateFileSystemInfo.Name, "");
+                                //是哪个文件夹下的
+                                var temp = "";
+                                if (chineseFileParser.TryGetValue(newFolder, out var folderChinese))
+                                {
+                                    temp = newFolder;//说明文件夹有中文 被替换 temp 是有中文的
+                                    //文件夹被转化过
+                                    newFolder = folderChinese.Item1 + "/";
+                                    isChinese = true;
+                                }
+
+                                var newmathchEntryName = !string.IsNullOrEmpty(newFolder) ? newFolder + newName : newName;
+                                if (isChinese)
+                                {
+                                    if (!string.IsNullOrEmpty(temp))
+                                    {
+                                        newmathchEntryName = temp + newName;
+                                        if (!entryName.Equals(newmathchEntryName))
+                                        {
+                                            chineseFileParser.Add(entryName, new Tuple<string, bool>(newmathchEntryName, false));
+                                        }
+                                    }
+                                    else
+                                    {
+                                        chineseFileParser.Add(entryName, new Tuple<string, bool>(newmathchEntryName, false));
+                                    }
+                                }
+                                DoCreateEntryFromFile(destination, enumerateFileSystemInfo.FullName, newmathchEntryName, compressionLevel);
+
+                            }
+                            else
+                            {
+                                DoCreateEntryFromFile(destination, enumerateFileSystemInfo.FullName, entryName, compressionLevel);
+                            }
                         }
                         else
                         {
+                            //文件夹名称也会乱码
                             DirectoryInfo possiblyEmptyDir = enumerateFileSystemInfo as DirectoryInfo;
+                            if (chineseFileParser != null)
+                            {
+                                var arr = entryName.Split('/');
+                                var newarr = new List<string>();
+                                var isChinese = false;
+                                foreach (var item in arr)
+                                {
+                                    if (string.IsNullOrEmpty(item))
+                                    {
+                                        newarr.Add(item);
+                                        continue;
+                                    }
+                                    //如果文件夹里面含有中文
+                                    if (ChineseReg.IsMatch(item))
+                                    {
+                                        newarr.Add(CodingHelper.MD5(item));
+                                        isChinese = true;
+                                    }
+                                    else
+                                    {
+                                        newarr.Add(item);
+                                    }
+                                }
+
+                                if (isChinese)
+                                {
+                                    var newmathchEntryName = string.Join("/", newarr);
+                                    chineseFileParser.Add(entryName+"/", new Tuple<string, bool>(newmathchEntryName,true));
+                                }
+                            }
                             if (possiblyEmptyDir != null && IsDirEmpty(possiblyEmptyDir))
                                 destination.CreateEntry(entryName + s_pathSeperator.ToString());
+
                         }
                     }
 
@@ -333,7 +494,7 @@ namespace AntDeployWinform.Util
                 {
                     throw new Exception("no file was packaged!");
                 }
-                 return outStream.ToArray();
+                return outStream.ToArray();
             }
         }
 

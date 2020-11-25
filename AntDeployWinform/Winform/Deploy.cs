@@ -6528,6 +6528,8 @@ namespace AntDeployWinform.Winform
                    }
 
                    MemoryStream zipBytes = null;
+                   //含有中文的文件名映射表
+                   var chineseFileList = new Dictionary<string,Tuple<string,bool>>();
                    var gitChangeFileCount = 0;
                    if (gitModel != null)
                    {
@@ -6573,13 +6575,14 @@ namespace AntDeployWinform.Winform
                        try
                        {
                            this.nlog_docker.Info($"package ignoreList Count:{ignoreList.Count}");
+                           //这里要记录下fileList 里面有哪些是包含中文的文件名称
                            var b_zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, fileList, CompressionLevel.Optimal,false,
                                ignoreList,
                                (progressValue) =>
                                {
                                    UpdatePackageProgress(this.tabPage_docker, serverList.First().Host, progressValue); //打印打包记录
                                    return stop_docker_cancel_token;
-                               }, this.PluginConfig.DockerServiceEnableSelectDeploy,nlog_docker);
+                               }, this.PluginConfig.DockerServiceEnableSelectDeploy,nlog_docker, chineseFileList);
                            if (b_zipBytes.Length < 1)
                            {
                                this.nlog_docker.Error("package fail");
@@ -6626,13 +6629,14 @@ namespace AntDeployWinform.Winform
                        try
                        {
                            this.nlog_docker.Info($"package ignoreList Count:{ignoreList.Count}");
+                           //这里要记录下fileList 里面有哪些是包含中文的文件名称
                            var b_zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, fileList, CompressionLevel.Optimal, false,
                                ignoreList,
                                (progressValue) =>
                                {
                                    UpdatePackageProgress(this.tabPage_docker, serverList.First().Host, progressValue); //打印打包记录
                                    return stop_docker_cancel_token;
-                               }, this.PluginConfig.DockerServiceEnableSelectDeploy, nlog_docker);
+                               }, this.PluginConfig.DockerServiceEnableSelectDeploy, nlog_docker, chineseFileList);
                            if (b_zipBytes.Length < 1)
                            {
                                this.nlog_docker.Error("package fail");
@@ -6648,19 +6652,20 @@ namespace AntDeployWinform.Winform
                            return;
                        }
                    }
-
+                  
                    if (zipBytes == null)
                    {
                        try
                        {
                            this.nlog_docker.Info($"package ignoreList Count:{ignoreList.Count}");
+                           //这里也得记录出有包含中文的文件名称
                            var b_zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, CompressionLevel.Optimal, false,
                                ignoreList,
                                (progressValue) =>
                                {
                                    UpdatePackageProgress(this.tabPage_docker, serverList.First().Host, progressValue); //打印打包记录
                                    return stop_docker_cancel_token;
-                               }, nlog_docker);
+                               }, nlog_docker, chineseFileList);
                            if (b_zipBytes.Length < 1)
                            {
                                this.nlog_docker.Error("package fail");
@@ -6684,6 +6689,10 @@ namespace AntDeployWinform.Winform
                        PackageError(this.tabPage_docker,serverList.First().Host);
                        return;
                    }
+#if DEBUG
+                   using (FileStream file = new FileStream("package.zip", FileMode.Create, System.IO.FileAccess.Write))
+                       zipBytes.CopyTo(file);
+#endif
                    var packageSize = (zipBytes.Length / 1024 / 1024);
                    this.nlog_docker.Info($"package success,package size:{(packageSize > 0 ? (packageSize + "") : "<1")}M");
                    //执行 上传
@@ -6825,7 +6834,7 @@ namespace AntDeployWinform.Winform
 
                            try
                            {
-                               sshClient.PublishZip(zipBytes, "antdeploy", "publish.zip", () => !stop_docker_cancel_token);
+                               sshClient.PublishZip(zipBytes, "antdeploy", "publish.zip", () => !stop_docker_cancel_token,chineseFileList);
                                UpdateUploadProgress(this.tabPage_docker, server.Host, 100);
 
                                if (stop_docker_cancel_token)
