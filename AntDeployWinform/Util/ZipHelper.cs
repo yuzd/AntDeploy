@@ -234,10 +234,10 @@ namespace AntDeployWinform.Util
                                 {
                                     if (!string.IsNullOrEmpty(temp))
                                     {
-                                        newmathchEntryName = temp + newName;
-                                        if (!entryName.Equals(newmathchEntryName))
+                                        var newmathchEntryName1 = temp + newName;
+                                        if (!entryName.Equals(newmathchEntryName1))
                                         {
-                                            chineseFileParser.Add(entryName, new Tuple<string, bool>(newmathchEntryName, false));
+                                            chineseFileParser.Add(entryName, new Tuple<string, bool>(newmathchEntryName1, false));
                                         }
                                     }
                                     else
@@ -425,10 +425,10 @@ namespace AntDeployWinform.Util
                                 {
                                     if (!string.IsNullOrEmpty(temp))
                                     {
-                                        newmathchEntryName = temp + newName;
-                                        if (!entryName.Equals(newmathchEntryName))
+                                        var newmathchEntryName1 = temp + newName;
+                                        if (!entryName.Equals(newmathchEntryName1))
                                         {
-                                            chineseFileParser.Add(entryName, new Tuple<string, bool>(newmathchEntryName, false));
+                                            chineseFileParser.Add(entryName, new Tuple<string, bool>(newmathchEntryName1, false));
                                         }
                                     }
                                     else

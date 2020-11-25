@@ -1378,9 +1378,10 @@ namespace AntDeployWinform.Util
             foreach (var mapper in chineseMapper.Where(r => r.Value.Item2))
             {
                 //找到服务器上的 用mv命令
-                var frompath = from + mapper.Value.Item1;
-                var topath = from + mapper.Key;
-                var command = $"sudo \\mv -rf {frompath} {topath}";
+                var frompath = from + (mapper.Value.Item1).Replace(" ","\\ ");
+                var topath = from + mapper.Key.Replace(" ", "\\ ");
+                //_sftpClient.RenameFile(frompath, topath);
+                var command = $"sudo \\mv {frompath} {topath}";
                 var cmd =_sshClient.RunCommand(command);
                 if (cmd.ExitStatus != 0)
                 {
@@ -1395,9 +1396,9 @@ namespace AntDeployWinform.Util
             foreach (var mapper in chineseMapper.Where(r => !r.Value.Item2))
             {
                 //找到服务器上的 用mv命令
-                var frompath = from + mapper.Value.Item1;
-                var topath = from + mapper.Key;
-                var command = $"sudo \\mv -rf {frompath} {topath}";
+                var frompath = from + (mapper.Value.Item1).Replace(" ", "\\ ");
+                var topath = from + mapper.Key.Replace(" ", "\\ ");
+                var command = $"sudo \\mv {frompath} {topath}";
                 var cmd = _sshClient.RunCommand(command);
                 if (cmd.ExitStatus != 0)
                 {
