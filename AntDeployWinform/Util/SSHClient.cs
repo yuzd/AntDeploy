@@ -1387,10 +1387,6 @@ namespace AntDeployWinform.Util
                 {
                     this._logger($"change name From [{frompath}] To [{topath}] fail", LogLevel.Error);
                 }
-                else
-                {
-                    this._logger($"change name Files From [{frompath}] To [{topath}]", LogLevel.Info);
-                }
             }
             //再改文件
             foreach (var mapper in chineseMapper.Where(r => !r.Value.Item2))
@@ -1403,10 +1399,6 @@ namespace AntDeployWinform.Util
                 if (cmd.ExitStatus != 0)
                 {
                     this._logger($"change name From [{frompath}] To [{topath}] fail", LogLevel.Error);
-                }
-                else
-                {
-                    this._logger($"change name Files From [{frompath}] To [{topath}]", LogLevel.Info);
                 }
             }
         }

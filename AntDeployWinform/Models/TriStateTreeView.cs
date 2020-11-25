@@ -282,7 +282,15 @@ namespace TriStateTreeView
             // Send a TVM_SETIMAGELIST with TVSIL_STATE.
             if (!_ImageListSent)
             {
-                SendMessage(hWnd, (UInt32)TVM_SETIMAGELIST, (UInt32)TVSIL_STATE, (UInt32)CheckBoxStateImageList.Handle);
+                try
+                {
+                    SendMessage(hWnd, (UInt32)TVM_SETIMAGELIST, (UInt32)TVSIL_STATE, (UInt32)CheckBoxStateImageList.Handle);
+                }
+                catch (Exception e)
+                {
+                    //igfnore
+                }
+              
                 _ImageListSent = true;
             }
 
