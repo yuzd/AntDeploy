@@ -3130,10 +3130,10 @@
     <value>1</value>
   </data>
   <data name="panel_rich_config_log.Location" type="System.Drawing.Point, System.Drawing">
-    <value>19, 258</value>
+    <value>19, 269</value>
   </data>
   <data name="panel_rich_config_log.Size" type="System.Drawing.Size, System.Drawing">
-    <value>597, 190</value>
+    <value>597, 179</value>
   </data>
   <data name="panel_rich_config_log.TabIndex" type="System.Int32, mscorlib">
     <value>30</value>
@@ -3328,7 +3328,7 @@
     <value>18</value>
   </data>
   <data name="groupBox1.Text" xml:space="preserve">
-    <value>Windows Server BackUp IgnoreRule</value>
+    <value>Token Server BackUp IgnoreRule</value>
   </data>
   <data name="&gt;&gt;groupBox1.Name" xml:space="preserve">
     <value>groupBox1</value>

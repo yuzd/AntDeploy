@@ -1231,7 +1231,15 @@ namespace AntDeployWinform.Util
                 _logger($"create docker file: {path}", NLog.LogLevel.Info);
                 using (var writer = _sftpClient.CreateText(path))
                 {
-                    writer.WriteLine($"FROM mcr.microsoft.com/dotnet/core/aspnet:{sdkVersion}");
+                    //超过3.1版本的docker hub地址有变化
+                    //docker pull mcr.microsoft.com/dotnet/aspnet:5.0
+                    var versionNumber = sdkVersion.Replace(".", "");
+                    int number = 0;
+                    int.TryParse(versionNumber, out number);
+                    writer.WriteLine(number > 31
+                        ? $"FROM mcr.microsoft.com/dotnet/aspnet:{sdkVersion}"
+                        : $"FROM mcr.microsoft.com/dotnet/core/aspnet:{sdkVersion}");
+
                     _logger($"FROM mcr.microsoft.com/dotnet/core/aspnet:{sdkVersion}", NLog.LogLevel.Info);// microsoft/dotnet:{sdkVersion}-aspnetcore-runtime
 
                     writer.WriteLine($"COPY . /publish");

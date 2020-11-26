@@ -14,15 +14,28 @@ namespace AntDeployWinform.Util
 
         private static Regex ChineseReg = new Regex(@"[\u4e00-\u9fa5]");
 
+        /// <summary>
+        /// 选择指定文件没有文件夹
+        /// </summary>
+        /// <param name="fileList"></param>
+        /// <returns></returns>
         public static List<FileSystemInfo> GetSelectDeployFiles(List<string> fileList)
         {
             List<FileSystemInfo> findlist = new List<FileSystemInfo>();
+            Dictionary<string,FileSystemInfo> folderDiclist = new Dictionary<string, FileSystemInfo>();
             foreach (var filePath in fileList)
             {
-                findlist.Add(new FileInfo(filePath));
+                var f = new FileInfo(filePath);
+                findlist.Add(f);
+                if (f.DirectoryName != null && !folderDiclist.ContainsKey(f.DirectoryName))
+                {
+                    folderDiclist.Add(f.DirectoryName,f.Directory);
+                }
             }
 
-            return findlist;
+            var fff = folderDiclist.Select(r => r.Value).ToList();
+            fff.AddRange(findlist);
+            return fff;
         }
 
 
@@ -118,7 +131,19 @@ namespace AntDeployWinform.Util
             }
         }
 
-
+        /// <summary>
+        /// 增量
+        /// </summary>
+        /// <param name="sourceDirectoryName"></param>
+        /// <param name="fileList"></param>
+        /// <param name="compressionLevel"></param>
+        /// <param name="includeBaseDirectory"></param>
+        /// <param name="ignoreList"></param>
+        /// <param name="progress"></param>
+        /// <param name="isSelectDeploy"></param>
+        /// <param name="logger"></param>
+        /// <param name="chineseFileParser"></param>
+        /// <returns></returns>
         public static byte[] DoCreateFromDirectory(string sourceDirectoryName, List<string> fileList, CompressionLevel? compressionLevel, bool includeBaseDirectory, List<string> ignoreList = null, Func<int,bool> progress = null,bool isSelectDeploy = false, Logger logger = null, Dictionary<string, Tuple<string,bool>> chineseFileParser = null)
         {
             //if (ignoreList != null)
@@ -221,7 +246,7 @@ namespace AntDeployWinform.Util
                                 var newFolder = entryName.Replace(enumerateFileSystemInfo.Name, "");
                                 //是哪个文件夹下的
                                 var temp = "";
-                                if (chineseFileParser.TryGetValue(newFolder, out var folderChinese))
+                                if (!string.IsNullOrEmpty(newFolder) && chineseFileParser.TryGetValue(newFolder, out var folderChinese))
                                 {
                                     temp = newFolder;//说明文件夹有中文 被替换 temp 是有中文的
                                     //文件夹被转化过
@@ -244,6 +269,7 @@ namespace AntDeployWinform.Util
                                     {
                                         chineseFileParser.Add(entryName, new Tuple<string, bool>(newmathchEntryName, false));
                                     }
+                                    //logger?.Info(newmathchEntryName);
                                 }
                                 DoCreateEntryFromFile(destination, enumerateFileSystemInfo.FullName, newmathchEntryName, compressionLevel);
 
@@ -255,8 +281,9 @@ namespace AntDeployWinform.Util
                         }
                         else
                         {
-                            //文件夹名称也会乱码
+                            //文件夹名称也会乱码 选择指定文件不会走到这里
                             DirectoryInfo possiblyEmptyDir = enumerateFileSystemInfo as DirectoryInfo;
+                            logger?.Info(entryName);
                             if (chineseFileParser != null)
                             {
                                 var arr = entryName.Split('/');
@@ -412,7 +439,7 @@ namespace AntDeployWinform.Util
                                 var newFolder = entryName.Replace(enumerateFileSystemInfo.Name, "");
                                 //是哪个文件夹下的
                                 var temp = "";
-                                if (chineseFileParser.TryGetValue(newFolder, out var folderChinese))
+                                if (!string.IsNullOrEmpty(newFolder) && chineseFileParser.TryGetValue(newFolder, out var folderChinese))
                                 {
                                     temp = newFolder;//说明文件夹有中文 被替换 temp 是有中文的
                                     //文件夹被转化过

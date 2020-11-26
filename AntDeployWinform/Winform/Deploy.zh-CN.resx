@@ -242,6 +242,9 @@
   <data name="checkBox_select_deploy_service.Text" xml:space="preserve">
     <value>选择指定文件发布</value>
   </data>
+  <data name="b_linuxservice_deploy.Text" xml:space="preserve">
+    <value>发布</value>
+  </data>
   <data name="btn_linux_service_retry.Text" xml:space="preserve">
     <value>重试</value>
   </data>
@@ -287,11 +290,11 @@
   <data name="label50.Text" xml:space="preserve">
     <value>环境名称:</value>
   </data>
-  <data name="b_linuxservice_deploy.Text" xml:space="preserve">
-    <value>发布</value>
-  </data>
   <data name="b_linux_service_rollback.Text" xml:space="preserve">
     <value>回滚</value>
+  </data>
+  <data name="groupBox1.Text" xml:space="preserve">
+    <value>Token服务器备份排除规则</value>
   </data>
   <data name="page_winserver.Text" xml:space="preserve">
     <value>Token服务器</value>
@@ -385,9 +388,5 @@
   </data>
   <data name="label15.Text" xml:space="preserve">
     <value>指定特定文件夹发布：</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>Inherit</value>
   </data>
 </root>
