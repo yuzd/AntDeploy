@@ -814,6 +814,7 @@ namespace AntDeployWinform.Util
                         server_port = needAddPort ? ServerPort : port;
                     }
 
+                    //如果dockerfile没有指定EXPOSE需要加进去
                     var addV = false;
                     if (!string.IsNullOrEmpty(NetCoreEnvironment) || needAddPort)
                     {
@@ -881,7 +882,7 @@ namespace AntDeployWinform.Util
                             }
                         }
                     }
-
+                    //发布的时候界面上有填volume 也存在dockerfile 要记录到dockerfile中 不然回滚的时候就没了
                     if (!addV)
                     {
 
@@ -932,8 +933,40 @@ namespace AntDeployWinform.Util
                 }
             }
 
+            //一个项目 对应服务器上 一个文件管理地址 一个docker镜像 一个container
+            //如果other参数里面指定了 name的话 镜像得换成name 容器指定的名称也得换成name
+            //找到other里面的name值
+            var specialName = PorjectName;
+            var continarName = "d_" + PorjectName;
+            var runContainerName = $"--name {continarName}";
+
+            if (!string.IsNullOrEmpty(this.Other) && this.Other.Contains("--name "))
+            {
+                var arrOther = this.Other.Split(new string[] {"--name "}, StringSplitOptions.None);
+                if(arrOther.Length == 2 && !string.IsNullOrEmpty(arrOther[1]))
+                {
+                    var specialName1 = arrOther[1].Split(' ').FirstOrDefault();
+                    if (!string.IsNullOrEmpty(specialName1))
+                    {
+                        _logger($"--name in Other Args is : {specialName1}", NLog.LogLevel.Warn);
+                        specialName = specialName1;
+                        continarName = specialName;
+                        runContainerName = $"--name {continarName}";
+                    }
+                }
+                else
+                {
+                    _logger($"--name in Other Args is invaild", NLog.LogLevel.Warn);
+                }
+            }
+            else
+            {
+                _logger($"--name in Other Args is not defined", NLog.LogLevel.Warn);
+            }
+
+
             //执行docker build 生成一个镜像
-            var dockerBuildResult = RunSheell($"sudo docker build --no-cache --rm -t {PorjectName}:{ClientDateTimeFolderName} -f {dockFilePath} {publishFolder} ");
+            var dockerBuildResult = RunSheell($"sudo docker build --no-cache --rm -t {specialName}:{ClientDateTimeFolderName} -f {dockFilePath} {publishFolder} ");
             if (!dockerBuildResult)
             {
                 _logger($"build image fail", NLog.LogLevel.Error);
@@ -944,8 +977,6 @@ namespace AntDeployWinform.Util
             {
                 goto DockerServiceBuildImageOnlyLEVEL;
             }
-
-            var continarName = "d_" + PorjectName;
 
 
             //先发送退出命令
@@ -995,7 +1026,7 @@ namespace AntDeployWinform.Util
             string volume = GetVolume();
 
             // 根据image启动一个容器
-            var dockerRunRt = RunSheell($"sudo docker run -d --name {continarName}{volume}{(string.IsNullOrEmpty(this.Other)?"":$" {this.Other}")} --restart=always {(!server_port.Equals("0") && !port.Equals("0")? $"-p {server_port}:{port}":"")} {PorjectName}:{ClientDateTimeFolderName}");
+            var dockerRunRt = RunSheell($"sudo docker run -d {runContainerName}{volume}{(string.IsNullOrEmpty(this.Other)?"":$" {this.Other}")} --restart=always {(!server_port.Equals("0") && !port.Equals("0")? $"-p {server_port}:{port}":"")} {specialName}:{ClientDateTimeFolderName}");
 
             if (!dockerRunRt)
             {
@@ -1010,7 +1041,7 @@ namespace AntDeployWinform.Util
                 _logger($"ignore docker run", NLog.LogLevel.Warn);
             }
             //把旧的image给删除
-            r1 = _sshClient.RunCommand("sudo docker images --format '{{.Repository}}:{{.Tag}}:{{.ID}}' | grep '^" + PorjectName + ":'");
+            r1 = _sshClient.RunCommand("sudo docker images --format '{{.Repository}}:{{.Tag}}:{{.ID}}' | grep '^" + specialName + ":'");
             Tuple<string, string, string> currentImageInfo = null;
             if (r1.ExitStatus == 0 && !string.IsNullOrEmpty(r1.Result))
             {
@@ -1018,11 +1049,12 @@ namespace AntDeployWinform.Util
                 var clearOldImages = false;
                 foreach (var imageName in deleteImageArr)
                 {
-                    if (imageName.StartsWith($"{PorjectName}:{ClientDateTimeFolderName}:"))
+                    if (imageName.StartsWith($"{specialName}:{ClientDateTimeFolderName}:"))
                     {
                         var imageArr2 = imageName.Split(':');
                         if (imageArr2.Length == 3)
                         {
+                            //当前的
                             currentImageInfo = new Tuple<string, string, string>(imageArr2[0], imageArr2[1], imageArr2[2]);
                         }
                         //当前版本
@@ -1037,7 +1069,7 @@ namespace AntDeployWinform.Util
                         {
                             if (!clearOldImages)
                             {
-                                _logger($"start to clear old images of name:{PorjectName}", LogLevel.Info);
+                                _logger($"start to clear old images of name:{specialName}", LogLevel.Info);
                                 clearOldImages = true;
                             }
                             _logger($"sudo docker rmi {imageArr[2]} [{imageName}]", LogLevel.Info);

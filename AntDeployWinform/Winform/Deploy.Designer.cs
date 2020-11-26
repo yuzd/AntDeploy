@@ -63,17 +63,17 @@
             this.t_docker_delete_days = new System.Windows.Forms.TextBox();
             this.label24 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.txt_docker_volume = new AltoControls.AltoTextBox();
+            this.label28 = new System.Windows.Forms.Label();
             this.label46 = new System.Windows.Forms.Label();
             this.txt_docker_other = new System.Windows.Forms.TextBox();
-            this.label28 = new System.Windows.Forms.Label();
-            this.txt_docker_volume = new AltoControls.AltoTextBox();
-            this.label27 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
-            this.txt_docker_envname = new System.Windows.Forms.TextBox();
             this.label23 = new System.Windows.Forms.Label();
             this.txt_docker_port = new System.Windows.Forms.TextBox();
             this.label45 = new System.Windows.Forms.Label();
             this.b_docker_rollback = new AltoControls.AltoButton();
+            this.txt_docker_envname = new System.Windows.Forms.TextBox();
+            this.label27 = new System.Windows.Forms.Label();
             this.combo_docker_env = new System.Windows.Forms.ComboBox();
             this.label22 = new System.Windows.Forms.Label();
             this.label_docker_demo = new System.Windows.Forms.Label();
@@ -219,6 +219,7 @@
             this.txt_msbuild_path = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
             this.btn_shang = new AltoControls.AltoButton();
+            this.label53 = new System.Windows.Forms.Label();
             this.tabcontrol.SuspendLayout();
             this.page_web_iis.SuspendLayout();
             this.tab_iis.SuspendLayout();
@@ -581,20 +582,34 @@
             // 
             // groupBox5
             // 
+            this.groupBox5.Controls.Add(this.label53);
+            this.groupBox5.Controls.Add(this.txt_docker_volume);
+            this.groupBox5.Controls.Add(this.label28);
             this.groupBox5.Controls.Add(this.label46);
             this.groupBox5.Controls.Add(this.txt_docker_other);
-            this.groupBox5.Controls.Add(this.label28);
-            this.groupBox5.Controls.Add(this.txt_docker_volume);
-            this.groupBox5.Controls.Add(this.label27);
             this.groupBox5.Controls.Add(this.label21);
-            this.groupBox5.Controls.Add(this.txt_docker_envname);
             this.groupBox5.Controls.Add(this.label23);
             this.groupBox5.Controls.Add(this.txt_docker_port);
             this.groupBox5.Controls.Add(this.label45);
             this.groupBox5.Controls.Add(this.b_docker_rollback);
+            this.groupBox5.Controls.Add(this.txt_docker_envname);
+            this.groupBox5.Controls.Add(this.label27);
             resources.ApplyResources(this.groupBox5, "groupBox5");
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.TabStop = false;
+            // 
+            // txt_docker_volume
+            // 
+            this.txt_docker_volume.BackColor = System.Drawing.Color.Transparent;
+            this.txt_docker_volume.Br = System.Drawing.Color.White;
+            resources.ApplyResources(this.txt_docker_volume, "txt_docker_volume");
+            this.txt_docker_volume.ForeColor = System.Drawing.Color.DimGray;
+            this.txt_docker_volume.Name = "txt_docker_volume";
+            // 
+            // label28
+            // 
+            resources.ApplyResources(this.label28, "label28");
+            this.label28.Name = "label28";
             // 
             // label46
             // 
@@ -606,33 +621,10 @@
             resources.ApplyResources(this.txt_docker_other, "txt_docker_other");
             this.txt_docker_other.Name = "txt_docker_other";
             // 
-            // label28
-            // 
-            resources.ApplyResources(this.label28, "label28");
-            this.label28.Name = "label28";
-            // 
-            // txt_docker_volume
-            // 
-            this.txt_docker_volume.BackColor = System.Drawing.Color.Transparent;
-            this.txt_docker_volume.Br = System.Drawing.Color.White;
-            resources.ApplyResources(this.txt_docker_volume, "txt_docker_volume");
-            this.txt_docker_volume.ForeColor = System.Drawing.Color.DimGray;
-            this.txt_docker_volume.Name = "txt_docker_volume";
-            // 
-            // label27
-            // 
-            resources.ApplyResources(this.label27, "label27");
-            this.label27.Name = "label27";
-            // 
             // label21
             // 
             resources.ApplyResources(this.label21, "label21");
             this.label21.Name = "label21";
-            // 
-            // txt_docker_envname
-            // 
-            resources.ApplyResources(this.txt_docker_envname, "txt_docker_envname");
-            this.txt_docker_envname.Name = "txt_docker_envname";
             // 
             // label23
             // 
@@ -665,6 +657,16 @@
             this.b_docker_rollback.StrokeColor = System.Drawing.Color.Gray;
             this.b_docker_rollback.Transparency = false;
             this.b_docker_rollback.Click += new System.EventHandler(this.btn_docker_rollback_Click);
+            // 
+            // txt_docker_envname
+            // 
+            resources.ApplyResources(this.txt_docker_envname, "txt_docker_envname");
+            this.txt_docker_envname.Name = "txt_docker_envname";
+            // 
+            // label27
+            // 
+            resources.ApplyResources(this.label27, "label27");
+            this.label27.Name = "label27";
             // 
             // combo_docker_env
             // 
@@ -1847,6 +1849,11 @@
             this.btn_shang.Transparency = false;
             this.btn_shang.Click += new System.EventHandler(this.btn_shang_Click);
             // 
+            // label53
+            // 
+            resources.ApplyResources(this.label53, "label53");
+            this.label53.Name = "label53";
+            // 
             // Deploy
             // 
             resources.ApplyResources(this, "$this");
@@ -2098,5 +2105,6 @@
         private System.Windows.Forms.Label label49;
         private System.Windows.Forms.CheckBox checkBox_select_type_linuxservice;
         private System.Windows.Forms.Label label52;
+        private System.Windows.Forms.Label label53;
     }
 }
