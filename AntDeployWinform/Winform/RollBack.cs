@@ -26,9 +26,10 @@ namespace AntDeployWinform.Winform
 
             _lang = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
         }
-        public RollBack(List<Tuple<string,string>> list, bool isNotRollback = false):this()
+        public RollBack(Tuple<string, List<Tuple<string, string>>> list2, bool isNotRollback = false):this()
         {
-
+            List<Tuple<string, string>> list = list2.Item2;
+            var currentVersion = list2.Item1;
             foreach (var li in list)
             {
                 if (!isNotRollback)
@@ -70,7 +71,12 @@ namespace AntDeployWinform.Winform
                             lv.SubItems.Add(linuxRemark.Ip);
                         }
                     }
-                    
+
+                    if (version.Equals(currentVersion))
+                    {
+                        lv.ForeColor = Color.Blue;//当前的版本是蓝色展示
+                    }
+
                     this.listView_rollback_version.Items.Add(lv);
                 }
                 else

@@ -7082,7 +7082,7 @@ namespace AntDeployWinform.Winform
                         #endregion
 
                         this.nlog_docker.Info($"Host:{getHostDisplayName(server)} Start get rollBack version list");
-                        var versionList = new List<Tuple<string, string>>();
+                        Tuple<string, List<Tuple<string, string>>> versionList = null;
                         using (SSHClient sshClient = new SSHClient(server.Host, server.UserName, pwd, PluginConfig.DeployHttpProxy,
                             (str, logLevel) =>
                             {
@@ -7118,10 +7118,10 @@ namespace AntDeployWinform.Winform
                                 continue;
                             }
 
-                            versionList = sshClient.GetDeployHistory("antdeploy", 11);
+                            versionList = sshClient.GetDeployHistory("antdeploy", 10);
                         }
 
-                        if (versionList.Count <= 1)
+                        if (versionList ==null || versionList.Item2.Count <= 1)
                         {
                             this.nlog_docker.Error($"Host:{getHostDisplayName(server)} get rollBack version list count:0");
                             UpdateDeployProgress(this.tabPage_docker, server.Host, false);
@@ -7130,10 +7130,10 @@ namespace AntDeployWinform.Winform
                             continue;
                         }
 
-                        this.nlog_docker.Info($"Host:{getHostDisplayName(server)} get rollBack version list count:{versionList.Count}");
+                        this.nlog_docker.Info($"Host:{getHostDisplayName(server)} get rollBack version list count:{versionList.Item2.Count}");
                         this.BeginInvokeLambda(() =>
                        {
-                           RollBack rolleback = new RollBack(versionList.Skip(1).ToList());
+                           RollBack rolleback = new RollBack(versionList);
                            rolleback.SetTitle($"Current Server:{getHostDisplayName(server)}");
                            var r = rolleback.ShowDialog();
                            if (r == DialogResult.Cancel)
@@ -7832,7 +7832,7 @@ namespace AntDeployWinform.Winform
                     try
                     {
                         EnableForDocker(false, true);
-                        var versionList = new List<Tuple<string, string>>();
+                        Tuple<string, List<Tuple<string, string>>> versionList = null;
                         using (SSHClient sshClient = new SSHClient(server.Host, server.UserName, pwd, PluginConfig.DeployHttpProxy,
                             (str, logLevel) => { return false; }, (uploadValue) => { })
                         {
@@ -7847,11 +7847,10 @@ namespace AntDeployWinform.Winform
                                 ShowThreadMessageBox("get history list fail");
                                 return;
                             }
-
                             versionList = sshClient.GetDeployHistory("antdeploy", 10);
                         }
 
-                        if (versionList.Count < 1)
+                        if (versionList == null || versionList.Item2.Count < 1)
                         {
                             ShowThreadMessageBox("get history list count:0");
                             return;

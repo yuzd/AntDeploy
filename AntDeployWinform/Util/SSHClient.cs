@@ -100,6 +100,7 @@ namespace AntDeployWinform.Util
         public bool Increment { get; set; }
         public bool IsSelect { get; set; }
         public string ClientDateTimeFolderName { get; set; }
+        public string ProjectDeployRoot { get; set; }
         public string RemoveDaysFromPublished { get; set; }
         public string Remark { get; set; }
         public string Volume { get; set; }
@@ -393,11 +394,14 @@ namespace AntDeployWinform.Util
         /// <param name="destinationFolder"></param>
         /// <param name="pageNumber">数量</param>
         /// <returns></returns>
-        public List<Tuple<string, string>> GetDeployHistory(string destinationFolder, int pageNumber = 0)
+        public Tuple<string, List<Tuple<string, string>>> GetDeployHistory(string destinationFolder, int pageNumber = 0)
         {
+            var currentVersion = string.Empty;
             var dic = new Dictionary<string,Tuple<string,string,DateTime>>();
             try
             {
+                //获取当前版本是哪个
+
 
                 if (!destinationFolder.EndsWith("/")) destinationFolder = destinationFolder + "/";
 
@@ -406,7 +410,15 @@ namespace AntDeployWinform.Util
 
                 if (!_sftpClient.Exists(destinationFolder))
                 {
-                    return new List<Tuple<string, string>>();
+                    return new Tuple<string, List<Tuple<string, string>>>(currentVersion,new List<Tuple<string, string>>());
+                }
+
+
+                //找到current看有没有
+                var current = destinationFolder + "deploy/current";
+                if (_sftpClient.Exists(current))
+                {
+                    currentVersion = _sftpClient.ReadAllText(current);
                 }
 
                 //获取该目录下的所有日期文件夹
@@ -459,7 +471,7 @@ namespace AntDeployWinform.Util
                 _logger(ex.Message, LogLevel.Error);
             }
 
-            return dic.Values.ToList().OrderByDescending(r => r.Item3).Select(r => new Tuple<string, string>(r.Item1, r.Item2)).ToList();
+            return new Tuple<string, List<Tuple<string, string>>>(currentVersion, dic.Values.ToList().OrderByDescending(r => r.Item3).Select(r => new Tuple<string, string>(r.Item1, r.Item2)).ToList());
         }
 
         public void PublishZip(Stream stream, string destinationFolder, string destinationfileName,Func<bool> continuetask = null,Dictionary<string,Tuple<string,bool>> chineseMapper = null)
@@ -486,6 +498,8 @@ namespace AntDeployWinform.Util
 
             //创建项目根目录
             var deploySaveFolder = projectPath + "deploy/";
+
+            ProjectDeployRoot = deploySaveFolder;
             try
             {
                 if (IsSelect)
@@ -597,6 +611,8 @@ namespace AntDeployWinform.Util
         public void RollBack(string version)
         {
             var path = "antdeploy/" + PorjectName + "/" + version + "/";
+
+            ProjectDeployRoot = "antdeploy/" + PorjectName + "/" + "deploy/";
 
             ChangeToFolder(path);
 
@@ -1091,6 +1107,8 @@ namespace AntDeployWinform.Util
                 //igore
             }
 
+           
+
             //镜像上传
             if (!isrollBack && currentImageInfo!=null && this.DockerServiceEnableUpload)
             {
@@ -1144,7 +1162,24 @@ namespace AntDeployWinform.Util
                 _sshClient.RunCommand($"sudo docker rmi {uploadImageName}");
             }
 
+            try
+            {
+                if (!string.IsNullOrEmpty(ProjectDeployRoot))
+                {
+                    //当前版本号记录到 ClientDateTimeFolderName
+                    _sftpClient.WriteAllText(ProjectDeployRoot+"/current",ClientDateTimeFolderName);
+                }
+            }
+            catch (Exception)
+            {
+                //igore
+            }
+
+
+
             ClearOldHistroy();
+
+           
 
         }
 
@@ -1177,6 +1212,11 @@ namespace AntDeployWinform.Util
                     continue;
                 }
 
+                if (!string.IsNullOrEmpty(ClientDateTimeFolderName) && temp == ClientDateTimeFolderName)
+                {
+                    //无论如何当前版本不能删除
+                    continue;
+                }
                 oldFolderList.Add(new OldFolder
                 {
                     DateTime = createDate,
