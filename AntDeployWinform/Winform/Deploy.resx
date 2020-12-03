@@ -117,354 +117,15 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="&gt;&gt;page_web_iis.Name" xml:space="preserve">
-    <value>page_web_iis</value>
-  </data>
-  <data name="&gt;&gt;page_web_iis.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;page_web_iis.Parent" xml:space="preserve">
-    <value>tabcontrol</value>
-  </data>
-  <data name="&gt;&gt;page_web_iis.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;page_docker.Name" xml:space="preserve">
-    <value>page_docker</value>
-  </data>
-  <data name="&gt;&gt;page_docker.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;page_docker.Parent" xml:space="preserve">
-    <value>tabcontrol</value>
-  </data>
-  <data name="&gt;&gt;page_docker.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;page_window_service.Name" xml:space="preserve">
-    <value>page_window_service</value>
-  </data>
-  <data name="&gt;&gt;page_window_service.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;page_window_service.Parent" xml:space="preserve">
-    <value>tabcontrol</value>
-  </data>
-  <data name="&gt;&gt;page_window_service.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="&gt;&gt;page_linux_service.Name" xml:space="preserve">
-    <value>page_linux_service</value>
-  </data>
-  <data name="&gt;&gt;page_linux_service.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;page_linux_service.Parent" xml:space="preserve">
-    <value>tabcontrol</value>
-  </data>
-  <data name="&gt;&gt;page_linux_service.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="&gt;&gt;page_set.Name" xml:space="preserve">
-    <value>page_set</value>
-  </data>
-  <data name="&gt;&gt;page_set.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;page_set.Parent" xml:space="preserve">
-    <value>tabcontrol</value>
-  </data>
-  <data name="&gt;&gt;page_set.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="&gt;&gt;pag_advance_setting.Name" xml:space="preserve">
-    <value>pag_advance_setting</value>
-  </data>
-  <data name="&gt;&gt;pag_advance_setting.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;pag_advance_setting.Parent" xml:space="preserve">
-    <value>tabcontrol</value>
-  </data>
-  <data name="&gt;&gt;pag_advance_setting.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="tabcontrol.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Fill</value>
-  </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="tabcontrol.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 0</value>
-  </data>
-  <data name="tabcontrol.Size" type="System.Drawing.Size, System.Drawing">
-    <value>630, 482</value>
-  </data>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="tabcontrol.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;tabcontrol.Name" xml:space="preserve">
-    <value>tabcontrol</value>
-  </data>
-  <data name="&gt;&gt;tabcontrol.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tabcontrol.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;tabcontrol.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;checkBox_iis_use_offlinehtm.Name" xml:space="preserve">
-    <value>checkBox_iis_use_offlinehtm</value>
-  </data>
-  <data name="&gt;&gt;checkBox_iis_use_offlinehtm.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;checkBox_iis_use_offlinehtm.Parent" xml:space="preserve">
-    <value>page_web_iis</value>
-  </data>
-  <data name="&gt;&gt;checkBox_iis_use_offlinehtm.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;checkBox_iis_restart_site.Name" xml:space="preserve">
-    <value>checkBox_iis_restart_site</value>
-  </data>
-  <data name="&gt;&gt;checkBox_iis_restart_site.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;checkBox_iis_restart_site.Parent" xml:space="preserve">
-    <value>page_web_iis</value>
-  </data>
-  <data name="&gt;&gt;checkBox_iis_restart_site.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;btn_iis_stop.Name" xml:space="preserve">
-    <value>btn_iis_stop</value>
-  </data>
-  <data name="&gt;&gt;btn_iis_stop.Type" xml:space="preserve">
-    <value>AltoControls.AltoButton, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;btn_iis_stop.Parent" xml:space="preserve">
-    <value>page_web_iis</value>
-  </data>
-  <data name="&gt;&gt;btn_iis_stop.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="&gt;&gt;btn_iis_retry.Name" xml:space="preserve">
-    <value>btn_iis_retry</value>
-  </data>
-  <data name="&gt;&gt;btn_iis_retry.Type" xml:space="preserve">
-    <value>AltoControls.AltoButton, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;btn_iis_retry.Parent" xml:space="preserve">
-    <value>page_web_iis</value>
-  </data>
-  <data name="&gt;&gt;btn_iis_retry.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="&gt;&gt;checkBox_select_deploy_iis.Name" xml:space="preserve">
-    <value>checkBox_select_deploy_iis</value>
-  </data>
-  <data name="&gt;&gt;checkBox_select_deploy_iis.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;checkBox_select_deploy_iis.Parent" xml:space="preserve">
-    <value>page_web_iis</value>
-  </data>
-  <data name="&gt;&gt;checkBox_select_deploy_iis.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="&gt;&gt;b_iis_rollback.Name" xml:space="preserve">
-    <value>b_iis_rollback</value>
-  </data>
-  <data name="&gt;&gt;b_iis_rollback.Type" xml:space="preserve">
-    <value>AltoControls.AltoButton, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;b_iis_rollback.Parent" xml:space="preserve">
-    <value>page_web_iis</value>
-  </data>
-  <data name="&gt;&gt;b_iis_rollback.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-  <data name="&gt;&gt;checkBox_Increment_iis.Name" xml:space="preserve">
-    <value>checkBox_Increment_iis</value>
-  </data>
-  <data name="&gt;&gt;checkBox_Increment_iis.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;checkBox_Increment_iis.Parent" xml:space="preserve">
-    <value>page_web_iis</value>
-  </data>
-  <data name="&gt;&gt;checkBox_Increment_iis.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
-  <data name="&gt;&gt;label25.Name" xml:space="preserve">
-    <value>label25</value>
-  </data>
-  <data name="&gt;&gt;label25.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label25.Parent" xml:space="preserve">
-    <value>page_web_iis</value>
-  </data>
-  <data name="&gt;&gt;label25.ZOrder" xml:space="preserve">
-    <value>7</value>
-  </data>
-  <data name="&gt;&gt;label9.Name" xml:space="preserve">
-    <value>label9</value>
-  </data>
-  <data name="&gt;&gt;label9.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label9.Parent" xml:space="preserve">
-    <value>page_web_iis</value>
-  </data>
-  <data name="&gt;&gt;label9.ZOrder" xml:space="preserve">
-    <value>8</value>
-  </data>
-  <data name="&gt;&gt;b_iis_deploy.Name" xml:space="preserve">
-    <value>b_iis_deploy</value>
-  </data>
-  <data name="&gt;&gt;b_iis_deploy.Type" xml:space="preserve">
-    <value>AltoControls.AltoButton, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;b_iis_deploy.Parent" xml:space="preserve">
-    <value>page_web_iis</value>
-  </data>
-  <data name="&gt;&gt;b_iis_deploy.ZOrder" xml:space="preserve">
-    <value>9</value>
-  </data>
-  <data name="&gt;&gt;combo_iis_env.Name" xml:space="preserve">
-    <value>combo_iis_env</value>
-  </data>
-  <data name="&gt;&gt;combo_iis_env.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;combo_iis_env.Parent" xml:space="preserve">
-    <value>page_web_iis</value>
-  </data>
-  <data name="&gt;&gt;combo_iis_env.ZOrder" xml:space="preserve">
-    <value>10</value>
-  </data>
-  <data name="&gt;&gt;label8.Name" xml:space="preserve">
-    <value>label8</value>
-  </data>
-  <data name="&gt;&gt;label8.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label8.Parent" xml:space="preserve">
-    <value>page_web_iis</value>
-  </data>
-  <data name="&gt;&gt;label8.ZOrder" xml:space="preserve">
-    <value>11</value>
-  </data>
-  <data name="&gt;&gt;txt_iis_web_site_name.Name" xml:space="preserve">
-    <value>txt_iis_web_site_name</value>
-  </data>
-  <data name="&gt;&gt;txt_iis_web_site_name.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txt_iis_web_site_name.Parent" xml:space="preserve">
-    <value>page_web_iis</value>
-  </data>
-  <data name="&gt;&gt;txt_iis_web_site_name.ZOrder" xml:space="preserve">
-    <value>12</value>
-  </data>
-  <data name="&gt;&gt;label7.Name" xml:space="preserve">
-    <value>label7</value>
-  </data>
-  <data name="&gt;&gt;label7.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label7.Parent" xml:space="preserve">
-    <value>page_web_iis</value>
-  </data>
-  <data name="&gt;&gt;label7.ZOrder" xml:space="preserve">
-    <value>13</value>
-  </data>
-  <data name="&gt;&gt;combo_iis_sdk_type.Name" xml:space="preserve">
-    <value>combo_iis_sdk_type</value>
-  </data>
-  <data name="&gt;&gt;combo_iis_sdk_type.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;combo_iis_sdk_type.Parent" xml:space="preserve">
-    <value>page_web_iis</value>
-  </data>
-  <data name="&gt;&gt;combo_iis_sdk_type.ZOrder" xml:space="preserve">
-    <value>14</value>
-  </data>
-  <data name="&gt;&gt;label6.Name" xml:space="preserve">
-    <value>label6</value>
-  </data>
-  <data name="&gt;&gt;label6.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label6.Parent" xml:space="preserve">
-    <value>page_web_iis</value>
-  </data>
-  <data name="&gt;&gt;label6.ZOrder" xml:space="preserve">
-    <value>15</value>
-  </data>
-  <data name="&gt;&gt;label_iis_demo.Name" xml:space="preserve">
-    <value>label_iis_demo</value>
-  </data>
-  <data name="&gt;&gt;label_iis_demo.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label_iis_demo.Parent" xml:space="preserve">
-    <value>page_web_iis</value>
-  </data>
-  <data name="&gt;&gt;label_iis_demo.ZOrder" xml:space="preserve">
-    <value>16</value>
-  </data>
-  <data name="&gt;&gt;tab_iis.Name" xml:space="preserve">
-    <value>tab_iis</value>
-  </data>
-  <data name="&gt;&gt;tab_iis.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tab_iis.Parent" xml:space="preserve">
-    <value>page_web_iis</value>
-  </data>
-  <data name="&gt;&gt;tab_iis.ZOrder" xml:space="preserve">
-    <value>17</value>
-  </data>
-  <data name="page_web_iis.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 22</value>
-  </data>
-  <data name="page_web_iis.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>3, 3, 3, 3</value>
-  </data>
-  <data name="page_web_iis.Size" type="System.Drawing.Size, System.Drawing">
-    <value>622, 456</value>
-  </data>
-  <data name="page_web_iis.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="page_web_iis.Text" xml:space="preserve">
-    <value>IIS_Web</value>
-  </data>
-  <data name="&gt;&gt;page_web_iis.Name" xml:space="preserve">
-    <value>page_web_iis</value>
-  </data>
-  <data name="&gt;&gt;page_web_iis.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;page_web_iis.Parent" xml:space="preserve">
-    <value>tabcontrol</value>
-  </data>
-  <data name="&gt;&gt;page_web_iis.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
   <data name="checkBox_iis_use_offlinehtm.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="checkBox_iis_use_offlinehtm.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="checkBox_iis_use_offlinehtm.Location" type="System.Drawing.Point, System.Drawing">
     <value>370, 77</value>
   </data>
@@ -951,56 +612,23 @@
   <data name="&gt;&gt;label_iis_demo.ZOrder" xml:space="preserve">
     <value>16</value>
   </data>
-  <data name="&gt;&gt;tabPage_progress.Name" xml:space="preserve">
-    <value>tabPage_progress</value>
-  </data>
-  <data name="&gt;&gt;tabPage_progress.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tabPage_progress.Parent" xml:space="preserve">
-    <value>tab_iis</value>
-  </data>
-  <data name="&gt;&gt;tabPage_progress.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;tabPage_iis_log.Name" xml:space="preserve">
-    <value>tabPage_iis_log</value>
-  </data>
-  <data name="&gt;&gt;tabPage_iis_log.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tabPage_iis_log.Parent" xml:space="preserve">
-    <value>tab_iis</value>
-  </data>
-  <data name="&gt;&gt;tabPage_iis_log.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="tab_iis.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Bottom</value>
-  </data>
-  <data name="tab_iis.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 135</value>
-  </data>
-  <data name="tab_iis.Size" type="System.Drawing.Size, System.Drawing">
-    <value>616, 318</value>
-  </data>
-  <data name="tab_iis.TabIndex" type="System.Int32, mscorlib">
-    <value>16</value>
-  </data>
-  <data name="&gt;&gt;tab_iis.Name" xml:space="preserve">
-    <value>tab_iis</value>
-  </data>
-  <data name="&gt;&gt;tab_iis.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tab_iis.Parent" xml:space="preserve">
-    <value>page_web_iis</value>
-  </data>
-  <data name="&gt;&gt;tab_iis.ZOrder" xml:space="preserve">
-    <value>17</value>
-  </data>
   <data name="tabPage_progress.AutoScroll" type="System.Boolean, mscorlib">
     <value>True</value>
+  </data>
+  <data name="progress_iis_tip.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="progress_iis_tip.Location" type="System.Drawing.Point, System.Drawing">
+    <value>126, 64</value>
+  </data>
+  <data name="progress_iis_tip.Size" type="System.Drawing.Size, System.Drawing">
+    <value>345, 29</value>
+  </data>
+  <data name="progress_iis_tip.TabIndex" type="System.Int32, mscorlib">
+    <value>17</value>
+  </data>
+  <data name="progress_iis_tip.Text" xml:space="preserve">
+    <value>Please 1. Add Windows Server into Env In Setting Page.          2. Select Env.</value>
   </data>
   <data name="&gt;&gt;progress_iis_tip.Name" xml:space="preserve">
     <value>progress_iis_tip</value>
@@ -1041,32 +669,20 @@
   <data name="&gt;&gt;tabPage_progress.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="progress_iis_tip.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
+  <data name="rich_iis_log.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
   </data>
-  <data name="progress_iis_tip.Location" type="System.Drawing.Point, System.Drawing">
-    <value>126, 64</value>
+  <data name="rich_iis_log.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 3</value>
   </data>
-  <data name="progress_iis_tip.Size" type="System.Drawing.Size, System.Drawing">
-    <value>345, 29</value>
+  <data name="rich_iis_log.Size" type="System.Drawing.Size, System.Drawing">
+    <value>602, 286</value>
   </data>
-  <data name="progress_iis_tip.TabIndex" type="System.Int32, mscorlib">
-    <value>17</value>
-  </data>
-  <data name="progress_iis_tip.Text" xml:space="preserve">
-    <value>Please 1. Add Windows Server into Env In Setting Page.          2. Select Env.</value>
-  </data>
-  <data name="&gt;&gt;progress_iis_tip.Name" xml:space="preserve">
-    <value>progress_iis_tip</value>
-  </data>
-  <data name="&gt;&gt;progress_iis_tip.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;progress_iis_tip.Parent" xml:space="preserve">
-    <value>tabPage_progress</value>
-  </data>
-  <data name="&gt;&gt;progress_iis_tip.ZOrder" xml:space="preserve">
+  <data name="rich_iis_log.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
+  </data>
+  <data name="rich_iis_log.Text" xml:space="preserve">
+    <value />
   </data>
   <data name="&gt;&gt;rich_iis_log.Name" xml:space="preserve">
     <value>rich_iis_log</value>
@@ -1107,224 +723,56 @@
   <data name="&gt;&gt;tabPage_iis_log.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="rich_iis_log.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Fill</value>
+  <data name="tab_iis.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Bottom</value>
   </data>
-  <data name="rich_iis_log.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 3</value>
+  <data name="tab_iis.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 135</value>
   </data>
-  <data name="rich_iis_log.Size" type="System.Drawing.Size, System.Drawing">
-    <value>602, 286</value>
+  <data name="tab_iis.Size" type="System.Drawing.Size, System.Drawing">
+    <value>616, 318</value>
   </data>
-  <data name="rich_iis_log.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
+  <data name="tab_iis.TabIndex" type="System.Int32, mscorlib">
+    <value>16</value>
   </data>
-  <data name="rich_iis_log.Text" xml:space="preserve">
-    <value />
+  <data name="&gt;&gt;tab_iis.Name" xml:space="preserve">
+    <value>tab_iis</value>
   </data>
-  <data name="&gt;&gt;rich_iis_log.Name" xml:space="preserve">
-    <value>rich_iis_log</value>
-  </data>
-  <data name="&gt;&gt;rich_iis_log.Type" xml:space="preserve">
-    <value>AntDeployWinform.ExRichTextBox, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;rich_iis_log.Parent" xml:space="preserve">
-    <value>tabPage_iis_log</value>
-  </data>
-  <data name="&gt;&gt;rich_iis_log.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;b_docker_deploy.Name" xml:space="preserve">
-    <value>b_docker_deploy</value>
-  </data>
-  <data name="&gt;&gt;b_docker_deploy.Type" xml:space="preserve">
-    <value>AltoControls.AltoButton, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;b_docker_deploy.Parent" xml:space="preserve">
-    <value>page_docker</value>
-  </data>
-  <data name="&gt;&gt;b_docker_deploy.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;btn_docker_retry.Name" xml:space="preserve">
-    <value>btn_docker_retry</value>
-  </data>
-  <data name="&gt;&gt;btn_docker_retry.Type" xml:space="preserve">
-    <value>AltoControls.AltoButton, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;btn_docker_retry.Parent" xml:space="preserve">
-    <value>page_docker</value>
-  </data>
-  <data name="&gt;&gt;btn_docker_retry.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;btn_docker_stop.Name" xml:space="preserve">
-    <value>btn_docker_stop</value>
-  </data>
-  <data name="&gt;&gt;btn_docker_stop.Type" xml:space="preserve">
-    <value>AltoControls.AltoButton, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;btn_docker_stop.Parent" xml:space="preserve">
-    <value>page_docker</value>
-  </data>
-  <data name="&gt;&gt;btn_docker_stop.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="&gt;&gt;checkBox_select_deploy_docker.Name" xml:space="preserve">
-    <value>checkBox_select_deploy_docker</value>
-  </data>
-  <data name="&gt;&gt;checkBox_select_deploy_docker.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;checkBox_select_deploy_docker.Parent" xml:space="preserve">
-    <value>page_docker</value>
-  </data>
-  <data name="&gt;&gt;checkBox_select_deploy_docker.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="&gt;&gt;label13.Name" xml:space="preserve">
-    <value>label13</value>
-  </data>
-  <data name="&gt;&gt;label13.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label13.Parent" xml:space="preserve">
-    <value>page_docker</value>
-  </data>
-  <data name="&gt;&gt;label13.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="&gt;&gt;label12.Name" xml:space="preserve">
-    <value>label12</value>
-  </data>
-  <data name="&gt;&gt;label12.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label12.Parent" xml:space="preserve">
-    <value>page_docker</value>
-  </data>
-  <data name="&gt;&gt;label12.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-  <data name="&gt;&gt;t_docker_delete_days.Name" xml:space="preserve">
-    <value>t_docker_delete_days</value>
-  </data>
-  <data name="&gt;&gt;t_docker_delete_days.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;t_docker_delete_days.Parent" xml:space="preserve">
-    <value>page_docker</value>
-  </data>
-  <data name="&gt;&gt;t_docker_delete_days.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
-  <data name="&gt;&gt;label24.Name" xml:space="preserve">
-    <value>label24</value>
-  </data>
-  <data name="&gt;&gt;label24.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label24.Parent" xml:space="preserve">
-    <value>page_docker</value>
-  </data>
-  <data name="&gt;&gt;label24.ZOrder" xml:space="preserve">
-    <value>7</value>
-  </data>
-  <data name="&gt;&gt;groupBox5.Name" xml:space="preserve">
-    <value>groupBox5</value>
-  </data>
-  <data name="&gt;&gt;groupBox5.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;groupBox5.Parent" xml:space="preserve">
-    <value>page_docker</value>
-  </data>
-  <data name="&gt;&gt;groupBox5.ZOrder" xml:space="preserve">
-    <value>8</value>
-  </data>
-  <data name="&gt;&gt;combo_docker_env.Name" xml:space="preserve">
-    <value>combo_docker_env</value>
-  </data>
-  <data name="&gt;&gt;combo_docker_env.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;combo_docker_env.Parent" xml:space="preserve">
-    <value>page_docker</value>
-  </data>
-  <data name="&gt;&gt;combo_docker_env.ZOrder" xml:space="preserve">
-    <value>9</value>
-  </data>
-  <data name="&gt;&gt;label22.Name" xml:space="preserve">
-    <value>label22</value>
-  </data>
-  <data name="&gt;&gt;label22.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label22.Parent" xml:space="preserve">
-    <value>page_docker</value>
-  </data>
-  <data name="&gt;&gt;label22.ZOrder" xml:space="preserve">
-    <value>10</value>
-  </data>
-  <data name="&gt;&gt;label_docker_demo.Name" xml:space="preserve">
-    <value>label_docker_demo</value>
-  </data>
-  <data name="&gt;&gt;label_docker_demo.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label_docker_demo.Parent" xml:space="preserve">
-    <value>page_docker</value>
-  </data>
-  <data name="&gt;&gt;label_docker_demo.ZOrder" xml:space="preserve">
-    <value>11</value>
-  </data>
-  <data name="&gt;&gt;tabControl_docker.Name" xml:space="preserve">
-    <value>tabControl_docker</value>
-  </data>
-  <data name="&gt;&gt;tabControl_docker.Type" xml:space="preserve">
+  <data name="&gt;&gt;tab_iis.Type" xml:space="preserve">
     <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;tabControl_docker.Parent" xml:space="preserve">
-    <value>page_docker</value>
+  <data name="&gt;&gt;tab_iis.Parent" xml:space="preserve">
+    <value>page_web_iis</value>
   </data>
-  <data name="&gt;&gt;tabControl_docker.ZOrder" xml:space="preserve">
-    <value>12</value>
+  <data name="&gt;&gt;tab_iis.ZOrder" xml:space="preserve">
+    <value>17</value>
   </data>
-  <data name="&gt;&gt;checkBox_Increment_docker.Name" xml:space="preserve">
-    <value>checkBox_Increment_docker</value>
-  </data>
-  <data name="&gt;&gt;checkBox_Increment_docker.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;checkBox_Increment_docker.Parent" xml:space="preserve">
-    <value>page_docker</value>
-  </data>
-  <data name="&gt;&gt;checkBox_Increment_docker.ZOrder" xml:space="preserve">
-    <value>13</value>
-  </data>
-  <data name="page_docker.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="page_web_iis.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 22</value>
   </data>
-  <data name="page_docker.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="page_web_iis.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
+  </data>
+  <data name="page_web_iis.Size" type="System.Drawing.Size, System.Drawing">
     <value>622, 456</value>
   </data>
-  <data name="page_docker.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
+  <data name="page_web_iis.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
   </data>
-  <data name="page_docker.Text" xml:space="preserve">
-    <value>Docker</value>
+  <data name="page_web_iis.Text" xml:space="preserve">
+    <value>IIS_Web</value>
   </data>
-  <data name="&gt;&gt;page_docker.Name" xml:space="preserve">
-    <value>page_docker</value>
+  <data name="&gt;&gt;page_web_iis.Name" xml:space="preserve">
+    <value>page_web_iis</value>
   </data>
-  <data name="&gt;&gt;page_docker.Type" xml:space="preserve">
+  <data name="&gt;&gt;page_web_iis.Type" xml:space="preserve">
     <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;page_docker.Parent" xml:space="preserve">
+  <data name="&gt;&gt;page_web_iis.Parent" xml:space="preserve">
     <value>tabcontrol</value>
   </data>
-  <data name="&gt;&gt;page_docker.ZOrder" xml:space="preserve">
-    <value>1</value>
+  <data name="&gt;&gt;page_web_iis.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="b_docker_deploy.Font" type="System.Drawing.Font, System.Drawing">
     <value>Comic Sans MS, 10pt, style=Bold</value>
@@ -1560,6 +1008,24 @@
   <data name="&gt;&gt;label24.ZOrder" xml:space="preserve">
     <value>7</value>
   </data>
+  <data name="label53.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label53.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="label53.Location" type="System.Drawing.Point, System.Drawing">
+    <value>2, 36</value>
+  </data>
+  <data name="label53.Size" type="System.Drawing.Size, System.Drawing">
+    <value>95, 12</value>
+  </data>
+  <data name="label53.TabIndex" type="System.Int32, mscorlib">
+    <value>36</value>
+  </data>
+  <data name="label53.Text" xml:space="preserve">
+    <value>example:80:5000</value>
+  </data>
   <data name="&gt;&gt;label53.Name" xml:space="preserve">
     <value>label53</value>
   </data>
@@ -1571,162 +1037,6 @@
   </data>
   <data name="&gt;&gt;label53.ZOrder" xml:space="preserve">
     <value>0</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_volume.Name" xml:space="preserve">
-    <value>txt_docker_volume</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_volume.Type" xml:space="preserve">
-    <value>AltoControls.AltoTextBox, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_volume.Parent" xml:space="preserve">
-    <value>groupBox5</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_volume.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;label28.Name" xml:space="preserve">
-    <value>label28</value>
-  </data>
-  <data name="&gt;&gt;label28.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label28.Parent" xml:space="preserve">
-    <value>groupBox5</value>
-  </data>
-  <data name="&gt;&gt;label28.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="&gt;&gt;label46.Name" xml:space="preserve">
-    <value>label46</value>
-  </data>
-  <data name="&gt;&gt;label46.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label46.Parent" xml:space="preserve">
-    <value>groupBox5</value>
-  </data>
-  <data name="&gt;&gt;label46.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_other.Name" xml:space="preserve">
-    <value>txt_docker_other</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_other.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_other.Parent" xml:space="preserve">
-    <value>groupBox5</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_other.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="&gt;&gt;label21.Name" xml:space="preserve">
-    <value>label21</value>
-  </data>
-  <data name="&gt;&gt;label21.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label21.Parent" xml:space="preserve">
-    <value>groupBox5</value>
-  </data>
-  <data name="&gt;&gt;label21.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-  <data name="&gt;&gt;label23.Name" xml:space="preserve">
-    <value>label23</value>
-  </data>
-  <data name="&gt;&gt;label23.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label23.Parent" xml:space="preserve">
-    <value>groupBox5</value>
-  </data>
-  <data name="&gt;&gt;label23.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_port.Name" xml:space="preserve">
-    <value>txt_docker_port</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_port.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_port.Parent" xml:space="preserve">
-    <value>groupBox5</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_port.ZOrder" xml:space="preserve">
-    <value>7</value>
-  </data>
-  <data name="&gt;&gt;label45.Name" xml:space="preserve">
-    <value>label45</value>
-  </data>
-  <data name="&gt;&gt;label45.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label45.Parent" xml:space="preserve">
-    <value>groupBox5</value>
-  </data>
-  <data name="&gt;&gt;label45.ZOrder" xml:space="preserve">
-    <value>8</value>
-  </data>
-  <data name="&gt;&gt;b_docker_rollback.Name" xml:space="preserve">
-    <value>b_docker_rollback</value>
-  </data>
-  <data name="&gt;&gt;b_docker_rollback.Type" xml:space="preserve">
-    <value>AltoControls.AltoButton, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;b_docker_rollback.Parent" xml:space="preserve">
-    <value>groupBox5</value>
-  </data>
-  <data name="&gt;&gt;b_docker_rollback.ZOrder" xml:space="preserve">
-    <value>9</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_envname.Name" xml:space="preserve">
-    <value>txt_docker_envname</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_envname.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_envname.Parent" xml:space="preserve">
-    <value>groupBox5</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_envname.ZOrder" xml:space="preserve">
-    <value>10</value>
-  </data>
-  <data name="&gt;&gt;label27.Name" xml:space="preserve">
-    <value>label27</value>
-  </data>
-  <data name="&gt;&gt;label27.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label27.Parent" xml:space="preserve">
-    <value>groupBox5</value>
-  </data>
-  <data name="&gt;&gt;label27.ZOrder" xml:space="preserve">
-    <value>11</value>
-  </data>
-  <data name="groupBox5.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 3</value>
-  </data>
-  <data name="groupBox5.Size" type="System.Drawing.Size, System.Drawing">
-    <value>622, 92</value>
-  </data>
-  <data name="groupBox5.TabIndex" type="System.Int32, mscorlib">
-    <value>16</value>
-  </data>
-  <data name="groupBox5.Text" xml:space="preserve">
-    <value> (Dockerfile)</value>
-  </data>
-  <data name="&gt;&gt;groupBox5.Name" xml:space="preserve">
-    <value>groupBox5</value>
-  </data>
-  <data name="&gt;&gt;groupBox5.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;groupBox5.Parent" xml:space="preserve">
-    <value>page_docker</value>
-  </data>
-  <data name="&gt;&gt;groupBox5.ZOrder" xml:space="preserve">
-    <value>8</value>
   </data>
   <data name="txt_docker_volume.Font" type="System.Drawing.Font, System.Drawing">
     <value>Comic Sans MS, 11pt</value>
@@ -2028,6 +1338,30 @@
   <data name="&gt;&gt;label27.ZOrder" xml:space="preserve">
     <value>11</value>
   </data>
+  <data name="groupBox5.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 3</value>
+  </data>
+  <data name="groupBox5.Size" type="System.Drawing.Size, System.Drawing">
+    <value>622, 92</value>
+  </data>
+  <data name="groupBox5.TabIndex" type="System.Int32, mscorlib">
+    <value>16</value>
+  </data>
+  <data name="groupBox5.Text" xml:space="preserve">
+    <value> (Dockerfile)</value>
+  </data>
+  <data name="&gt;&gt;groupBox5.Name" xml:space="preserve">
+    <value>groupBox5</value>
+  </data>
+  <data name="&gt;&gt;groupBox5.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;groupBox5.Parent" xml:space="preserve">
+    <value>page_docker</value>
+  </data>
+  <data name="&gt;&gt;groupBox5.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
   <data name="combo_docker_env.Location" type="System.Drawing.Point, System.Drawing">
     <value>118, 104</value>
   </data>
@@ -2109,68 +1443,23 @@
   <data name="&gt;&gt;label_docker_demo.ZOrder" xml:space="preserve">
     <value>11</value>
   </data>
-  <data name="&gt;&gt;tabPage_docker.Name" xml:space="preserve">
-    <value>tabPage_docker</value>
-  </data>
-  <data name="&gt;&gt;tabPage_docker.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tabPage_docker.Parent" xml:space="preserve">
-    <value>tabControl_docker</value>
-  </data>
-  <data name="&gt;&gt;tabPage_docker.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;tabPage_docker_log.Name" xml:space="preserve">
-    <value>tabPage_docker_log</value>
-  </data>
-  <data name="&gt;&gt;tabPage_docker_log.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tabPage_docker_log.Parent" xml:space="preserve">
-    <value>tabControl_docker</value>
-  </data>
-  <data name="&gt;&gt;tabPage_docker_log.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;tabPage_docker_repo.Name" xml:space="preserve">
-    <value>tabPage_docker_repo</value>
-  </data>
-  <data name="&gt;&gt;tabPage_docker_repo.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tabPage_docker_repo.Parent" xml:space="preserve">
-    <value>tabControl_docker</value>
-  </data>
-  <data name="&gt;&gt;tabPage_docker_repo.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="tabControl_docker.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Bottom</value>
-  </data>
-  <data name="tabControl_docker.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 164</value>
-  </data>
-  <data name="tabControl_docker.Size" type="System.Drawing.Size, System.Drawing">
-    <value>622, 292</value>
-  </data>
-  <data name="tabControl_docker.TabIndex" type="System.Int32, mscorlib">
-    <value>18</value>
-  </data>
-  <data name="&gt;&gt;tabControl_docker.Name" xml:space="preserve">
-    <value>tabControl_docker</value>
-  </data>
-  <data name="&gt;&gt;tabControl_docker.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tabControl_docker.Parent" xml:space="preserve">
-    <value>page_docker</value>
-  </data>
-  <data name="&gt;&gt;tabControl_docker.ZOrder" xml:space="preserve">
-    <value>12</value>
-  </data>
   <data name="tabPage_docker.AutoScroll" type="System.Boolean, mscorlib">
     <value>True</value>
+  </data>
+  <data name="progress_docker_tip.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="progress_docker_tip.Location" type="System.Drawing.Point, System.Drawing">
+    <value>127, 54</value>
+  </data>
+  <data name="progress_docker_tip.Size" type="System.Drawing.Size, System.Drawing">
+    <value>331, 30</value>
+  </data>
+  <data name="progress_docker_tip.TabIndex" type="System.Int32, mscorlib">
+    <value>18</value>
+  </data>
+  <data name="progress_docker_tip.Text" xml:space="preserve">
+    <value>Please 1. Add Linux Server into Env In Setting Page.          2. Select Env.</value>
   </data>
   <data name="&gt;&gt;progress_docker_tip.Name" xml:space="preserve">
     <value>progress_docker_tip</value>
@@ -2211,32 +1500,20 @@
   <data name="&gt;&gt;tabPage_docker.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="progress_docker_tip.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
+  <data name="rich_docker_log.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
   </data>
-  <data name="progress_docker_tip.Location" type="System.Drawing.Point, System.Drawing">
-    <value>127, 54</value>
+  <data name="rich_docker_log.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 3</value>
   </data>
-  <data name="progress_docker_tip.Size" type="System.Drawing.Size, System.Drawing">
-    <value>331, 30</value>
+  <data name="rich_docker_log.Size" type="System.Drawing.Size, System.Drawing">
+    <value>608, 260</value>
   </data>
-  <data name="progress_docker_tip.TabIndex" type="System.Int32, mscorlib">
-    <value>18</value>
+  <data name="rich_docker_log.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
   </data>
-  <data name="progress_docker_tip.Text" xml:space="preserve">
-    <value>Please 1. Add Linux Server into Env In Setting Page.          2. Select Env.</value>
-  </data>
-  <data name="&gt;&gt;progress_docker_tip.Name" xml:space="preserve">
-    <value>progress_docker_tip</value>
-  </data>
-  <data name="&gt;&gt;progress_docker_tip.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;progress_docker_tip.Parent" xml:space="preserve">
-    <value>tabPage_docker</value>
-  </data>
-  <data name="&gt;&gt;progress_docker_tip.ZOrder" xml:space="preserve">
-    <value>0</value>
+  <data name="rich_docker_log.Text" xml:space="preserve">
+    <value />
   </data>
   <data name="&gt;&gt;rich_docker_log.Name" xml:space="preserve">
     <value>rich_docker_log</value>
@@ -2276,201 +1553,6 @@
   </data>
   <data name="&gt;&gt;tabPage_docker_log.ZOrder" xml:space="preserve">
     <value>1</value>
-  </data>
-  <data name="rich_docker_log.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Fill</value>
-  </data>
-  <data name="rich_docker_log.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 3</value>
-  </data>
-  <data name="rich_docker_log.Size" type="System.Drawing.Size, System.Drawing">
-    <value>608, 260</value>
-  </data>
-  <data name="rich_docker_log.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
-  <data name="rich_docker_log.Text" xml:space="preserve">
-    <value />
-  </data>
-  <data name="&gt;&gt;rich_docker_log.Name" xml:space="preserve">
-    <value>rich_docker_log</value>
-  </data>
-  <data name="&gt;&gt;rich_docker_log.Type" xml:space="preserve">
-    <value>AntDeployWinform.ExRichTextBox, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;rich_docker_log.Parent" xml:space="preserve">
-    <value>tabPage_docker_log</value>
-  </data>
-  <data name="&gt;&gt;rich_docker_log.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;checkBoxdocker_rep_uploadOnly.Name" xml:space="preserve">
-    <value>checkBoxdocker_rep_uploadOnly</value>
-  </data>
-  <data name="&gt;&gt;checkBoxdocker_rep_uploadOnly.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;checkBoxdocker_rep_uploadOnly.Parent" xml:space="preserve">
-    <value>tabPage_docker_repo</value>
-  </data>
-  <data name="&gt;&gt;checkBoxdocker_rep_uploadOnly.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;checkBoxdocker_rep_enable.Name" xml:space="preserve">
-    <value>checkBoxdocker_rep_enable</value>
-  </data>
-  <data name="&gt;&gt;checkBoxdocker_rep_enable.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;checkBoxdocker_rep_enable.Parent" xml:space="preserve">
-    <value>tabPage_docker_repo</value>
-  </data>
-  <data name="&gt;&gt;checkBoxdocker_rep_enable.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_rep_image.Name" xml:space="preserve">
-    <value>txt_docker_rep_image</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_rep_image.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_rep_image.Parent" xml:space="preserve">
-    <value>tabPage_docker_repo</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_rep_image.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="&gt;&gt;label44.Name" xml:space="preserve">
-    <value>label44</value>
-  </data>
-  <data name="&gt;&gt;label44.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label44.Parent" xml:space="preserve">
-    <value>tabPage_docker_repo</value>
-  </data>
-  <data name="&gt;&gt;label44.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="&gt;&gt;label43.Name" xml:space="preserve">
-    <value>label43</value>
-  </data>
-  <data name="&gt;&gt;label43.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label43.Parent" xml:space="preserve">
-    <value>tabPage_docker_repo</value>
-  </data>
-  <data name="&gt;&gt;label43.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_rep_namespace.Name" xml:space="preserve">
-    <value>txt_docker_rep_namespace</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_rep_namespace.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_rep_namespace.Parent" xml:space="preserve">
-    <value>tabPage_docker_repo</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_rep_namespace.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-  <data name="&gt;&gt;label40.Name" xml:space="preserve">
-    <value>label40</value>
-  </data>
-  <data name="&gt;&gt;label40.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label40.Parent" xml:space="preserve">
-    <value>tabPage_docker_repo</value>
-  </data>
-  <data name="&gt;&gt;label40.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_rep_domain.Name" xml:space="preserve">
-    <value>txt_docker_rep_domain</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_rep_domain.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_rep_domain.Parent" xml:space="preserve">
-    <value>tabPage_docker_repo</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_rep_domain.ZOrder" xml:space="preserve">
-    <value>7</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_rep_pwd.Name" xml:space="preserve">
-    <value>txt_docker_rep_pwd</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_rep_pwd.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_rep_pwd.Parent" xml:space="preserve">
-    <value>tabPage_docker_repo</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_rep_pwd.ZOrder" xml:space="preserve">
-    <value>8</value>
-  </data>
-  <data name="&gt;&gt;label31.Name" xml:space="preserve">
-    <value>label31</value>
-  </data>
-  <data name="&gt;&gt;label31.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label31.Parent" xml:space="preserve">
-    <value>tabPage_docker_repo</value>
-  </data>
-  <data name="&gt;&gt;label31.ZOrder" xml:space="preserve">
-    <value>9</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_rep_name.Name" xml:space="preserve">
-    <value>txt_docker_rep_name</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_rep_name.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_rep_name.Parent" xml:space="preserve">
-    <value>tabPage_docker_repo</value>
-  </data>
-  <data name="&gt;&gt;txt_docker_rep_name.ZOrder" xml:space="preserve">
-    <value>10</value>
-  </data>
-  <data name="&gt;&gt;label34.Name" xml:space="preserve">
-    <value>label34</value>
-  </data>
-  <data name="&gt;&gt;label34.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label34.Parent" xml:space="preserve">
-    <value>tabPage_docker_repo</value>
-  </data>
-  <data name="&gt;&gt;label34.ZOrder" xml:space="preserve">
-    <value>11</value>
-  </data>
-  <data name="tabPage_docker_repo.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 22</value>
-  </data>
-  <data name="tabPage_docker_repo.Size" type="System.Drawing.Size, System.Drawing">
-    <value>614, 266</value>
-  </data>
-  <data name="tabPage_docker_repo.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
-  </data>
-  <data name="tabPage_docker_repo.Text" xml:space="preserve">
-    <value>Docker Registry </value>
-  </data>
-  <data name="&gt;&gt;tabPage_docker_repo.Name" xml:space="preserve">
-    <value>tabPage_docker_repo</value>
-  </data>
-  <data name="&gt;&gt;tabPage_docker_repo.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tabPage_docker_repo.Parent" xml:space="preserve">
-    <value>tabControl_docker</value>
-  </data>
-  <data name="&gt;&gt;tabPage_docker_repo.ZOrder" xml:space="preserve">
-    <value>2</value>
   </data>
   <data name="checkBoxdocker_rep_uploadOnly.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -2784,6 +1866,54 @@
   <data name="&gt;&gt;label34.ZOrder" xml:space="preserve">
     <value>11</value>
   </data>
+  <data name="tabPage_docker_repo.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="tabPage_docker_repo.Size" type="System.Drawing.Size, System.Drawing">
+    <value>614, 266</value>
+  </data>
+  <data name="tabPage_docker_repo.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="tabPage_docker_repo.Text" xml:space="preserve">
+    <value>Docker Registry </value>
+  </data>
+  <data name="&gt;&gt;tabPage_docker_repo.Name" xml:space="preserve">
+    <value>tabPage_docker_repo</value>
+  </data>
+  <data name="&gt;&gt;tabPage_docker_repo.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabPage_docker_repo.Parent" xml:space="preserve">
+    <value>tabControl_docker</value>
+  </data>
+  <data name="&gt;&gt;tabPage_docker_repo.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="tabControl_docker.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Bottom</value>
+  </data>
+  <data name="tabControl_docker.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 164</value>
+  </data>
+  <data name="tabControl_docker.Size" type="System.Drawing.Size, System.Drawing">
+    <value>622, 292</value>
+  </data>
+  <data name="tabControl_docker.TabIndex" type="System.Int32, mscorlib">
+    <value>18</value>
+  </data>
+  <data name="&gt;&gt;tabControl_docker.Name" xml:space="preserve">
+    <value>tabControl_docker</value>
+  </data>
+  <data name="&gt;&gt;tabControl_docker.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabControl_docker.Parent" xml:space="preserve">
+    <value>page_docker</value>
+  </data>
+  <data name="&gt;&gt;tabControl_docker.ZOrder" xml:space="preserve">
+    <value>12</value>
+  </data>
   <data name="checkBox_Increment_docker.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
@@ -2811,209 +1941,56 @@
   <data name="&gt;&gt;checkBox_Increment_docker.ZOrder" xml:space="preserve">
     <value>13</value>
   </data>
-  <data name="&gt;&gt;btn_windows_serivce_stop.Name" xml:space="preserve">
-    <value>btn_windows_serivce_stop</value>
+  <data name="checkBox_sudo_docker.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
-  <data name="&gt;&gt;btn_windows_serivce_stop.Type" xml:space="preserve">
-    <value>AltoControls.AltoButton, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="checkBox_sudo_docker.Location" type="System.Drawing.Point, System.Drawing">
+    <value>83, 148</value>
   </data>
-  <data name="&gt;&gt;btn_windows_serivce_stop.Parent" xml:space="preserve">
-    <value>page_window_service</value>
+  <data name="checkBox_sudo_docker.Size" type="System.Drawing.Size, System.Drawing">
+    <value>53, 18</value>
   </data>
-  <data name="&gt;&gt;btn_windows_serivce_stop.ZOrder" xml:space="preserve">
-    <value>0</value>
+  <data name="checkBox_sudo_docker.TabIndex" type="System.Int32, mscorlib">
+    <value>40</value>
   </data>
-  <data name="&gt;&gt;btn_windows_service_retry.Name" xml:space="preserve">
-    <value>btn_windows_service_retry</value>
+  <data name="checkBox_sudo_docker.Text" xml:space="preserve">
+    <value>sudo</value>
   </data>
-  <data name="&gt;&gt;btn_windows_service_retry.Type" xml:space="preserve">
-    <value>AltoControls.AltoButton, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;checkBox_sudo_docker.Name" xml:space="preserve">
+    <value>checkBox_sudo_docker</value>
   </data>
-  <data name="&gt;&gt;btn_windows_service_retry.Parent" xml:space="preserve">
-    <value>page_window_service</value>
-  </data>
-  <data name="&gt;&gt;btn_windows_service_retry.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;b_windowservice_deploy.Name" xml:space="preserve">
-    <value>b_windowservice_deploy</value>
-  </data>
-  <data name="&gt;&gt;b_windowservice_deploy.Type" xml:space="preserve">
-    <value>AltoControls.AltoButton, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;b_windowservice_deploy.Parent" xml:space="preserve">
-    <value>page_window_service</value>
-  </data>
-  <data name="&gt;&gt;b_windowservice_deploy.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="&gt;&gt;checkBox_select_deploy_service.Name" xml:space="preserve">
-    <value>checkBox_select_deploy_service</value>
-  </data>
-  <data name="&gt;&gt;checkBox_select_deploy_service.Type" xml:space="preserve">
+  <data name="&gt;&gt;checkBox_sudo_docker.Type" xml:space="preserve">
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;checkBox_select_deploy_service.Parent" xml:space="preserve">
-    <value>page_window_service</value>
+  <data name="&gt;&gt;checkBox_sudo_docker.Parent" xml:space="preserve">
+    <value>page_docker</value>
   </data>
-  <data name="&gt;&gt;checkBox_select_deploy_service.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="&gt;&gt;checkBox_Increment_window_service.Name" xml:space="preserve">
-    <value>checkBox_Increment_window_service</value>
-  </data>
-  <data name="&gt;&gt;checkBox_Increment_window_service.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;checkBox_Increment_window_service.Parent" xml:space="preserve">
-    <value>page_window_service</value>
-  </data>
-  <data name="&gt;&gt;checkBox_Increment_window_service.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="&gt;&gt;label_windows_serivce_demo.Name" xml:space="preserve">
-    <value>label_windows_serivce_demo</value>
-  </data>
-  <data name="&gt;&gt;label_windows_serivce_demo.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label_windows_serivce_demo.Parent" xml:space="preserve">
-    <value>page_window_service</value>
-  </data>
-  <data name="&gt;&gt;label_windows_serivce_demo.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-  <data name="&gt;&gt;label26.Name" xml:space="preserve">
-    <value>label26</value>
-  </data>
-  <data name="&gt;&gt;label26.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label26.Parent" xml:space="preserve">
-    <value>page_window_service</value>
-  </data>
-  <data name="&gt;&gt;label26.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
-  <data name="&gt;&gt;txt_windowservice_name.Name" xml:space="preserve">
-    <value>txt_windowservice_name</value>
-  </data>
-  <data name="&gt;&gt;txt_windowservice_name.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txt_windowservice_name.Parent" xml:space="preserve">
-    <value>page_window_service</value>
-  </data>
-  <data name="&gt;&gt;txt_windowservice_name.ZOrder" xml:space="preserve">
-    <value>7</value>
-  </data>
-  <data name="&gt;&gt;label14.Name" xml:space="preserve">
-    <value>label14</value>
-  </data>
-  <data name="&gt;&gt;label14.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label14.Parent" xml:space="preserve">
-    <value>page_window_service</value>
-  </data>
-  <data name="&gt;&gt;label14.ZOrder" xml:space="preserve">
-    <value>8</value>
-  </data>
-  <data name="&gt;&gt;combo_windowservice_sdk_type.Name" xml:space="preserve">
-    <value>combo_windowservice_sdk_type</value>
-  </data>
-  <data name="&gt;&gt;combo_windowservice_sdk_type.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;combo_windowservice_sdk_type.Parent" xml:space="preserve">
-    <value>page_window_service</value>
-  </data>
-  <data name="&gt;&gt;combo_windowservice_sdk_type.ZOrder" xml:space="preserve">
-    <value>9</value>
-  </data>
-  <data name="&gt;&gt;label11.Name" xml:space="preserve">
-    <value>label11</value>
-  </data>
-  <data name="&gt;&gt;label11.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label11.Parent" xml:space="preserve">
-    <value>page_window_service</value>
-  </data>
-  <data name="&gt;&gt;label11.ZOrder" xml:space="preserve">
-    <value>10</value>
-  </data>
-  <data name="&gt;&gt;combo_windowservice_env.Name" xml:space="preserve">
-    <value>combo_windowservice_env</value>
-  </data>
-  <data name="&gt;&gt;combo_windowservice_env.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;combo_windowservice_env.Parent" xml:space="preserve">
-    <value>page_window_service</value>
-  </data>
-  <data name="&gt;&gt;combo_windowservice_env.ZOrder" xml:space="preserve">
-    <value>11</value>
-  </data>
-  <data name="&gt;&gt;label10.Name" xml:space="preserve">
-    <value>label10</value>
-  </data>
-  <data name="&gt;&gt;label10.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label10.Parent" xml:space="preserve">
-    <value>page_window_service</value>
-  </data>
-  <data name="&gt;&gt;label10.ZOrder" xml:space="preserve">
-    <value>12</value>
-  </data>
-  <data name="&gt;&gt;tabControl_window_service.Name" xml:space="preserve">
-    <value>tabControl_window_service</value>
-  </data>
-  <data name="&gt;&gt;tabControl_window_service.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tabControl_window_service.Parent" xml:space="preserve">
-    <value>page_window_service</value>
-  </data>
-  <data name="&gt;&gt;tabControl_window_service.ZOrder" xml:space="preserve">
-    <value>13</value>
-  </data>
-  <data name="&gt;&gt;b_windows_service_rollback.Name" xml:space="preserve">
-    <value>b_windows_service_rollback</value>
-  </data>
-  <data name="&gt;&gt;b_windows_service_rollback.Type" xml:space="preserve">
-    <value>AltoControls.AltoButton, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;b_windows_service_rollback.Parent" xml:space="preserve">
-    <value>page_window_service</value>
-  </data>
-  <data name="&gt;&gt;b_windows_service_rollback.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;checkBox_sudo_docker.ZOrder" xml:space="preserve">
     <value>14</value>
   </data>
-  <data name="page_window_service.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="page_docker.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 22</value>
   </data>
-  <data name="page_window_service.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="page_docker.Size" type="System.Drawing.Size, System.Drawing">
     <value>622, 456</value>
   </data>
-  <data name="page_window_service.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
+  <data name="page_docker.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
   </data>
-  <data name="page_window_service.Text" xml:space="preserve">
-    <value>WindowsService</value>
+  <data name="page_docker.Text" xml:space="preserve">
+    <value>Docker</value>
   </data>
-  <data name="&gt;&gt;page_window_service.Name" xml:space="preserve">
-    <value>page_window_service</value>
+  <data name="&gt;&gt;page_docker.Name" xml:space="preserve">
+    <value>page_docker</value>
   </data>
-  <data name="&gt;&gt;page_window_service.Type" xml:space="preserve">
+  <data name="&gt;&gt;page_docker.Type" xml:space="preserve">
     <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;page_window_service.Parent" xml:space="preserve">
+  <data name="&gt;&gt;page_docker.Parent" xml:space="preserve">
     <value>tabcontrol</value>
   </data>
-  <data name="&gt;&gt;page_window_service.ZOrder" xml:space="preserve">
-    <value>2</value>
+  <data name="&gt;&gt;page_docker.ZOrder" xml:space="preserve">
+    <value>1</value>
   </data>
   <data name="btn_windows_serivce_stop.Font" type="System.Drawing.Font, System.Drawing">
     <value>Comic Sans MS, 10pt, style=Bold</value>
@@ -3390,56 +2367,23 @@
   <data name="&gt;&gt;label10.ZOrder" xml:space="preserve">
     <value>12</value>
   </data>
-  <data name="&gt;&gt;tabPage_windows_service.Name" xml:space="preserve">
-    <value>tabPage_windows_service</value>
-  </data>
-  <data name="&gt;&gt;tabPage_windows_service.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tabPage_windows_service.Parent" xml:space="preserve">
-    <value>tabControl_window_service</value>
-  </data>
-  <data name="&gt;&gt;tabPage_windows_service.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;tabPage2.Name" xml:space="preserve">
-    <value>tabPage2</value>
-  </data>
-  <data name="&gt;&gt;tabPage2.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tabPage2.Parent" xml:space="preserve">
-    <value>tabControl_window_service</value>
-  </data>
-  <data name="&gt;&gt;tabPage2.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="tabControl_window_service.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Bottom</value>
-  </data>
-  <data name="tabControl_window_service.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 127</value>
-  </data>
-  <data name="tabControl_window_service.Size" type="System.Drawing.Size, System.Drawing">
-    <value>622, 329</value>
-  </data>
-  <data name="tabControl_window_service.TabIndex" type="System.Int32, mscorlib">
-    <value>24</value>
-  </data>
-  <data name="&gt;&gt;tabControl_window_service.Name" xml:space="preserve">
-    <value>tabControl_window_service</value>
-  </data>
-  <data name="&gt;&gt;tabControl_window_service.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tabControl_window_service.Parent" xml:space="preserve">
-    <value>page_window_service</value>
-  </data>
-  <data name="&gt;&gt;tabControl_window_service.ZOrder" xml:space="preserve">
-    <value>13</value>
-  </data>
   <data name="tabPage_windows_service.AutoScroll" type="System.Boolean, mscorlib">
     <value>True</value>
+  </data>
+  <data name="progress_window_service_tip.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="progress_window_service_tip.Location" type="System.Drawing.Point, System.Drawing">
+    <value>132, 59</value>
+  </data>
+  <data name="progress_window_service_tip.Size" type="System.Drawing.Size, System.Drawing">
+    <value>345, 30</value>
+  </data>
+  <data name="progress_window_service_tip.TabIndex" type="System.Int32, mscorlib">
+    <value>18</value>
+  </data>
+  <data name="progress_window_service_tip.Text" xml:space="preserve">
+    <value>Please 1. Add Windows Server into Env In Setting Page.          2. Select Env.</value>
   </data>
   <data name="&gt;&gt;progress_window_service_tip.Name" xml:space="preserve">
     <value>progress_window_service_tip</value>
@@ -3480,32 +2424,20 @@
   <data name="&gt;&gt;tabPage_windows_service.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="progress_window_service_tip.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
+  <data name="rich_windowservice_log.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
   </data>
-  <data name="progress_window_service_tip.Location" type="System.Drawing.Point, System.Drawing">
-    <value>132, 59</value>
+  <data name="rich_windowservice_log.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 3</value>
   </data>
-  <data name="progress_window_service_tip.Size" type="System.Drawing.Size, System.Drawing">
-    <value>345, 30</value>
+  <data name="rich_windowservice_log.Size" type="System.Drawing.Size, System.Drawing">
+    <value>608, 297</value>
   </data>
-  <data name="progress_window_service_tip.TabIndex" type="System.Int32, mscorlib">
-    <value>18</value>
+  <data name="rich_windowservice_log.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
   </data>
-  <data name="progress_window_service_tip.Text" xml:space="preserve">
-    <value>Please 1. Add Windows Server into Env In Setting Page.          2. Select Env.</value>
-  </data>
-  <data name="&gt;&gt;progress_window_service_tip.Name" xml:space="preserve">
-    <value>progress_window_service_tip</value>
-  </data>
-  <data name="&gt;&gt;progress_window_service_tip.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;progress_window_service_tip.Parent" xml:space="preserve">
-    <value>tabPage_windows_service</value>
-  </data>
-  <data name="&gt;&gt;progress_window_service_tip.ZOrder" xml:space="preserve">
-    <value>0</value>
+  <data name="rich_windowservice_log.Text" xml:space="preserve">
+    <value />
   </data>
   <data name="&gt;&gt;rich_windowservice_log.Name" xml:space="preserve">
     <value>rich_windowservice_log</value>
@@ -3546,32 +2478,29 @@
   <data name="&gt;&gt;tabPage2.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="rich_windowservice_log.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Fill</value>
+  <data name="tabControl_window_service.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Bottom</value>
   </data>
-  <data name="rich_windowservice_log.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 3</value>
+  <data name="tabControl_window_service.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 127</value>
   </data>
-  <data name="rich_windowservice_log.Size" type="System.Drawing.Size, System.Drawing">
-    <value>608, 297</value>
+  <data name="tabControl_window_service.Size" type="System.Drawing.Size, System.Drawing">
+    <value>622, 329</value>
   </data>
-  <data name="rich_windowservice_log.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
+  <data name="tabControl_window_service.TabIndex" type="System.Int32, mscorlib">
+    <value>24</value>
   </data>
-  <data name="rich_windowservice_log.Text" xml:space="preserve">
-    <value />
+  <data name="&gt;&gt;tabControl_window_service.Name" xml:space="preserve">
+    <value>tabControl_window_service</value>
   </data>
-  <data name="&gt;&gt;rich_windowservice_log.Name" xml:space="preserve">
-    <value>rich_windowservice_log</value>
+  <data name="&gt;&gt;tabControl_window_service.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;rich_windowservice_log.Type" xml:space="preserve">
-    <value>AntDeployWinform.ExRichTextBox, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;tabControl_window_service.Parent" xml:space="preserve">
+    <value>page_window_service</value>
   </data>
-  <data name="&gt;&gt;rich_windowservice_log.Parent" xml:space="preserve">
-    <value>tabPage2</value>
-  </data>
-  <data name="&gt;&gt;rich_windowservice_log.ZOrder" xml:space="preserve">
-    <value>0</value>
+  <data name="&gt;&gt;tabControl_window_service.ZOrder" xml:space="preserve">
+    <value>13</value>
   </data>
   <data name="b_windows_service_rollback.Font" type="System.Drawing.Font, System.Drawing">
     <value>Comic Sans MS, 10pt, style=Bold</value>
@@ -3600,221 +2529,29 @@
   <data name="&gt;&gt;b_windows_service_rollback.ZOrder" xml:space="preserve">
     <value>14</value>
   </data>
-  <data name="&gt;&gt;btn_linux_serivce_stop.Name" xml:space="preserve">
-    <value>btn_linux_serivce_stop</value>
-  </data>
-  <data name="&gt;&gt;btn_linux_serivce_stop.Type" xml:space="preserve">
-    <value>AltoControls.AltoButton, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;btn_linux_serivce_stop.Parent" xml:space="preserve">
-    <value>page_linux_service</value>
-  </data>
-  <data name="&gt;&gt;btn_linux_serivce_stop.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;b_linuxservice_deploy.Name" xml:space="preserve">
-    <value>b_linuxservice_deploy</value>
-  </data>
-  <data name="&gt;&gt;b_linuxservice_deploy.Type" xml:space="preserve">
-    <value>AltoControls.AltoButton, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;b_linuxservice_deploy.Parent" xml:space="preserve">
-    <value>page_linux_service</value>
-  </data>
-  <data name="&gt;&gt;b_linuxservice_deploy.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;btn_linux_service_retry.Name" xml:space="preserve">
-    <value>btn_linux_service_retry</value>
-  </data>
-  <data name="&gt;&gt;btn_linux_service_retry.Type" xml:space="preserve">
-    <value>AltoControls.AltoButton, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;btn_linux_service_retry.Parent" xml:space="preserve">
-    <value>page_linux_service</value>
-  </data>
-  <data name="&gt;&gt;btn_linux_service_retry.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="&gt;&gt;checkBox_select_type_linuxservice.Name" xml:space="preserve">
-    <value>checkBox_select_type_linuxservice</value>
-  </data>
-  <data name="&gt;&gt;checkBox_select_type_linuxservice.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;checkBox_select_type_linuxservice.Parent" xml:space="preserve">
-    <value>page_linux_service</value>
-  </data>
-  <data name="&gt;&gt;checkBox_select_type_linuxservice.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="&gt;&gt;label51.Name" xml:space="preserve">
-    <value>label51</value>
-  </data>
-  <data name="&gt;&gt;label51.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label51.Parent" xml:space="preserve">
-    <value>page_linux_service</value>
-  </data>
-  <data name="&gt;&gt;label51.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="&gt;&gt;txt_linux_service_env.Name" xml:space="preserve">
-    <value>txt_linux_service_env</value>
-  </data>
-  <data name="&gt;&gt;txt_linux_service_env.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txt_linux_service_env.Parent" xml:space="preserve">
-    <value>page_linux_service</value>
-  </data>
-  <data name="&gt;&gt;txt_linux_service_env.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-  <data name="&gt;&gt;label49.Name" xml:space="preserve">
-    <value>label49</value>
-  </data>
-  <data name="&gt;&gt;label49.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label49.Parent" xml:space="preserve">
-    <value>page_linux_service</value>
-  </data>
-  <data name="&gt;&gt;label49.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
-  <data name="&gt;&gt;tabControl_linux_service.Name" xml:space="preserve">
-    <value>tabControl_linux_service</value>
-  </data>
-  <data name="&gt;&gt;tabControl_linux_service.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tabControl_linux_service.Parent" xml:space="preserve">
-    <value>page_linux_service</value>
-  </data>
-  <data name="&gt;&gt;tabControl_linux_service.ZOrder" xml:space="preserve">
-    <value>7</value>
-  </data>
-  <data name="&gt;&gt;checkBox_select_deploy_linuxservice.Name" xml:space="preserve">
-    <value>checkBox_select_deploy_linuxservice</value>
-  </data>
-  <data name="&gt;&gt;checkBox_select_deploy_linuxservice.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;checkBox_select_deploy_linuxservice.Parent" xml:space="preserve">
-    <value>page_linux_service</value>
-  </data>
-  <data name="&gt;&gt;checkBox_select_deploy_linuxservice.ZOrder" xml:space="preserve">
-    <value>8</value>
-  </data>
-  <data name="&gt;&gt;checkBox_Increment_linux_service.Name" xml:space="preserve">
-    <value>checkBox_Increment_linux_service</value>
-  </data>
-  <data name="&gt;&gt;checkBox_Increment_linux_service.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;checkBox_Increment_linux_service.Parent" xml:space="preserve">
-    <value>page_linux_service</value>
-  </data>
-  <data name="&gt;&gt;checkBox_Increment_linux_service.ZOrder" xml:space="preserve">
-    <value>9</value>
-  </data>
-  <data name="&gt;&gt;label47.Name" xml:space="preserve">
-    <value>label47</value>
-  </data>
-  <data name="&gt;&gt;label47.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label47.Parent" xml:space="preserve">
-    <value>page_linux_service</value>
-  </data>
-  <data name="&gt;&gt;label47.ZOrder" xml:space="preserve">
-    <value>10</value>
-  </data>
-  <data name="&gt;&gt;txt_linuxservice_name.Name" xml:space="preserve">
-    <value>txt_linuxservice_name</value>
-  </data>
-  <data name="&gt;&gt;txt_linuxservice_name.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txt_linuxservice_name.Parent" xml:space="preserve">
-    <value>page_linux_service</value>
-  </data>
-  <data name="&gt;&gt;txt_linuxservice_name.ZOrder" xml:space="preserve">
-    <value>11</value>
-  </data>
-  <data name="&gt;&gt;label48.Name" xml:space="preserve">
-    <value>label48</value>
-  </data>
-  <data name="&gt;&gt;label48.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label48.Parent" xml:space="preserve">
-    <value>page_linux_service</value>
-  </data>
-  <data name="&gt;&gt;label48.ZOrder" xml:space="preserve">
-    <value>12</value>
-  </data>
-  <data name="&gt;&gt;combo_linux_env.Name" xml:space="preserve">
-    <value>combo_linux_env</value>
-  </data>
-  <data name="&gt;&gt;combo_linux_env.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;combo_linux_env.Parent" xml:space="preserve">
-    <value>page_linux_service</value>
-  </data>
-  <data name="&gt;&gt;combo_linux_env.ZOrder" xml:space="preserve">
-    <value>13</value>
-  </data>
-  <data name="&gt;&gt;label50.Name" xml:space="preserve">
-    <value>label50</value>
-  </data>
-  <data name="&gt;&gt;label50.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label50.Parent" xml:space="preserve">
-    <value>page_linux_service</value>
-  </data>
-  <data name="&gt;&gt;label50.ZOrder" xml:space="preserve">
-    <value>14</value>
-  </data>
-  <data name="&gt;&gt;b_linux_service_rollback.Name" xml:space="preserve">
-    <value>b_linux_service_rollback</value>
-  </data>
-  <data name="&gt;&gt;b_linux_service_rollback.Type" xml:space="preserve">
-    <value>AltoControls.AltoButton, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;b_linux_service_rollback.Parent" xml:space="preserve">
-    <value>page_linux_service</value>
-  </data>
-  <data name="&gt;&gt;b_linux_service_rollback.ZOrder" xml:space="preserve">
-    <value>15</value>
-  </data>
-  <data name="page_linux_service.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="page_window_service.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 22</value>
   </data>
-  <data name="page_linux_service.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="page_window_service.Size" type="System.Drawing.Size, System.Drawing">
     <value>622, 456</value>
   </data>
-  <data name="page_linux_service.TabIndex" type="System.Int32, mscorlib">
-    <value>5</value>
+  <data name="page_window_service.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
   </data>
-  <data name="page_linux_service.Text" xml:space="preserve">
-    <value>LinuxService</value>
+  <data name="page_window_service.Text" xml:space="preserve">
+    <value>WindowsService</value>
   </data>
-  <data name="&gt;&gt;page_linux_service.Name" xml:space="preserve">
-    <value>page_linux_service</value>
+  <data name="&gt;&gt;page_window_service.Name" xml:space="preserve">
+    <value>page_window_service</value>
   </data>
-  <data name="&gt;&gt;page_linux_service.Type" xml:space="preserve">
+  <data name="&gt;&gt;page_window_service.Type" xml:space="preserve">
     <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;page_linux_service.Parent" xml:space="preserve">
+  <data name="&gt;&gt;page_window_service.Parent" xml:space="preserve">
     <value>tabcontrol</value>
   </data>
-  <data name="&gt;&gt;page_linux_service.ZOrder" xml:space="preserve">
-    <value>3</value>
+  <data name="&gt;&gt;page_window_service.ZOrder" xml:space="preserve">
+    <value>2</value>
   </data>
   <data name="btn_linux_serivce_stop.Font" type="System.Drawing.Font, System.Drawing">
     <value>Comic Sans MS, 10pt, style=Bold</value>
@@ -4023,56 +2760,23 @@
   <data name="&gt;&gt;label49.ZOrder" xml:space="preserve">
     <value>6</value>
   </data>
-  <data name="&gt;&gt;tabPage_linux_service.Name" xml:space="preserve">
-    <value>tabPage_linux_service</value>
-  </data>
-  <data name="&gt;&gt;tabPage_linux_service.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tabPage_linux_service.Parent" xml:space="preserve">
-    <value>tabControl_linux_service</value>
-  </data>
-  <data name="&gt;&gt;tabPage_linux_service.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;tabPage3.Name" xml:space="preserve">
-    <value>tabPage3</value>
-  </data>
-  <data name="&gt;&gt;tabPage3.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tabPage3.Parent" xml:space="preserve">
-    <value>tabControl_linux_service</value>
-  </data>
-  <data name="&gt;&gt;tabPage3.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="tabControl_linux_service.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Bottom</value>
-  </data>
-  <data name="tabControl_linux_service.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 127</value>
-  </data>
-  <data name="tabControl_linux_service.Size" type="System.Drawing.Size, System.Drawing">
-    <value>622, 329</value>
-  </data>
-  <data name="tabControl_linux_service.TabIndex" type="System.Int32, mscorlib">
-    <value>52</value>
-  </data>
-  <data name="&gt;&gt;tabControl_linux_service.Name" xml:space="preserve">
-    <value>tabControl_linux_service</value>
-  </data>
-  <data name="&gt;&gt;tabControl_linux_service.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tabControl_linux_service.Parent" xml:space="preserve">
-    <value>page_linux_service</value>
-  </data>
-  <data name="&gt;&gt;tabControl_linux_service.ZOrder" xml:space="preserve">
-    <value>7</value>
-  </data>
   <data name="tabPage_linux_service.AutoScroll" type="System.Boolean, mscorlib">
     <value>True</value>
+  </data>
+  <data name="progress_linux_service_tip.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="progress_linux_service_tip.Location" type="System.Drawing.Point, System.Drawing">
+    <value>132, 59</value>
+  </data>
+  <data name="progress_linux_service_tip.Size" type="System.Drawing.Size, System.Drawing">
+    <value>345, 30</value>
+  </data>
+  <data name="progress_linux_service_tip.TabIndex" type="System.Int32, mscorlib">
+    <value>18</value>
+  </data>
+  <data name="progress_linux_service_tip.Text" xml:space="preserve">
+    <value>Please 1. Add Linux Server into Env In Setting Page.            2. Select Env.</value>
   </data>
   <data name="&gt;&gt;progress_linux_service_tip.Name" xml:space="preserve">
     <value>progress_linux_service_tip</value>
@@ -4113,32 +2817,20 @@
   <data name="&gt;&gt;tabPage_linux_service.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="progress_linux_service_tip.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
+  <data name="rich_linuxservice_log.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
   </data>
-  <data name="progress_linux_service_tip.Location" type="System.Drawing.Point, System.Drawing">
-    <value>132, 59</value>
+  <data name="rich_linuxservice_log.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 3</value>
   </data>
-  <data name="progress_linux_service_tip.Size" type="System.Drawing.Size, System.Drawing">
-    <value>345, 30</value>
+  <data name="rich_linuxservice_log.Size" type="System.Drawing.Size, System.Drawing">
+    <value>608, 297</value>
   </data>
-  <data name="progress_linux_service_tip.TabIndex" type="System.Int32, mscorlib">
-    <value>18</value>
+  <data name="rich_linuxservice_log.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
   </data>
-  <data name="progress_linux_service_tip.Text" xml:space="preserve">
-    <value>Please 1. Add Linux Server into Env In Setting Page.            2. Select Env.</value>
-  </data>
-  <data name="&gt;&gt;progress_linux_service_tip.Name" xml:space="preserve">
-    <value>progress_linux_service_tip</value>
-  </data>
-  <data name="&gt;&gt;progress_linux_service_tip.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;progress_linux_service_tip.Parent" xml:space="preserve">
-    <value>tabPage_linux_service</value>
-  </data>
-  <data name="&gt;&gt;progress_linux_service_tip.ZOrder" xml:space="preserve">
-    <value>0</value>
+  <data name="rich_linuxservice_log.Text" xml:space="preserve">
+    <value />
   </data>
   <data name="&gt;&gt;rich_linuxservice_log.Name" xml:space="preserve">
     <value>rich_linuxservice_log</value>
@@ -4179,32 +2871,29 @@
   <data name="&gt;&gt;tabPage3.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="rich_linuxservice_log.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Fill</value>
+  <data name="tabControl_linux_service.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Bottom</value>
   </data>
-  <data name="rich_linuxservice_log.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 3</value>
+  <data name="tabControl_linux_service.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 127</value>
   </data>
-  <data name="rich_linuxservice_log.Size" type="System.Drawing.Size, System.Drawing">
-    <value>608, 297</value>
+  <data name="tabControl_linux_service.Size" type="System.Drawing.Size, System.Drawing">
+    <value>622, 329</value>
   </data>
-  <data name="rich_linuxservice_log.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
+  <data name="tabControl_linux_service.TabIndex" type="System.Int32, mscorlib">
+    <value>52</value>
   </data>
-  <data name="rich_linuxservice_log.Text" xml:space="preserve">
-    <value />
+  <data name="&gt;&gt;tabControl_linux_service.Name" xml:space="preserve">
+    <value>tabControl_linux_service</value>
   </data>
-  <data name="&gt;&gt;rich_linuxservice_log.Name" xml:space="preserve">
-    <value>rich_linuxservice_log</value>
+  <data name="&gt;&gt;tabControl_linux_service.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;rich_linuxservice_log.Type" xml:space="preserve">
-    <value>AntDeployWinform.ExRichTextBox, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;tabControl_linux_service.Parent" xml:space="preserve">
+    <value>page_linux_service</value>
   </data>
-  <data name="&gt;&gt;rich_linuxservice_log.Parent" xml:space="preserve">
-    <value>tabPage3</value>
-  </data>
-  <data name="&gt;&gt;rich_linuxservice_log.ZOrder" xml:space="preserve">
-    <value>0</value>
+  <data name="&gt;&gt;tabControl_linux_service.ZOrder" xml:space="preserve">
+    <value>7</value>
   </data>
   <data name="checkBox_select_deploy_linuxservice.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -4425,152 +3114,29 @@
   <data name="&gt;&gt;b_linux_service_rollback.ZOrder" xml:space="preserve">
     <value>15</value>
   </data>
-  <data name="&gt;&gt;panel_rich_config_log.Name" xml:space="preserve">
-    <value>panel_rich_config_log</value>
-  </data>
-  <data name="&gt;&gt;panel_rich_config_log.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;panel_rich_config_log.Parent" xml:space="preserve">
-    <value>page_set</value>
-  </data>
-  <data name="&gt;&gt;panel_rich_config_log.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;label_how_to_set.Name" xml:space="preserve">
-    <value>label_how_to_set</value>
-  </data>
-  <data name="&gt;&gt;label_how_to_set.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label_how_to_set.Parent" xml:space="preserve">
-    <value>page_set</value>
-  </data>
-  <data name="&gt;&gt;label_how_to_set.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;groupBox1.Name" xml:space="preserve">
-    <value>groupBox1</value>
-  </data>
-  <data name="&gt;&gt;groupBox1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;groupBox1.Parent" xml:space="preserve">
-    <value>page_set</value>
-  </data>
-  <data name="&gt;&gt;groupBox1.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="&gt;&gt;label_check_update.Name" xml:space="preserve">
-    <value>label_check_update</value>
-  </data>
-  <data name="&gt;&gt;label_check_update.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label_check_update.Parent" xml:space="preserve">
-    <value>page_set</value>
-  </data>
-  <data name="&gt;&gt;label_check_update.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="&gt;&gt;groupBoxIgnore.Name" xml:space="preserve">
-    <value>groupBoxIgnore</value>
-  </data>
-  <data name="&gt;&gt;groupBoxIgnore.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;groupBoxIgnore.Parent" xml:space="preserve">
-    <value>page_set</value>
-  </data>
-  <data name="&gt;&gt;groupBoxIgnore.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="&gt;&gt;environment.Name" xml:space="preserve">
-    <value>environment</value>
-  </data>
-  <data name="&gt;&gt;environment.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;environment.Parent" xml:space="preserve">
-    <value>page_set</value>
-  </data>
-  <data name="&gt;&gt;environment.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-  <data name="page_set.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="page_linux_service.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 22</value>
   </data>
-  <data name="page_set.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>3, 3, 3, 3</value>
-  </data>
-  <data name="page_set.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="page_linux_service.Size" type="System.Drawing.Size, System.Drawing">
     <value>622, 456</value>
   </data>
-  <data name="page_set.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
+  <data name="page_linux_service.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
   </data>
-  <data name="page_set.Text" xml:space="preserve">
-    <value>DeploySetting</value>
+  <data name="page_linux_service.Text" xml:space="preserve">
+    <value>LinuxService</value>
   </data>
-  <data name="&gt;&gt;page_set.Name" xml:space="preserve">
-    <value>page_set</value>
+  <data name="&gt;&gt;page_linux_service.Name" xml:space="preserve">
+    <value>page_linux_service</value>
   </data>
-  <data name="&gt;&gt;page_set.Type" xml:space="preserve">
+  <data name="&gt;&gt;page_linux_service.Type" xml:space="preserve">
     <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;page_set.Parent" xml:space="preserve">
+  <data name="&gt;&gt;page_linux_service.Parent" xml:space="preserve">
     <value>tabcontrol</value>
   </data>
-  <data name="&gt;&gt;page_set.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="&gt;&gt;btn_rich_config_log_close.Name" xml:space="preserve">
-    <value>btn_rich_config_log_close</value>
-  </data>
-  <data name="&gt;&gt;btn_rich_config_log_close.Type" xml:space="preserve">
-    <value>AltoControls.AltoButton, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;btn_rich_config_log_close.Parent" xml:space="preserve">
-    <value>panel_rich_config_log</value>
-  </data>
-  <data name="&gt;&gt;btn_rich_config_log_close.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;rich_config_log.Name" xml:space="preserve">
-    <value>rich_config_log</value>
-  </data>
-  <data name="&gt;&gt;rich_config_log.Type" xml:space="preserve">
-    <value>AntDeployWinform.ExRichTextBox, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;rich_config_log.Parent" xml:space="preserve">
-    <value>panel_rich_config_log</value>
-  </data>
-  <data name="&gt;&gt;rich_config_log.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="panel_rich_config_log.Location" type="System.Drawing.Point, System.Drawing">
-    <value>19, 269</value>
-  </data>
-  <data name="panel_rich_config_log.Size" type="System.Drawing.Size, System.Drawing">
-    <value>597, 179</value>
-  </data>
-  <data name="panel_rich_config_log.TabIndex" type="System.Int32, mscorlib">
-    <value>30</value>
-  </data>
-  <data name="panel_rich_config_log.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="&gt;&gt;panel_rich_config_log.Name" xml:space="preserve">
-    <value>panel_rich_config_log</value>
-  </data>
-  <data name="&gt;&gt;panel_rich_config_log.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;panel_rich_config_log.Parent" xml:space="preserve">
-    <value>page_set</value>
-  </data>
-  <data name="&gt;&gt;panel_rich_config_log.ZOrder" xml:space="preserve">
-    <value>0</value>
+  <data name="&gt;&gt;page_linux_service.ZOrder" xml:space="preserve">
+    <value>3</value>
   </data>
   <data name="btn_rich_config_log_close.Font" type="System.Drawing.Font, System.Drawing">
     <value>Comic Sans MS, 10pt, style=Bold</value>
@@ -4626,6 +3192,30 @@
   <data name="&gt;&gt;rich_config_log.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
+  <data name="panel_rich_config_log.Location" type="System.Drawing.Point, System.Drawing">
+    <value>19, 269</value>
+  </data>
+  <data name="panel_rich_config_log.Size" type="System.Drawing.Size, System.Drawing">
+    <value>597, 179</value>
+  </data>
+  <data name="panel_rich_config_log.TabIndex" type="System.Int32, mscorlib">
+    <value>30</value>
+  </data>
+  <data name="panel_rich_config_log.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;panel_rich_config_log.Name" xml:space="preserve">
+    <value>panel_rich_config_log</value>
+  </data>
+  <data name="&gt;&gt;panel_rich_config_log.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;panel_rich_config_log.Parent" xml:space="preserve">
+    <value>page_set</value>
+  </data>
+  <data name="&gt;&gt;panel_rich_config_log.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="label_how_to_set.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -4655,90 +3245,6 @@
   </data>
   <data name="&gt;&gt;label_how_to_set.ZOrder" xml:space="preserve">
     <value>1</value>
-  </data>
-  <data name="&gt;&gt;b_copy_backup_ignore.Name" xml:space="preserve">
-    <value>b_copy_backup_ignore</value>
-  </data>
-  <data name="&gt;&gt;b_copy_backup_ignore.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;b_copy_backup_ignore.Parent" xml:space="preserve">
-    <value>groupBox1</value>
-  </data>
-  <data name="&gt;&gt;b_copy_backup_ignore.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;b_backUp_ignore_remove.Name" xml:space="preserve">
-    <value>b_backUp_ignore_remove</value>
-  </data>
-  <data name="&gt;&gt;b_backUp_ignore_remove.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;b_backUp_ignore_remove.Parent" xml:space="preserve">
-    <value>groupBox1</value>
-  </data>
-  <data name="&gt;&gt;b_backUp_ignore_remove.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;b_backUp_ignore_add.Name" xml:space="preserve">
-    <value>b_backUp_ignore_add</value>
-  </data>
-  <data name="&gt;&gt;b_backUp_ignore_add.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;b_backUp_ignore_add.Parent" xml:space="preserve">
-    <value>groupBox1</value>
-  </data>
-  <data name="&gt;&gt;b_backUp_ignore_add.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="&gt;&gt;txt_backUp_ignore.Name" xml:space="preserve">
-    <value>txt_backUp_ignore</value>
-  </data>
-  <data name="&gt;&gt;txt_backUp_ignore.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txt_backUp_ignore.Parent" xml:space="preserve">
-    <value>groupBox1</value>
-  </data>
-  <data name="&gt;&gt;txt_backUp_ignore.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="&gt;&gt;list_backUp_ignore.Name" xml:space="preserve">
-    <value>list_backUp_ignore</value>
-  </data>
-  <data name="&gt;&gt;list_backUp_ignore.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ListBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;list_backUp_ignore.Parent" xml:space="preserve">
-    <value>groupBox1</value>
-  </data>
-  <data name="&gt;&gt;list_backUp_ignore.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>317, 269</value>
-  </data>
-  <data name="groupBox1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>299, 179</value>
-  </data>
-  <data name="groupBox1.TabIndex" type="System.Int32, mscorlib">
-    <value>18</value>
-  </data>
-  <data name="groupBox1.Text" xml:space="preserve">
-    <value>Token Server BackUp IgnoreRule</value>
-  </data>
-  <data name="&gt;&gt;groupBox1.Name" xml:space="preserve">
-    <value>groupBox1</value>
-  </data>
-  <data name="&gt;&gt;groupBox1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;groupBox1.Parent" xml:space="preserve">
-    <value>page_set</value>
-  </data>
-  <data name="&gt;&gt;groupBox1.ZOrder" xml:space="preserve">
-    <value>2</value>
   </data>
   <data name="b_copy_backup_ignore.Enabled" type="System.Boolean, mscorlib">
     <value>False</value>
@@ -4875,6 +3381,30 @@
   <data name="&gt;&gt;list_backUp_ignore.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
+  <data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>317, 269</value>
+  </data>
+  <data name="groupBox1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>299, 179</value>
+  </data>
+  <data name="groupBox1.TabIndex" type="System.Int32, mscorlib">
+    <value>18</value>
+  </data>
+  <data name="groupBox1.Text" xml:space="preserve">
+    <value>Token Server BackUp IgnoreRule</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.Name" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.Parent" xml:space="preserve">
+    <value>page_set</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
   <data name="label_check_update.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -4904,90 +3434,6 @@
   </data>
   <data name="&gt;&gt;label_check_update.ZOrder" xml:space="preserve">
     <value>3</value>
-  </data>
-  <data name="&gt;&gt;b_copy_pack_ignore.Name" xml:space="preserve">
-    <value>b_copy_pack_ignore</value>
-  </data>
-  <data name="&gt;&gt;b_copy_pack_ignore.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;b_copy_pack_ignore.Parent" xml:space="preserve">
-    <value>groupBoxIgnore</value>
-  </data>
-  <data name="&gt;&gt;b_copy_pack_ignore.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;b_env_ignore_remove.Name" xml:space="preserve">
-    <value>b_env_ignore_remove</value>
-  </data>
-  <data name="&gt;&gt;b_env_ignore_remove.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;b_env_ignore_remove.Parent" xml:space="preserve">
-    <value>groupBoxIgnore</value>
-  </data>
-  <data name="&gt;&gt;b_env_ignore_remove.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;b_env_ignore_add.Name" xml:space="preserve">
-    <value>b_env_ignore_add</value>
-  </data>
-  <data name="&gt;&gt;b_env_ignore_add.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;b_env_ignore_add.Parent" xml:space="preserve">
-    <value>groupBoxIgnore</value>
-  </data>
-  <data name="&gt;&gt;b_env_ignore_add.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="&gt;&gt;txt_env_ignore.Name" xml:space="preserve">
-    <value>txt_env_ignore</value>
-  </data>
-  <data name="&gt;&gt;txt_env_ignore.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txt_env_ignore.Parent" xml:space="preserve">
-    <value>groupBoxIgnore</value>
-  </data>
-  <data name="&gt;&gt;txt_env_ignore.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="&gt;&gt;list_env_ignore.Name" xml:space="preserve">
-    <value>list_env_ignore</value>
-  </data>
-  <data name="&gt;&gt;list_env_ignore.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ListBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;list_env_ignore.Parent" xml:space="preserve">
-    <value>groupBoxIgnore</value>
-  </data>
-  <data name="&gt;&gt;list_env_ignore.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="groupBoxIgnore.Location" type="System.Drawing.Point, System.Drawing">
-    <value>19, 269</value>
-  </data>
-  <data name="groupBoxIgnore.Size" type="System.Drawing.Size, System.Drawing">
-    <value>294, 179</value>
-  </data>
-  <data name="groupBoxIgnore.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
-  </data>
-  <data name="groupBoxIgnore.Text" xml:space="preserve">
-    <value>Package IgnoreRule</value>
-  </data>
-  <data name="&gt;&gt;groupBoxIgnore.Name" xml:space="preserve">
-    <value>groupBoxIgnore</value>
-  </data>
-  <data name="&gt;&gt;groupBoxIgnore.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;groupBoxIgnore.Parent" xml:space="preserve">
-    <value>page_set</value>
-  </data>
-  <data name="&gt;&gt;groupBoxIgnore.ZOrder" xml:space="preserve">
-    <value>4</value>
   </data>
   <data name="b_copy_pack_ignore.Enabled" type="System.Boolean, mscorlib">
     <value>False</value>
@@ -5124,353 +3570,29 @@
   <data name="&gt;&gt;list_env_ignore.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
-  <data name="&gt;&gt;tabControl1.Name" xml:space="preserve">
-    <value>tabControl1</value>
+  <data name="groupBoxIgnore.Location" type="System.Drawing.Point, System.Drawing">
+    <value>19, 269</value>
   </data>
-  <data name="&gt;&gt;tabControl1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="groupBoxIgnore.Size" type="System.Drawing.Size, System.Drawing">
+    <value>294, 179</value>
   </data>
-  <data name="&gt;&gt;tabControl1.Parent" xml:space="preserve">
-    <value>environment</value>
-  </data>
-  <data name="&gt;&gt;tabControl1.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;label2.Name" xml:space="preserve">
-    <value>label2</value>
-  </data>
-  <data name="&gt;&gt;label2.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label2.Parent" xml:space="preserve">
-    <value>environment</value>
-  </data>
-  <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;label1.Name" xml:space="preserve">
-    <value>label1</value>
-  </data>
-  <data name="&gt;&gt;label1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label1.Parent" xml:space="preserve">
-    <value>environment</value>
-  </data>
-  <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
+  <data name="groupBoxIgnore.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
   </data>
-  <data name="&gt;&gt;b_env_remove.Name" xml:space="preserve">
-    <value>b_env_remove</value>
+  <data name="groupBoxIgnore.Text" xml:space="preserve">
+    <value>Package IgnoreRule</value>
   </data>
-  <data name="&gt;&gt;b_env_remove.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;groupBoxIgnore.Name" xml:space="preserve">
+    <value>groupBoxIgnore</value>
   </data>
-  <data name="&gt;&gt;b_env_remove.Parent" xml:space="preserve">
-    <value>environment</value>
-  </data>
-  <data name="&gt;&gt;b_env_remove.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="&gt;&gt;txt_env_name.Name" xml:space="preserve">
-    <value>txt_env_name</value>
-  </data>
-  <data name="&gt;&gt;txt_env_name.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txt_env_name.Parent" xml:space="preserve">
-    <value>environment</value>
-  </data>
-  <data name="&gt;&gt;txt_env_name.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="&gt;&gt;b_env_add_by_name.Name" xml:space="preserve">
-    <value>b_env_add_by_name</value>
-  </data>
-  <data name="&gt;&gt;b_env_add_by_name.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;b_env_add_by_name.Parent" xml:space="preserve">
-    <value>environment</value>
-  </data>
-  <data name="&gt;&gt;b_env_add_by_name.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-  <data name="&gt;&gt;combo_env_list.Name" xml:space="preserve">
-    <value>combo_env_list</value>
-  </data>
-  <data name="&gt;&gt;combo_env_list.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;combo_env_list.Parent" xml:space="preserve">
-    <value>environment</value>
-  </data>
-  <data name="&gt;&gt;combo_env_list.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
-  <data name="environment.Location" type="System.Drawing.Point, System.Drawing">
-    <value>19, 17</value>
-  </data>
-  <data name="environment.Size" type="System.Drawing.Size, System.Drawing">
-    <value>599, 246</value>
-  </data>
-  <data name="environment.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="environment.Text" xml:space="preserve">
-    <value>Environment</value>
-  </data>
-  <data name="&gt;&gt;environment.Name" xml:space="preserve">
-    <value>environment</value>
-  </data>
-  <data name="&gt;&gt;environment.Type" xml:space="preserve">
+  <data name="&gt;&gt;groupBoxIgnore.Type" xml:space="preserve">
     <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;environment.Parent" xml:space="preserve">
+  <data name="&gt;&gt;groupBoxIgnore.Parent" xml:space="preserve">
     <value>page_set</value>
   </data>
-  <data name="&gt;&gt;environment.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-  <data name="&gt;&gt;page_winserver.Name" xml:space="preserve">
-    <value>page_winserver</value>
-  </data>
-  <data name="&gt;&gt;page_winserver.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;page_winserver.Parent" xml:space="preserve">
-    <value>tabControl1</value>
-  </data>
-  <data name="&gt;&gt;page_winserver.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;page_linux_server.Name" xml:space="preserve">
-    <value>page_linux_server</value>
-  </data>
-  <data name="&gt;&gt;page_linux_server.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;page_linux_server.Parent" xml:space="preserve">
-    <value>tabControl1</value>
-  </data>
-  <data name="&gt;&gt;page_linux_server.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="tabControl1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>9, 88</value>
-  </data>
-  <data name="tabControl1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>584, 147</value>
-  </data>
-  <data name="tabControl1.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
-  </data>
-  <data name="&gt;&gt;tabControl1.Name" xml:space="preserve">
-    <value>tabControl1</value>
-  </data>
-  <data name="&gt;&gt;tabControl1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tabControl1.Parent" xml:space="preserve">
-    <value>environment</value>
-  </data>
-  <data name="&gt;&gt;tabControl1.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;btn_win_server_testAll.Name" xml:space="preserve">
-    <value>btn_win_server_testAll</value>
-  </data>
-  <data name="&gt;&gt;btn_win_server_testAll.Type" xml:space="preserve">
-    <value>AltoControls.AltoButton, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;btn_win_server_testAll.Parent" xml:space="preserve">
-    <value>page_winserver</value>
-  </data>
-  <data name="&gt;&gt;btn_win_server_testAll.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;txt_winserver_nickname.Name" xml:space="preserve">
-    <value>txt_winserver_nickname</value>
-  </data>
-  <data name="&gt;&gt;txt_winserver_nickname.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txt_winserver_nickname.Parent" xml:space="preserve">
-    <value>page_winserver</value>
-  </data>
-  <data name="&gt;&gt;txt_winserver_nickname.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;label32.Name" xml:space="preserve">
-    <value>label32</value>
-  </data>
-  <data name="&gt;&gt;label32.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label32.Parent" xml:space="preserve">
-    <value>page_winserver</value>
-  </data>
-  <data name="&gt;&gt;label32.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="&gt;&gt;label29.Name" xml:space="preserve">
-    <value>label29</value>
-  </data>
-  <data name="&gt;&gt;label29.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label29.Parent" xml:space="preserve">
-    <value>page_winserver</value>
-  </data>
-  <data name="&gt;&gt;label29.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="&gt;&gt;loading_win_server_test.Name" xml:space="preserve">
-    <value>loading_win_server_test</value>
-  </data>
-  <data name="&gt;&gt;loading_win_server_test.Type" xml:space="preserve">
-    <value>AltoControls.SpinningCircles, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;loading_win_server_test.Parent" xml:space="preserve">
-    <value>page_winserver</value>
-  </data>
-  <data name="&gt;&gt;loading_win_server_test.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;groupBoxIgnore.ZOrder" xml:space="preserve">
     <value>4</value>
-  </data>
-  <data name="&gt;&gt;label5.Name" xml:space="preserve">
-    <value>label5</value>
-  </data>
-  <data name="&gt;&gt;label5.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label5.Parent" xml:space="preserve">
-    <value>page_winserver</value>
-  </data>
-  <data name="&gt;&gt;label5.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-  <data name="&gt;&gt;b_env_server_test.Name" xml:space="preserve">
-    <value>b_env_server_test</value>
-  </data>
-  <data name="&gt;&gt;b_env_server_test.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;b_env_server_test.Parent" xml:space="preserve">
-    <value>page_winserver</value>
-  </data>
-  <data name="&gt;&gt;b_env_server_test.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
-  <data name="&gt;&gt;combo_env_server_list.Name" xml:space="preserve">
-    <value>combo_env_server_list</value>
-  </data>
-  <data name="&gt;&gt;combo_env_server_list.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;combo_env_server_list.Parent" xml:space="preserve">
-    <value>page_winserver</value>
-  </data>
-  <data name="&gt;&gt;combo_env_server_list.ZOrder" xml:space="preserve">
-    <value>7</value>
-  </data>
-  <data name="&gt;&gt;b_env_server_add.Name" xml:space="preserve">
-    <value>b_env_server_add</value>
-  </data>
-  <data name="&gt;&gt;b_env_server_add.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;b_env_server_add.Parent" xml:space="preserve">
-    <value>page_winserver</value>
-  </data>
-  <data name="&gt;&gt;b_env_server_add.ZOrder" xml:space="preserve">
-    <value>8</value>
-  </data>
-  <data name="&gt;&gt;txt_env_server_host.Name" xml:space="preserve">
-    <value>txt_env_server_host</value>
-  </data>
-  <data name="&gt;&gt;txt_env_server_host.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txt_env_server_host.Parent" xml:space="preserve">
-    <value>page_winserver</value>
-  </data>
-  <data name="&gt;&gt;txt_env_server_host.ZOrder" xml:space="preserve">
-    <value>9</value>
-  </data>
-  <data name="&gt;&gt;b_env_server_remove.Name" xml:space="preserve">
-    <value>b_env_server_remove</value>
-  </data>
-  <data name="&gt;&gt;b_env_server_remove.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;b_env_server_remove.Parent" xml:space="preserve">
-    <value>page_winserver</value>
-  </data>
-  <data name="&gt;&gt;b_env_server_remove.ZOrder" xml:space="preserve">
-    <value>10</value>
-  </data>
-  <data name="&gt;&gt;label3.Name" xml:space="preserve">
-    <value>label3</value>
-  </data>
-  <data name="&gt;&gt;label3.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label3.Parent" xml:space="preserve">
-    <value>page_winserver</value>
-  </data>
-  <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
-    <value>11</value>
-  </data>
-  <data name="&gt;&gt;txt_env_server_token.Name" xml:space="preserve">
-    <value>txt_env_server_token</value>
-  </data>
-  <data name="&gt;&gt;txt_env_server_token.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txt_env_server_token.Parent" xml:space="preserve">
-    <value>page_winserver</value>
-  </data>
-  <data name="&gt;&gt;txt_env_server_token.ZOrder" xml:space="preserve">
-    <value>12</value>
-  </data>
-  <data name="&gt;&gt;label4.Name" xml:space="preserve">
-    <value>label4</value>
-  </data>
-  <data name="&gt;&gt;label4.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label4.Parent" xml:space="preserve">
-    <value>page_winserver</value>
-  </data>
-  <data name="&gt;&gt;label4.ZOrder" xml:space="preserve">
-    <value>13</value>
-  </data>
-  <data name="page_winserver.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 22</value>
-  </data>
-  <data name="page_winserver.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>3, 3, 3, 3</value>
-  </data>
-  <data name="page_winserver.Size" type="System.Drawing.Size, System.Drawing">
-    <value>576, 121</value>
-  </data>
-  <data name="page_winserver.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="page_winserver.Text" xml:space="preserve">
-    <value>token_server</value>
-  </data>
-  <data name="&gt;&gt;page_winserver.Name" xml:space="preserve">
-    <value>page_winserver</value>
-  </data>
-  <data name="&gt;&gt;page_winserver.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;page_winserver.Parent" xml:space="preserve">
-    <value>tabControl1</value>
-  </data>
-  <data name="&gt;&gt;page_winserver.ZOrder" xml:space="preserve">
-    <value>0</value>
   </data>
   <data name="btn_win_server_testAll.Font" type="System.Drawing.Font, System.Drawing">
     <value>Comic Sans MS, 10pt, style=Bold</value>
@@ -5850,212 +3972,32 @@
   <data name="&gt;&gt;label4.ZOrder" xml:space="preserve">
     <value>13</value>
   </data>
-  <data name="&gt;&gt;btn_linux_server_testAll.Name" xml:space="preserve">
-    <value>btn_linux_server_testAll</value>
-  </data>
-  <data name="&gt;&gt;btn_linux_server_testAll.Type" xml:space="preserve">
-    <value>AltoControls.AltoButton, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;btn_linux_server_testAll.Parent" xml:space="preserve">
-    <value>page_linux_server</value>
-  </data>
-  <data name="&gt;&gt;btn_linux_server_testAll.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;txt_linux_server_nickname.Name" xml:space="preserve">
-    <value>txt_linux_server_nickname</value>
-  </data>
-  <data name="&gt;&gt;txt_linux_server_nickname.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txt_linux_server_nickname.Parent" xml:space="preserve">
-    <value>page_linux_server</value>
-  </data>
-  <data name="&gt;&gt;txt_linux_server_nickname.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;loading_linux_server_test.Name" xml:space="preserve">
-    <value>loading_linux_server_test</value>
-  </data>
-  <data name="&gt;&gt;loading_linux_server_test.Type" xml:space="preserve">
-    <value>AltoControls.SpinningCircles, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;loading_linux_server_test.Parent" xml:space="preserve">
-    <value>page_linux_server</value>
-  </data>
-  <data name="&gt;&gt;loading_linux_server_test.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="&gt;&gt;label20.Name" xml:space="preserve">
-    <value>label20</value>
-  </data>
-  <data name="&gt;&gt;label20.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label20.Parent" xml:space="preserve">
-    <value>page_linux_server</value>
-  </data>
-  <data name="&gt;&gt;label20.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="&gt;&gt;combo_linux_server_list.Name" xml:space="preserve">
-    <value>combo_linux_server_list</value>
-  </data>
-  <data name="&gt;&gt;combo_linux_server_list.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;combo_linux_server_list.Parent" xml:space="preserve">
-    <value>page_linux_server</value>
-  </data>
-  <data name="&gt;&gt;combo_linux_server_list.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="&gt;&gt;txt_linux_pwd.Name" xml:space="preserve">
-    <value>txt_linux_pwd</value>
-  </data>
-  <data name="&gt;&gt;txt_linux_pwd.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txt_linux_pwd.Parent" xml:space="preserve">
-    <value>page_linux_server</value>
-  </data>
-  <data name="&gt;&gt;txt_linux_pwd.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-  <data name="&gt;&gt;txt_linux_username.Name" xml:space="preserve">
-    <value>txt_linux_username</value>
-  </data>
-  <data name="&gt;&gt;txt_linux_username.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txt_linux_username.Parent" xml:space="preserve">
-    <value>page_linux_server</value>
-  </data>
-  <data name="&gt;&gt;txt_linux_username.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
-  <data name="&gt;&gt;b_linux_server_test.Name" xml:space="preserve">
-    <value>b_linux_server_test</value>
-  </data>
-  <data name="&gt;&gt;b_linux_server_test.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;b_linux_server_test.Parent" xml:space="preserve">
-    <value>page_linux_server</value>
-  </data>
-  <data name="&gt;&gt;b_linux_server_test.ZOrder" xml:space="preserve">
-    <value>7</value>
-  </data>
-  <data name="&gt;&gt;b_add_linux_server.Name" xml:space="preserve">
-    <value>b_add_linux_server</value>
-  </data>
-  <data name="&gt;&gt;b_add_linux_server.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;b_add_linux_server.Parent" xml:space="preserve">
-    <value>page_linux_server</value>
-  </data>
-  <data name="&gt;&gt;b_add_linux_server.ZOrder" xml:space="preserve">
-    <value>8</value>
-  </data>
-  <data name="&gt;&gt;b_linux_server_remove.Name" xml:space="preserve">
-    <value>b_linux_server_remove</value>
-  </data>
-  <data name="&gt;&gt;b_linux_server_remove.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;b_linux_server_remove.Parent" xml:space="preserve">
-    <value>page_linux_server</value>
-  </data>
-  <data name="&gt;&gt;b_linux_server_remove.ZOrder" xml:space="preserve">
-    <value>9</value>
-  </data>
-  <data name="&gt;&gt;txt_linux_host.Name" xml:space="preserve">
-    <value>txt_linux_host</value>
-  </data>
-  <data name="&gt;&gt;txt_linux_host.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txt_linux_host.Parent" xml:space="preserve">
-    <value>page_linux_server</value>
-  </data>
-  <data name="&gt;&gt;txt_linux_host.ZOrder" xml:space="preserve">
-    <value>10</value>
-  </data>
-  <data name="&gt;&gt;label17.Name" xml:space="preserve">
-    <value>label17</value>
-  </data>
-  <data name="&gt;&gt;label17.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label17.Parent" xml:space="preserve">
-    <value>page_linux_server</value>
-  </data>
-  <data name="&gt;&gt;label17.ZOrder" xml:space="preserve">
-    <value>11</value>
-  </data>
-  <data name="&gt;&gt;label18.Name" xml:space="preserve">
-    <value>label18</value>
-  </data>
-  <data name="&gt;&gt;label18.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label18.Parent" xml:space="preserve">
-    <value>page_linux_server</value>
-  </data>
-  <data name="&gt;&gt;label18.ZOrder" xml:space="preserve">
-    <value>12</value>
-  </data>
-  <data name="&gt;&gt;label19.Name" xml:space="preserve">
-    <value>label19</value>
-  </data>
-  <data name="&gt;&gt;label19.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label19.Parent" xml:space="preserve">
-    <value>page_linux_server</value>
-  </data>
-  <data name="&gt;&gt;label19.ZOrder" xml:space="preserve">
-    <value>13</value>
-  </data>
-  <data name="&gt;&gt;label35.Name" xml:space="preserve">
-    <value>label35</value>
-  </data>
-  <data name="&gt;&gt;label35.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label35.Parent" xml:space="preserve">
-    <value>page_linux_server</value>
-  </data>
-  <data name="&gt;&gt;label35.ZOrder" xml:space="preserve">
-    <value>14</value>
-  </data>
-  <data name="page_linux_server.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="page_winserver.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 22</value>
   </data>
-  <data name="page_linux_server.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+  <data name="page_winserver.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>3, 3, 3, 3</value>
   </data>
-  <data name="page_linux_server.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="page_winserver.Size" type="System.Drawing.Size, System.Drawing">
     <value>576, 121</value>
   </data>
-  <data name="page_linux_server.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
+  <data name="page_winserver.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
   </data>
-  <data name="page_linux_server.Text" xml:space="preserve">
-    <value>ssh_server</value>
+  <data name="page_winserver.Text" xml:space="preserve">
+    <value>token_server</value>
   </data>
-  <data name="&gt;&gt;page_linux_server.Name" xml:space="preserve">
-    <value>page_linux_server</value>
+  <data name="&gt;&gt;page_winserver.Name" xml:space="preserve">
+    <value>page_winserver</value>
   </data>
-  <data name="&gt;&gt;page_linux_server.Type" xml:space="preserve">
+  <data name="&gt;&gt;page_winserver.Type" xml:space="preserve">
     <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;page_linux_server.Parent" xml:space="preserve">
+  <data name="&gt;&gt;page_winserver.Parent" xml:space="preserve">
     <value>tabControl1</value>
   </data>
-  <data name="&gt;&gt;page_linux_server.ZOrder" xml:space="preserve">
-    <value>1</value>
+  <data name="&gt;&gt;page_winserver.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="btn_linux_server_testAll.Font" type="System.Drawing.Font, System.Drawing">
     <value>Comic Sans MS, 10pt, style=Bold</value>
@@ -6459,6 +4401,54 @@
   <data name="&gt;&gt;label35.ZOrder" xml:space="preserve">
     <value>14</value>
   </data>
+  <data name="page_linux_server.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="page_linux_server.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
+  </data>
+  <data name="page_linux_server.Size" type="System.Drawing.Size, System.Drawing">
+    <value>576, 121</value>
+  </data>
+  <data name="page_linux_server.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="page_linux_server.Text" xml:space="preserve">
+    <value>ssh_server</value>
+  </data>
+  <data name="&gt;&gt;page_linux_server.Name" xml:space="preserve">
+    <value>page_linux_server</value>
+  </data>
+  <data name="&gt;&gt;page_linux_server.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;page_linux_server.Parent" xml:space="preserve">
+    <value>tabControl1</value>
+  </data>
+  <data name="&gt;&gt;page_linux_server.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="tabControl1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 88</value>
+  </data>
+  <data name="tabControl1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>584, 147</value>
+  </data>
+  <data name="tabControl1.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;tabControl1.Name" xml:space="preserve">
+    <value>tabControl1</value>
+  </data>
+  <data name="&gt;&gt;tabControl1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabControl1.Parent" xml:space="preserve">
+    <value>environment</value>
+  </data>
+  <data name="&gt;&gt;tabControl1.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="label2.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -6615,317 +4605,56 @@
   <data name="&gt;&gt;combo_env_list.ZOrder" xml:space="preserve">
     <value>6</value>
   </data>
-  <data name="&gt;&gt;label52.Name" xml:space="preserve">
-    <value>label52</value>
+  <data name="environment.Location" type="System.Drawing.Point, System.Drawing">
+    <value>19, 17</value>
   </data>
-  <data name="&gt;&gt;label52.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="environment.Size" type="System.Drawing.Size, System.Drawing">
+    <value>599, 246</value>
   </data>
-  <data name="&gt;&gt;label52.Parent" xml:space="preserve">
-    <value>pag_advance_setting</value>
-  </data>
-  <data name="&gt;&gt;label52.ZOrder" xml:space="preserve">
+  <data name="environment.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
-  <data name="&gt;&gt;chk_global_useCheckBox.Name" xml:space="preserve">
-    <value>chk_global_useCheckBox</value>
+  <data name="environment.Text" xml:space="preserve">
+    <value>Environment</value>
   </data>
-  <data name="&gt;&gt;chk_global_useCheckBox.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;environment.Name" xml:space="preserve">
+    <value>environment</value>
   </data>
-  <data name="&gt;&gt;chk_global_useCheckBox.Parent" xml:space="preserve">
-    <value>pag_advance_setting</value>
+  <data name="&gt;&gt;environment.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;chk_global_useCheckBox.ZOrder" xml:space="preserve">
-    <value>1</value>
+  <data name="&gt;&gt;environment.Parent" xml:space="preserve">
+    <value>page_set</value>
   </data>
-  <data name="&gt;&gt;checkBox_multi_deploy.Name" xml:space="preserve">
-    <value>checkBox_multi_deploy</value>
-  </data>
-  <data name="&gt;&gt;checkBox_multi_deploy.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;checkBox_multi_deploy.Parent" xml:space="preserve">
-    <value>pag_advance_setting</value>
-  </data>
-  <data name="&gt;&gt;checkBox_multi_deploy.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="&gt;&gt;checkBox_save_deploy_log.Name" xml:space="preserve">
-    <value>checkBox_save_deploy_log</value>
-  </data>
-  <data name="&gt;&gt;checkBox_save_deploy_log.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;checkBox_save_deploy_log.Parent" xml:space="preserve">
-    <value>pag_advance_setting</value>
-  </data>
-  <data name="&gt;&gt;checkBox_save_deploy_log.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="&gt;&gt;label33.Name" xml:space="preserve">
-    <value>label33</value>
-  </data>
-  <data name="&gt;&gt;label33.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label33.Parent" xml:space="preserve">
-    <value>pag_advance_setting</value>
-  </data>
-  <data name="&gt;&gt;label33.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="&gt;&gt;txt_http_proxy.Name" xml:space="preserve">
-    <value>txt_http_proxy</value>
-  </data>
-  <data name="&gt;&gt;txt_http_proxy.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txt_http_proxy.Parent" xml:space="preserve">
-    <value>pag_advance_setting</value>
-  </data>
-  <data name="&gt;&gt;txt_http_proxy.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;environment.ZOrder" xml:space="preserve">
     <value>5</value>
   </data>
-  <data name="&gt;&gt;label30.Name" xml:space="preserve">
-    <value>label30</value>
-  </data>
-  <data name="&gt;&gt;label30.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label30.Parent" xml:space="preserve">
-    <value>pag_advance_setting</value>
-  </data>
-  <data name="&gt;&gt;label30.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
-  <data name="&gt;&gt;label16.Name" xml:space="preserve">
-    <value>label16</value>
-  </data>
-  <data name="&gt;&gt;label16.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label16.Parent" xml:space="preserve">
-    <value>pag_advance_setting</value>
-  </data>
-  <data name="&gt;&gt;label16.ZOrder" xml:space="preserve">
-    <value>7</value>
-  </data>
-  <data name="&gt;&gt;btn_folder_clear.Name" xml:space="preserve">
-    <value>btn_folder_clear</value>
-  </data>
-  <data name="&gt;&gt;btn_folder_clear.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;btn_folder_clear.Parent" xml:space="preserve">
-    <value>pag_advance_setting</value>
-  </data>
-  <data name="&gt;&gt;btn_folder_clear.ZOrder" xml:space="preserve">
-    <value>8</value>
-  </data>
-  <data name="&gt;&gt;btn_choose_folder.Name" xml:space="preserve">
-    <value>btn_choose_folder</value>
-  </data>
-  <data name="&gt;&gt;btn_choose_folder.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;btn_choose_folder.Parent" xml:space="preserve">
-    <value>pag_advance_setting</value>
-  </data>
-  <data name="&gt;&gt;btn_choose_folder.ZOrder" xml:space="preserve">
-    <value>9</value>
-  </data>
-  <data name="&gt;&gt;txt_folder_deploy.Name" xml:space="preserve">
-    <value>txt_folder_deploy</value>
-  </data>
-  <data name="&gt;&gt;txt_folder_deploy.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txt_folder_deploy.Parent" xml:space="preserve">
-    <value>pag_advance_setting</value>
-  </data>
-  <data name="&gt;&gt;txt_folder_deploy.ZOrder" xml:space="preserve">
-    <value>10</value>
-  </data>
-  <data name="&gt;&gt;label42.Name" xml:space="preserve">
-    <value>label42</value>
-  </data>
-  <data name="&gt;&gt;label42.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label42.Parent" xml:space="preserve">
-    <value>pag_advance_setting</value>
-  </data>
-  <data name="&gt;&gt;label42.ZOrder" xml:space="preserve">
-    <value>11</value>
-  </data>
-  <data name="&gt;&gt;label41.Name" xml:space="preserve">
-    <value>label41</value>
-  </data>
-  <data name="&gt;&gt;label41.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label41.Parent" xml:space="preserve">
-    <value>pag_advance_setting</value>
-  </data>
-  <data name="&gt;&gt;label41.ZOrder" xml:space="preserve">
-    <value>12</value>
-  </data>
-  <data name="&gt;&gt;label39.Name" xml:space="preserve">
-    <value>label39</value>
-  </data>
-  <data name="&gt;&gt;label39.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label39.Parent" xml:space="preserve">
-    <value>pag_advance_setting</value>
-  </data>
-  <data name="&gt;&gt;label39.ZOrder" xml:space="preserve">
-    <value>13</value>
-  </data>
-  <data name="&gt;&gt;label38.Name" xml:space="preserve">
-    <value>label38</value>
-  </data>
-  <data name="&gt;&gt;label38.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label38.Parent" xml:space="preserve">
-    <value>pag_advance_setting</value>
-  </data>
-  <data name="&gt;&gt;label38.ZOrder" xml:space="preserve">
-    <value>14</value>
-  </data>
-  <data name="&gt;&gt;combo_netcore_publish_mode.Name" xml:space="preserve">
-    <value>combo_netcore_publish_mode</value>
-  </data>
-  <data name="&gt;&gt;combo_netcore_publish_mode.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;combo_netcore_publish_mode.Parent" xml:space="preserve">
-    <value>pag_advance_setting</value>
-  </data>
-  <data name="&gt;&gt;combo_netcore_publish_mode.ZOrder" xml:space="preserve">
-    <value>15</value>
-  </data>
-  <data name="&gt;&gt;label37.Name" xml:space="preserve">
-    <value>label37</value>
-  </data>
-  <data name="&gt;&gt;label37.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label37.Parent" xml:space="preserve">
-    <value>pag_advance_setting</value>
-  </data>
-  <data name="&gt;&gt;label37.ZOrder" xml:space="preserve">
-    <value>16</value>
-  </data>
-  <data name="&gt;&gt;label_without_vs.Name" xml:space="preserve">
-    <value>label_without_vs</value>
-  </data>
-  <data name="&gt;&gt;label_without_vs.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label_without_vs.Parent" xml:space="preserve">
-    <value>pag_advance_setting</value>
-  </data>
-  <data name="&gt;&gt;label_without_vs.ZOrder" xml:space="preserve">
-    <value>17</value>
-  </data>
-  <data name="&gt;&gt;checkBox_Chinese.Name" xml:space="preserve">
-    <value>checkBox_Chinese</value>
-  </data>
-  <data name="&gt;&gt;checkBox_Chinese.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;checkBox_Chinese.Parent" xml:space="preserve">
-    <value>pag_advance_setting</value>
-  </data>
-  <data name="&gt;&gt;checkBox_Chinese.ZOrder" xml:space="preserve">
-    <value>18</value>
-  </data>
-  <data name="&gt;&gt;btn_choose_msbuild.Name" xml:space="preserve">
-    <value>btn_choose_msbuild</value>
-  </data>
-  <data name="&gt;&gt;btn_choose_msbuild.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;btn_choose_msbuild.Parent" xml:space="preserve">
-    <value>pag_advance_setting</value>
-  </data>
-  <data name="&gt;&gt;btn_choose_msbuild.ZOrder" xml:space="preserve">
-    <value>19</value>
-  </data>
-  <data name="&gt;&gt;label36.Name" xml:space="preserve">
-    <value>label36</value>
-  </data>
-  <data name="&gt;&gt;label36.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label36.Parent" xml:space="preserve">
-    <value>pag_advance_setting</value>
-  </data>
-  <data name="&gt;&gt;label36.ZOrder" xml:space="preserve">
-    <value>20</value>
-  </data>
-  <data name="&gt;&gt;txt_msbuild_path.Name" xml:space="preserve">
-    <value>txt_msbuild_path</value>
-  </data>
-  <data name="&gt;&gt;txt_msbuild_path.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txt_msbuild_path.Parent" xml:space="preserve">
-    <value>pag_advance_setting</value>
-  </data>
-  <data name="&gt;&gt;txt_msbuild_path.ZOrder" xml:space="preserve">
-    <value>21</value>
-  </data>
-  <data name="&gt;&gt;label15.Name" xml:space="preserve">
-    <value>label15</value>
-  </data>
-  <data name="&gt;&gt;label15.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label15.Parent" xml:space="preserve">
-    <value>pag_advance_setting</value>
-  </data>
-  <data name="&gt;&gt;label15.ZOrder" xml:space="preserve">
-    <value>22</value>
-  </data>
-  <data name="&gt;&gt;btn_shang.Name" xml:space="preserve">
-    <value>btn_shang</value>
-  </data>
-  <data name="&gt;&gt;btn_shang.Type" xml:space="preserve">
-    <value>AltoControls.AltoButton, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;btn_shang.Parent" xml:space="preserve">
-    <value>pag_advance_setting</value>
-  </data>
-  <data name="&gt;&gt;btn_shang.ZOrder" xml:space="preserve">
-    <value>23</value>
-  </data>
-  <data name="pag_advance_setting.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="page_set.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 22</value>
   </data>
-  <data name="pag_advance_setting.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="page_set.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
+  </data>
+  <data name="page_set.Size" type="System.Drawing.Size, System.Drawing">
     <value>622, 456</value>
   </data>
-  <data name="pag_advance_setting.TabIndex" type="System.Int32, mscorlib">
-    <value>4</value>
+  <data name="page_set.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
   </data>
-  <data name="pag_advance_setting.Text" xml:space="preserve">
-    <value>Config</value>
+  <data name="page_set.Text" xml:space="preserve">
+    <value>DeploySetting</value>
   </data>
-  <data name="&gt;&gt;pag_advance_setting.Name" xml:space="preserve">
-    <value>pag_advance_setting</value>
+  <data name="&gt;&gt;page_set.Name" xml:space="preserve">
+    <value>page_set</value>
   </data>
-  <data name="&gt;&gt;pag_advance_setting.Type" xml:space="preserve">
+  <data name="&gt;&gt;page_set.Type" xml:space="preserve">
     <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;pag_advance_setting.Parent" xml:space="preserve">
+  <data name="&gt;&gt;page_set.Parent" xml:space="preserve">
     <value>tabcontrol</value>
   </data>
-  <data name="&gt;&gt;pag_advance_setting.ZOrder" xml:space="preserve">
-    <value>5</value>
+  <data name="&gt;&gt;page_set.ZOrder" xml:space="preserve">
+    <value>4</value>
   </data>
   <data name="label52.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -7623,39 +5352,54 @@
   <data name="&gt;&gt;btn_shang.ZOrder" xml:space="preserve">
     <value>23</value>
   </data>
-  <data name="label53.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="pag_advance_setting.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
   </data>
-  <data name="label53.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
+  <data name="pag_advance_setting.Size" type="System.Drawing.Size, System.Drawing">
+    <value>622, 456</value>
   </data>
-  <data name="label53.Location" type="System.Drawing.Point, System.Drawing">
-    <value>2, 36</value>
+  <data name="pag_advance_setting.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
   </data>
-  <data name="label53.Size" type="System.Drawing.Size, System.Drawing">
-    <value>95, 12</value>
+  <data name="pag_advance_setting.Text" xml:space="preserve">
+    <value>Config</value>
   </data>
-  <data name="label53.TabIndex" type="System.Int32, mscorlib">
-    <value>36</value>
+  <data name="&gt;&gt;pag_advance_setting.Name" xml:space="preserve">
+    <value>pag_advance_setting</value>
   </data>
-  <data name="label53.Text" xml:space="preserve">
-    <value>example:80:5000</value>
+  <data name="&gt;&gt;pag_advance_setting.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;label53.Name" xml:space="preserve">
-    <value>label53</value>
+  <data name="&gt;&gt;pag_advance_setting.Parent" xml:space="preserve">
+    <value>tabcontrol</value>
   </data>
-  <data name="&gt;&gt;label53.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;pag_advance_setting.ZOrder" xml:space="preserve">
+    <value>5</value>
   </data>
-  <data name="&gt;&gt;label53.Parent" xml:space="preserve">
-    <value>groupBox5</value>
+  <data name="tabcontrol.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
   </data>
-  <data name="&gt;&gt;label53.ZOrder" xml:space="preserve">
+  <data name="tabcontrol.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="tabcontrol.Size" type="System.Drawing.Size, System.Drawing">
+    <value>630, 482</value>
+  </data>
+  <data name="tabcontrol.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
-  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>zh-CN</value>
-  </metadata>
+  <data name="&gt;&gt;tabcontrol.Name" xml:space="preserve">
+    <value>tabcontrol</value>
+  </data>
+  <data name="&gt;&gt;tabcontrol.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabcontrol.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;tabcontrol.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -7664,6 +5408,9 @@
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
     <value>630, 482</value>
+  </data>
+  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
     <value>CenterScreen</value>

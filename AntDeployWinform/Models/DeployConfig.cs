@@ -32,6 +32,7 @@ namespace AntDeployWinform.Models
         public bool LinuxServiceNotifySystemd { get; set; }
 
         public bool DockerEnableIncrement { get; set; }
+        public bool DockerEnableSudo { get; set; }
         public bool DockerServiceEnableSelectDeploy { get; set; }
 
         #region 镜像上传

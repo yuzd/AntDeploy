@@ -747,6 +747,7 @@ namespace AntDeployWinform.Winform
             this.checkBox_iis_use_offlinehtm.Checked = PluginConfig.IISEnableUseOfflineHtm;
             this.checkBox_Increment_iis.Checked = PluginConfig.IISEnableIncrement;
             this.checkBox_Increment_docker.Checked = PluginConfig.DockerEnableIncrement;
+            this.checkBox_sudo_docker.Checked = PluginConfig.DockerEnableSudo;
             this.checkBox_select_deploy_docker.Checked = PluginConfig.DockerServiceEnableSelectDeploy;
             this.checkBox_Increment_window_service.Checked = PluginConfig.WindowsServiceEnableIncrement;
             this.checkBox_Increment_linux_service.Checked = PluginConfig.LinuxServiceEnableIncrement;
@@ -4033,6 +4034,11 @@ namespace AntDeployWinform.Winform
         {
             PluginConfig.DockerEnableIncrement = checkBox_Increment_docker.Checked;
         }
+
+        private void checkBox_sudo_docker_CheckedChanged(object sender, EventArgs e)
+        {
+            PluginConfig.DockerEnableSudo = checkBox_sudo_docker.Checked;
+        }
         private void checkBox_selectDeplot_docker_CheckedChanged(object sender, EventArgs e)
         {
             PluginConfig.DockerServiceEnableSelectDeploy = checkBox_select_deploy_docker.Checked;
@@ -6811,6 +6817,7 @@ namespace AntDeployWinform.Winform
                            Other = DeployConfig.DockerConfig.Other,
                            Remark = confirmResult.Item2,
                            Increment = this.PluginConfig.DockerEnableIncrement || this.PluginConfig.DockerServiceEnableSelectDeploy,
+                           Sudo = this.PluginConfig.DockerEnableSudo?"sudo":"",
                            IsSelect = this.PluginConfig.DockerServiceEnableSelectDeploy,
                            DockerServiceEnableUpload = this.PluginConfig.DockerServiceEnableUpload,
                            DockerServiceBuildImageOnly = this.PluginConfig.DockerServiceBuildImageOnly,
@@ -7183,6 +7190,7 @@ namespace AntDeployWinform.Winform
                             NetCoreVersion = SDKVersion,
                             NetCorePort = DeployConfig.DockerConfig.Prot,
                             NetCoreEnvironment = DeployConfig.DockerConfig.AspNetCoreEnv,
+                            Sudo = this.PluginConfig.DockerEnableSudo ? "sudo" : ""
                         })
                         {
                             var connectResult = sshClient.Connect();
@@ -7310,6 +7318,7 @@ namespace AntDeployWinform.Winform
                 this.pag_advance_setting.Enabled = flag;
 
                 this.checkBox_Increment_docker.Enabled = flag;
+                this.checkBox_sudo_docker.Enabled = flag;
                 this.checkBox_select_deploy_docker.Enabled = flag;
                 if (flag)
                 {

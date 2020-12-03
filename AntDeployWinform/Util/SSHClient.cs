@@ -42,6 +42,7 @@ namespace AntDeployWinform.Util
         }
 
         public string NetCorePort { get; set; }
+        public string Sudo { get; set; }
 
         /// <summary>
         /// 宿主机开启的端口
@@ -871,7 +872,7 @@ namespace AntDeployWinform.Util
 
                             if (add)
                             {
-                                _sshClient.RunCommand($"set -e;sudo cd ~;sudo \\rm -rf \"{dockFilePath}\";");
+                                _sshClient.RunCommand($"set -e;{Sudo} cd ~;{Sudo} \\rm -rf \"{dockFilePath}\";");
                                 //没有发现包含环境变量 就添加进去
                                 using (var writer = _sftpClient.CreateText(dockFilePath))
                                 {
@@ -907,7 +908,7 @@ namespace AntDeployWinform.Util
                         {
                             //发布的时候界面上有填volume 也存在dockerfile 要记录到dockerfile中 不然回滚的时候就没了
                             var allLines = _sftpClient.ReadAllLines(dockFilePath).ToList();
-                            _sshClient.RunCommand($"set -e;sudo cd ~;sudo \\rm -rf \"{dockFilePath}\";");
+                            _sshClient.RunCommand($"set -e;{Sudo} cd ~;{Sudo} \\rm -rf \"{dockFilePath}\";");
                             using (var writer = _sftpClient.CreateText(dockFilePath))
                             {
                                 foreach (var line in allLines)
@@ -936,7 +937,7 @@ namespace AntDeployWinform.Util
                     if (!string.IsNullOrEmpty(fromFolder))
                     {
                         //需要将修改过的DockerFile 移动到 发布文件夹的publish 目录下 不然会导致回滚的时候失败
-                        var command = $"sudo \\cp -rf {dockFilePath} {fromFolder}";
+                        var command = $"{Sudo} \\cp -rf {dockFilePath} {fromFolder}";
                         _logger($"Update DockerFile 【{command}】", NLog.LogLevel.Info);
                         _sshClient.RunCommand(command);
                     }
@@ -982,7 +983,7 @@ namespace AntDeployWinform.Util
 
 
             //执行docker build 生成一个镜像
-            var dockerBuildResult = RunSheell($"sudo docker build --no-cache --rm -t {specialName}:{ClientDateTimeFolderName} -f {dockFilePath} {publishFolder} ");
+            var dockerBuildResult = RunSheell($"{Sudo} docker build --no-cache --rm -t {specialName}:{ClientDateTimeFolderName} -f {dockFilePath} {publishFolder} ");
             if (!dockerBuildResult)
             {
                 _logger($"build image fail", NLog.LogLevel.Error);
@@ -1001,10 +1002,10 @@ namespace AntDeployWinform.Util
             SshCommand r1 = null;
             try
             {
-                r1 = _sshClient.RunCommand($"sudo docker stop -t 10 {continarName}");
+                r1 = _sshClient.RunCommand($"{Sudo} docker stop -t 10 {continarName}");
                 if (r1.ExitStatus == 0)
                 {
-                    _logger($"sudo docker stop -t 10 {continarName}", LogLevel.Info);
+                    _logger($"{Sudo} docker stop -t 10 {continarName}", LogLevel.Info);
                 }
 
                 Thread.Sleep(5000);
@@ -1017,10 +1018,10 @@ namespace AntDeployWinform.Util
             try
             {
                 //查看容器有没有在runing 如果有就干掉它
-                r1 = _sshClient.RunCommand($"sudo docker rm -f {continarName}");
+                r1 = _sshClient.RunCommand($"{Sudo} docker rm -f {continarName}");
                 if (r1.ExitStatus == 0)
                 {
-                    _logger($"sudo docker rm -f {continarName}", LogLevel.Info);
+                    _logger($"{Sudo} docker rm -f {continarName}", LogLevel.Info);
                 }
             }
             catch (Exception)
@@ -1042,7 +1043,7 @@ namespace AntDeployWinform.Util
             string volume = GetVolume();
 
             // 根据image启动一个容器
-            var dockerRunRt = RunSheell($"sudo docker run -d {runContainerName}{volume}{(string.IsNullOrEmpty(this.Other)?"":$" {this.Other}")} --restart=always {(!server_port.Equals("0") && !port.Equals("0")? $"-p {server_port}:{port}":"")} {specialName}:{ClientDateTimeFolderName}");
+            var dockerRunRt = RunSheell($"{Sudo} docker run -d {runContainerName}{volume}{(string.IsNullOrEmpty(this.Other)?"":$" {this.Other}")} --restart=always {(!server_port.Equals("0") && !port.Equals("0")? $"-p {server_port}:{port}":"")} {specialName}:{ClientDateTimeFolderName}");
 
             if (!dockerRunRt)
             {
@@ -1057,7 +1058,7 @@ namespace AntDeployWinform.Util
                 _logger($"ignore docker run", NLog.LogLevel.Warn);
             }
             //把旧的image给删除
-            r1 = _sshClient.RunCommand("sudo docker images --format '{{.Repository}}:{{.Tag}}:{{.ID}}' | grep '^" + specialName + ":'");
+            r1 = _sshClient.RunCommand($"{Sudo} docker images --format '{{.Repository}}:{{.Tag}}:{{.ID}}' | grep '^" + specialName + ":'");
             Tuple<string, string, string> currentImageInfo = null;
             if (r1.ExitStatus == 0 && !string.IsNullOrEmpty(r1.Result))
             {
@@ -1080,7 +1081,7 @@ namespace AntDeployWinform.Util
                     var imageArr = imageName.Split(':');
                     if (imageArr.Length == 3)
                     {
-                        var r2 = _sshClient.RunCommand($"sudo docker rmi {imageArr[2]}");
+                        var r2 = _sshClient.RunCommand($"{Sudo} docker rmi {imageArr[2]}");
                         if (r2.ExitStatus == 0)
                         {
                             if (!clearOldImages)
@@ -1088,7 +1089,7 @@ namespace AntDeployWinform.Util
                                 _logger($"start to clear old images of name:{specialName}", LogLevel.Info);
                                 clearOldImages = true;
                             }
-                            _logger($"sudo docker rmi {imageArr[2]} [{imageName}]", LogLevel.Info);
+                            _logger($"{Sudo} docker rmi {imageArr[2]} [{imageName}]", LogLevel.Info);
                         }
                     }
                 }
@@ -1099,7 +1100,7 @@ namespace AntDeployWinform.Util
             try
             {
                 //查看是否有<none>的image 把它删掉 因为我们创建image的时候每次都会覆盖所以会产生一些没有的image
-                _sshClient.RunCommand($"if sudo docker images -f \"dangling=true\" | grep ago --quiet; then sudo docker rmi -f $(sudo docker images -f \"dangling=true\" -q); fi");
+                _sshClient.RunCommand($"if {Sudo} docker images -f \"dangling=true\" | grep ago --quiet; then {Sudo} docker rmi -f $({Sudo} docker images -f \"dangling=true\" -q); fi");
 
             }
             catch (Exception )
@@ -1119,17 +1120,17 @@ namespace AntDeployWinform.Util
                 //第五步 退出登录
                 //万一已经存在就删除
                 var uploadImageName =$"{(string.IsNullOrEmpty(this.RepositoryUrl)?"": this.RepositoryUrl+"/")}{this.RepositoryNameSpace}/{this.RepositoryImageName.ToLower()}:{currentImageInfo.Item2}";
-                _sshClient.RunCommand($"sudo docker rmi {uploadImageName}");
+                _sshClient.RunCommand($"{Sudo} docker rmi {uploadImageName}");
                 string uploadCommand;
                 if (string.IsNullOrEmpty(this.RepositoryUrl))
                 {
                     uploadCommand =
-                        $"set -e;sudo docker login -u {this.RepositoryUserName} -p {this.RepositoryUserPwd}; sudo docker tag {currentImageInfo.Item3} {uploadImageName};sudo docker push {uploadImageName}";
+                        $"set -e;{Sudo} docker login -u {this.RepositoryUserName} -p {this.RepositoryUserPwd}; {Sudo} docker tag {currentImageInfo.Item3} {uploadImageName};{Sudo} docker push {uploadImageName}";
                 }
                 else
                 {
                     uploadCommand =
-                        $"set -e;sudo docker login -u {this.RepositoryUserName} -p {this.RepositoryUserPwd} {this.RepositoryUrl}; sudo docker tag {currentImageInfo.Item3} {uploadImageName};sudo docker push {uploadImageName}";
+                        $"set -e;{Sudo} docker login -u {this.RepositoryUserName} -p {this.RepositoryUserPwd} {this.RepositoryUrl}; {Sudo} docker tag {currentImageInfo.Item3} {uploadImageName};{Sudo} docker push {uploadImageName}";
                 }
                 
                 _logger($"[upload image] - " + uploadCommand, LogLevel.Warn);
@@ -1159,7 +1160,7 @@ namespace AntDeployWinform.Util
                 {
                     _logger($"[upload image] - Success", LogLevel.Info);
                 }
-                _sshClient.RunCommand($"sudo docker rmi {uploadImageName}");
+                _sshClient.RunCommand($"{Sudo} docker rmi {uploadImageName}");
             }
 
             try
@@ -1461,7 +1462,7 @@ namespace AntDeployWinform.Util
                 var frompath = from + (mapper.Value.Item1).Replace(" ","\\ ");
                 var topath = from + mapper.Key.Replace(" ", "\\ ");
                 //_sftpClient.RenameFile(frompath, topath);
-                var command = $"sudo \\mv {frompath} {topath}";
+                var command = $"{Sudo} \\mv {frompath} {topath}";
                 var cmd =_sshClient.RunCommand(command);
                 if (cmd.ExitStatus != 0)
                 {
@@ -1474,7 +1475,7 @@ namespace AntDeployWinform.Util
                 //找到服务器上的 用mv命令
                 var frompath = from + (mapper.Value.Item1).Replace(" ", "\\ ");
                 var topath = from + mapper.Key.Replace(" ", "\\ ");
-                var command = $"sudo \\mv {frompath} {topath}";
+                var command = $"{Sudo} \\mv {frompath} {topath}";
                 var cmd = _sshClient.RunCommand(command);
                 if (cmd.ExitStatus != 0)
                 {
@@ -1488,7 +1489,7 @@ namespace AntDeployWinform.Util
             this._logger($"Start Copy Files From [{from}] To [{to}]", LogLevel.Info);
             if (!from.EndsWith("/")) from = from + "/";
             if (!to.EndsWith("/")) from = to + "/";
-            var command = $"sudo \\cp -rf {from}. {to}";
+            var command = $"{Sudo} \\cp -rf {from}. {to}";
             SshCommand cmd = _sshClient.RunCommand(command);
             if (cmd.ExitStatus != 0)
             {
@@ -1507,7 +1508,7 @@ namespace AntDeployWinform.Util
                 //目前有2种会用到删除文件夹
                 // 1.文件上传发现要上传的目录已存在
                 // 2.旧的发布版本文件夹
-                SshCommand cmd = _sshClient.RunCommand($"set -e;sudo cd ~;sudo \\rm -rf \"{path}\";");
+                SshCommand cmd = _sshClient.RunCommand($"set -e;{Sudo} cd ~;{Sudo} \\rm -rf \"{path}\";");
                 if (cmd.ExitStatus != 0)
                 {
                     this._logger($"Delete directory:{path} fail", LogLevel.Warn);

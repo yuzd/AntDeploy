@@ -110,6 +110,7 @@ namespace AntDeployAgentWindows.Util
                     var envList = env.Split(';');
                     foreach (var item in envList)
                     {
+                        if(string.IsNullOrEmpty(item))continue;
                         var value = $"Environment={item.Trim()}";
                         if (!envold.Contains(value))
                         {
