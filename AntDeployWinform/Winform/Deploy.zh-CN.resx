@@ -185,6 +185,15 @@
   <data name="label27.Location" type="System.Drawing.Point, System.Drawing">
     <value>110, 17</value>
   </data>
+  <data name="label54.Location" type="System.Drawing.Point, System.Drawing">
+    <value>217, 196</value>
+  </data>
+  <data name="label54.Size" type="System.Drawing.Size, System.Drawing">
+    <value>177, 36</value>
+  </data>
+  <data name="label54.Text" xml:space="preserve">
+    <value>镜像名称格式: imagename:tag [不加tag用默认的日期版本号]</value>
+  </data>
   <data name="checkBoxdocker_rep_uploadOnly.Size" type="System.Drawing.Size, System.Drawing">
     <value>234, 24</value>
   </data>
@@ -403,5 +412,9 @@
   </data>
   <data name="label15.Text" xml:space="preserve">
     <value>指定特定文件夹发布：</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>Inherit</value>
   </data>
 </root>

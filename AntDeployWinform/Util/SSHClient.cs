@@ -1058,7 +1058,7 @@ namespace AntDeployWinform.Util
                 _logger($"ignore docker run", NLog.LogLevel.Warn);
             }
             //把旧的image给删除
-            r1 = _sshClient.RunCommand($"{Sudo} docker images --format '{{.Repository}}:{{.Tag}}:{{.ID}}' | grep '^" + specialName + ":'");
+            r1 = _sshClient.RunCommand( Sudo +" docker images --format '{{.Repository}}:{{.Tag}}:{{.ID}}' | grep '^" + specialName + ":'");
             Tuple<string, string, string> currentImageInfo = null;
             if (r1.ExitStatus == 0 && !string.IsNullOrEmpty(r1.Result))
             {
@@ -1119,7 +1119,33 @@ namespace AntDeployWinform.Util
                 //第四步 删除
                 //第五步 退出登录
                 //万一已经存在就删除
-                var uploadImageName =$"{(string.IsNullOrEmpty(this.RepositoryUrl)?"": this.RepositoryUrl+"/")}{this.RepositoryNameSpace}/{this.RepositoryImageName.ToLower()}:{currentImageInfo.Item2}";
+                var uploadTag = currentImageInfo.Item2;
+                var uploadImage = this.RepositoryImageName;
+                if (uploadImage.Contains(":"))
+                {
+                    var arr = uploadImage.Split(new string[] {":"}, StringSplitOptions.RemoveEmptyEntries);
+                    if (arr.Length == 2)
+                    {
+                        uploadImage = arr[0];
+                        uploadTag = arr[1];
+                    }
+                    else
+                    {
+                        _logger($"[upload image] - image name invaild", LogLevel.Error);
+                    }
+                }
+
+                uploadImage = uploadImage.Replace("：", ":");
+                if (System.Text.RegularExpressions.Regex.IsMatch(uploadImage, @"[\u4e00-\u9fa5]"))
+                {
+                    _logger($"[upload image] - image name invaild", LogLevel.Error);
+                }
+                if (System.Text.RegularExpressions.Regex.IsMatch(uploadTag, @"[\u4e00-\u9fa5]"))
+                {
+                    _logger($"[upload image] - image tab name invaild", LogLevel.Error);
+                }
+
+                var uploadImageName =$"{(string.IsNullOrEmpty(this.RepositoryUrl)?"": this.RepositoryUrl+"/")}{this.RepositoryNameSpace}/{uploadImage.ToLower()}:{uploadTag}";
                 _sshClient.RunCommand($"{Sudo} docker rmi {uploadImageName}");
                 string uploadCommand;
                 if (string.IsNullOrEmpty(this.RepositoryUrl))
