@@ -145,6 +145,7 @@
     <Compile Include="Util\CommandHelper.cs" />
     <Compile Include="Util\GitClient.cs" />
     <Compile Include="Util\HttpRequestClient.cs" />
+    <Compile Include="Util\ImageReference.cs" />
     <Compile Include="Util\SSHClient.cs" />
     <Compile Include="Util\WebSocketHelper.cs" />
     <Compile Include="Util\WebUtil.cs" />

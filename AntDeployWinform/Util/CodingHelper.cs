@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
@@ -17,7 +18,18 @@ namespace AntDeployWinform.Util
     public static class CodingHelper
     {
 
+        public static string GetWindowsPath(string path)
+        {
+            if (String.IsNullOrWhiteSpace(path)) { return path; }
 
+            try
+            {
+                return Path.GetFullPath(path);
+            }
+            catch (Exception) { }
+
+            return null;
+        }
         /// <summary>
         /// 获取本机的Ip地址
         /// </summary>

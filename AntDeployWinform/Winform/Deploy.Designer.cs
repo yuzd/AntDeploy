@@ -102,35 +102,36 @@
             this.checkBox_Increment_docker = new System.Windows.Forms.CheckBox();
             this.checkBox_sudo_docker = new System.Windows.Forms.CheckBox();
             this.page_docker_img = new System.Windows.Forms.TabPage();
-            this.altoButton1 = new AltoControls.AltoButton();
-            this.tabControl2 = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.label67 = new System.Windows.Forms.Label();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.exRichTextBox1 = new AntDeployWinform.ExRichTextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label60 = new System.Windows.Forms.Label();
-            this.textBox4 = new System.Windows.Forms.TextBox();
             this.label59 = new System.Windows.Forms.Label();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label60 = new System.Windows.Forms.Label();
+            this.txt_HttpProxy = new System.Windows.Forms.TextBox();
+            this.txt_BaseImage_pwd = new System.Windows.Forms.TextBox();
+            this.txt_BaseImage = new System.Windows.Forms.TextBox();
             this.label58 = new System.Windows.Forms.Label();
             this.label57 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.txt_BaseImage_username = new System.Windows.Forms.TextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.textBox10 = new System.Windows.Forms.TextBox();
+            this.btn_docker_image_stop = new AltoControls.AltoButton();
+            this.altoButton1 = new AltoControls.AltoButton();
+            this.label69 = new System.Windows.Forms.Label();
+            this.txt_TargetHttpProxy = new System.Windows.Forms.TextBox();
+            this.txt_Cmd = new System.Windows.Forms.TextBox();
             this.label65 = new System.Windows.Forms.Label();
-            this.textBox9 = new System.Windows.Forms.TextBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.label61 = new System.Windows.Forms.Label();
-            this.textBox5 = new System.Windows.Forms.TextBox();
-            this.label62 = new System.Windows.Forms.Label();
-            this.textBox6 = new System.Windows.Forms.TextBox();
-            this.textBox7 = new System.Windows.Forms.TextBox();
+            this.txt_Entrypoint = new System.Windows.Forms.TextBox();
+            this.cmbo_ImageFormat = new System.Windows.Forms.ComboBox();
+            this.txt_TargetImage_pwd = new System.Windows.Forms.TextBox();
+            this.txt_TargetImage_username = new System.Windows.Forms.TextBox();
+            this.txt_TargetImage = new System.Windows.Forms.TextBox();
             this.label64 = new System.Windows.Forms.Label();
-            this.textBox8 = new System.Windows.Forms.TextBox();
+            this.txt_TargetImage_tag = new System.Windows.Forms.TextBox();
             this.label63 = new System.Windows.Forms.Label();
             this.label66 = new System.Windows.Forms.Label();
+            this.label62 = new System.Windows.Forms.Label();
+            this.label61 = new System.Windows.Forms.Label();
+            this.tabControl_dockerimage = new System.Windows.Forms.TabControl();
+            this.tabPage_docker_image = new System.Windows.Forms.TabPage();
+            this.rich_docker_image_log = new AntDeployWinform.ExRichTextBox();
             this.page_window_service = new System.Windows.Forms.TabPage();
             this.btn_windows_serivce_stop = new AltoControls.AltoButton();
             this.btn_windows_service_retry = new AltoControls.AltoButton();
@@ -254,8 +255,6 @@
             this.txt_msbuild_path = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
             this.btn_shang = new AltoControls.AltoButton();
-            this.label68 = new System.Windows.Forms.Label();
-            this.textBox11 = new System.Windows.Forms.TextBox();
             this.tabcontrol.SuspendLayout();
             this.page_web_iis.SuspendLayout();
             this.tab_iis.SuspendLayout();
@@ -268,11 +267,10 @@
             this.tabPage_docker_log.SuspendLayout();
             this.tabPage_docker_repo.SuspendLayout();
             this.page_docker_img.SuspendLayout();
-            this.tabControl2.SuspendLayout();
-            this.tabPage1.SuspendLayout();
-            this.tabPage4.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.tabControl_dockerimage.SuspendLayout();
+            this.tabPage_docker_image.SuspendLayout();
             this.page_window_service.SuspendLayout();
             this.tabControl_window_service.SuspendLayout();
             this.tabPage_windows_service.SuspendLayout();
@@ -892,13 +890,106 @@
             // 
             // page_docker_img
             // 
-            this.page_docker_img.Controls.Add(this.altoButton1);
-            this.page_docker_img.Controls.Add(this.tabControl2);
             this.page_docker_img.Controls.Add(this.groupBox2);
             this.page_docker_img.Controls.Add(this.groupBox3);
+            this.page_docker_img.Controls.Add(this.tabControl_dockerimage);
             resources.ApplyResources(this.page_docker_img, "page_docker_img");
             this.page_docker_img.Name = "page_docker_img";
             this.page_docker_img.UseVisualStyleBackColor = true;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.label59);
+            this.groupBox2.Controls.Add(this.label60);
+            this.groupBox2.Controls.Add(this.txt_HttpProxy);
+            this.groupBox2.Controls.Add(this.txt_BaseImage_pwd);
+            this.groupBox2.Controls.Add(this.txt_BaseImage);
+            this.groupBox2.Controls.Add(this.label58);
+            this.groupBox2.Controls.Add(this.label57);
+            this.groupBox2.Controls.Add(this.txt_BaseImage_username);
+            resources.ApplyResources(this.groupBox2, "groupBox2");
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.TabStop = false;
+            // 
+            // label59
+            // 
+            resources.ApplyResources(this.label59, "label59");
+            this.label59.Name = "label59";
+            // 
+            // label60
+            // 
+            resources.ApplyResources(this.label60, "label60");
+            this.label60.Name = "label60";
+            // 
+            // txt_HttpProxy
+            // 
+            resources.ApplyResources(this.txt_HttpProxy, "txt_HttpProxy");
+            this.txt_HttpProxy.Name = "txt_HttpProxy";
+            // 
+            // txt_BaseImage_pwd
+            // 
+            resources.ApplyResources(this.txt_BaseImage_pwd, "txt_BaseImage_pwd");
+            this.txt_BaseImage_pwd.Name = "txt_BaseImage_pwd";
+            // 
+            // txt_BaseImage
+            // 
+            resources.ApplyResources(this.txt_BaseImage, "txt_BaseImage");
+            this.txt_BaseImage.Name = "txt_BaseImage";
+            // 
+            // label58
+            // 
+            resources.ApplyResources(this.label58, "label58");
+            this.label58.Name = "label58";
+            // 
+            // label57
+            // 
+            resources.ApplyResources(this.label57, "label57");
+            this.label57.Name = "label57";
+            // 
+            // txt_BaseImage_username
+            // 
+            resources.ApplyResources(this.txt_BaseImage_username, "txt_BaseImage_username");
+            this.txt_BaseImage_username.Name = "txt_BaseImage_username";
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.btn_docker_image_stop);
+            this.groupBox3.Controls.Add(this.altoButton1);
+            this.groupBox3.Controls.Add(this.label69);
+            this.groupBox3.Controls.Add(this.txt_TargetHttpProxy);
+            this.groupBox3.Controls.Add(this.txt_Cmd);
+            this.groupBox3.Controls.Add(this.label65);
+            this.groupBox3.Controls.Add(this.txt_Entrypoint);
+            this.groupBox3.Controls.Add(this.cmbo_ImageFormat);
+            this.groupBox3.Controls.Add(this.txt_TargetImage_pwd);
+            this.groupBox3.Controls.Add(this.txt_TargetImage_username);
+            this.groupBox3.Controls.Add(this.txt_TargetImage);
+            this.groupBox3.Controls.Add(this.label64);
+            this.groupBox3.Controls.Add(this.txt_TargetImage_tag);
+            this.groupBox3.Controls.Add(this.label63);
+            this.groupBox3.Controls.Add(this.label66);
+            this.groupBox3.Controls.Add(this.label62);
+            this.groupBox3.Controls.Add(this.label61);
+            resources.ApplyResources(this.groupBox3, "groupBox3");
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.TabStop = false;
+            // 
+            // btn_docker_image_stop
+            // 
+            this.btn_docker_image_stop.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
+            this.btn_docker_image_stop.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
+            this.btn_docker_image_stop.BackColor = System.Drawing.Color.Transparent;
+            this.btn_docker_image_stop.DialogResult = System.Windows.Forms.DialogResult.OK;
+            resources.ApplyResources(this.btn_docker_image_stop, "btn_docker_image_stop");
+            this.btn_docker_image_stop.ForeColor = System.Drawing.Color.Red;
+            this.btn_docker_image_stop.Inactive1 = System.Drawing.SystemColors.Control;
+            this.btn_docker_image_stop.Inactive2 = System.Drawing.SystemColors.ControlLight;
+            this.btn_docker_image_stop.Name = "btn_docker_image_stop";
+            this.btn_docker_image_stop.Radius = 10;
+            this.btn_docker_image_stop.Stroke = false;
+            this.btn_docker_image_stop.StrokeColor = System.Drawing.Color.Gray;
+            this.btn_docker_image_stop.Transparency = false;
+            this.btn_docker_image_stop.Click += new System.EventHandler(this.btn_docker_image_stop_Click);
             // 
             // altoButton1
             // 
@@ -915,175 +1006,68 @@
             this.altoButton1.Stroke = false;
             this.altoButton1.StrokeColor = System.Drawing.Color.Gray;
             this.altoButton1.Transparency = false;
+            this.altoButton1.Click += new System.EventHandler(this.altoButton1_Click);
             // 
-            // tabControl2
+            // label69
             // 
-            this.tabControl2.Controls.Add(this.tabPage1);
-            this.tabControl2.Controls.Add(this.tabPage4);
-            resources.ApplyResources(this.tabControl2, "tabControl2");
-            this.tabControl2.Name = "tabControl2";
-            this.tabControl2.SelectedIndex = 0;
+            resources.ApplyResources(this.label69, "label69");
+            this.label69.Name = "label69";
             // 
-            // tabPage1
+            // txt_TargetHttpProxy
             // 
-            resources.ApplyResources(this.tabPage1, "tabPage1");
-            this.tabPage1.Controls.Add(this.label67);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.txt_TargetHttpProxy, "txt_TargetHttpProxy");
+            this.txt_TargetHttpProxy.Name = "txt_TargetHttpProxy";
             // 
-            // label67
+            // txt_Cmd
             // 
-            this.label67.ForeColor = System.Drawing.Color.Blue;
-            resources.ApplyResources(this.label67, "label67");
-            this.label67.Name = "label67";
-            // 
-            // tabPage4
-            // 
-            this.tabPage4.Controls.Add(this.exRichTextBox1);
-            resources.ApplyResources(this.tabPage4, "tabPage4");
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.UseVisualStyleBackColor = true;
-            // 
-            // exRichTextBox1
-            // 
-            resources.ApplyResources(this.exRichTextBox1, "exRichTextBox1");
-            this.exRichTextBox1.HiglightColor = AntDeployWinform.RtfColor.White;
-            this.exRichTextBox1.Name = "exRichTextBox1";
-            this.exRichTextBox1.ReadOnly = true;
-            this.exRichTextBox1.TextColor = AntDeployWinform.RtfColor.Black;
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.label68);
-            this.groupBox2.Controls.Add(this.textBox11);
-            this.groupBox2.Controls.Add(this.label60);
-            this.groupBox2.Controls.Add(this.textBox4);
-            this.groupBox2.Controls.Add(this.label59);
-            this.groupBox2.Controls.Add(this.textBox3);
-            this.groupBox2.Controls.Add(this.textBox1);
-            this.groupBox2.Controls.Add(this.label58);
-            this.groupBox2.Controls.Add(this.label57);
-            this.groupBox2.Controls.Add(this.textBox2);
-            resources.ApplyResources(this.groupBox2, "groupBox2");
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.TabStop = false;
-            // 
-            // label60
-            // 
-            resources.ApplyResources(this.label60, "label60");
-            this.label60.Name = "label60";
-            // 
-            // textBox4
-            // 
-            resources.ApplyResources(this.textBox4, "textBox4");
-            this.textBox4.Name = "textBox4";
-            // 
-            // label59
-            // 
-            resources.ApplyResources(this.label59, "label59");
-            this.label59.Name = "label59";
-            // 
-            // textBox3
-            // 
-            resources.ApplyResources(this.textBox3, "textBox3");
-            this.textBox3.Name = "textBox3";
-            // 
-            // textBox1
-            // 
-            resources.ApplyResources(this.textBox1, "textBox1");
-            this.textBox1.Name = "textBox1";
-            // 
-            // label58
-            // 
-            resources.ApplyResources(this.label58, "label58");
-            this.label58.Name = "label58";
-            // 
-            // label57
-            // 
-            resources.ApplyResources(this.label57, "label57");
-            this.label57.Name = "label57";
-            // 
-            // textBox2
-            // 
-            resources.ApplyResources(this.textBox2, "textBox2");
-            this.textBox2.Name = "textBox2";
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.textBox10);
-            this.groupBox3.Controls.Add(this.label65);
-            this.groupBox3.Controls.Add(this.textBox9);
-            this.groupBox3.Controls.Add(this.comboBox1);
-            this.groupBox3.Controls.Add(this.label61);
-            this.groupBox3.Controls.Add(this.textBox5);
-            this.groupBox3.Controls.Add(this.label62);
-            this.groupBox3.Controls.Add(this.textBox6);
-            this.groupBox3.Controls.Add(this.textBox7);
-            this.groupBox3.Controls.Add(this.label64);
-            this.groupBox3.Controls.Add(this.textBox8);
-            this.groupBox3.Controls.Add(this.label63);
-            this.groupBox3.Controls.Add(this.label66);
-            resources.ApplyResources(this.groupBox3, "groupBox3");
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.TabStop = false;
-            // 
-            // textBox10
-            // 
-            resources.ApplyResources(this.textBox10, "textBox10");
-            this.textBox10.Name = "textBox10";
+            resources.ApplyResources(this.txt_Cmd, "txt_Cmd");
+            this.txt_Cmd.Name = "txt_Cmd";
             // 
             // label65
             // 
             resources.ApplyResources(this.label65, "label65");
             this.label65.Name = "label65";
             // 
-            // textBox9
+            // txt_Entrypoint
             // 
-            resources.ApplyResources(this.textBox9, "textBox9");
-            this.textBox9.Name = "textBox9";
+            resources.ApplyResources(this.txt_Entrypoint, "txt_Entrypoint");
+            this.txt_Entrypoint.Name = "txt_Entrypoint";
             // 
-            // comboBox1
+            // cmbo_ImageFormat
             // 
-            this.comboBox1.BackColor = System.Drawing.SystemColors.Window;
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FormattingEnabled = true;
-            resources.ApplyResources(this.comboBox1, "comboBox1");
-            this.comboBox1.Name = "comboBox1";
+            this.cmbo_ImageFormat.BackColor = System.Drawing.SystemColors.Window;
+            this.cmbo_ImageFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbo_ImageFormat.FormattingEnabled = true;
+            this.cmbo_ImageFormat.Items.AddRange(new object[] {
+            resources.GetString("cmbo_ImageFormat.Items"),
+            resources.GetString("cmbo_ImageFormat.Items1")});
+            resources.ApplyResources(this.cmbo_ImageFormat, "cmbo_ImageFormat");
+            this.cmbo_ImageFormat.Name = "cmbo_ImageFormat";
             // 
-            // label61
+            // txt_TargetImage_pwd
             // 
-            resources.ApplyResources(this.label61, "label61");
-            this.label61.Name = "label61";
+            resources.ApplyResources(this.txt_TargetImage_pwd, "txt_TargetImage_pwd");
+            this.txt_TargetImage_pwd.Name = "txt_TargetImage_pwd";
             // 
-            // textBox5
+            // txt_TargetImage_username
             // 
-            resources.ApplyResources(this.textBox5, "textBox5");
-            this.textBox5.Name = "textBox5";
+            resources.ApplyResources(this.txt_TargetImage_username, "txt_TargetImage_username");
+            this.txt_TargetImage_username.Name = "txt_TargetImage_username";
             // 
-            // label62
+            // txt_TargetImage
             // 
-            resources.ApplyResources(this.label62, "label62");
-            this.label62.Name = "label62";
-            // 
-            // textBox6
-            // 
-            resources.ApplyResources(this.textBox6, "textBox6");
-            this.textBox6.Name = "textBox6";
-            // 
-            // textBox7
-            // 
-            resources.ApplyResources(this.textBox7, "textBox7");
-            this.textBox7.Name = "textBox7";
+            resources.ApplyResources(this.txt_TargetImage, "txt_TargetImage");
+            this.txt_TargetImage.Name = "txt_TargetImage";
             // 
             // label64
             // 
             resources.ApplyResources(this.label64, "label64");
             this.label64.Name = "label64";
             // 
-            // textBox8
+            // txt_TargetImage_tag
             // 
-            resources.ApplyResources(this.textBox8, "textBox8");
-            this.textBox8.Name = "textBox8";
+            resources.ApplyResources(this.txt_TargetImage_tag, "txt_TargetImage_tag");
+            this.txt_TargetImage_tag.Name = "txt_TargetImage_tag";
             // 
             // label63
             // 
@@ -1094,6 +1078,38 @@
             // 
             resources.ApplyResources(this.label66, "label66");
             this.label66.Name = "label66";
+            // 
+            // label62
+            // 
+            resources.ApplyResources(this.label62, "label62");
+            this.label62.Name = "label62";
+            // 
+            // label61
+            // 
+            resources.ApplyResources(this.label61, "label61");
+            this.label61.Name = "label61";
+            // 
+            // tabControl_dockerimage
+            // 
+            this.tabControl_dockerimage.Controls.Add(this.tabPage_docker_image);
+            resources.ApplyResources(this.tabControl_dockerimage, "tabControl_dockerimage");
+            this.tabControl_dockerimage.Name = "tabControl_dockerimage";
+            this.tabControl_dockerimage.SelectedIndex = 0;
+            // 
+            // tabPage_docker_image
+            // 
+            this.tabPage_docker_image.Controls.Add(this.rich_docker_image_log);
+            resources.ApplyResources(this.tabPage_docker_image, "tabPage_docker_image");
+            this.tabPage_docker_image.Name = "tabPage_docker_image";
+            this.tabPage_docker_image.UseVisualStyleBackColor = true;
+            // 
+            // rich_docker_image_log
+            // 
+            resources.ApplyResources(this.rich_docker_image_log, "rich_docker_image_log");
+            this.rich_docker_image_log.HiglightColor = AntDeployWinform.RtfColor.White;
+            this.rich_docker_image_log.Name = "rich_docker_image_log";
+            this.rich_docker_image_log.ReadOnly = true;
+            this.rich_docker_image_log.TextColor = AntDeployWinform.RtfColor.Black;
             // 
             // page_window_service
             // 
@@ -2128,16 +2144,6 @@
             this.btn_shang.Transparency = false;
             this.btn_shang.Click += new System.EventHandler(this.btn_shang_Click);
             // 
-            // label68
-            // 
-            resources.ApplyResources(this.label68, "label68");
-            this.label68.Name = "label68";
-            // 
-            // textBox11
-            // 
-            resources.ApplyResources(this.textBox11, "textBox11");
-            this.textBox11.Name = "textBox11";
-            // 
             // Deploy
             // 
             resources.ApplyResources(this, "$this");
@@ -2168,13 +2174,12 @@
             this.tabPage_docker_repo.ResumeLayout(false);
             this.tabPage_docker_repo.PerformLayout();
             this.page_docker_img.ResumeLayout(false);
-            this.tabControl2.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
-            this.tabPage4.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.tabControl_dockerimage.ResumeLayout(false);
+            this.tabPage_docker_image.ResumeLayout(false);
             this.page_window_service.ResumeLayout(false);
             this.page_window_service.PerformLayout();
             this.tabControl_window_service.ResumeLayout(false);
@@ -2405,34 +2410,33 @@
         private System.Windows.Forms.TabPage page_docker_img;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label label60;
-        private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.Label label59;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox txt_HttpProxy;
+        private System.Windows.Forms.TextBox txt_BaseImage_pwd;
+        private System.Windows.Forms.TextBox txt_BaseImage;
         private System.Windows.Forms.Label label58;
         private System.Windows.Forms.Label label57;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox txt_BaseImage_username;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Label label61;
-        private System.Windows.Forms.TextBox textBox5;
+        private System.Windows.Forms.TextBox txt_TargetImage_pwd;
         private System.Windows.Forms.Label label62;
-        private System.Windows.Forms.TextBox textBox6;
-        private System.Windows.Forms.TextBox textBox7;
+        private System.Windows.Forms.TextBox txt_TargetImage_username;
+        private System.Windows.Forms.TextBox txt_TargetImage;
         private System.Windows.Forms.Label label63;
         private System.Windows.Forms.Label label64;
-        private System.Windows.Forms.TextBox textBox8;
+        private System.Windows.Forms.TextBox txt_TargetImage_tag;
         private System.Windows.Forms.Label label66;
-        private System.Windows.Forms.TextBox textBox10;
+        private System.Windows.Forms.TextBox txt_Cmd;
         private System.Windows.Forms.Label label65;
-        private System.Windows.Forms.TextBox textBox9;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.TextBox txt_Entrypoint;
+        private System.Windows.Forms.ComboBox cmbo_ImageFormat;
+        private System.Windows.Forms.TabControl tabControl_dockerimage;
+        private System.Windows.Forms.TabPage tabPage_docker_image;
+        private ExRichTextBox rich_docker_image_log;
+        private System.Windows.Forms.Label label59;
+        private System.Windows.Forms.Label label69;
+        private System.Windows.Forms.TextBox txt_TargetHttpProxy;
+        private AltoControls.AltoButton btn_docker_image_stop;
         private AltoControls.AltoButton altoButton1;
-        private System.Windows.Forms.TabControl tabControl2;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.Label label67;
-        private System.Windows.Forms.TabPage tabPage4;
-        private ExRichTextBox exRichTextBox1;
-        private System.Windows.Forms.Label label68;
-        private System.Windows.Forms.TextBox textBox11;
     }
 }

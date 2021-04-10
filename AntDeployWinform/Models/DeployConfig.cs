@@ -104,9 +104,29 @@ namespace AntDeployWinform.Models
         public WindowsServiveConfig WindowsServiveConfig { get; set; } = new WindowsServiveConfig();
         public LinuxServiveConfig LinuxServiveConfig { get; set; } = new LinuxServiveConfig();
         public DockerConfig DockerConfig { get; set; } = new DockerConfig();
+        public DockerImageConfig DockerImageConfig { get; set; } = new DockerImageConfig();
 
     }
+    public class DockerImageConfig
+    {
+        public string BaseHttpProxy { get; set; }
+        public string BaseImage { get; set; }
+        public ImageCredential BaseImageCredential { get; set; }
+        public string TargetImage { get; set; }
+        public string TargetHttpProxy { get; set; }
+        public string[] TargetTags { get; set; }
+        public ImageCredential TargetImageCredential { get; set; }
 
+        public string ImageFormat { get; set; }
+        public string[] Entrypoint { get; set; }
+        public string[] Cmd { get; set; }
+    }
+
+    public class ImageCredential
+    {
+        public string UserName { get; set; }
+        public string Password { get; set; }
+    }
     public class IIsConfig
     {
         public string SdkType { get; set; }

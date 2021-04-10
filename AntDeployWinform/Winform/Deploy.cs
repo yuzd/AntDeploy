@@ -41,6 +41,7 @@ namespace AntDeployWinform.Winform
         private NLog.Logger nlog_windowservice;
         private NLog.Logger nlog_docker;
         private NLog.Logger nlog_config;
+        private NLog.Logger nlog_image;
         private NLog.Logger nlog_linux;
 
         private int ProgressPercentage = 0;
@@ -55,6 +56,7 @@ namespace AntDeployWinform.Winform
         private volatile bool stop_windows_cancel_token;
         private volatile bool stop_linux_cancel_token;
         private volatile bool stop_docker_cancel_token;
+        private volatile bool stop_docker_image_cancel_token;
 
         private string _webSiteName = string.Empty;
         private string _windowsServiceName = string.Empty;
@@ -531,6 +533,25 @@ namespace AntDeployWinform.Winform
             LoggingRule rule4 = new LoggingRule("*", LogLevel.Debug, richTarget4);
             config.LoggingRules.Add(rule4);
 
+            
+            var richTarget5 = new RichTextBoxTarget
+            {
+                Name = "rich_docker_image_log",
+                Layout =
+                    "${date:format=HH\\:mm\\:ss}|${uppercase:${level}}|${message} ${exception:format=tostring} ${rtb-link:inner=${event-properties:item=ShowLink}}",
+                FormName = "Deploy",
+                ControlName = "rich_docker_image_log",
+                AutoScroll = true,
+                MaxLines = 0,
+                AllowAccessoryFormCreation = false,
+                SupportLinks = true,
+                UseDefaultRowColoringRules = true
+
+            };
+            config.AddTarget("rich_docker_image_log", richTarget5);
+            LoggingRule rule5 = new LoggingRule("*", LogLevel.Debug, richTarget5);
+            config.LoggingRules.Add(rule5);
+
             LogManager.Configuration = config;
 
             nlog_iis = NLog.LogManager.GetLogger("rich_iis_log");
@@ -538,6 +559,7 @@ namespace AntDeployWinform.Winform
             nlog_linux = NLog.LogManager.GetLogger("rich_linuxservice_log");
             nlog_docker = NLog.LogManager.GetLogger("rich_docker_log");
             nlog_config = NLog.LogManager.GetLogger("rich_config_log");
+            nlog_image = NLog.LogManager.GetLogger("rich_docker_image_log");
 
             RichLogInit();
 
@@ -695,6 +717,22 @@ namespace AntDeployWinform.Winform
 
             }
 
+            if (DeployConfig.DockerImageConfig != null)
+            {
+                this.txt_BaseImage.Text = DeployConfig.DockerImageConfig.BaseImage;
+                this.txt_BaseImage_username.Text = DeployConfig.DockerImageConfig.BaseImageCredential?.UserName??"";
+                this.txt_BaseImage_pwd.Text = DeployConfig.DockerImageConfig.BaseImageCredential?.Password??"";
+                this.txt_HttpProxy.Text = DeployConfig.DockerImageConfig.BaseHttpProxy;
+                this.txt_TargetImage.Text = DeployConfig.DockerImageConfig.TargetImage;
+                this.txt_TargetImage_username.Text = DeployConfig.DockerImageConfig.TargetImageCredential?.UserName ?? "";
+                this.txt_TargetImage_pwd.Text = DeployConfig.DockerImageConfig.TargetImageCredential?.Password ?? "";
+                this.txt_TargetImage_tag.Text = DeployConfig.DockerImageConfig.TargetTags!=null&& DeployConfig.DockerImageConfig.TargetTags.Any()? DeployConfig.DockerImageConfig.TargetTags[0]:"";
+                this.txt_Entrypoint.Text = DeployConfig.DockerImageConfig.Entrypoint!=null&& DeployConfig.DockerImageConfig.Entrypoint.Any()? string.Join("->", DeployConfig.DockerImageConfig.Entrypoint) : "";
+                this.txt_Cmd.Text = DeployConfig.DockerImageConfig.Cmd!=null&& DeployConfig.DockerImageConfig.Cmd.Any()? string.Join("->", DeployConfig.DockerImageConfig.Cmd) : "";
+                this.txt_TargetHttpProxy.Text = DeployConfig.DockerImageConfig.TargetHttpProxy;
+                this.cmbo_ImageFormat.SelectedItem = DeployConfig.DockerImageConfig.ImageFormat;
+            }
+
             if (DeployConfig.DockerConfig != null)
             {
                 if (this.combo_docker_env.Items.Count > 0 &&
@@ -783,6 +821,7 @@ namespace AntDeployWinform.Winform
             RichTextBoxTarget.GetTargetByControl(rich_docker_log).LinkClicked += LinkClicked;
             RichTextBoxTarget.GetTargetByControl(rich_config_log).LinkClicked += LinkClicked;
             RichTextBoxTarget.GetTargetByControl(rich_linuxservice_log).LinkClicked += LinkClicked;
+            RichTextBoxTarget.GetTargetByControl(rich_docker_image_log).LinkClicked += LinkClicked;
 
         }
 
@@ -887,7 +926,7 @@ namespace AntDeployWinform.Winform
                     }
                 }
 
-
+                dockerImageParams();
                 GlobalConfig.MsBuildPath = this.txt_msbuild_path.Text.Trim();
                 GlobalConfig.ProjectPathList = GlobalConfig.ProjectPathList.Take(10).ToList();
                 PluginConfig.LastTabIndex = this.tabcontrol.SelectedIndex;
@@ -7276,7 +7315,33 @@ namespace AntDeployWinform.Winform
 
         }
 
+        private void EnableForDockerImage(bool flag, bool ignore = false)
+        {
+            this.BeginInvokeLambda(() =>
+            {
+                this.txt_BaseImage.Enabled = flag;
+                this.txt_BaseImage_username.Enabled = flag;
+                this.txt_BaseImage_pwd.Enabled = flag;
+                this.txt_TargetImage.Enabled = flag;
+                this.txt_TargetImage_username.Enabled = flag;
+                this.altoButton1.Enabled = flag;
+                if (!ignore)
+                {
+                    this.altoButton1.Visible = flag;
+                    btn_docker_image_stop.Visible = !flag;
+                }
 
+                this.txt_TargetImage_pwd.Enabled = flag;
+                this.txt_TargetHttpProxy.Enabled = flag;
+                this.txt_HttpProxy.Enabled = flag;
+                this.txt_TargetImage_tag.Enabled = flag;
+                this.txt_Cmd.Enabled = flag;
+                this.txt_Entrypoint.Enabled = flag;
+                this.cmbo_ImageFormat.Enabled = flag;
+
+            });
+
+        }
         private void EnableForDocker(bool flag, bool ignore = false)
         {
             this.BeginInvokeLambda(() =>
@@ -9299,5 +9364,143 @@ namespace AntDeployWinform.Winform
             }, System.Threading.Tasks.TaskCreationOptions.LongRunning).Start();
         }
 
+        private void dockerImageParams()
+        {
+            DeployConfig.DockerImageConfig.BaseImage = this.txt_BaseImage.Text;
+            DeployConfig.DockerImageConfig.BaseImageCredential = new ImageCredential
+            {
+                UserName = this.txt_BaseImage_username.Text,
+                Password = this.txt_BaseImage_pwd.Text
+            };
+            DeployConfig.DockerImageConfig.BaseHttpProxy = this.txt_HttpProxy.Text;
+            DeployConfig.DockerImageConfig.TargetImage = this.txt_TargetImage.Text;
+            DeployConfig.DockerImageConfig.TargetImageCredential = new ImageCredential
+            {
+                UserName = this.txt_TargetImage_username.Text,
+                Password = this.txt_TargetImage_pwd.Text
+            };
+            DeployConfig.DockerImageConfig.TargetTags = new string[] { this.txt_TargetImage_tag.Text };
+            DeployConfig.DockerImageConfig.ImageFormat = this.cmbo_ImageFormat.Text;
+            DeployConfig.DockerImageConfig.TargetHttpProxy = this.txt_TargetHttpProxy.Text;
+            DeployConfig.DockerImageConfig.Entrypoint = (this.txt_Entrypoint.Text ?? string.Empty).Split(new string[] { "->" }, StringSplitOptions.None).ToArray();
+            DeployConfig.DockerImageConfig.Cmd = (this.txt_Cmd.Text ?? string.Empty).Split(new string[] { "->" }, StringSplitOptions.None).ToArray();
+
+        }
+        /// <summary>
+        /// 镜像发布
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void altoButton1_Click(object sender, EventArgs e)
+        {
+            stop_docker_image_cancel_token = false;
+            Condition = new AutoResetEvent(false);
+            dockerImageParams();
+
+
+            if (string.IsNullOrEmpty(DeployConfig.DockerImageConfig.TargetImage))
+            {
+                MessageBoxEx.Show(this, "TargetImage invaild");
+                return;
+            }
+            if (string.IsNullOrEmpty(DeployConfig.DockerImageConfig.BaseImage))
+            {
+                MessageBoxEx.Show(this, "BaseImage invaild");
+                return;
+            }
+            if (string.IsNullOrEmpty(this.txt_TargetImage_tag.Text)
+                && (!this.txt_TargetImage.Text.Trim().StartsWith("/") || ImageReference.Parse(this.txt_TargetImage.Text.Trim()) != null))
+            {
+                MessageBoxEx.Show(this, "TargetTag invaild");
+                return;
+            }
+            if (string.IsNullOrEmpty(DeployConfig.DockerImageConfig.ImageFormat))
+            {
+                DeployConfig.DockerImageConfig.ImageFormat = "Docker";
+            }
+
+            this.rich_docker_image_log.Text = "";
+          
+
+            new Task(() =>
+            {
+                
+                this.nlog_image.Info($"-----------------Start publish[Ver:{Vsix.VERSION}]-----------------");
+                PrintCommonLog(this.nlog_image);
+                EnableForDockerImage(false);
+                var publishPath = !string.IsNullOrEmpty(PluginConfig.DeployFolderPath) ? PluginConfig.DeployFolderPath : Path.Combine(ProjectFolderPath, "bin", "Release", "deploy_docker", "dockerImage");
+                try
+                {
+
+                    if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath))
+                    {
+                        var path = publishPath + "\\";
+                        //执行 publish
+                        var isSuccess = CommandHelper.RunDotnetExe(ProjectPath, ProjectFolderPath, path.Replace("\\\\", "\\"),
+                            $"publish \"{ProjectPath}\" -c Release{PluginConfig.GetNetCorePublishRuntimeArg()}", nlog_image, () => stop_docker_image_cancel_token);
+
+                        if (!isSuccess)
+                        {
+                            this.nlog_image.Error("publish error,please check build log");
+                            return;
+                        }
+                    }
+
+
+
+                    LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish success  ==> ");
+                    publisEvent.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
+                    publisEvent.LoggerName = "rich_docker_image_log";
+                    this.nlog_image.Log(publisEvent);
+
+
+
+                    //执行 打包
+                    this.nlog_image.Info("-----------------Start publish docker image-----------------");
+
+                    if (stop_docker_image_cancel_token)
+                    {
+                        this.nlog_image.Warn($"deploy task was canceled!");
+                        return;
+                    }
+
+                    //执行 上传
+                    this.nlog_image.Info("-----------------Deploy Start-----------------");
+                   
+                    LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local publish folder  ==> ");
+                    publisEvent2.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
+                    publisEvent2.LoggerName = "rich_docker_image_log";
+                    this.nlog_image.Log(publisEvent2);
+                    this.nlog_image.Info($"-----------------Deploy End-----------------");
+
+                }
+                catch (Exception ex1)
+                {
+                    this.nlog_image.Error(ex1);
+                }
+                finally
+                {
+                    //记录发布日志
+                    SaveLog(publishPath, DateTime.Now.ToString("yyyyMMddHHmmss"), nlog_image);
+                    EnableForDockerImage(true);
+                }
+
+
+
+            }, System.Threading.Tasks.TaskCreationOptions.LongRunning).Start();
+        }
+
+        /// <summary>
+        /// 停止镜像发布
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_docker_image_stop_Click(object sender, EventArgs e)
+        {
+            btn_docker_image_stop.Text = "Stoping";
+            btn_docker_image_stop.Enabled = false;
+            stop_docker_image_cancel_token = true;
+            Condition.Set();
+        }
     }
 }
