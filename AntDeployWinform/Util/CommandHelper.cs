@@ -157,11 +157,11 @@ namespace AntDeployWinform.Util
             return RunDotnetExternalExe(string.Empty, $"dotnet", arguments, logger, checkCancel);
         }
 
-        public static bool RunJibExe(string publishPath,string rootPath, DockerImageConfig config,
+        public static bool RunJibExe(string publishPath,string rootPath, DockerImageConfig config2,
             NLog.Logger logger, Func<bool> checkCancel = null)
         {
 
-
+            var config = DockerImageConfigGo.get(config2);
             //判断当前运行目录有没有jib.exe文件
             var jibExe = Path.Combine(rootPath, "jib.exe");
             if (!File.Exists(jibExe))
@@ -170,6 +170,7 @@ namespace AntDeployWinform.Util
                 return false;
             }
 
+            config.ImageLayersFolder = publishPath;
             var dockerImageCache= Path.Combine(new DirectoryInfo(publishPath).Parent.FullName, "dockerImage_cache");
             config.ApplicationLayersCacheDirectory = dockerImageCache;
             //转成一个json文件
@@ -208,26 +209,23 @@ namespace AntDeployWinform.Util
             }
             finally
             {
+                LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "global pull image cache folder  ==> ");
+                publisEvent.Properties["ShowLink"] = "file://%LOCALAPPDATA%/fibdotnet";
+                publisEvent.LoggerName = "rich_docker_image_log";
+                logger.Log(publisEvent);
+
+                LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local build image cache folder  ==> ");
+                publisEvent2.Properties["ShowLink"] = "file://" + dockerImageCache.Replace("\\", "\\\\");
+                publisEvent2.LoggerName = "rich_docker_image_log";
+                logger.Log(publisEvent2);
+
                 if (!string.IsNullOrEmpty(tarFolder))
                 {
-                    LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "global pull image cache folder  ==> ");
-                    publisEvent.Properties["ShowLink"] = "file://%LOCALAPPDATA%/fibdotnet";
-                    publisEvent.LoggerName = "rich_docker_image_log";
-                    logger.Log(publisEvent);
-                }
-                if (!string.IsNullOrEmpty(tarFolder))
-                {
-                    LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "local build image cache folder  ==> ");
-                    publisEvent.Properties["ShowLink"] = "file://" + dockerImageCache.Replace("\\", "\\\\");
-                    publisEvent.LoggerName = "rich_docker_image_log";
-                    logger.Log(publisEvent);
-                }
-                if (!string.IsNullOrEmpty(tarFolder))
-                {
-                    LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "local build image tar folder  ==> ");
-                    publisEvent.Properties["ShowLink"] = "file://" + tarFolder.Replace("\\", "\\\\");
-                    publisEvent.LoggerName = "rich_docker_image_log";
-                    logger.Log(publisEvent);
+                    LogEventInfo publisEvent3 =
+                        new LogEventInfo(LogLevel.Info, "", "local build image tar folder  ==> ");
+                    publisEvent3.Properties["ShowLink"] = "file://" + tarFolder.Replace("\\", "\\\\");
+                    publisEvent3.LoggerName = "rich_docker_image_log";
+                    logger.Log(publisEvent3);
                 }
 
                 try

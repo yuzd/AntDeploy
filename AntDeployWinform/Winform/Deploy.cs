@@ -9472,7 +9472,7 @@ namespace AntDeployWinform.Winform
                 this.nlog_image.Info($"-----------------Start publish[Ver:{Vsix.VERSION}]-----------------");
                 PrintCommonLog(this.nlog_image);
                 EnableForDockerImage(false);
-                var publishPath = !string.IsNullOrEmpty(PluginConfig.DeployFolderPath) ? PluginConfig.DeployFolderPath : Path.Combine(ProjectFolderPath, "bin", "Release", "deploy_docker", "dockerImage");
+                var publishPath = !string.IsNullOrEmpty(PluginConfig.DeployFolderPath) ? PluginConfig.DeployFolderPath : Path.Combine(ProjectFolderPath, "bin", "Release", "dockerImage", "publish");
                 try
                 {
 
