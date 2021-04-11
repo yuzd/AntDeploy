@@ -357,6 +357,7 @@ namespace AntDeployWinform.Winform
                 this.page_web_iis.Enabled = false;
                 this.page_linux_service.Enabled = false;
                 this.pag_advance_setting.Enabled = false;
+                this.page_docker_img.Enabled = false;
                 SelectProject selectProject = new SelectProject(GlobalConfig.ProjectPathList);
                 var r = selectProject.ShowDialog();
                 if (r == DialogResult.Cancel)
@@ -372,6 +373,7 @@ namespace AntDeployWinform.Winform
 
                     this.page_set.Enabled = true;
                     this.page_docker.Enabled = true;
+                    this.page_docker_img.Enabled = true;
                     this.page_window_service.Enabled = true;
                     this.page_linux_service.Enabled = true;
                     this.page_web_iis.Enabled = true;
@@ -414,6 +416,13 @@ namespace AntDeployWinform.Winform
             else
             {
                 this.Text += $"(Version:{Vsix.VERSION})[{ProjectName}]";
+            }
+
+            if (string.IsNullOrEmpty(project.DomainPath))
+            {
+                var assembly = Assembly.GetExecutingAssembly();
+                var codeBase = assembly.Location;
+                project.DomainPath = Path.GetDirectoryName(codeBase);
             }
 
             _project = project;
@@ -731,7 +740,17 @@ namespace AntDeployWinform.Winform
                 this.txt_Cmd.Text = DeployConfig.DockerImageConfig.Cmd!=null&& DeployConfig.DockerImageConfig.Cmd.Any()? string.Join("->", DeployConfig.DockerImageConfig.Cmd) : "";
                 this.txt_TargetHttpProxy.Text = DeployConfig.DockerImageConfig.TargetHttpProxy;
                 this.cmbo_ImageFormat.SelectedItem = DeployConfig.DockerImageConfig.ImageFormat;
+                if (DeployConfig.DockerImageConfig.IgnoreList != null)
+                {
+                    foreach (var item in DeployConfig.DockerImageConfig.IgnoreList)
+                    {
+                        this.list_dockerImage_ignore.Items.Add(item);
+                    }
+                }
+                
             }
+
+            if (this.cmbo_ImageFormat.SelectedItem == null) this.cmbo_ImageFormat.SelectedItem = "Docker";
 
             if (DeployConfig.DockerConfig != null)
             {
@@ -842,8 +861,15 @@ namespace AntDeployWinform.Winform
                         }
                         else if (linktext.StartsWith("http") || linktext.StartsWith("file:"))
                         {
-                            ProcessStartInfo sInfo = new ProcessStartInfo(linktext);
-                            Process.Start(sInfo);
+                            if (linktext.StartsWith("file://%LOCALAPPDATA%"))
+                            {
+                                ProcessStartInfo sInfo = new ProcessStartInfo(Environment.ExpandEnvironmentVariables(linktext.Replace("file://", "").Replace("/","\\")));
+                                Process.Start(sInfo);
+                               
+                                return;
+                            }
+                            ProcessStartInfo sInfo2 = new ProcessStartInfo(linktext);
+                            Process.Start(sInfo2);
                         }
                         else
                         {
@@ -2985,6 +3011,14 @@ namespace AntDeployWinform.Winform
                     });
                     publisEvent2.LoggerName = "rich_iis_log";
                 }
+                else if (nlog == nlog_image)
+                {
+                    this.BeginInvokeLambda(() =>
+                    {
+                        rich_docker_image_log.SaveFile(currentLogPath, RichTextBoxStreamType.PlainText);
+                    });
+                    publisEvent2.LoggerName = "rich_docker_image_log";
+                }
                 else if (nlog == nlog_docker)
                 {
                     this.BeginInvokeLambda(() =>
@@ -3763,6 +3797,7 @@ namespace AntDeployWinform.Winform
                 this.page_linux_service.Enabled = flag;
                 this.page_window_service.Enabled = flag;
                 this.pag_advance_setting.Enabled = flag;
+                this.page_docker_img.Enabled = flag;
                 this.checkBox_select_deploy_iis.Enabled = flag;
                 if (flag)
                 {
@@ -4358,6 +4393,7 @@ namespace AntDeployWinform.Winform
                 this.page_linux_service.Enabled = flag;
                 this.page_web_iis.Enabled = flag;
                 this.pag_advance_setting.Enabled = flag;
+                this.page_docker_img.Enabled = flag;
                 checkBox_select_deploy_service.Enabled = flag;
                 if (flag)
                 {
@@ -4426,6 +4462,7 @@ namespace AntDeployWinform.Winform
                 this.page_web_iis.Enabled = flag;
                 this.page_window_service.Enabled = flag;
                 this.pag_advance_setting.Enabled = flag;
+                this.page_docker_img.Enabled = flag;
                 checkBox_select_deploy_linuxservice.Enabled = flag;
                 checkBox_select_type_linuxservice.Enabled = flag;
                 if (flag)
@@ -7339,6 +7376,12 @@ namespace AntDeployWinform.Winform
                 this.txt_Entrypoint.Enabled = flag;
                 this.cmbo_ImageFormat.Enabled = flag;
 
+                this.page_set.Enabled = flag;
+                this.page_docker.Enabled = flag;
+                this.page_linux_service.Enabled = flag;
+                this.page_window_service.Enabled = flag;
+                this.pag_advance_setting.Enabled = flag;
+
             });
 
         }
@@ -9385,6 +9428,8 @@ namespace AntDeployWinform.Winform
             DeployConfig.DockerImageConfig.Entrypoint = (this.txt_Entrypoint.Text ?? string.Empty).Split(new string[] { "->" }, StringSplitOptions.None).ToArray();
             DeployConfig.DockerImageConfig.Cmd = (this.txt_Cmd.Text ?? string.Empty).Split(new string[] { "->" }, StringSplitOptions.None).ToArray();
 
+
+
         }
         /// <summary>
         /// 镜像发布
@@ -9408,8 +9453,7 @@ namespace AntDeployWinform.Winform
                 MessageBoxEx.Show(this, "BaseImage invaild");
                 return;
             }
-            if (string.IsNullOrEmpty(this.txt_TargetImage_tag.Text)
-                && (!this.txt_TargetImage.Text.Trim().StartsWith("/") || ImageReference.Parse(this.txt_TargetImage.Text.Trim()) != null))
+            if (string.IsNullOrEmpty(this.txt_TargetImage_tag.Text))
             {
                 MessageBoxEx.Show(this, "TargetTag invaild");
                 return;
@@ -9448,14 +9492,12 @@ namespace AntDeployWinform.Winform
 
 
 
-                    LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish success  ==> ");
+                    LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "publish target  ==> ");
                     publisEvent.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
                     publisEvent.LoggerName = "rich_docker_image_log";
                     this.nlog_image.Log(publisEvent);
 
 
-
-                    //执行 打包
                     this.nlog_image.Info("-----------------Start publish docker image-----------------");
 
                     if (stop_docker_image_cancel_token)
@@ -9464,10 +9506,23 @@ namespace AntDeployWinform.Winform
                         return;
                     }
 
+
+
                     //执行 上传
                     this.nlog_image.Info("-----------------Deploy Start-----------------");
-                   
-                    LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local publish folder  ==> ");
+
+
+                    var publishSuccess = CommandHelper.RunJibExe(publishPath,_project.DomainPath, DeployConfig.DockerImageConfig,
+                        nlog_image, () => stop_docker_image_cancel_token);
+
+                    if (!publishSuccess)
+                    {
+                        this.nlog_image.Error("publish error,please check publish log");
+                        return;
+                    }
+
+
+                    LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "publish target  ==> ");
                     publisEvent2.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
                     publisEvent2.LoggerName = "rich_docker_image_log";
                     this.nlog_image.Log(publisEvent2);
@@ -9501,6 +9556,46 @@ namespace AntDeployWinform.Winform
             btn_docker_image_stop.Enabled = false;
             stop_docker_image_cancel_token = true;
             Condition.Set();
+        }
+
+        private void btn_dockerImage_ignore_add_Click(object sender, EventArgs e)
+        {
+            var ignoreTxt = this.txt_dockerImage_ignore.Text.Trim();
+            if (ignoreTxt.Length < 1)
+            {
+                MessageBoxEx.Show(this, "please input ignore rule");
+                return;
+            }
+
+            if (ignoreTxt.Contains("@_@"))
+            {
+                MessageBoxEx.Show(this, "can not contains @_@");
+                return;
+            }
+
+            var existIgnore = this.list_dockerImage_ignore.Items.Cast<string>().FirstOrDefault(r => r.Equals(ignoreTxt));
+            if (!string.IsNullOrEmpty(existIgnore))
+            {
+                this.list_dockerImage_ignore.SelectedItem = existIgnore;
+            }
+            else
+            {
+                if (this.DeployConfig.DockerImageConfig.IgnoreList == null)
+                    this.DeployConfig.DockerImageConfig.IgnoreList = new List<string>();
+                this.DeployConfig.DockerImageConfig.IgnoreList.Add(ignoreTxt);
+                this.list_dockerImage_ignore.Items.Add(ignoreTxt);
+                this.txt_dockerImage_ignore.Text = string.Empty;
+                this.list_dockerImage_ignore.SelectedItem = ignoreTxt;
+            }
+        }
+
+        private void btn_dockerImage_ignore_remove_Click(object sender, EventArgs e)
+        {
+            if (this.list_dockerImage_ignore.SelectedIndex < 0) return;
+            this.DeployConfig.DockerImageConfig.IgnoreList.RemoveAt(this.list_dockerImage_ignore.SelectedIndex);
+            this.list_dockerImage_ignore.Items.RemoveAt(this.list_dockerImage_ignore.SelectedIndex);
+            if (this.list_dockerImage_ignore.Items.Count >= 0)
+                this.list_dockerImage_ignore.SelectedIndex = this.list_dockerImage_ignore.Items.Count - 1;
         }
     }
 }

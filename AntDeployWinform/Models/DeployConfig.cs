@@ -109,6 +109,12 @@ namespace AntDeployWinform.Models
     }
     public class DockerImageConfig
     {
+        public DockerImageConfig()
+        {
+            BaseImageCredential = new ImageCredential();
+            TargetImageCredential = new ImageCredential();
+            IgnoreList = new List<string>();
+        }
         public string BaseHttpProxy { get; set; }
         public string BaseImage { get; set; }
         public ImageCredential BaseImageCredential { get; set; }
@@ -118,8 +124,11 @@ namespace AntDeployWinform.Models
         public ImageCredential TargetImageCredential { get; set; }
 
         public string ImageFormat { get; set; }
+        public string ApplicationLayersCacheDirectory { get; set; }
         public string[] Entrypoint { get; set; }
         public string[] Cmd { get; set; }
+        public List<string> IgnoreList { get; set; }
+
     }
 
     public class ImageCredential

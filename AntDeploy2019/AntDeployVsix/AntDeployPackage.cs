@@ -232,15 +232,17 @@ namespace AntDeployVsix
             {
                 if (!globalConfig.MultiInstance) StartListeningForWindowChanges();
 
+                var assembly = Assembly.GetExecutingAssembly();
+                var codeBase = assembly.Location;
+                var codeBaseDirectory = Path.GetDirectoryName(codeBase);
+                param.DomainPath = codeBaseDirectory;
                 var md5 = MD5(projectPath);
                 var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
                 var projectPram = JsonConvert.SerializeObject(param);
                 var projectPramPath = Path.Combine(path, md5 + "_param.json");
                 File.WriteAllText(projectPramPath, projectPram, Encoding.UTF8);
 
-                var assembly = Assembly.GetExecutingAssembly();
-                var codeBase = assembly.Location;
-                var codeBaseDirectory = Path.GetDirectoryName(codeBase);
+               
                 var ant = Path.Combine(codeBaseDirectory, "AntDeployApp.exe");
                 using (var process = new Process())
                 {
@@ -380,6 +382,7 @@ namespace AntDeployVsix
         public string MsBuildPath { get; set; }
         public string ProjectPath { get; set; }
         public string NetCoreSDKVersion { get; set; }
+        public string DomainPath { get; set; }
     }
 
     internal class GlobalConfig

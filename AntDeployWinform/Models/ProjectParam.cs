@@ -27,5 +27,6 @@ namespace AntDeployWinform.Models
         public string MsBuildPath { get; set; }
         public string ProjectPath { get; set; }
         public string NetCoreSDKVersion { get; set; }
+        public string DomainPath { get; set; }
     }
 }

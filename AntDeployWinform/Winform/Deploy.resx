@@ -2070,6 +2070,324 @@
   <data name="&gt;&gt;page_docker.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
+  <data name="btn_docker_image_stop.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Comic Sans MS, 10pt, style=Bold</value>
+  </data>
+  <data name="btn_docker_image_stop.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="btn_docker_image_stop.Location" type="System.Drawing.Point, System.Drawing">
+    <value>504, 134</value>
+  </data>
+  <data name="btn_docker_image_stop.Size" type="System.Drawing.Size, System.Drawing">
+    <value>107, 43</value>
+  </data>
+  <data name="btn_docker_image_stop.TabIndex" type="System.Int32, mscorlib">
+    <value>40</value>
+  </data>
+  <data name="btn_docker_image_stop.Text" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="btn_docker_image_stop.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;btn_docker_image_stop.Name" xml:space="preserve">
+    <value>btn_docker_image_stop</value>
+  </data>
+  <data name="&gt;&gt;btn_docker_image_stop.Type" xml:space="preserve">
+    <value>AltoControls.AltoButton, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;btn_docker_image_stop.Parent" xml:space="preserve">
+    <value>page_docker_img</value>
+  </data>
+  <data name="&gt;&gt;btn_docker_image_stop.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="altoButton1.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Comic Sans MS, 10pt, style=Bold</value>
+  </data>
+  <data name="altoButton1.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="altoButton1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>507, 135</value>
+  </data>
+  <data name="altoButton1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>106, 40</value>
+  </data>
+  <data name="altoButton1.TabIndex" type="System.Int32, mscorlib">
+    <value>39</value>
+  </data>
+  <data name="altoButton1.Text" xml:space="preserve">
+    <value>Deploy</value>
+  </data>
+  <data name="&gt;&gt;altoButton1.Name" xml:space="preserve">
+    <value>altoButton1</value>
+  </data>
+  <data name="&gt;&gt;altoButton1.Type" xml:space="preserve">
+    <value>AltoControls.AltoButton, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;altoButton1.Parent" xml:space="preserve">
+    <value>page_docker_img</value>
+  </data>
+  <data name="&gt;&gt;altoButton1.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="rich_docker_image_log.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
+  </data>
+  <data name="rich_docker_image_log.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 3</value>
+  </data>
+  <data name="rich_docker_image_log.Size" type="System.Drawing.Size, System.Drawing">
+    <value>608, 264</value>
+  </data>
+  <data name="rich_docker_image_log.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="rich_docker_image_log.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;rich_docker_image_log.Name" xml:space="preserve">
+    <value>rich_docker_image_log</value>
+  </data>
+  <data name="&gt;&gt;rich_docker_image_log.Type" xml:space="preserve">
+    <value>AntDeployWinform.ExRichTextBox, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;rich_docker_image_log.Parent" xml:space="preserve">
+    <value>tabPage_docker_image</value>
+  </data>
+  <data name="&gt;&gt;rich_docker_image_log.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="tabPage_docker_image.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="tabPage_docker_image.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
+  </data>
+  <data name="tabPage_docker_image.Size" type="System.Drawing.Size, System.Drawing">
+    <value>614, 270</value>
+  </data>
+  <data name="tabPage_docker_image.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="tabPage_docker_image.Text" xml:space="preserve">
+    <value>LOG</value>
+  </data>
+  <data name="&gt;&gt;tabPage_docker_image.Name" xml:space="preserve">
+    <value>tabPage_docker_image</value>
+  </data>
+  <data name="&gt;&gt;tabPage_docker_image.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabPage_docker_image.Parent" xml:space="preserve">
+    <value>tabControl_dockerimage</value>
+  </data>
+  <data name="&gt;&gt;tabPage_docker_image.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="label67.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label67.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="label67.Location" type="System.Drawing.Point, System.Drawing">
+    <value>532, 225</value>
+  </data>
+  <data name="label67.Size" type="System.Drawing.Size, System.Drawing">
+    <value>71, 12</value>
+  </data>
+  <data name="label67.TabIndex" type="System.Int32, mscorlib">
+    <value>30</value>
+  </data>
+  <data name="label67.Text" xml:space="preserve">
+    <value>How to set?</value>
+  </data>
+  <data name="&gt;&gt;label67.Name" xml:space="preserve">
+    <value>label67</value>
+  </data>
+  <data name="&gt;&gt;label67.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label67.Parent" xml:space="preserve">
+    <value>groupBox4</value>
+  </data>
+  <data name="&gt;&gt;label67.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="btn_dockerImage_ignore_remove.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="btn_dockerImage_ignore_remove.Location" type="System.Drawing.Point, System.Drawing">
+    <value>32, 74</value>
+  </data>
+  <data name="btn_dockerImage_ignore_remove.Size" type="System.Drawing.Size, System.Drawing">
+    <value>117, 23</value>
+  </data>
+  <data name="btn_dockerImage_ignore_remove.TabIndex" type="System.Int32, mscorlib">
+    <value>29</value>
+  </data>
+  <data name="btn_dockerImage_ignore_remove.Text" xml:space="preserve">
+    <value>Remove Selected</value>
+  </data>
+  <data name="&gt;&gt;btn_dockerImage_ignore_remove.Name" xml:space="preserve">
+    <value>btn_dockerImage_ignore_remove</value>
+  </data>
+  <data name="&gt;&gt;btn_dockerImage_ignore_remove.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btn_dockerImage_ignore_remove.Parent" xml:space="preserve">
+    <value>groupBox4</value>
+  </data>
+  <data name="&gt;&gt;btn_dockerImage_ignore_remove.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="btn_dockerImage_ignore_add.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="btn_dockerImage_ignore_add.Location" type="System.Drawing.Point, System.Drawing">
+    <value>90, 44</value>
+  </data>
+  <data name="btn_dockerImage_ignore_add.Size" type="System.Drawing.Size, System.Drawing">
+    <value>59, 24</value>
+  </data>
+  <data name="btn_dockerImage_ignore_add.TabIndex" type="System.Int32, mscorlib">
+    <value>28</value>
+  </data>
+  <data name="btn_dockerImage_ignore_add.Text" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="&gt;&gt;btn_dockerImage_ignore_add.Name" xml:space="preserve">
+    <value>btn_dockerImage_ignore_add</value>
+  </data>
+  <data name="&gt;&gt;btn_dockerImage_ignore_add.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btn_dockerImage_ignore_add.Parent" xml:space="preserve">
+    <value>groupBox4</value>
+  </data>
+  <data name="&gt;&gt;btn_dockerImage_ignore_add.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="txt_dockerImage_ignore.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 17</value>
+  </data>
+  <data name="txt_dockerImage_ignore.Size" type="System.Drawing.Size, System.Drawing">
+    <value>146, 21</value>
+  </data>
+  <data name="txt_dockerImage_ignore.TabIndex" type="System.Int32, mscorlib">
+    <value>26</value>
+  </data>
+  <data name="&gt;&gt;txt_dockerImage_ignore.Name" xml:space="preserve">
+    <value>txt_dockerImage_ignore</value>
+  </data>
+  <data name="&gt;&gt;txt_dockerImage_ignore.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;txt_dockerImage_ignore.Parent" xml:space="preserve">
+    <value>groupBox4</value>
+  </data>
+  <data name="&gt;&gt;txt_dockerImage_ignore.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="list_dockerImage_ignore.ItemHeight" type="System.Int32, mscorlib">
+    <value>12</value>
+  </data>
+  <data name="list_dockerImage_ignore.Location" type="System.Drawing.Point, System.Drawing">
+    <value>169, 20</value>
+  </data>
+  <data name="list_dockerImage_ignore.Size" type="System.Drawing.Size, System.Drawing">
+    <value>434, 136</value>
+  </data>
+  <data name="list_dockerImage_ignore.TabIndex" type="System.Int32, mscorlib">
+    <value>27</value>
+  </data>
+  <data name="&gt;&gt;list_dockerImage_ignore.Name" xml:space="preserve">
+    <value>list_dockerImage_ignore</value>
+  </data>
+  <data name="&gt;&gt;list_dockerImage_ignore.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ListBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;list_dockerImage_ignore.Parent" xml:space="preserve">
+    <value>groupBox4</value>
+  </data>
+  <data name="&gt;&gt;list_dockerImage_ignore.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="groupBox4.Location" type="System.Drawing.Point, System.Drawing">
+    <value>2, 3</value>
+  </data>
+  <data name="groupBox4.Size" type="System.Drawing.Size, System.Drawing">
+    <value>609, 240</value>
+  </data>
+  <data name="groupBox4.TabIndex" type="System.Int32, mscorlib">
+    <value>29</value>
+  </data>
+  <data name="groupBox4.Text" xml:space="preserve">
+    <value>Package IgnoreRule【regex】</value>
+  </data>
+  <data name="&gt;&gt;groupBox4.Name" xml:space="preserve">
+    <value>groupBox4</value>
+  </data>
+  <data name="&gt;&gt;groupBox4.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;groupBox4.Parent" xml:space="preserve">
+    <value>tabPage_docker_image_ignore</value>
+  </data>
+  <data name="&gt;&gt;groupBox4.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="tabPage_docker_image_ignore.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="tabPage_docker_image_ignore.Size" type="System.Drawing.Size, System.Drawing">
+    <value>614, 270</value>
+  </data>
+  <data name="tabPage_docker_image_ignore.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="tabPage_docker_image_ignore.Text" xml:space="preserve">
+    <value>OtherConfig</value>
+  </data>
+  <data name="&gt;&gt;tabPage_docker_image_ignore.Name" xml:space="preserve">
+    <value>tabPage_docker_image_ignore</value>
+  </data>
+  <data name="&gt;&gt;tabPage_docker_image_ignore.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabPage_docker_image_ignore.Parent" xml:space="preserve">
+    <value>tabControl_dockerimage</value>
+  </data>
+  <data name="&gt;&gt;tabPage_docker_image_ignore.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="tabControl_dockerimage.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Bottom</value>
+  </data>
+  <data name="tabControl_dockerimage.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 160</value>
+  </data>
+  <data name="tabControl_dockerimage.Size" type="System.Drawing.Size, System.Drawing">
+    <value>622, 296</value>
+  </data>
+  <data name="tabControl_dockerimage.TabIndex" type="System.Int32, mscorlib">
+    <value>33</value>
+  </data>
+  <data name="&gt;&gt;tabControl_dockerimage.Name" xml:space="preserve">
+    <value>tabControl_dockerimage</value>
+  </data>
+  <data name="&gt;&gt;tabControl_dockerimage.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabControl_dockerimage.Parent" xml:space="preserve">
+    <value>page_docker_img</value>
+  </data>
+  <data name="&gt;&gt;tabControl_dockerimage.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
   <data name="label59.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -2299,70 +2617,7 @@
     <value>page_docker_img</value>
   </data>
   <data name="&gt;&gt;groupBox2.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="btn_docker_image_stop.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Comic Sans MS, 10pt, style=Bold</value>
-  </data>
-  <data name="btn_docker_image_stop.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="btn_docker_image_stop.Location" type="System.Drawing.Point, System.Drawing">
-    <value>504, 67</value>
-  </data>
-  <data name="btn_docker_image_stop.Size" type="System.Drawing.Size, System.Drawing">
-    <value>107, 43</value>
-  </data>
-  <data name="btn_docker_image_stop.TabIndex" type="System.Int32, mscorlib">
-    <value>40</value>
-  </data>
-  <data name="btn_docker_image_stop.Text" xml:space="preserve">
-    <value>Stop</value>
-  </data>
-  <data name="btn_docker_image_stop.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="&gt;&gt;btn_docker_image_stop.Name" xml:space="preserve">
-    <value>btn_docker_image_stop</value>
-  </data>
-  <data name="&gt;&gt;btn_docker_image_stop.Type" xml:space="preserve">
-    <value>AltoControls.AltoButton, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;btn_docker_image_stop.Parent" xml:space="preserve">
-    <value>groupBox3</value>
-  </data>
-  <data name="&gt;&gt;btn_docker_image_stop.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="altoButton1.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Comic Sans MS, 10pt, style=Bold</value>
-  </data>
-  <data name="altoButton1.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="altoButton1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>506, 70</value>
-  </data>
-  <data name="altoButton1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>106, 40</value>
-  </data>
-  <data name="altoButton1.TabIndex" type="System.Int32, mscorlib">
-    <value>39</value>
-  </data>
-  <data name="altoButton1.Text" xml:space="preserve">
-    <value>Deploy</value>
-  </data>
-  <data name="&gt;&gt;altoButton1.Name" xml:space="preserve">
-    <value>altoButton1</value>
-  </data>
-  <data name="&gt;&gt;altoButton1.Type" xml:space="preserve">
-    <value>AltoControls.AltoButton, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;altoButton1.Parent" xml:space="preserve">
-    <value>groupBox3</value>
-  </data>
-  <data name="&gt;&gt;altoButton1.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>3</value>
   </data>
   <data name="label69.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -2392,7 +2647,7 @@
     <value>groupBox3</value>
   </data>
   <data name="&gt;&gt;label69.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>0</value>
   </data>
   <data name="txt_TargetHttpProxy.Location" type="System.Drawing.Point, System.Drawing">
     <value>503, 36</value>
@@ -2413,7 +2668,7 @@
     <value>groupBox3</value>
   </data>
   <data name="&gt;&gt;txt_TargetHttpProxy.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>1</value>
   </data>
   <data name="txt_Cmd.Location" type="System.Drawing.Point, System.Drawing">
     <value>213, 67</value>
@@ -2434,7 +2689,7 @@
     <value>groupBox3</value>
   </data>
   <data name="&gt;&gt;txt_Cmd.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>2</value>
   </data>
   <data name="label65.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -2464,7 +2719,7 @@
     <value>groupBox3</value>
   </data>
   <data name="&gt;&gt;label65.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>3</value>
   </data>
   <data name="txt_Entrypoint.Location" type="System.Drawing.Point, System.Drawing">
     <value>3, 66</value>
@@ -2485,7 +2740,7 @@
     <value>groupBox3</value>
   </data>
   <data name="&gt;&gt;txt_Entrypoint.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>4</value>
   </data>
   <data name="cmbo_ImageFormat.Items" xml:space="preserve">
     <value>Docker</value>
@@ -2512,7 +2767,7 @@
     <value>groupBox3</value>
   </data>
   <data name="&gt;&gt;cmbo_ImageFormat.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>5</value>
   </data>
   <data name="txt_TargetImage_pwd.Location" type="System.Drawing.Point, System.Drawing">
     <value>309, 38</value>
@@ -2536,7 +2791,7 @@
     <value>groupBox3</value>
   </data>
   <data name="&gt;&gt;txt_TargetImage_pwd.ZOrder" xml:space="preserve">
-    <value>8</value>
+    <value>6</value>
   </data>
   <data name="txt_TargetImage_username.Location" type="System.Drawing.Point, System.Drawing">
     <value>152, 38</value>
@@ -2557,7 +2812,7 @@
     <value>groupBox3</value>
   </data>
   <data name="&gt;&gt;txt_TargetImage_username.ZOrder" xml:space="preserve">
-    <value>9</value>
+    <value>7</value>
   </data>
   <data name="txt_TargetImage.Location" type="System.Drawing.Point, System.Drawing">
     <value>88, 11</value>
@@ -2578,7 +2833,7 @@
     <value>groupBox3</value>
   </data>
   <data name="&gt;&gt;txt_TargetImage.ZOrder" xml:space="preserve">
-    <value>10</value>
+    <value>8</value>
   </data>
   <data name="label64.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -2608,7 +2863,7 @@
     <value>groupBox3</value>
   </data>
   <data name="&gt;&gt;label64.ZOrder" xml:space="preserve">
-    <value>11</value>
+    <value>9</value>
   </data>
   <data name="txt_TargetImage_tag.Location" type="System.Drawing.Point, System.Drawing">
     <value>479, 11</value>
@@ -2629,7 +2884,7 @@
     <value>groupBox3</value>
   </data>
   <data name="&gt;&gt;txt_TargetImage_tag.ZOrder" xml:space="preserve">
-    <value>12</value>
+    <value>10</value>
   </data>
   <data name="label63.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -2659,7 +2914,7 @@
     <value>groupBox3</value>
   </data>
   <data name="&gt;&gt;label63.ZOrder" xml:space="preserve">
-    <value>13</value>
+    <value>11</value>
   </data>
   <data name="label66.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -2689,7 +2944,7 @@
     <value>groupBox3</value>
   </data>
   <data name="&gt;&gt;label66.ZOrder" xml:space="preserve">
-    <value>14</value>
+    <value>12</value>
   </data>
   <data name="label62.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -2719,7 +2974,7 @@
     <value>groupBox3</value>
   </data>
   <data name="&gt;&gt;label62.ZOrder" xml:space="preserve">
-    <value>15</value>
+    <value>13</value>
   </data>
   <data name="label61.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -2749,13 +3004,13 @@
     <value>groupBox3</value>
   </data>
   <data name="&gt;&gt;label61.ZOrder" xml:space="preserve">
-    <value>16</value>
+    <value>14</value>
   </data>
   <data name="groupBox3.Location" type="System.Drawing.Point, System.Drawing">
     <value>3, 67</value>
   </data>
   <data name="groupBox3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>616, 116</value>
+    <value>616, 93</value>
   </data>
   <data name="groupBox3.TabIndex" type="System.Int32, mscorlib">
     <value>32</value>
@@ -2770,85 +3025,7 @@
     <value>page_docker_img</value>
   </data>
   <data name="&gt;&gt;groupBox3.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="rich_docker_image_log.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Fill</value>
-  </data>
-  <data name="rich_docker_image_log.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 3</value>
-  </data>
-  <data name="rich_docker_image_log.Size" type="System.Drawing.Size, System.Drawing">
-    <value>608, 266</value>
-  </data>
-  <data name="rich_docker_image_log.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
-  <data name="rich_docker_image_log.Text" xml:space="preserve">
-    <value />
-  </data>
-  <data name="&gt;&gt;rich_docker_image_log.Name" xml:space="preserve">
-    <value>rich_docker_image_log</value>
-  </data>
-  <data name="&gt;&gt;rich_docker_image_log.Type" xml:space="preserve">
-    <value>AntDeployWinform.ExRichTextBox, AntDeployWinform, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;rich_docker_image_log.Parent" xml:space="preserve">
-    <value>tabPage_docker_image</value>
-  </data>
-  <data name="&gt;&gt;rich_docker_image_log.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="tabPage_docker_image.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 22</value>
-  </data>
-  <data name="tabPage_docker_image.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>3, 3, 3, 3</value>
-  </data>
-  <data name="tabPage_docker_image.Size" type="System.Drawing.Size, System.Drawing">
-    <value>614, 272</value>
-  </data>
-  <data name="tabPage_docker_image.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
-  <data name="tabPage_docker_image.Text" xml:space="preserve">
-    <value>LOG</value>
-  </data>
-  <data name="&gt;&gt;tabPage_docker_image.Name" xml:space="preserve">
-    <value>tabPage_docker_image</value>
-  </data>
-  <data name="&gt;&gt;tabPage_docker_image.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tabPage_docker_image.Parent" xml:space="preserve">
-    <value>tabControl_dockerimage</value>
-  </data>
-  <data name="&gt;&gt;tabPage_docker_image.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="tabControl_dockerimage.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Bottom</value>
-  </data>
-  <data name="tabControl_dockerimage.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 158</value>
-  </data>
-  <data name="tabControl_dockerimage.Size" type="System.Drawing.Size, System.Drawing">
-    <value>622, 298</value>
-  </data>
-  <data name="tabControl_dockerimage.TabIndex" type="System.Int32, mscorlib">
-    <value>33</value>
-  </data>
-  <data name="&gt;&gt;tabControl_dockerimage.Name" xml:space="preserve">
-    <value>tabControl_dockerimage</value>
-  </data>
-  <data name="&gt;&gt;tabControl_dockerimage.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tabControl_dockerimage.Parent" xml:space="preserve">
-    <value>page_docker_img</value>
-  </data>
-  <data name="&gt;&gt;tabControl_dockerimage.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>4</value>
   </data>
   <data name="page_docker_img.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 22</value>
@@ -6290,6 +6467,9 @@
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
     <value>630, 482</value>
+  </data>
+  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
     <value>CenterScreen</value>
