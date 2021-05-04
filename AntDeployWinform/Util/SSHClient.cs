@@ -1320,7 +1320,7 @@ namespace AntDeployWinform.Util
                 string sdkVersion = NetCoreVersion;
                 if (string.IsNullOrEmpty(sdkVersion))
                 {
-                    sdkVersion = "2.1";
+                    sdkVersion = "3.1";
                 }
 
               
@@ -1335,11 +1335,12 @@ namespace AntDeployWinform.Util
                     var versionNumber = sdkVersion.Replace(".", "");
                     int number = 0;
                     int.TryParse(versionNumber, out number);
-                    writer.WriteLine(number > 31
+                    string baseDockerImage = number > 31
                         ? $"FROM mcr.microsoft.com/dotnet/aspnet:{sdkVersion}"
-                        : $"FROM mcr.microsoft.com/dotnet/core/aspnet:{sdkVersion}");
+                        : $"FROM mcr.microsoft.com/dotnet/core/aspnet:{sdkVersion}";
+                    writer.WriteLine(baseDockerImage);
 
-                    _logger($"FROM mcr.microsoft.com/dotnet/core/aspnet:{sdkVersion}", NLog.LogLevel.Info);// microsoft/dotnet:{sdkVersion}-aspnetcore-runtime
+                    _logger(baseDockerImage, NLog.LogLevel.Info);
 
                     writer.WriteLine($"COPY . /publish");
                     _logger($"COPY . /publish", NLog.LogLevel.Info);

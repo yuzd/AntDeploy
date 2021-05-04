@@ -205,7 +205,7 @@ namespace AntDeployWinform.Util
                 }
 
 
-                return RunDotnetExternalExe(rootPath, $"jib.exe", bash, logger, checkCancel);
+                return RunDotnetExternalExe(rootPath, $"jib.exe", bash, logger, checkCancel,true);
             }
             finally
             {
@@ -247,10 +247,10 @@ namespace AntDeployWinform.Util
         /// <param name="arguments"></param>
         /// <param name="logger"></param>
         /// <returns></returns>
-        private static bool RunDotnetExternalExe(string projectPath, string fileName, string arguments, NLog.Logger logger, Func<bool> checkCancel = null)
+        private static bool RunDotnetExternalExe(string projectPath, string fileName, string arguments, NLog.Logger logger, Func<bool> checkCancel = null,bool fullLog = false)
         {
             Process process = null;
-            BuildProgress pr = null;
+            IlogProgress pr = null;
             try
             {
                 try
@@ -267,8 +267,15 @@ namespace AntDeployWinform.Util
                     throw new ArgumentException(nameof(arguments));
                 }
 
+                if (fullLog)
+                {
+                    pr = new FullLogProgress(logger);
+                }
+                else
+                {
+                    pr = new BuildProgress(logger);
+                }
                 //执行dotnet命令如果 projectdir路径含有空格 或者 outDir 路径含有空格 都是没有问题的
-                pr = new BuildProgress(logger);
 
                 process = new Process();
 
@@ -330,6 +337,11 @@ namespace AntDeployWinform.Util
                         }
                         else if (args.Data.Contains(": error") || args.Data.Contains("[Error]"))
                         {
+                            if (pr is BuildProgress)
+                            {
+                                pr.Dispose();
+                                pr = new FullLogProgress(logger);//一旦有出错 后面就走全部日志
+                            }
                             logger.Error(args.Data);
                         }
                         else
@@ -346,7 +358,11 @@ namespace AntDeployWinform.Util
 
                 process.ErrorDataReceived += (sender, data) =>
                 {
-
+                    if (pr is BuildProgress)
+                    {
+                        pr.Dispose();
+                        pr = new FullLogProgress(logger);//一旦有出错 后面就走全部日志
+                    }
                     if (checkCancel != null)
                     {
                         var r = checkCancel();
@@ -495,7 +511,7 @@ namespace AntDeployWinform.Util
         public static bool RunCommand(string commandToRun, NLog.Logger logger, Func<bool> checkCancel = null, string workingDirectory = null)
         {
             Process process = null;
-            BuildProgress pr = null;
+            IlogProgress pr = null;
 
             try
             {
@@ -565,6 +581,11 @@ namespace AntDeployWinform.Util
                         }
                         else if (args.Data.Contains(": error"))
                         {
+                            if (pr is BuildProgress)
+                            {
+                                pr.Dispose();
+                                pr = new FullLogProgress(logger);//一旦有出错 后面就走全部日志
+                            }
                             logger.Error(args.Data);
                         }
                         else
@@ -584,7 +605,11 @@ namespace AntDeployWinform.Util
 
                 process.ErrorDataReceived += (sender, data) =>
                 {
-
+                    if (pr is BuildProgress)
+                    {
+                        pr.Dispose();
+                        pr = new FullLogProgress(logger);//一旦有出错 后面就走全部日志
+                    }
                     if (checkCancel != null)
                     {
                         var r = checkCancel();
@@ -713,7 +738,42 @@ namespace AntDeployWinform.Util
 
     }
 
-    public class BuildProgress : IDisposable
+    public interface IlogProgress: IDisposable
+    {
+        void Log(BuildEventArgs ar);
+    }
+
+    public class FullLogProgress : IlogProgress
+    {
+        private readonly Logger _logger;
+        public FullLogProgress(Logger logger)
+        {
+            _logger = logger;
+        }
+        public void Dispose()
+        {
+
+        }
+
+        public void Log(BuildEventArgs objEventArgs)
+        {
+            if (objEventArgs.level == LogLevel.Warn)
+            {
+                _logger.Warn(objEventArgs.message);
+                return;
+            }
+
+            if (objEventArgs.level == LogLevel.Error)
+            {
+                _logger.Error(objEventArgs.message);
+                return;
+            }
+
+            _logger.Info(objEventArgs.message);
+        }
+    }
+
+    public class BuildProgress : IlogProgress
     {
         public event EventHandler<BuildEventArgs> BuildEvent;
 

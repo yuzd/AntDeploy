@@ -9517,11 +9517,12 @@ namespace AntDeployWinform.Winform
 
                     if (!publishSuccess)
                     {
+                        Notice("Error", "Push Image Error");
                         this.nlog_image.Error("publish error,please check publish log");
                         return;
                     }
 
-
+                    Notice("Success", "Push Image Success");
                     LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "publish target  ==> ");
                     publisEvent2.Properties["ShowLink"] = "file://" + publishPath.Replace("\\", "\\\\");
                     publisEvent2.LoggerName = "rich_docker_image_log";
@@ -9531,6 +9532,7 @@ namespace AntDeployWinform.Winform
                 }
                 catch (Exception ex1)
                 {
+                    Notice("Error", "Push Image Error");
                     this.nlog_image.Error(ex1);
                 }
                 finally
