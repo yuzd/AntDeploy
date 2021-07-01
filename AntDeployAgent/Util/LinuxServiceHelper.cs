@@ -59,38 +59,53 @@ namespace AntDeployAgentWindows.Util
                             newLines.Add("notify", new List<string> { notify? "Type=notify":  "" });
                         }
                     }
-                    else if (line.StartsWith("Type="))
+                    else if (line.StartsWith("Type=")&&line.Length>5)
                     {
-                        var typeValue = line.Substring(5, line.Length - 5);//原来有配置值 本次运行也没要求notify 就用原本的
-                        if (!string.IsNullOrEmpty(typeValue) && newLines.ContainsKey("notify"))
+                        try
                         {
-                            var typeA = newLines["notify"].First();
-                            if (string.IsNullOrEmpty(typeA) && typeValue != "notify")
+                            var typeValue = line.Substring(5, line.Length - 5);//原来有配置值 本次运行也没要求notify 就用原本的
+                            if (!string.IsNullOrEmpty(typeValue) && newLines.ContainsKey("notify"))
                             {
-                                //那就用原来的
-                                newLines["notify"] = new List<string> {"Type=" + typeValue};
+                                var typeA = newLines["notify"].First();
+                                if (string.IsNullOrEmpty(typeA) && typeValue != "notify")
+                                {
+                                    //那就用原来的
+                                    newLines["notify"] = new List<string> { "Type=" + typeValue };
+                                }
                             }
                         }
+                        catch (Exception e)
+                        {
+                            logger?.Invoke("【systemctl】parse Type err:" + e.Message + "->" + line);
+                        }
+                        
                     }
-                    else if (line.StartsWith("Environment="))
+                    else if (line.StartsWith("Environment=") && line.Length>12)
                     {
-                        var envValue = line.Substring(12,line.Length-12);
-                        if (string.IsNullOrEmpty(envValue))
+                        try
                         {
-                            newLines.Add(index + "", new List<string> { line });
-                            continue;
-                        }
+                            var envValue = line.Substring(12, line.Length - 12);
+                            if (string.IsNullOrEmpty(envValue))
+                            {
+                                newLines.Add(index + "", new List<string> { line });
+                                continue;
+                            }
 
-                        var newValue = "Environment=" + envValue;
-                        if (!newLines.TryGetValue("env",out var envList))
-                        {
-                            newLines.Add("env",new List<string> { newValue });
-                            continue;
-                        }
+                            var newValue = "Environment=" + envValue;
+                            if (!newLines.TryGetValue("env", out var envList))
+                            {
+                                newLines.Add("env", new List<string> { newValue });
+                                continue;
+                            }
 
-                        if (!envList.Contains(newValue))
+                            if (!envList.Contains(newValue))
+                            {
+                                envList.Add(newValue);
+                            }
+                        }
+                        catch (Exception e)
                         {
-                            envList.Add(newValue);
+                            logger?.Invoke("【systemctl】parse Environment err:" + e.Message + "->" + line);
                         }
                     }
                     else
@@ -125,6 +140,7 @@ namespace AntDeployAgentWindows.Util
                     var dic = new Dictionary<string, string>();
                     foreach (var old in envold)
                     {
+                        if (string.IsNullOrEmpty(old) || old.Length < 12) continue;
                         var envValue = old.Substring(12, old.Length - 12);
                         var arr = envValue.Split('=');
                         if (arr.Length < 2)
@@ -302,7 +318,7 @@ namespace AntDeployAgentWindows.Util
                     {
                         if (string.IsNullOrEmpty(line)) continue;
                         logger?.Invoke($"【systemctl】 {line}");
-                        if (line.StartsWith("WorkingDirectory"))
+                        if ( line.StartsWith("WorkingDirectory"))
                         {
                             var folderArr = line.Split('=');
                             if (folderArr.Length != 2)
