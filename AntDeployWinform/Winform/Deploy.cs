@@ -4534,13 +4534,14 @@ namespace AntDeployWinform.Winform
                     return;
                 }
 
-
-                //检查一下 如果是netcore的话 不允许runtime部署
-                if (!string.IsNullOrEmpty(PluginConfig.NetCorePublishMode) &&
-                    PluginConfig.NetCorePublishMode.Contains("runtime"))
+                //检查一下 如果是netcore的话 确认是否一定要runtime部署
+                if (!string.IsNullOrEmpty(PluginConfig.NetCorePublishMode) && PluginConfig.NetCorePublishMode.Contains("runtime"))
                 {
-                    MessageBoxEx.Show(this,Strings.NetcoreProjectPublishModeError);
-                    return;
+                    var result = MessageBoxEx.Show(this, Strings.NetcoreProjectPublishModeConfirm, Strings.ConfirmContinue,MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                    if (result == DialogResult.Cancel)
+                    {
+                        return;
+                    }
                 }
             }
 
