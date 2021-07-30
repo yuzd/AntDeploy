@@ -47,8 +47,8 @@ namespace AntDeployWinform {
         }
         
         /// <summary>
-        ///   重写当前线程的 CurrentUICulture 属性
-        ///   重写当前线程的 CurrentUICulture 属性。
+        ///   重写当前线程的 CurrentUICulture 属性，对
+        ///   使用此强类型资源类的所有资源查找执行重写。
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
         public static global::System.Globalization.CultureInfo Culture {
@@ -57,6 +57,15 @@ namespace AntDeployWinform {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Confirm 的本地化字符串。
+        /// </summary>
+        public static string ConfirmContinue {
+            get {
+                return ResourceManager.GetString("ConfirmContinue", resourceCulture);
             }
         }
         
@@ -129,6 +138,15 @@ namespace AntDeployWinform {
         public static string GetNetCoreSdkVersionError {
             get {
                 return ResourceManager.GetString("GetNetCoreSdkVersionError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 netcore project usually can&apos;t use [FDD(runtime)] mode, Do you want to continue? 的本地化字符串。
+        /// </summary>
+        public static string NetcoreProjectPublishModeConfirm {
+            get {
+                return ResourceManager.GetString("NetcoreProjectPublishModeConfirm", resourceCulture);
             }
         }
         

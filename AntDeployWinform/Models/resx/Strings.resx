@@ -180,4 +180,10 @@
   <data name="WebSiteNameRequired" xml:space="preserve">
     <value>please input web site name!</value>
   </data>
+  <data name="NetcoreProjectPublishModeConfirm" xml:space="preserve">
+    <value>netcore project usually can't use [FDD(runtime)] mode, Do you want to continue?</value>
+  </data>
+  <data name="ConfirmContinue" xml:space="preserve">
+    <value>Confirm</value>
+  </data>
 </root>
