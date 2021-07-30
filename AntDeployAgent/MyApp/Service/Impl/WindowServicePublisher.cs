@@ -6,10 +6,13 @@ using AntDeployAgentWindows.WebApiCore;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
+using AntDeployAgent.Util;
 
 namespace AntDeployAgentWindows.MyApp.Service.Impl
 {
@@ -28,6 +31,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
         private string _dateTimeFolderName;
         private bool _isIncrement;//是否增量
         private string _physicalPath;//指定的创建的时候用的服务器路径
+        private string _nssmOutput;//执行 nssm 命令的标准输出
         public override string ProviderName => "windowService";
         public override string ProjectName => _serviceName;
         public override string ProjectPublishFolder => _projectPublishFolder;
@@ -166,6 +170,21 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 {
                     return $"can not find executable path of service:{_serviceName}";
                 }
+
+                //处理使用 nssm 安装的 Windows 服务程序
+                if (projectLocation.EndsWith("nssm.exe",true,CultureInfo.CurrentCulture))
+                {
+                    Log("service is installed by NSSM process.");
+
+                    ProcessHepler.RunExternalExe(projectLocation, $"get {_serviceName} Application", output =>
+                    {
+                        _nssmOutput += Regex.Replace(output,@"\0", "");
+                    });
+
+                    projectLocation = _nssmOutput;
+                }
+
+                Log($"project location:{projectLocation}");
 
                 try
                 {

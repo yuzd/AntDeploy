@@ -180,4 +180,10 @@
   <data name="WebSiteNameRequired" xml:space="preserve">
     <value>请输入网站名称!</value>
   </data>
+  <data name="NetcoreProjectPublishModeConfirm" xml:space="preserve">
+    <value>通常Windows服务项目在netcore环境下不能使用runtime类型发布，确定要继续吗？</value>
+  </data>
+  <data name="ConfirmContinue" xml:space="preserve">
+    <value>是否继续</value>
+  </data>  
 </root>
