@@ -5123,6 +5123,8 @@ namespace AntDeployWinform.Winform
                         httpRequestClient.SetFieldValue("startType", ServiceStartType);
                         httpRequestClient.SetFieldValue("desc", ServiceDescription);
                         httpRequestClient.SetFieldValue("Token", server.Token);
+                        httpRequestClient.SetFieldValue("useNssm", _CreateParam!=null?_CreateParam.useNssm:"");
+                        httpRequestClient.SetFieldValue("param", _CreateParam!=null?_CreateParam.Param:"");
                         httpRequestClient.SetFieldValue("backUpIgnore", (backUpIgnoreList != null && backUpIgnoreList.Any()) ? string.Join("@_@", backUpIgnoreList) : "");
                         httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream", zipBytes);
                         HttpLogger HttpLogger = new HttpLogger

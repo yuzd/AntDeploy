@@ -39,6 +39,8 @@ namespace AntDeployWinform.Models
         public string PhysicalPath { get; set; }
         public string Desc { get; set; }
         public string StartUp { get; set; }
+        public string Param { get; set; }
+        public string useNssm { get; set; }
     }
  
 

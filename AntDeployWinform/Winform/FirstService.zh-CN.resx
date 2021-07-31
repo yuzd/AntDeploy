@@ -122,10 +122,10 @@
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="txt_service_description.Location" type="System.Drawing.Point, System.Drawing">
-    <value>87, 45</value>
+    <value>85, 59</value>
   </data>
   <data name="label16.Location" type="System.Drawing.Point, System.Drawing">
-    <value>18, 48</value>
+    <value>16, 62</value>
   </data>
   <data name="label16.Size" type="System.Drawing.Size, System.Drawing">
     <value>59, 12</value>
@@ -142,6 +142,9 @@
   <data name="label2.Text" xml:space="preserve">
     <value>注意:一旦该服务创建后您想修改以上的参数需要自己在服务器上删除该服务进行重新创建</value>
   </data>
+  <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>16, 93</value>
+  </data>
   <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
     <value>59, 12</value>
   </data>
@@ -149,7 +152,37 @@
     <value>启动类型:</value>
   </data>
   <data name="comboBox_service_start_type.Location" type="System.Drawing.Point, System.Drawing">
-    <value>87, 73</value>
+    <value>85, 87</value>
+  </data>
+  <data name="txt_service_param.Location" type="System.Drawing.Point, System.Drawing">
+    <value>85, 117</value>
+  </data>
+  <data name="label4.Location" type="System.Drawing.Point, System.Drawing">
+    <value>29, 117</value>
+  </data>
+  <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
+    <value>35, 12</value>
+  </data>
+  <data name="label4.Text" xml:space="preserve">
+    <value>参数:</value>
+  </data>
+  <data name="box_windows_service_nssm.Location" type="System.Drawing.Point, System.Drawing">
+    <value>18, 40</value>
+  </data>
+  <data name="box_windows_service_nssm.Size" type="System.Drawing.Size, System.Drawing">
+    <value>120, 16</value>
+  </data>
+  <data name="box_windows_service_nssm.Text" xml:space="preserve">
+    <value>采用nssm安装服务</value>
+  </data>
+  <data name="label5.Location" type="System.Drawing.Point, System.Drawing">
+    <value>144, 40</value>
+  </data>
+  <data name="label5.Size" type="System.Drawing.Size, System.Drawing">
+    <value>119, 12</value>
+  </data>
+  <data name="label5.Text" xml:space="preserve">
+    <value>什么场景我该用nssm?</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>服务不存在需要创建</value>

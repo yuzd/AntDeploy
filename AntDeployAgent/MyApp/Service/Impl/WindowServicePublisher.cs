@@ -20,6 +20,8 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
     {
         private string _sdkTypeName;
         private bool _isProjectInstallService;
+        private bool _useNssm;
+        private string _param;
         private bool _isNoStopWebSite;
         private string _serviceName;
         private string _serviceExecName;
@@ -31,7 +33,6 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
         private string _dateTimeFolderName;
         private bool _isIncrement;//是否增量
         private string _physicalPath;//指定的创建的时候用的服务器路径
-        private string _nssmOutput;//执行 nssm 命令的标准输出
         public override string ProviderName => "windowService";
         public override string ProjectName => _serviceName;
         public override string ProjectPublishFolder => _projectPublishFolder;
@@ -144,7 +145,18 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     
                     try
                     {
-                        ServiceInstaller.InstallAndStart(_serviceName, _serviceName, execFullPath,_serviceStartType,_serviceDescription);
+                        if (_useNssm)
+                        {
+                            var rt =ServiceInstaller.NssmInstallAndStart(_serviceName, _param, execFullPath, _serviceStartType, _serviceDescription, Log);
+                            if (!rt)
+                            {
+                                return "use nssm install windows service fail";
+                            }
+                        }
+                        else
+                        {
+                            ServiceInstaller.InstallAndStart(_serviceName, _serviceName, execFullPath + (string.IsNullOrEmpty(_param)?"":" " + _param), _serviceStartType, _serviceDescription);
+                        }
                         Log($"install windows service success");
                         Log($"start windows service success");
                         return string.Empty;
@@ -176,11 +188,16 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 {
                     Log("service is installed by NSSM process.");
 
-                    ProcessHepler.RunExternalExe(projectLocation, $"get {_serviceName} Application", output =>
+                    var _nssmOutput = "";
+                    var rt = ProcessHepler.RunExternalExe(projectLocation, $"get {_serviceName} Application", output =>
                     {
                         _nssmOutput += Regex.Replace(output,@"\0", "");
                     });
 
+                    if (!rt || string.IsNullOrEmpty(_nssmOutput.Trim()))
+                    {
+                        return $"can not find real executable path of nssm service:{_serviceName}";
+                    }
                     projectLocation = _nssmOutput;
                 }
 
@@ -322,7 +339,17 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
             _serviceExecName = serviceExecItem.TextValue.Trim();
 
+            var isUseNssm = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("useNssm"));
+            if (isUseNssm != null && !string.IsNullOrEmpty(isUseNssm.TextValue))
+            {
+                _useNssm = isUseNssm.TextValue.Equals("yes");
+            }
 
+            var serviceParam = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("param"));
+            if (serviceParam != null && !string.IsNullOrEmpty(serviceParam.TextValue))
+            {
+                _param = serviceParam.TextValue;
+            }
 
             var isProjectInstallServiceItem = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("isProjectInstallService"));
             if (isProjectInstallServiceItem != null && !string.IsNullOrEmpty(isProjectInstallServiceItem.TextValue))

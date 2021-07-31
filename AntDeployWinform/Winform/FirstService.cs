@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -36,9 +37,17 @@ namespace AntDeployWinform.Winform
             {
                 Desc = this.txt_service_description.Text.Trim(),
                 StartUp = this.comboBox_service_start_type.SelectedItem as string,
-                PhysicalPath = this.txt_windows_service_PhysicalPath.Text.Trim()
+                PhysicalPath = this.txt_windows_service_PhysicalPath.Text.Trim(),
+                Param = this.txt_service_param.Text.Trim(),
+                useNssm = this.box_windows_service_nssm.Checked?"yes":"no"
             };
             this.DialogResult = DialogResult.OK;
+        }
+
+        private void label5_Click(object sender, EventArgs e)
+        {
+            ProcessStartInfo sInfo = new ProcessStartInfo("https://github.com/yuzd/AntDeployAgent/issues/43");
+            Process.Start(sInfo);
         }
     }
 }
