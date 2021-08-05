@@ -193,6 +193,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
                 Thread.Sleep(5000);
                 if (retryTimes > 3)
                 {
+                    IISHelper.KillSiteProcess(args.SiteName);
                     killPool();
                     logger("Wait 5Senconds to Try deploy again");
                     Thread.Sleep(5000);
