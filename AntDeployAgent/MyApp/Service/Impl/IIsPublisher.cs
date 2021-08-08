@@ -1,20 +1,19 @@
-﻿using AntDeployAgentWindows.Model;
-using AntDeployAgentWindows.Operation;
-using AntDeployAgentWindows.Operation.OperationTypes;
-using AntDeployAgentWindows.Util;
-using AntDeployAgentWindows.WebApiCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
+using AntDeployAgentWindows.Model;
+using AntDeployAgentWindows.Operation;
+using AntDeployAgentWindows.Operation.OperationTypes;
+using AntDeployAgentWindows.Util;
+using AntDeployAgentWindows.WebApiCore;
 
 namespace AntDeployAgentWindows.MyApp.Service.Impl
 {
     public class IIsPublisher : PublishProviderBasicAPI
     {
-
         private string _webSiteName;
         private string _sdkTypeName;
         private string _projectName;
@@ -24,26 +23,27 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
         private List<string> _backUpIgnoreList = new List<string>();
 
         private string _projectPublishFolder;
-        private bool _isIncrement;//是否增量
-        private bool _isNoStopWebSite;//是否需要停止website
-        private string _physicalPath;//指定的创建的时候用的服务器路径
-        private bool _useOfflineHtm = false;//指定用offline.htm
-        private bool _useTempPhysicalPath = false;//是否采用新的模式
-        private bool _poolAlwaysRunning = false;//新建site的时候支持让Pool一直running的配置
+        private bool _isIncrement; //是否增量
+        private bool _isNoStopWebSite; //是否需要停止website
+        private string _physicalPath; //指定的创建的时候用的服务器路径
+        private bool _useOfflineHtm = false; //指定用offline.htm
+        private bool _useTempPhysicalPath = false; //是否采用新的模式
+        private bool _poolAlwaysRunning = false; //新建site的时候支持让Pool一直running的配置
 
         public override string ProviderName => "iis";
         public override string ProjectName => _projectName;
         public override string ProjectPublishFolder => _projectPublishFolder;
+
         public override string DeployExcutor(FormHandler.FormItem fileItem)
         {
             var projectPath = Path.Combine(Setting.PublishIIsPathFolder, _projectName);
-            _projectPublishFolder = Path.Combine(projectPath, !string.IsNullOrEmpty(_dateTimeFolderName) ? _dateTimeFolderName : DateTime.Now.ToString("yyyyMMddHHmmss"));
+            _projectPublishFolder = Path.Combine(projectPath,
+                !string.IsNullOrEmpty(_dateTimeFolderName) ? _dateTimeFolderName : DateTime.Now.ToString("yyyyMMddHHmmss"));
             EnsureProjectFolder(projectPath);
             EnsureProjectFolder(_projectPublishFolder);
-
+            var deployFolder = string.Empty;
             try
             {
-
                 var isNetcore = _sdkTypeName.ToLower().Equals("netcore");
                 var filePath = Path.Combine(_projectPublishFolder, fileItem.FileName);
                 using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
@@ -57,7 +57,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     return "publish file save fail";
                 }
 #if NETCORE
-                Log("netcore agent version ==>" + AntDeployAgentWindows.Version.VERSION);
+                Log("netcore agent version ==>" + Version.VERSION);
 #else
                 Log("netframework agent version ==>" + AntDeployAgentWindows.Version.VERSION);
 #endif
@@ -77,11 +77,10 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
                 Log("unzip success ==>" + _projectPublishFolder);
 
-                var deployFolder = Path.Combine(_projectPublishFolder, "publish");
+                deployFolder = Path.Combine(_projectPublishFolder, "publish");
 
                 if (!Directory.Exists(deployFolder))
                 {
-
                     if (Directory.Exists(_projectPublishFolder))
                     {
                         var temp = new DirectoryInfo(_projectPublishFolder);
@@ -111,7 +110,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 var isSiteExistResult = IISHelper.IsSiteExist(level1, level2);
                 if (!string.IsNullOrEmpty(isSiteExistResult.Item3))
                 {
-                     return $"【Error】 : {isSiteExistResult.Item3}";
+                    return $"【Error】 : {isSiteExistResult.Item3}";
                 }
 
                 var tempPhysicalPath = string.Empty;
@@ -119,10 +118,10 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 {
                     tempPhysicalPath = Path.Combine(_projectPublishFolder, "_deploy_");
                 }
-               
+
                 var iisVersion = IISHelper.GetIISVersion();
-                if(iisVersion>0) Log($"IIS_Version : {iisVersion} ");
-                if (!isSiteExistResult.Item1)//一级都不存在
+                if (iisVersion > 0) Log($"IIS_Version : {iisVersion} ");
+                if (!isSiteExistResult.Item1) //一级都不存在
                 {
                     if (iisVersion <= 6)
                     {
@@ -145,7 +144,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     Log($"website : {_webSiteName} not found,start to create!");
 
                     //创建发布目录
-                    var firstDeployFolder = string.IsNullOrEmpty(_physicalPath)? Path.Combine(projectPath, "deploy"):_physicalPath;
+                    var firstDeployFolder = string.IsNullOrEmpty(_physicalPath) ? Path.Combine(projectPath, "deploy") : _physicalPath;
                     EnsureProjectFolder(firstDeployFolder);
                     if (Directory.Exists(firstDeployFolder))
                     {
@@ -157,7 +156,8 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     }
 
 
-                    var rt = IISHelper.InstallSite(level1, firstDeployFolder, _port, (string.IsNullOrEmpty(_poolName) ? _projectName : _poolName), isNetcore, _poolAlwaysRunning);
+                    var rt = IISHelper.InstallSite(level1, firstDeployFolder, _port, (string.IsNullOrEmpty(_poolName) ? _projectName : _poolName), isNetcore,
+                        _poolAlwaysRunning);
                     if (string.IsNullOrEmpty(rt))
                     {
                         Log($"create website : {level1} success ");
@@ -174,7 +174,8 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                         var level2Folder = Path.Combine(firstDeployFolder, level2);
                         EnsureProjectFolder(level2Folder);
 
-                        var rt2 = IISHelper.InstallVirtualSite(level1, level2, level2Folder, (string.IsNullOrEmpty(_poolName) ? _projectName : _poolName), isNetcore, _poolAlwaysRunning);
+                        var rt2 = IISHelper.InstallVirtualSite(level1, level2, level2Folder, (string.IsNullOrEmpty(_poolName) ? _projectName : _poolName),
+                            isNetcore, _poolAlwaysRunning);
                         if (string.IsNullOrEmpty(rt2))
                         {
                             Log($"create virtualSite :{level2} Of Website : {level1} success ");
@@ -191,6 +192,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                             EnsureProjectFolder(tempPhysicalPath);
                             CopyHelper.ProcessXcopy(deployFolder, tempPhysicalPath, Log);
                         }
+
                         Log($"copy files success from [{deployFolder}] to [{level2Folder}]");
                         return String.Empty;
                     }
@@ -204,6 +206,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                             EnsureProjectFolder(tempPhysicalPath);
                             CopyHelper.ProcessXcopy(deployFolder, tempPhysicalPath, Log);
                         }
+
                         Log($"copy files success from [{deployFolder}] to [{firstDeployFolder}]");
                         return String.Empty;
                     }
@@ -219,14 +222,15 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
                     Log($"website : {_webSiteName} not found,start to create!");
                     //创建发布目录
-                    var firstDeployFolder = string.IsNullOrEmpty(_physicalPath)? Path.Combine(projectPath, "deploy"):_physicalPath;
+                    var firstDeployFolder = string.IsNullOrEmpty(_physicalPath) ? Path.Combine(projectPath, "deploy") : _physicalPath;
                     EnsureProjectFolder(firstDeployFolder);
                     Log($"deploy folder create success : {firstDeployFolder} ");
 
                     var level2Folder = Path.Combine(firstDeployFolder, level2);
                     EnsureProjectFolder(level2Folder);
 
-                    var rt2 = IISHelper.InstallVirtualSite(level1, level2, level2Folder, (string.IsNullOrEmpty(_poolName) ? _projectName : _poolName), isNetcore, _poolAlwaysRunning);
+                    var rt2 = IISHelper.InstallVirtualSite(level1, level2, level2Folder, (string.IsNullOrEmpty(_poolName) ? _projectName : _poolName),
+                        isNetcore, _poolAlwaysRunning);
                     if (string.IsNullOrEmpty(rt2))
                     {
                         Log($"create virtualSite :{level2} Of Website : {level1} success ");
@@ -247,7 +251,6 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
                     Log($"copy files success from [{deployFolder}] to [{level2Folder}]");
                     return String.Empty;
-
                 }
 
                 //下面的逻辑就是网站已经存在了 所以就有冲突的风险
@@ -310,6 +313,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     args.NoStop = true;
                     args.NoStart = true;
                 }
+
                 var ops = new OperationsIIS(args, Log);
 
                 try
@@ -330,9 +334,10 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                                 fullName = directoryInfo.Parent.FullName;
                             new Task(() =>
                             {
-                                CopyHelper.DirectoryCopy(projectLocation.Item1, incrementFolder, true, fullName, directoryInfo.Name, this._backUpIgnoreList);
+                                CopyHelper.DirectoryCopy(projectLocation.Item1, incrementFolder, true, fullName, directoryInfo.Name,
+                                    this._backUpIgnoreList);
                             }).Start();
-                           
+
                             Log("Increment deploy backup success...");
                         }
                     }
@@ -356,18 +361,31 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                         return $"publish to iis err:{ex.Message},rollback fail:{ex2.Message}";
                     }
                 }
+
                 return string.Empty;
             }
             catch (Exception ex)
             {
                 return ex.Message;
             }
+            finally
+            {
+                if (!string.IsNullOrEmpty(deployFolder) && Directory.Exists(deployFolder))
+                {
+                    new Task(() =>
+                    {
+                        try
+                        {
+                            Directory.Delete(deployFolder, true);
+                        }
+                        catch (Exception)
+                        {
+                            //ignore
+                        }
+                    }).Start();
+                }
+            }
         }
-
-
-
-
-
 
 
         public override string CheckData(FormHandler formHandler)
@@ -451,7 +469,8 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
             if (isNoStopWebSite != null && !string.IsNullOrEmpty(isNoStopWebSite.TextValue) && isNoStopWebSite.TextValue.ToLower().Equals("true"))
             {
                 _isNoStopWebSite = true;
-            }   
+            }
+
             var physicalPath = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("physicalPath"));
             if (physicalPath != null && !string.IsNullOrEmpty(physicalPath.TextValue))
             {
@@ -467,8 +486,5 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
             _projectName = IISHelper.GetCorrectFolderName(_webSiteName);
             return string.Empty;
         }
-
-
-
     }
 }
