@@ -13,12 +13,13 @@ namespace AntDeployAgentWindows.Model
         //private static readonly System.Threading.Timer mDetectionTimer;
         private static readonly int _clearOldPublishFolderOverDays = 10;
         private static readonly int _oldPulishLimit = 10;
+        public static readonly int BackUpLimit = 10;
         private static readonly List<string> MacWhiteList = new List<string>();
         /// <summary>
         /// 是否开启备份
         /// </summary>
         /// <returns></returns>
-        public static bool NeedBackUp = true;
+        public static readonly bool NeedBackUp = true;
         static Setting()
         {
             //#if DEBUG
@@ -50,6 +51,12 @@ namespace AntDeployAgentWindows.Model
             {
                 NeedBackUp = false;
             }
+
+            var backuplimit = System.Configuration.ConfigurationManager.AppSettings["BackUpLimit"];
+            if (!string.IsNullOrEmpty(backuplimit))
+            {
+                int.TryParse(backuplimit, out BackUpLimit);
+            }
         }
 
 
@@ -66,6 +73,10 @@ namespace AntDeployAgentWindows.Model
 
         public static string PublishWindowServicePathFolder = "";
         public static string BackUpWindowServicePathFolder = "";
+
+
+        public static string PublishDockerPathFolder = "";
+        public static string BackUpDockerPathFolder = "";
 
         public static void InitWebRoot(string rootPath, bool useCustomer = false)
         {
@@ -84,6 +95,7 @@ namespace AntDeployAgentWindows.Model
                 Directory.CreateDirectory(PublishPathFolder);
             }
 
+
             if (!System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 //linux环境下
@@ -97,8 +109,22 @@ namespace AntDeployAgentWindows.Model
                 {
                     Directory.CreateDirectory(BackUpLinuxPathFolder);
                 }
+
+
+                PublishDockerPathFolder = Path.Combine(PublishPathFolder, "docker");
+                if (!Directory.Exists(PublishDockerPathFolder))
+                {
+                    Directory.CreateDirectory(PublishDockerPathFolder);
+                }
+                BackUpDockerPathFolder = Path.Combine(PublishPathFolder, "docker_backup");
+                if (!Directory.Exists(BackUpDockerPathFolder))
+                {
+                    Directory.CreateDirectory(BackUpDockerPathFolder);
+                }
+
                 return;
             }
+
 
             PublishIIsPathFolder = Path.Combine(PublishPathFolder, "iis");
 
@@ -196,7 +222,7 @@ namespace AntDeployAgentWindows.Model
                 foreach (var applicationFolder in applicationFolders)
                 {
                     var subFolders = Directory.GetDirectories(applicationFolder);
-                    if (subFolders.Length < _oldPulishLimit) continue;//还没超过最低的保留记录数
+                    if (subFolders.Length < (path.EndsWith("_backup")? BackUpLimit: _oldPulishLimit)) continue;//还没超过最低的保留记录数
                     //找到current.txt文件 记录着当前正在使用的版本
                     var currentText = Path.Combine(applicationFolder, "current.txt");
                     var currentVersion = "";

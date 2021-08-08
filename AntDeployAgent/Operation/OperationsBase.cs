@@ -1,6 +1,8 @@
 ﻿using AntDeployAgentWindows.Util;
 using System;
 using System.IO;
+using System.IO.Compression;
+using System.Threading.Tasks;
 
 namespace AntDeployAgentWindows.Operation
 {
@@ -49,13 +51,23 @@ namespace AntDeployAgentWindows.Operation
         {
             logger("Start to Backup");
             string destDir = Path.Combine(this.args.BackupFolder, this.args.AppName);
-            destDir = Path.Combine(destDir, DateTime.Now.ToString("Backup_yyyyMMdd_HHmmss"));
+            string dstName = DateTime.Now.ToString("Backup_yyyyMMdd_HHmmss");
+            destDir = Path.Combine(destDir, dstName);
             this.args.RestorePath = destDir;
             DirectoryInfo directoryInfo = new DirectoryInfo(this.args.AppFolder);
             string fullName = directoryInfo.FullName;
             if (directoryInfo.Parent != null)
                 fullName = directoryInfo.Parent.FullName;
             CopyHelper.DirectoryCopy(this.args.AppFolder, destDir, true, fullName,directoryInfo.Name, this.args.BackUpIgnoreList);
+            //打包成zip
+            var zipFile = Path.Combine(this.args.BackupFolder, this.args.AppName, dstName + ".zip");
+            ZipFile.CreateFromDirectory(destDir, zipFile);
+            //清除原来的目录
+            Directory.Delete(destDir, true);
+            //这里保持原来的目录结构 为了清除逻辑
+            Directory.CreateDirectory(destDir);
+            File.Move(zipFile,Path.Combine(destDir, dstName + ".zip"));
+
             logger("Success Backup to folder:" + destDir);
         }
 
