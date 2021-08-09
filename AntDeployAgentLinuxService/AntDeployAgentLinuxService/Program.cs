@@ -22,7 +22,7 @@ namespace AntDeployAgentLinuxService
             TinyFoxService.WebRoot = Path.Combine(pathToContentRoot,"wwwroot");
             ConfigurationManager.Initialize(pathToExe);
 #endif
-            Console.WriteLine("Current Version：" + AntDeployAgentWindows.Version.VERSION);
+            Console.WriteLine("Current Version：" + AntDeployAgent.Version.VERSION);
             CreateHostBuilder(args).Build().Run();
         }
 

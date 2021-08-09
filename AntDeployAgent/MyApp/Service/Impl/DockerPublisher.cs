@@ -1,14 +1,7 @@
-﻿using AntDeployAgentWindows.WebApiCore;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
+﻿using AntDeployAgentWindows.MyApp.Service;
+using AntDeployAgentWindows.WebApiCore;
 using System.Runtime.InteropServices;
-using System.Threading;
-
-namespace AntDeployAgentWindows.MyApp.Service.Impl
+namespace AntDeployAgent.MyApp.Service.Impl
 {
     public class DockerPublisher : PublishProviderBasicAPI
     {

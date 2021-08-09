@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using AntDeployAgent.Model;
 using AntDeployAgent.Util;
+using Version = AntDeployAgent.Version;
 
 namespace AntDeployAgentWindows.MyApp
 {

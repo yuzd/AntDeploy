@@ -2,7 +2,9 @@
 using AntDeployAgentWindows.WebSocketApp;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -23,7 +25,7 @@ namespace AntDeployAgentWindows.MyApp.Service
         public string LoggerKey { get; set; }
         public WebSocketApp.WebSocket WebSocket { get; set; }
         public abstract string ProjectName { get; }
-        public abstract string ProjectPublishFolder { get;}
+        public abstract string ProjectPublishFolder { get; }
         public abstract string DeployExcutor(FormHandler.FormItem fileItem);
         public abstract string CheckData(FormHandler formHandler);
         private FormHandler _formHandler;
@@ -78,19 +80,6 @@ namespace AntDeployAgentWindows.MyApp.Service
 
                 if (!string.IsNullOrEmpty(re))
                 {
-                    //发布出错了 删除此次版本号
-                    //new Task(() =>
-                    //{
-                    //    try
-                    //    {
-                    //        Directory.Delete(ProjectPublishFolder, true);
-                    //    }
-                    //    catch (Exception)
-                    //    {
-                    //        //ignore
-                    //    }
-                    //}).Start();
-                   
                     return re;
                 }
 
@@ -105,21 +94,21 @@ namespace AntDeployAgentWindows.MyApp.Service
                 {
                     var path = Path.Combine(ProjectPublishFolder, "antdeploy_args.json");
                     var content = JsonConvert.SerializeObject(formArgs);
-                    File.WriteAllText(path,content,Encoding.UTF8);
+                    File.WriteAllText(path, content, Encoding.UTF8);
                 }
 
                 SaveCurrentVersion(ProjectPublishFolder);
             }
             catch (Exception)
             {
-               //ignore
+                //ignore
             }
 
             var projectRootPath = new DirectoryInfo(ProjectPublishFolder).Parent;
             if (projectRootPath == null || !projectRootPath.Exists) return re;
             //每次发布完成后清理老的发布历史记录 只清理自己项目的 
             //防止别的项目正在回滚到某个版本，你这边发现这个版本已经过时了就删除了
-            Setting.ClearOldFolders(ProviderName.Equals("iis")||ProjectName.Equals("linux"), projectRootPath.Name, Log);
+            Setting.ClearOldFolders(ProviderName.Equals("iis") || ProjectName.Equals("linux"), projectRootPath.Name, Log);
             return re;
         }
 
@@ -161,6 +150,57 @@ namespace AntDeployAgentWindows.MyApp.Service
             }
 
             return CheckData(formHandler);
+        }
+
+        protected string findUploadFolder(string _projectPublishFolder,bool isPublish = false)
+        {
+
+            var deployFolder = Path.Combine(_projectPublishFolder, "publish");
+
+            if (!Directory.Exists(_projectPublishFolder)) return deployFolder;
+
+            if (Directory.Exists(deployFolder)) return deployFolder;
+
+            var temp = new DirectoryInfo(_projectPublishFolder);
+            var tempFolderList = temp.GetDirectories();
+            if (tempFolderList.Length == 1)
+            {
+                deployFolder = tempFolderList.First().FullName;
+            }
+            else if (!isPublish && tempFolderList.Length == 0)
+            {
+                //回滚 操作时 ：可能是被删除了 解压出来
+                var zipFile = Path.Combine(_projectPublishFolder, "publish.zip");
+                if (!File.Exists(zipFile)) return deployFolder;
+
+                //解压
+                ZipFile.ExtractToDirectory(zipFile, _projectPublishFolder);
+                temp = new DirectoryInfo(_projectPublishFolder);
+                tempFolderList = temp.GetDirectories();
+                if (tempFolderList.Length == 1)
+                {
+                    deployFolder = tempFolderList.First().FullName;
+                }
+            }
+
+            return deployFolder;
+        }
+
+        protected void cleanRollbackTemp()
+        {
+            if (string.IsNullOrEmpty(ProjectPublishFolder))
+            {
+                return;
+            }
+            var temp = new DirectoryInfo(ProjectPublishFolder);
+            var tempFolderList = temp.GetDirectories();
+            if (tempFolderList.Length == 1)
+            {
+                var deployFolder = tempFolderList.First();
+                if (deployFolder.Name == "increment" || deployFolder.Name == "_deploy_") return;
+                
+                Directory.Delete(deployFolder.FullName, true);
+            }
         }
 
         protected void EnsureProjectFolder(string path)

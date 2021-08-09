@@ -29,13 +29,13 @@ namespace AntDeployAgentWindows.Model
             //#endif
 
             var oldPulishLimit = System.Configuration.ConfigurationManager.AppSettings["OldPulishLimit"];
-            if (int.TryParse(oldPulishLimit, out int value1) && value1 > 0)
+            if (int.TryParse(oldPulishLimit, out int value1))
             {
-                _oldPulishLimit = value1;
+                _oldPulishLimit = value1 < 1 ? 1 : value1;
             }
 
             var clearOldPublishFolderOverDaysStr = System.Configuration.ConfigurationManager.AppSettings["ClearOldPublishFolderOverDays"];
-            if (int.TryParse(clearOldPublishFolderOverDaysStr, out int value) && value > 0)
+            if (int.TryParse(clearOldPublishFolderOverDaysStr, out int value))
             {
                 _clearOldPublishFolderOverDays = value;
             }
@@ -56,6 +56,10 @@ namespace AntDeployAgentWindows.Model
             if (!string.IsNullOrEmpty(backuplimit))
             {
                 int.TryParse(backuplimit, out BackUpLimit);
+            }
+            else
+            {
+                BackUpLimit = _oldPulishLimit;
             }
         }
 
@@ -155,7 +159,7 @@ namespace AntDeployAgentWindows.Model
             }
         }
 
-        public static void ClearOldFolders(bool isIis,string projectFolderName,Action<string> logger = null)
+        public static void ClearOldFolders(bool isIis, string projectFolderName, Action<string> logger = null)
         {
             logger?.Invoke($"start check old published folder :{projectFolderName}");
             if (isIis)
@@ -216,13 +220,13 @@ namespace AntDeployAgentWindows.Model
 
                 if (!Directory.Exists(path)) return;
 
-                var applicationFolders = !string.IsNullOrEmpty(projectFolder) ? new List<string> { Path.Combine(path,projectFolder) }.ToArray() : Directory.GetDirectories(path);
+                var applicationFolders = !string.IsNullOrEmpty(projectFolder) ? new List<string> { Path.Combine(path, projectFolder) }.ToArray() : Directory.GetDirectories(path);
                 if (applicationFolders.Length < 1) return;
 
                 foreach (var applicationFolder in applicationFolders)
                 {
                     var subFolders = Directory.GetDirectories(applicationFolder);
-                    if (subFolders.Length < (path.EndsWith("_backup")? BackUpLimit: _oldPulishLimit)) continue;//还没超过最低的保留记录数
+                    if (subFolders.Length < (path.EndsWith("_backup") ? BackUpLimit : _oldPulishLimit)) continue;//还没超过最低的保留记录数
                     //找到current.txt文件 记录着当前正在使用的版本
                     var currentText = Path.Combine(applicationFolder, "current.txt");
                     var currentVersion = "";
@@ -259,10 +263,10 @@ namespace AntDeployAgentWindows.Model
                         .ToList();
 
                     var diff = subFolders.Length - targetList.Count;
-
-                    if (diff >= 0 && diff < _oldPulishLimit)
+                    var oldLimit = (path.EndsWith("_backup") ? BackUpLimit : _oldPulishLimit);
+                    if (diff >= 0 && diff < oldLimit)
                     {
-                        targetList = targetList.Skip(_oldPulishLimit - diff).ToList();
+                        targetList = targetList.Skip(oldLimit - diff).ToList();
                     }
 
                     foreach (var target in targetList)

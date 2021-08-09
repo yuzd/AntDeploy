@@ -1,10 +1,7 @@
-﻿using AntDeployAgentWindows.WebApiCore;
-using System;
-using System.IO;
-using System.Linq;
+﻿using AntDeployAgentWindows.MyApp.Service;
+using AntDeployAgentWindows.WebApiCore;
 using System.Runtime.InteropServices;
-
-namespace AntDeployAgentWindows.MyApp.Service.Impl
+namespace AntDeployAgent.MyApp.Service.Impl
 {
     public class DockerRollback : PublishProviderBasicAPI
     {

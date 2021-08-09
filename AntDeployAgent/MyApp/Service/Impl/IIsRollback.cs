@@ -1,13 +1,14 @@
-﻿using AntDeployAgentWindows.Model;
+﻿using System;
+using System.IO;
+using System.Linq;
+using AntDeployAgentWindows.Model;
+using AntDeployAgentWindows.MyApp.Service;
 using AntDeployAgentWindows.Operation;
 using AntDeployAgentWindows.Operation.OperationTypes;
 using AntDeployAgentWindows.Util;
 using AntDeployAgentWindows.WebApiCore;
-using System;
-using System.IO;
-using System.Linq;
-
-namespace AntDeployAgentWindows.MyApp.Service.Impl
+using System.Runtime.InteropServices;
+namespace AntDeployAgent.MyApp.Service.Impl
 {
     public class IIsRollback : PublishProviderBasicAPI
     {
@@ -42,26 +43,13 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 }
 
 #if NETCORE
-                Log("netcore agent version ==>" + AntDeployAgentWindows.Version.VERSION);
+                Log("netcore agent version ==>" + Version.VERSION);
 #else
-                Log("netframework agent version ==>" + AntDeployAgentWindows.Version.VERSION);
+                Log("netframework agent version ==>" + Version.VERSION);
 #endif
 
-                var deployFolder = Path.Combine(_projectPublishFolder, "publish");
+                var deployFolder = findUploadFolder(_projectPublishFolder);
 
-                if (!Directory.Exists(deployFolder))
-                {
-
-                    if (Directory.Exists(_projectPublishFolder))
-                    {
-                        var temp = new DirectoryInfo(_projectPublishFolder);
-                        var tempFolderList = temp.GetDirectories();
-                        if (tempFolderList.Length == 1)
-                        {
-                            deployFolder = tempFolderList.First().FullName;
-                        }
-                    }
-                }
 
                 var isUseTempPhysicalPath = false;
                 var ddeploy = Path.Combine(_projectPublishFolder, "_deploy_");
@@ -81,7 +69,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                         deployFolder = incrementFolder;
                     }
                 }
-               
+
 
 
                 if (!Directory.Exists(deployFolder))
@@ -97,21 +85,25 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 {
                     return $"website level limit is 2！";
                 }
+
                 var level1 = siteArr[0];
                 var level2 = siteArr.Length == 2 ? siteArr[1] : string.Empty;
                 var isSiteExistResult = IISHelper.IsSiteExist(level1, level2);
                 if (!string.IsNullOrEmpty(isSiteExistResult.Item3))
                 {
-                     return $"【Error】 : {isSiteExistResult.Item3}";
+                    return $"【Error】 : {isSiteExistResult.Item3}";
                 }
-                if (!isSiteExistResult.Item1)//一级都不存在
+
+                if (!isSiteExistResult.Item1) //一级都不存在
                 {
                     return $"website: ${level1} not found";
                 }
-                if (!isSiteExistResult.Item2)//一级都不存在
+
+                if (!isSiteExistResult.Item2) //一级都不存在
                 {
                     return $"website:${level2} not found in ${level1}";
                 }
+
                 var projectLocation = IISHelper.GetWebSiteLocationInIIS(level1, level2, Log);
                 if (projectLocation == null)
                 {
@@ -129,7 +121,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 }
 
                 Log("Start to rollback IIS:");
-                Log("SiteName ===>" +_webSiteName);
+                Log("SiteName ===>" + _webSiteName);
                 Log("SiteFolder ===> " + projectLocation.Item1);
                 Log("SiteApplicationPoolName ===> " + projectLocation.Item3);
 
@@ -144,8 +136,9 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     }
                     else
                     {
-                        Log("Change Site PhysicalPath Fail:" + (level1+"/"+level2));
+                        Log("Change Site PhysicalPath Fail:" + (level1 + "/" + level2));
                     }
+
                     return err;
                 }
 
@@ -161,7 +154,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     NoBackup = true
                 };
 
-               
+
                 var ops = new OperationsIIS(args, Log);
 
                 try
@@ -183,11 +176,16 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                         return $"Rollback to iis err:{ex.Message},fail:{ex2.Message}";
                     }
                 }
+
                 return string.Empty;
             }
             catch (Exception exx)
             {
                 return exx.Message;
+            }
+            finally
+            {
+                cleanRollbackTemp();
             }
         }
 

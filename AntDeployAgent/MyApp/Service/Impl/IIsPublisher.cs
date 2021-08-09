@@ -5,12 +5,13 @@ using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
 using AntDeployAgentWindows.Model;
+using AntDeployAgentWindows.MyApp.Service;
 using AntDeployAgentWindows.Operation;
 using AntDeployAgentWindows.Operation.OperationTypes;
 using AntDeployAgentWindows.Util;
 using AntDeployAgentWindows.WebApiCore;
-
-namespace AntDeployAgentWindows.MyApp.Service.Impl
+using System.Runtime.InteropServices;
+namespace AntDeployAgent.MyApp.Service.Impl
 {
     public class IIsPublisher : PublishProviderBasicAPI
     {
@@ -45,30 +46,31 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
             try
             {
                 var isNetcore = _sdkTypeName.ToLower().Equals("netcore");
-                var filePath = Path.Combine(_projectPublishFolder, fileItem.FileName);
-                using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                var _zipFile = Path.Combine(_projectPublishFolder, fileItem.FileName);
+                using (var fs = new FileStream(_zipFile, FileMode.Create, FileAccess.Write))
                 {
                     fs.Write(fileItem.FileBody, 0, fileItem.FileBody.Length);
                 }
 
 
-                if (!File.Exists(filePath))
+
+                if (!File.Exists(_zipFile))
                 {
                     return "publish file save fail";
                 }
 #if NETCORE
                 Log("netcore agent version ==>" + Version.VERSION);
 #else
-                Log("netframework agent version ==>" + AntDeployAgentWindows.Version.VERSION);
+                Log("netframework agent version ==>" + Version.VERSION);
 #endif
 
 
-                Log("upload success ==>" + filePath);
+                Log("upload success ==>" + _zipFile);
                 //解压
                 try
                 {
                     Log("start unzip file");
-                    ZipFile.ExtractToDirectory(filePath, _projectPublishFolder);
+                    ZipFile.ExtractToDirectory(_zipFile, _projectPublishFolder);
                 }
                 catch (Exception ex)
                 {
@@ -77,20 +79,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
                 Log("unzip success ==>" + _projectPublishFolder);
 
-                deployFolder = Path.Combine(_projectPublishFolder, "publish");
-
-                if (!Directory.Exists(deployFolder))
-                {
-                    if (Directory.Exists(_projectPublishFolder))
-                    {
-                        var temp = new DirectoryInfo(_projectPublishFolder);
-                        var tempFolderList = temp.GetDirectories();
-                        if (tempFolderList.Length == 1)
-                        {
-                            deployFolder = tempFolderList.First().FullName;
-                        }
-                    }
-                }
+                deployFolder = findUploadFolder(_projectPublishFolder, true);
 
                 if (!Directory.Exists(deployFolder))
                 {
