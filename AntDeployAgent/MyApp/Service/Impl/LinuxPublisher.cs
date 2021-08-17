@@ -1,33 +1,33 @@
-﻿using AntDeployAgentWindows.Model;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using AntDeployAgentWindows.Model;
+using AntDeployAgentWindows.MyApp.Service;
 using AntDeployAgentWindows.Operation;
 using AntDeployAgentWindows.Operation.OperationTypes;
 using AntDeployAgentWindows.Util;
 using AntDeployAgentWindows.WebApiCore;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading;
-
-namespace AntDeployAgentWindows.MyApp.Service.Impl
+namespace AntDeployAgent.MyApp.Service.Impl
 {
     public class LinuxPublisher : PublishProviderBasicAPI
     {
-        private bool _isNoStopWebSite;//是否不重新启动服务
-        private string _serviceName;//服务名称
-        private string _serviceExecName;//服务可执行程序名称
-        private string _serviceDescription;//服务描述
-        private string _serviceStartType;//是否设置重启机器自动重启
-        private string _env;//环境变量？
-        private bool _notify;//是否设置需要通知systemd
-        private List<string> _backUpIgnoreList = new List<string>();//需要排除backup的列表
-        private string _projectPublishFolder;//发布目录
-        private string _dateTimeFolderName;//版本
-        private bool _isIncrement;//是否增量
-        private string _physicalPath;//指定的创建的时候用的服务器路径
+        private bool _isNoStopWebSite; //是否不重新启动服务
+        private string _serviceName; //服务名称
+        private string _serviceExecName; //服务可执行程序名称
+        private string _serviceDescription; //服务描述
+        private string _serviceStartType; //是否设置重启机器自动重启
+        private string _env; //环境变量？
+        private bool _notify; //是否设置需要通知systemd
+        private List<string> _backUpIgnoreList = new List<string>(); //需要排除backup的列表
+        private string _projectPublishFolder; //发布目录
+        private string _dateTimeFolderName; //版本
+        private bool _isIncrement; //是否增量
+        private string _physicalPath; //指定的创建的时候用的服务器路径
         public override string ProviderName => "linux";
         public override string ProjectName => _serviceName;
         public override string ProjectPublishFolder => _projectPublishFolder;
@@ -35,40 +35,43 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
         public override string DeployExcutor(FormHandler.FormItem fileItem)
         {
             var projectPath = Path.Combine(Setting.PublishLinuxPathFolder, _serviceName);
-            _projectPublishFolder = Path.Combine(projectPath, !string.IsNullOrEmpty(_dateTimeFolderName) ? _dateTimeFolderName : DateTime.Now.ToString("yyyyMMddHHmmss"));
+            _projectPublishFolder = Path.Combine(projectPath,
+                !string.IsNullOrEmpty(_dateTimeFolderName) ? _dateTimeFolderName : DateTime.Now.ToString("yyyyMMddHHmmss"));
             EnsureProjectFolder(projectPath);
             EnsureProjectFolder(_projectPublishFolder);
-
+            var deployFolder = string.Empty;
             try
             {
-
-                var filePath = Path.Combine(_projectPublishFolder, fileItem.FileName);
-                using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                var _zipFile = Path.Combine(_projectPublishFolder, fileItem.FileName);
+                using (var fs = new FileStream(_zipFile, FileMode.Create, FileAccess.Write))
                 {
                     fs.Write(fileItem.FileBody, 0, fileItem.FileBody.Length);
                 }
 
 
-                if (!File.Exists(filePath))
+                if (!File.Exists(_zipFile))
                 {
                     return "publish file save fail";
                 }
 #if NETCORE
-        if (!System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(OSPlatform.Windows)){
-            Log("linux agent version ==>" + AntDeployAgentWindows.Version.VERSION);
-        }else{
-            Log("netcore agent version ==>" + AntDeployAgentWindows.Version.VERSION);
-        }
-            
+                if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    Log("linux agent version ==>" + Version.VERSION);
+                }
+                else
+                {
+                    Log("netcore agent version ==>" + Version.VERSION);
+                }
+
 #else
-                Log("netframework agent version ==>" + AntDeployAgentWindows.Version.VERSION);
+                Log("netframework agent version ==>" + Version.VERSION);
 #endif
-                Log("upload success ==>" + filePath);
+                Log("upload success ==>" + _zipFile);
                 //解压
                 try
                 {
                     Log("start unzip file");
-                    ZipFile.ExtractToDirectory(filePath, _projectPublishFolder);
+                    ZipFile.ExtractToDirectory(_zipFile, _projectPublishFolder);
                 }
                 catch (Exception ex)
                 {
@@ -77,21 +80,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
                 Log("unzip success ==>" + _projectPublishFolder);
 
-                var deployFolder = Path.Combine(_projectPublishFolder, "publish");
-
-                if (!Directory.Exists(deployFolder))
-                {
-
-                    if (Directory.Exists(_projectPublishFolder))
-                    {
-                        var temp = new DirectoryInfo(_projectPublishFolder);
-                        var tempFolderList = temp.GetDirectories();
-                        if (tempFolderList.Length == 1)
-                        {
-                            deployFolder = tempFolderList.First().FullName;
-                        }
-                    }
-                }
+                deployFolder = findUploadFolder(_projectPublishFolder, true);
 
                 if (!Directory.Exists(deployFolder))
                 {
@@ -105,9 +94,9 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     //运行命令出错了
                     return service.Item1;
                 }
-                if (string.IsNullOrEmpty(service.Item2))//没有找到该服务的workingFolder 可能是service描述文件内容不对，可能是服务不存在
-                {
 
+                if (string.IsNullOrEmpty(service.Item2)) //没有找到该服务的workingFolder 可能是service描述文件内容不对，可能是服务不存在
+                {
                     Log($"systemctlService : {_serviceName} not found,start to create!");
 
                     //创建发布目录
@@ -145,11 +134,12 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     {
                         var err = LinuxServiceHelper.CreateServiceFileAndRun(this._serviceName, firstDeployFolder, _serviceExecName,
                             (_serviceDescription ?? string.Empty), _env, execFullPath,
-                            string.IsNullOrEmpty(_serviceStartType)|| _serviceStartType.Equals("Auto"), _notify, Log);
+                            string.IsNullOrEmpty(_serviceStartType) || _serviceStartType.Equals("Auto"), _notify, Log);
                         if (!string.IsNullOrEmpty(err))
                         {
                             return err;
                         }
+
                         //检查是否成功了？
                         var runSuccess = false;
 
@@ -184,7 +174,6 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     {
                         return $"install linux service fail:" + e2.Message;
                     }
-
                 }
 
                 var projectLocationFolder = service.Item2;
@@ -215,7 +204,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
                 //保证有service描述文件 等后面实际要用到
                 LinuxServiceHelper.CreateServiceFile(this._serviceName, projectLocationFolder, _serviceExecName,
-                    (_serviceDescription ?? string.Empty), _env,this._notify, Log);
+                    (_serviceDescription ?? string.Empty), _env, this._notify, Log);
 
                 Arguments args = new Arguments
                 {
@@ -223,13 +212,13 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     BackupFolder = Setting.BackUpLinuxPathFolder,
                     AppName = _serviceName,
                     AppFolder = projectLocationFolder,
-                    TempPhysicalPath = Path.Combine(projectLocationFolder, $"{_serviceName}.service"),//服务文件描述
+                    TempPhysicalPath = Path.Combine(projectLocationFolder, $"{_serviceName}.service"), //服务文件描述
                     DeployFolder = deployFolder,
                     ApplicationPoolName = fullExcutePath,
                     BackUpIgnoreList = this._backUpIgnoreList,
                     UseOfflineHtm = string.IsNullOrEmpty(_serviceStartType) || _serviceStartType.Equals("Auto"),
                     NoBackup = !Setting.NeedBackUp,
-                    Site1 =_env
+                    Site1 = _env
                 };
 
                 Log("Start to deploy linux Service:");
@@ -258,7 +247,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                             var incrementFolder = Path.Combine(_projectPublishFolder, "increment");
                             EnsureProjectFolder(incrementFolder);
 
-                            if (this._backUpIgnoreList!=null && this._backUpIgnoreList.Any())
+                            if (this._backUpIgnoreList != null && this._backUpIgnoreList.Any())
                             {
                                 var excludFrom = Path.Combine(_projectPublishFolder, "exclude.log");
                                 File.WriteAllLines(excludFrom, this._backUpIgnoreList);
@@ -293,18 +282,31 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                         return $"publish to linux service err:{ex.Message},rollback fail:{ex2.Message}";
                     }
                 }
+
                 return string.Empty;
             }
             catch (Exception ex)
             {
                 return ex.Message;
             }
+            finally
+            {
+                if (!string.IsNullOrEmpty(deployFolder) && Directory.Exists(deployFolder))
+                {
+                    new Task(() =>
+                    {
+                        try
+                        {
+                            Directory.Delete(deployFolder, true);
+                        }
+                        catch (Exception)
+                        {
+                            //ignore
+                        }
+                    }).Start();
+                }
+            }
         }
-
-
-
-
-
 
 
         public override string CheckData(FormHandler formHandler)
@@ -315,6 +317,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
             {
                 return "serviceName required";
             }
+
             _serviceName = serviceNameItem.TextValue.Trim();
 
 
@@ -324,6 +327,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
             {
                 return "execFilePath required";
             }
+
             _serviceExecName = serviceExecItem.TextValue.Trim();
 
 
@@ -386,8 +390,8 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
             {
                 this._backUpIgnoreList = backUpIgnoreList.TextValue.Split(new string[] { "@_@" }, StringSplitOptions.None).ToList();
             }
+
             return string.Empty;
         }
-
     }
 }

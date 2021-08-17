@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using AntDeployAgent.Model;
 using AntDeployAgent.Util;
+using Version = AntDeployAgent.Version;
 
 namespace AntDeployAgentWindows.MyApp
 {
@@ -53,8 +54,14 @@ namespace AntDeployAgentWindows.MyApp
 
                 switch (request.Type.ToLower())
                 {
+                    case "docker":
+                        GetLinuxVersionList(request, Setting.PublishDockerPathFolder);
+                        break;
+                    case "checkdocker":
+                        CheckDocker(request);
+                        break;
                     case "linux":
-                        GetLinuxVersionList(request);
+                        GetLinuxVersionList(request, Setting.PublishLinuxPathFolder);
                         break;
                     case "checklinux":
                         CheckLinux(request);
@@ -114,6 +121,33 @@ namespace AntDeployAgentWindows.MyApp
         }
 
         private void CheckLinux(GetVersionVm request)
+        {
+            if (string.IsNullOrEmpty(request.Name))
+            {
+                WriteError("service name required!");
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(request.Mac) && !Setting.CheckIsInWhiteMacList(request.Mac))
+            {
+                WriteError($"macAddress:[{request.Mac}] invalid");
+                return;
+            }
+
+            var serviceName = request.Name.Trim();
+            var service = LinuxServiceHelper.GetLinuxService(serviceName);
+
+            if (!string.IsNullOrEmpty(service.Item1))
+            {
+                WriteError(service.Item1);
+                return;
+            }
+
+            CheckExistResult result = new CheckExistResult { WebSiteName = serviceName, Success = !string.IsNullOrEmpty(service.Item2) };
+            WriteSuccess(result);
+        }
+
+        private void CheckDocker(GetVersionVm request)
         {
             if (string.IsNullOrEmpty(request.Name))
             {
@@ -277,7 +311,7 @@ namespace AntDeployAgentWindows.MyApp
             WriteSuccess(result);
         }
 
-        private void GetLinuxVersionList(GetVersionVm request)
+        private void GetLinuxVersionList(GetVersionVm request,string folder)
         {
             if (!string.IsNullOrEmpty(request.Mac) && !Setting.CheckIsInWhiteMacList(request.Mac))
             {
@@ -286,7 +320,7 @@ namespace AntDeployAgentWindows.MyApp
             }
 
             string requestName = request.Name;
-            var projectPath = Path.Combine(Setting.PublishLinuxPathFolder, requestName);
+            var projectPath = Path.Combine(folder, requestName);
             if (!Directory.Exists(projectPath))
             {
                 WriteError("publisher folder not found:" + projectPath + ",please deploy first!");

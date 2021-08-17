@@ -1,22 +1,29 @@
-﻿using AntDeployAgentWindows.Model;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
+using AntDeployAgent.Util;
+using AntDeployAgentWindows.Model;
+using AntDeployAgentWindows.MyApp.Service;
 using AntDeployAgentWindows.Operation;
 using AntDeployAgentWindows.Operation.OperationTypes;
 using AntDeployAgentWindows.Util;
 using AntDeployAgentWindows.WebApiCore;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Threading;
-
-namespace AntDeployAgentWindows.MyApp.Service.Impl
+using System.Runtime.InteropServices;
+namespace AntDeployAgent.MyApp.Service.Impl
 {
     public class WindowServicePublisher : PublishProviderBasicAPI
     {
         private string _sdkTypeName;
         private bool _isProjectInstallService;
+        private bool _useNssm;
+        private string _param;
         private bool _isNoStopWebSite;
         private string _serviceName;
         private string _serviceExecName;
@@ -26,44 +33,46 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
         private List<string> _backUpIgnoreList = new List<string>();
         private string _projectPublishFolder;
         private string _dateTimeFolderName;
-        private bool _isIncrement;//是否增量
-        private string _physicalPath;//指定的创建的时候用的服务器路径
+        private bool _isIncrement; //是否增量
+        private string _physicalPath; //指定的创建的时候用的服务器路径
         public override string ProviderName => "windowService";
         public override string ProjectName => _serviceName;
         public override string ProjectPublishFolder => _projectPublishFolder;
 
+
+
         public override string DeployExcutor(FormHandler.FormItem fileItem)
         {
             var projectPath = Path.Combine(Setting.PublishWindowServicePathFolder, _serviceName);
-            _projectPublishFolder = Path.Combine(projectPath, !string.IsNullOrEmpty(_dateTimeFolderName) ? _dateTimeFolderName : DateTime.Now.ToString("yyyyMMddHHmmss"));
+            _projectPublishFolder = Path.Combine(projectPath,
+                !string.IsNullOrEmpty(_dateTimeFolderName) ? _dateTimeFolderName : DateTime.Now.ToString("yyyyMMddHHmmss"));
             EnsureProjectFolder(projectPath);
             EnsureProjectFolder(_projectPublishFolder);
-
-            try
+            var deployFolder = string.Empty;
+            try 
             {
-
-                var filePath = Path.Combine(_projectPublishFolder, fileItem.FileName);
-                using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                var _zipFile = Path.Combine(_projectPublishFolder, fileItem.FileName);
+                using (var fs = new FileStream(_zipFile, FileMode.Create, FileAccess.Write))
                 {
                     fs.Write(fileItem.FileBody, 0, fileItem.FileBody.Length);
                 }
 
 
-                if (!File.Exists(filePath))
+                if (!File.Exists(_zipFile))
                 {
                     return "publish file save fail";
                 }
 #if NETCORE
-                Log("netcore agent version ==>" + AntDeployAgentWindows.Version.VERSION);
+                Log("netcore agent version ==>" + Version.VERSION);
 #else
-                Log("netframework agent version ==>" + AntDeployAgentWindows.Version.VERSION);
+                Log("netframework agent version ==>" + Version.VERSION);
 #endif
-                Log("upload success ==>" + filePath);
+                Log("upload success ==>" + _zipFile);
                 //解压
                 try
                 {
                     Log("start unzip file");
-                    ZipFile.ExtractToDirectory(filePath, _projectPublishFolder);
+                    ZipFile.ExtractToDirectory(_zipFile, _projectPublishFolder);
                 }
                 catch (Exception ex)
                 {
@@ -72,21 +81,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
                 Log("unzip success ==>" + _projectPublishFolder);
 
-                var deployFolder = Path.Combine(_projectPublishFolder, "publish");
-
-                if (!Directory.Exists(deployFolder))
-                {
-
-                    if (Directory.Exists(_projectPublishFolder))
-                    {
-                        var temp = new DirectoryInfo(_projectPublishFolder);
-                        var tempFolderList = temp.GetDirectories();
-                        if (tempFolderList.Length == 1)
-                        {
-                            deployFolder = tempFolderList.First().FullName;
-                        }
-                    }
-                }
+                deployFolder = findUploadFolder(_projectPublishFolder, true);
 
                 if (!Directory.Exists(deployFolder))
                 {
@@ -97,15 +92,15 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 var service = WindowServiceHelper.GetWindowServiceByName(this._serviceName);
                 if (!string.IsNullOrEmpty(service.Item2))
                 {
-                     return service.Item2;
+                    return service.Item2;
                 }
+
                 if (service.Item1 == null)
                 {
-
                     Log($"windowService : {_serviceName} not found,start to create!");
 
                     //创建发布目录
-                    var firstDeployFolder = string.IsNullOrEmpty(_physicalPath)? Path.Combine(projectPath, "deploy"):_physicalPath;
+                    var firstDeployFolder = string.IsNullOrEmpty(_physicalPath) ? Path.Combine(projectPath, "deploy") : _physicalPath;
                     EnsureProjectFolder(firstDeployFolder);
                     if (Directory.Exists(firstDeployFolder))
                     {
@@ -115,7 +110,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     {
                         return $"DeployFolder : {firstDeployFolder} create error!";
                     }
-                  
+
 
                     //复制文件到发布目录
                     CopyHelper.ProcessXcopy(deployFolder, firstDeployFolder, Log);
@@ -126,7 +121,14 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     var execFullPath = Path.Combine(firstDeployFolder, _serviceExecName);
                     if (!File.Exists(execFullPath))
                     {
-                        try { Directory.Delete(firstDeployFolder, true); } catch (Exception) { }
+                        try
+                        {
+                            Directory.Delete(firstDeployFolder, true);
+                        }
+                        catch (Exception)
+                        {
+                        }
+
                         return $"windows service exec file not found : {execFullPath} ";
                     }
 
@@ -134,13 +136,26 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                     Log($"start to install windows service");
                     Log($"service name:{_serviceName}");
                     Log($"service path:{execFullPath}");
-                    Log($"service startType:{(!string.IsNullOrEmpty(_serviceStartType)?_serviceStartType:"Auto")}");
-                    Log($"service description:{_serviceDescription??string.Empty}");
-                   
-                    
+                    Log($"service startType:{(!string.IsNullOrEmpty(_serviceStartType) ? _serviceStartType : "Auto")}");
+                    Log($"service description:{_serviceDescription ?? string.Empty}");
+
+
                     try
                     {
-                        ServiceInstaller.InstallAndStart(_serviceName, _serviceName, execFullPath,_serviceStartType,_serviceDescription);
+                        if (_useNssm)
+                        {
+                            var rt = ServiceInstaller.NssmInstallAndStart(_serviceName, _param, execFullPath, _serviceStartType, _serviceDescription, Log);
+                            if (!rt)
+                            {
+                                return "use nssm install windows service fail";
+                            }
+                        }
+                        else
+                        {
+                            ServiceInstaller.InstallAndStart(_serviceName, _serviceName, execFullPath + (string.IsNullOrEmpty(_param) ? "" : " " + _param),
+                                _serviceStartType, _serviceDescription);
+                        }
+
                         Log($"install windows service success");
                         Log($"start windows service success");
                         return string.Empty;
@@ -155,9 +170,9 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                             Log($"start windows service success");
                             return string.Empty;
                         }
+
                         return $"install windows service fail:" + e2.Message;
                     }
-
                 }
 
                 var projectLocationFolder = string.Empty;
@@ -166,6 +181,25 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 {
                     return $"can not find executable path of service:{_serviceName}";
                 }
+
+                //处理使用 nssm 安装的 Windows 服务程序
+                if (projectLocation.EndsWith("nssm.exe", true, CultureInfo.CurrentCulture))
+                {
+                    Log("service is installed by NSSM process.");
+
+                    var _nssmOutput = "";
+                    var rt = ProcessHepler.RunExternalExe(projectLocation, $"get {_serviceName} Application",
+                        output => { _nssmOutput += Regex.Replace(output, @"\0", ""); });
+
+                    if (!rt || string.IsNullOrEmpty(_nssmOutput.Trim()))
+                    {
+                        return $"can not find real executable path of nssm service:{_serviceName}";
+                    }
+
+                    projectLocation = _nssmOutput;
+                }
+
+                Log($"project location:{projectLocation}");
 
                 try
                 {
@@ -229,7 +263,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                             string fullName = directoryInfo.FullName;
                             if (directoryInfo.Parent != null)
                                 fullName = directoryInfo.Parent.FullName;
-                            CopyHelper.DirectoryCopy(projectLocationFolder, incrementFolder, true,fullName,directoryInfo.Name,this._backUpIgnoreList);
+                            CopyHelper.DirectoryCopy(projectLocationFolder, incrementFolder, true, fullName, directoryInfo.Name, this._backUpIgnoreList);
                             Log("Increment deploy backup success...");
                         }
                     }
@@ -253,23 +287,35 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                         return $"publish to WindowsService err:{ex.Message},rollback fail:{ex2.Message}";
                     }
                 }
+
                 return string.Empty;
             }
             catch (Exception ex)
             {
                 return ex.Message;
             }
+            finally
+            {
+                if (!string.IsNullOrEmpty(deployFolder) && Directory.Exists(deployFolder))
+                {
+                    new Task(() =>
+                    {
+                        try
+                        {
+                            Directory.Delete(deployFolder, true);
+                        }
+                        catch (Exception)
+                        {
+                            //ignore
+                        }
+                    }).Start();
+                }
+            }
         }
-
-
-
-
-
 
 
         public override string CheckData(FormHandler formHandler)
         {
-
             var sdkType = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("sdkType"));
             if (sdkType == null || string.IsNullOrEmpty(sdkType.TextValue))
             {
@@ -303,7 +349,17 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
             _serviceExecName = serviceExecItem.TextValue.Trim();
 
+            var isUseNssm = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("useNssm"));
+            if (isUseNssm != null && !string.IsNullOrEmpty(isUseNssm.TextValue))
+            {
+                _useNssm = isUseNssm.TextValue.Equals("yes");
+            }
 
+            var serviceParam = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("param"));
+            if (serviceParam != null && !string.IsNullOrEmpty(serviceParam.TextValue))
+            {
+                _param = serviceParam.TextValue;
+            }
 
             var isProjectInstallServiceItem = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("isProjectInstallService"));
             if (isProjectInstallServiceItem != null && !string.IsNullOrEmpty(isProjectInstallServiceItem.TextValue))
@@ -327,8 +383,8 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
             if (isNoStopWebSite != null && !string.IsNullOrEmpty(isNoStopWebSite.TextValue) && isNoStopWebSite.TextValue.ToLower().Equals("true"))
             {
                 _isNoStopWebSite = true;
-            }  
-            
+            }
+
             var physicalPath = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("physicalPath"));
             if (physicalPath != null && !string.IsNullOrEmpty(physicalPath.TextValue))
             {
@@ -352,6 +408,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
             {
                 this._backUpIgnoreList = backUpIgnoreList.TextValue.Split(new string[] { "@_@" }, StringSplitOptions.None).ToList();
             }
+
             return string.Empty;
         }
 
@@ -385,8 +442,8 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 using (Process p = new Process())
                 {
                     p.StartInfo.FileName = selftCmd;
-                    p.StartInfo.CreateNoWindow = true;   //不创建该进程的窗口
-                    p.StartInfo.UseShellExecute = false;   //不使用shell壳运行
+                    p.StartInfo.CreateNoWindow = true; //不创建该进程的窗口
+                    p.StartInfo.UseShellExecute = false; //不使用shell壳运行
                     p.Start();
                 }
 

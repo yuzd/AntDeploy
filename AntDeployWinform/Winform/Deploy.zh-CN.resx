@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="page_docker_img.Text" xml:space="preserve">
+    <value>Docker镜像发布</value>
+  </data>
+  <data name="page_linux_service.Text" xml:space="preserve">
+    <value>Linux服务发布</value>
+  </data>
   <data name="checkBox_iis_use_offlinehtm.Text" xml:space="preserve">
     <value>使用app_offline.htm</value>
   </data>
@@ -185,6 +191,18 @@
   <data name="label27.Location" type="System.Drawing.Point, System.Drawing">
     <value>110, 17</value>
   </data>
+  <data name="tabPage_docker_repo.Text" xml:space="preserve">
+    <value>配置镜像上传</value>
+  </data>
+  <data name="label56.Text" xml:space="preserve">
+    <value>注意：该功能需要依赖一台安装docker的linux宿主机</value>
+  </data>
+  <data name="label55.Size" type="System.Drawing.Size, System.Drawing">
+    <value>283, 13</value>
+  </data>
+  <data name="label55.Text" xml:space="preserve">
+    <value>注意:该功能需要依赖一台装有docker的linux宿主机</value>
+  </data>
   <data name="label54.Location" type="System.Drawing.Point, System.Drawing">
     <value>217, 196</value>
   </data>
@@ -233,9 +251,6 @@
   <data name="label34.Text" xml:space="preserve">
     <value>密码:</value>
   </data>
-  <data name="tabPage_docker_repo.Text" xml:space="preserve">
-    <value>配置镜像上传</value>
-  </data>
   <data name="checkBox_Increment_docker.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -247,6 +262,51 @@
   </data>
   <data name="checkBox_Increment_docker.Text" xml:space="preserve">
     <value>增量发布</value>
+  </data>
+  <data name="tabPage_docker_image.Text" xml:space="preserve">
+    <value>日志</value>
+  </data>
+  <data name="tabPage_docker_image_ignore.Text" xml:space="preserve">
+    <value>其他配置</value>
+  </data>
+  <data name="groupBox4.Text" xml:space="preserve">
+    <value>排除规则【regex】</value>
+  </data>
+  <data name="btn_dockerImage_ignore_remove.Text" xml:space="preserve">
+    <value>删除选中</value>
+  </data>
+  <data name="btn_dockerImage_ignore_add.Text" xml:space="preserve">
+    <value>添加</value>
+  </data>
+  <data name="label60.Size" type="System.Drawing.Size, System.Drawing">
+    <value>59, 12</value>
+  </data>
+  <data name="label60.Text" xml:space="preserve">
+    <value>Http代理:</value>
+  </data>
+  <data name="label57.Size" type="System.Drawing.Size, System.Drawing">
+    <value>59, 12</value>
+  </data>
+  <data name="label57.Text" xml:space="preserve">
+    <value>基础镜像:</value>
+  </data>
+  <data name="altoButton1.Text" xml:space="preserve">
+    <value>发布</value>
+  </data>
+  <data name="label69.Size" type="System.Drawing.Size, System.Drawing">
+    <value>59, 12</value>
+  </data>
+  <data name="label69.Text" xml:space="preserve">
+    <value>Http代理:</value>
+  </data>
+  <data name="label64.Location" type="System.Drawing.Point, System.Drawing">
+    <value>17, 14</value>
+  </data>
+  <data name="label64.Size" type="System.Drawing.Size, System.Drawing">
+    <value>59, 12</value>
+  </data>
+  <data name="label64.Text" xml:space="preserve">
+    <value>目标镜像:</value>
   </data>
   <data name="btn_windows_serivce_stop.Location" type="System.Drawing.Point, System.Drawing">
     <value>511, 101</value>
@@ -314,17 +374,14 @@
   <data name="b_linux_service_rollback.Text" xml:space="preserve">
     <value>回滚</value>
   </data>
-  <data name="page_linux_service.Text" xml:space="preserve">
-    <value>Linux服务发布</value>
-  </data>
   <data name="groupBox1.Text" xml:space="preserve">
     <value>Token服务器备份排除规则</value>
   </data>
-  <data name="btn_win_server_testAll.Text" xml:space="preserve">
-    <value>测试连接全部</value>
-  </data>
   <data name="page_winserver.Text" xml:space="preserve">
     <value>Token服务器</value>
+  </data>
+  <data name="btn_win_server_testAll.Text" xml:space="preserve">
+    <value>测试连接全部</value>
   </data>
   <data name="btn_linux_server_testAll.Text" xml:space="preserve">
     <value>测试连接全部</value>

@@ -36,10 +36,10 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
 
         public override void Stop()
         {
-            logger("Start to IIS WebsiteStop :" + this.args.SiteName);
+            logger("Start to Stop IIS Website: " + this.args.SiteName);
             if (IISHelper.IsWebsiteStop(this.args.SiteName))
             {
-                logger("Success to IIS WebsiteStop :" + this.args.SiteName);
+                logger("Success to Stop IIS Website :" + this.args.SiteName);
             }
             else
             {
@@ -52,11 +52,12 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
 
                     if (retryStopWebSite >= 3)
                     {
-                        logger($"【Error】Fail to IIS WebsiteStop :{this.args.SiteName},Err:{siteResult}, Retry limit.");
+                        logger($"【Error】Fail to Stop IIS Website :{this.args.SiteName},Err:{siteResult}, Retry limit.");
+                        killPool();
                         return;
                     }
 
-                    logger($"Fail to IIS WebsiteStop :{this.args.SiteName},Err:{siteResult}, wait 5seconds and Retry : " + retryStopWebSite);
+                    logger($"Fail to Stop IIS Website :{this.args.SiteName},Err:{siteResult}, wait 5seconds and Retry : " + retryStopWebSite);
                     Thread.Sleep(5000);
                     goto ReTryStopWebSiet;
                 }
@@ -79,6 +80,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
                     if (retryStopPool >= 3)
                     {
                         logger($"【Error】Fail to Stop IIS ApplicationPool :{this.args.ApplicationPoolName },Err:{stopPoolResult},  Retry limit.");
+                        killPool();
                         return;
                     }
 
@@ -191,16 +193,8 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
                 Thread.Sleep(5000);
                 if (retryTimes > 3)
                 {
-                    //执行终极方法 执行pool的回收 因为每个应用的pool是唯一的情况下 不会影响别的站点
-                    var r1 = ProcessHepler.RunAppCmd($"recycle apppool /apppool.name:\"{this.args.ApplicationPoolName}\"", logger);
-                    logger($"recycle apppool /apppool.name:{this.args.ApplicationPoolName} ===> {(r1 ? "Success" : "Fail")}");
-                    var r2 = ProcessHepler.RunAppCmd($"stop apppool /apppool.name:\"{this.args.ApplicationPoolName}\"", logger);
-                    logger($"stop apppool /apppool.name:{this.args.ApplicationPoolName} ===> {(r2 ? "Success" : "Fail")}");
-
-                    // 直接关闭站点可能会影响其他的站点
-                    //var r3 = ProcessHepler.RunAppCmd($"stop site /site.name:\"{this.args.SiteName}\"", logger);
-                    //logger($"stop site /site.name:{this.args.SiteName} ===> {(r3 ? "Success" : "Fail")}");
-
+                    IISHelper.KillSiteProcess(args.SiteName);
+                    killPool();
                     logger("Wait 5Senconds to Try deploy again");
                     Thread.Sleep(5000);
                     try
@@ -259,7 +253,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
 
                 if (retryStartSite >= 3)
                 {
-                    logger($"【Error】Fail to Start IIS Websit :{ this.args.SiteName},Err:{websiteStartResult}, Retry limit.");
+                    logger($"【Error】Fail to Start IIS Website :{ this.args.SiteName},Err:{websiteStartResult}, Retry limit max:3");
                     return;
                 }
 
@@ -281,6 +275,20 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
         public override void Rollback()
         {
             base.Rollback();
+        }
+
+        private void killPool()
+        {
+
+            //执行终极方法 执行pool的回收 因为每个应用的pool是唯一的情况下 不会影响别的站点
+            var r1 = ProcessHepler.RunAppCmd($"recycle apppool /apppool.name:\"{this.args.ApplicationPoolName}\"", logger);
+            logger($"recycle apppool /apppool.name:{this.args.ApplicationPoolName} ===> {(r1 ? "Success" : "Fail")}");
+            var r2 = ProcessHepler.RunAppCmd($"stop apppool /apppool.name:\"{this.args.ApplicationPoolName}\"", logger);
+            logger($"stop apppool /apppool.name:{this.args.ApplicationPoolName} ===> {(r2 ? "Success" : "Fail")}");
+
+            // 直接关闭站点可能会影响其他的站点
+            //var r3 = ProcessHepler.RunAppCmd($"stop site /site.name:\"{this.args.SiteName}\"", logger);
+            //logger($"stop site /site.name:{this.args.SiteName} ===> {(r3 ? "Success" : "Fail")}");
         }
     }
 }

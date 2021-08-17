@@ -117,36 +117,51 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="label5.Location" type="System.Drawing.Point, System.Drawing">
+    <value>68, 47</value>
+  </data>
   <data name="label1.Text" xml:space="preserve">
     <value>The remote server did not find the service, if you want to create a new one please fill in the following parameters：</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="label2.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="txt_service_description.TabIndex" type="System.Int32, mscorlib">
+    <value>27</value>
   </data>
   <data name="label30.Text" xml:space="preserve">
     <value>PhysicalPath In Server:</value>
   </data>
-  <data name="&gt;&gt;txt_windows_service_PhysicalPath.ZOrder" xml:space="preserve">
-    <value>3</value>
+  <data name="&gt;&gt;label30.ZOrder" xml:space="preserve">
+    <value>8</value>
   </data>
+  <data name="&gt;&gt;txt_service_param.Name" xml:space="preserve">
+    <value>txt_service_param</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="label33.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
   <data name="&gt;&gt;label16.Name" xml:space="preserve">
     <value>label16</value>
   </data>
-  <data name="btn_continue.Text" xml:space="preserve">
-    <value>Continue</value>
+  <data name="label5.Size" type="System.Drawing.Size, System.Drawing">
+    <value>107, 12</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="&gt;&gt;txt_service_param.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btn_continue.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
   <data name="txt_windows_service_PhysicalPath.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 126</value>
+    <value>12, 164</value>
   </data>
   <data name="&gt;&gt;label33.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>9</value>
   </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="&gt;&gt;label1.Name" xml:space="preserve">
+    <value>label1</value>
+  </data>
   <data name="txt_windows_service_PhysicalPath.TabIndex" type="System.Int32, mscorlib">
     <value>29</value>
   </data>
@@ -156,8 +171,14 @@
   <data name="&gt;&gt;txt_service_description.Name" xml:space="preserve">
     <value>txt_service_description</value>
   </data>
-  <data name="&gt;&gt;label1.Name" xml:space="preserve">
-    <value>label1</value>
+  <data name="btn_continue.TabIndex" type="System.Int32, mscorlib">
+    <value>32</value>
+  </data>
+  <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
+    <value>119, 12</value>
+  </data>
+  <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>272, 45</value>
   </data>
   <data name="&gt;&gt;label33.Parent" xml:space="preserve">
     <value>$this</value>
@@ -168,6 +189,9 @@
   <data name="comboBox_service_start_type.TabIndex" type="System.Int32, mscorlib">
     <value>35</value>
   </data>
+  <data name="label16.Size" type="System.Drawing.Size, System.Drawing">
+    <value>125, 12</value>
+  </data>
   <data name="&gt;&gt;label3.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
@@ -177,23 +201,32 @@
   <data name="label16.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>119, 12</value>
+  <data name="label3.Text" xml:space="preserve">
+    <value>Service Start Type:</value>
+  </data>
+  <data name="btn_continue.Text" xml:space="preserve">
+    <value>Continue</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>FirstService</value>
   </data>
-  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>6, 12</value>
+  <data name="label3.TabIndex" type="System.Int32, mscorlib">
+    <value>34</value>
+  </data>
+  <data name="label4.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="&gt;&gt;label3.Name" xml:space="preserve">
     <value>label3</value>
   </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Service Need Create</value>
+  </data>
   <data name="label3.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="&gt;&gt;txt_windows_service_PhysicalPath.Name" xml:space="preserve">
-    <value>txt_windows_service_PhysicalPath</value>
+  <data name="&gt;&gt;box_windows_service_nssm.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
     <value>CenterParent</value>
@@ -201,11 +234,17 @@
   <data name="&gt;&gt;label1.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
-    <value>18, 80</value>
+  <data name="label5.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label2.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>11</value>
+  </data>
+  <data name="txt_service_param.Location" type="System.Drawing.Point, System.Drawing">
+    <value>131, 118</value>
   </data>
   <data name="label1.TabIndex" type="System.Int32, mscorlib">
     <value>26</value>
@@ -225,8 +264,14 @@
   <data name="&gt;&gt;comboBox_service_start_type.Type" xml:space="preserve">
     <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;txt_service_param.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
   <data name="&gt;&gt;label2.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label5.Name" xml:space="preserve">
+    <value>label5</value>
   </data>
   <data name="&gt;&gt;txt_service_description.Parent" xml:space="preserve">
     <value>$this</value>
@@ -235,34 +280,52 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;txt_service_description.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>10</value>
   </data>
   <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
-    <value>9</value>
+    <value>13</value>
   </data>
-  <data name="&gt;&gt;btn_continue.Parent" xml:space="preserve">
-    <value>$this</value>
+  <data name="&gt;&gt;txt_windows_service_PhysicalPath.Name" xml:space="preserve">
+    <value>txt_windows_service_PhysicalPath</value>
   </data>
   <data name="label33.TabIndex" type="System.Int32, mscorlib">
     <value>31</value>
   </data>
-  <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>272, 45</value>
+  <data name="&gt;&gt;txt_windows_service_PhysicalPath.ZOrder" xml:space="preserve">
+    <value>7</value>
   </data>
   <data name="label33.Font" type="System.Drawing.Font, System.Drawing">
     <value>宋体, 7.5pt</value>
   </data>
+  <data name="&gt;&gt;label4.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;label5.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;label5.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="&gt;&gt;comboBox_service_start_type.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 169</value>
+  <data name="txt_service_param.Size" type="System.Drawing.Size, System.Drawing">
+    <value>215, 21</value>
+  </data>
+  <data name="&gt;&gt;label4.Name" xml:space="preserve">
+    <value>label4</value>
   </data>
   <data name="label16.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
+  <data name="label4.Text" xml:space="preserve">
+    <value>Parameters:</value>
+  </data>
+  <data name="label4.TabIndex" type="System.Int32, mscorlib">
+    <value>37</value>
+  </data>
   <data name="label16.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 51</value>
+    <value>12, 69</value>
   </data>
   <data name="&gt;&gt;txt_service_description.Type" xml:space="preserve">
     <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -273,50 +336,80 @@
   <data name="label1.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
+  <data name="label5.TabIndex" type="System.Int32, mscorlib">
+    <value>39</value>
+  </data>
   <data name="label33.Location" type="System.Drawing.Point, System.Drawing">
-    <value>173, 103</value>
+    <value>173, 141</value>
   </data>
-  <data name="label3.Text" xml:space="preserve">
-    <value>Service Start Type:</value>
+  <data name="&gt;&gt;btn_continue.ZOrder" xml:space="preserve">
+    <value>6</value>
   </data>
-  <data name="label3.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
+  <data name="&gt;&gt;label4.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;txt_windows_service_PhysicalPath.Type" xml:space="preserve">
     <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="label30.Size" type="System.Drawing.Size, System.Drawing">
-    <value>143, 12</value>
+  <data name="&gt;&gt;box_windows_service_nssm.ZOrder" xml:space="preserve">
+    <value>1</value>
   </data>
   <data name="&gt;&gt;label33.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="txt_service_description.TabIndex" type="System.Int32, mscorlib">
-    <value>27</value>
+  <data name="comboBox_service_start_type.Items1" xml:space="preserve">
+    <value>Manual</value>
+  </data>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>6, 12</value>
+  </data>
+  <data name="label3.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="&gt;&gt;box_windows_service_nssm.Name" xml:space="preserve">
+    <value>box_windows_service_nssm</value>
   </data>
   <data name="&gt;&gt;label2.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
+  <data name="label5.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
   <data name="&gt;&gt;btn_continue.Name" xml:space="preserve">
     <value>btn_continue</value>
   </data>
-  <data name="label33.Size" type="System.Drawing.Size, System.Drawing">
-    <value>158, 24</value>
+  <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>18, 97</value>
   </data>
-  <data name="&gt;&gt;btn_continue.ZOrder" xml:space="preserve">
-    <value>2</value>
+  <data name="txt_service_param.TabIndex" type="System.Int32, mscorlib">
+    <value>36</value>
   </data>
-  <data name="label16.Size" type="System.Drawing.Size, System.Drawing">
-    <value>125, 12</value>
+  <data name="box_windows_service_nssm.TabIndex" type="System.Int32, mscorlib">
+    <value>38</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label30.Size" type="System.Drawing.Size, System.Drawing">
+    <value>143, 12</value>
+  </data>
+  <data name="&gt;&gt;label16.ZOrder" xml:space="preserve">
+    <value>12</value>
   </data>
   <data name="btn_continue.Location" type="System.Drawing.Point, System.Drawing">
-    <value>290, 158</value>
+    <value>306, 197</value>
+  </data>
+  <data name="box_windows_service_nssm.Text" xml:space="preserve">
+    <value>nssm</value>
+  </data>
+  <data name="label5.Text" xml:space="preserve">
+    <value>Shoud i use nssm?</value>
   </data>
   <data name="&gt;&gt;label16.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="txt_windows_service_PhysicalPath.Size" type="System.Drawing.Size, System.Drawing">
-    <value>327, 21</value>
+  <data name="&gt;&gt;label4.ZOrder" xml:space="preserve">
+    <value>3</value>
   </data>
   <data name="label30.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -324,41 +417,56 @@
   <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
     <value>2, 9</value>
   </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>Service Need Create</value>
+  <data name="label16.TabIndex" type="System.Int32, mscorlib">
+    <value>28</value>
   </data>
   <data name="&gt;&gt;comboBox_service_start_type.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>4</value>
   </data>
   <data name="label2.Text" xml:space="preserve">
     <value>Attention:If you want chang the parameters above afte service created,you need delete and recreate！</value>
   </data>
-  <data name="label3.TabIndex" type="System.Int32, mscorlib">
-    <value>34</value>
+  <data name="label30.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 149</value>
   </data>
   <data name="txt_service_description.Location" type="System.Drawing.Point, System.Drawing">
-    <value>133, 48</value>
+    <value>133, 66</value>
   </data>
-  <data name="&gt;&gt;label16.ZOrder" xml:space="preserve">
-    <value>8</value>
+  <data name="label4.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
-  <data name="btn_continue.TabIndex" type="System.Int32, mscorlib">
-    <value>32</value>
+  <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>18, 197</value>
   </data>
   <data name="label16.Text" xml:space="preserve">
     <value>Service Description:</value>
   </data>
-  <data name="comboBox_service_start_type.Items1" xml:space="preserve">
-    <value>Manual</value>
+  <data name="label4.Location" type="System.Drawing.Point, System.Drawing">
+    <value>54, 122</value>
+  </data>
+  <data name="label33.Size" type="System.Drawing.Size, System.Drawing">
+    <value>158, 24</value>
   </data>
   <data name="&gt;&gt;txt_windows_service_PhysicalPath.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
+  <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
+    <value>71, 12</value>
+  </data>
   <data name="comboBox_service_start_type.Size" type="System.Drawing.Size, System.Drawing">
     <value>121, 20</value>
   </data>
-  <data name="label16.TabIndex" type="System.Int32, mscorlib">
-    <value>28</value>
+  <data name="box_windows_service_nssm.Size" type="System.Drawing.Size, System.Drawing">
+    <value>48, 16</value>
+  </data>
+  <data name="box_windows_service_nssm.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="txt_windows_service_PhysicalPath.Size" type="System.Drawing.Size, System.Drawing">
+    <value>327, 21</value>
+  </data>
+  <data name="box_windows_service_nssm.Location" type="System.Drawing.Point, System.Drawing">
+    <value>14, 46</value>
   </data>
   <data name="&gt;&gt;label30.Parent" xml:space="preserve">
     <value>$this</value>
@@ -366,26 +474,26 @@
   <data name="&gt;&gt;label2.Name" xml:space="preserve">
     <value>label2</value>
   </data>
-  <data name="btn_continue.Size" type="System.Drawing.Size, System.Drawing">
-    <value>67, 42</value>
+  <data name="&gt;&gt;txt_service_param.ZOrder" xml:space="preserve">
+    <value>2</value>
   </data>
   <data name="comboBox_service_start_type.Location" type="System.Drawing.Point, System.Drawing">
-    <value>133, 77</value>
+    <value>133, 93</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>365, 212</value>
+    <value>374, 240</value>
   </data>
   <data name="&gt;&gt;label30.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;$this.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;label5.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;label30.ZOrder" xml:space="preserve">
-    <value>4</value>
+  <data name="btn_continue.Size" type="System.Drawing.Size, System.Drawing">
+    <value>67, 42</value>
   </data>
-  <data name="label30.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 111</value>
+  <data name="&gt;&gt;box_windows_service_nssm.Parent" xml:space="preserve">
+    <value>$this</value>
   </data>
   <data name="label30.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -394,7 +502,7 @@
     <value>Comic Sans MS, 10pt, style=Bold</value>
   </data>
   <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>5</value>
   </data>
   <data name="&gt;&gt;label1.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

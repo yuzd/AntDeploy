@@ -62,7 +62,7 @@ namespace AntDeployAgentService
             }
             else
             {
-                Console.WriteLine("Current Version：" + AntDeployAgentWindows.Version.VERSION);
+                Console.WriteLine("Current Version：" + AntDeployAgent.Version.VERSION);
                 builder.Build().Run();
             }
         }

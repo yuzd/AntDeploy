@@ -1,5 +1,5 @@
-﻿using AntDeployAgentWindows.MyApp.Service.Impl;
-using System;
+﻿using System;
+using AntDeployAgent.MyApp.Service.Impl;
 
 namespace AntDeployAgentWindows.MyApp.Service
 {
@@ -11,6 +11,10 @@ namespace AntDeployAgentWindows.MyApp.Service
         {
             switch (key)
             {
+                case "docker":
+                    return new DockerPublisher();
+                case "docker_rollback":
+                    return new DockerRollback();
                 case "linux":
                     return new LinuxPublisher();
                 case "linux_rollback":

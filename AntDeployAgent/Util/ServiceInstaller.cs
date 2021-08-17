@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Management;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
+using System.Text.RegularExpressions;
 using System.Threading;
+using AntDeployAgent.Util;
 
 namespace AntDeployAgentWindows.Util
 {
@@ -418,7 +421,64 @@ namespace AntDeployAgentWindows.Util
 
             return scm;
         }
+        /**
+         * 采用nssm来第一次安装服务
+         */
+        public static bool NssmInstallAndStart(string serviceName, string param, string execFullPath, string serviceStartType, string serviceDescription,Action<string> log)
+        {
+            string nssmPath = Path.Combine(Startup.RootPath, "nssm.exe");
+            if (!File.Exists(nssmPath))
+            {
+                throw new FileNotFoundException(nssmPath);
+            }
 
+            log($"nssm.exe install {serviceName} \"{execFullPath}\"");
+            var rt = ProcessHepler.RunExternalExe(nssmPath, $"install {serviceName} \"{execFullPath}\"", log);
+            if (!rt)
+            {
+                return false;
+            }
+
+            log($"nssm.exe set {serviceName} AppDirectory \"{new FileInfo(execFullPath).DirectoryName}\"");
+            rt = ProcessHepler.RunExternalExe(nssmPath, $"set {serviceName} AppDirectory \"{new FileInfo(execFullPath).DirectoryName}\"", log);
+            if (!rt)
+            {
+                return false;
+            }
+
+            if (!string.IsNullOrEmpty(serviceDescription))
+            {
+                log($"nssm.exe set {serviceName} Description \"{serviceDescription}\"");
+                rt = ProcessHepler.RunExternalExe(nssmPath, $"set {serviceName} Description \"{serviceDescription}\"", log);
+                if (!rt)
+                {
+                    return false;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(param))
+            {
+                log($"nssm.exe set {serviceName} AppParameters \"{param}\"");
+                rt = ProcessHepler.RunExternalExe(nssmPath, $"set {serviceName} AppParameters \"{param}\"", log);
+                if (!rt)
+                {
+                    return false;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(serviceStartType) && !serviceStartType.ToLower().Equals("auto"))
+            {
+                log($"nssm.exe set {serviceName} Start SERVICE_DEMAND_START");
+                rt = ProcessHepler.RunExternalExe(nssmPath, $"set {serviceName} Start SERVICE_DEMAND_START", log);
+                if (!rt)
+                {
+                    return false;
+                }
+            }
+
+            ServiceInstaller.StartService(serviceName);
+            return true;
+        }
     }
 
     [StructLayout(LayoutKind.Sequential)]

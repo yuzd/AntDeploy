@@ -1,13 +1,17 @@
-﻿using AntDeployAgentWindows.Model;
+﻿using System;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using AntDeployAgent.Util;
+using AntDeployAgentWindows.Model;
+using AntDeployAgentWindows.MyApp.Service;
 using AntDeployAgentWindows.Operation;
 using AntDeployAgentWindows.Operation.OperationTypes;
 using AntDeployAgentWindows.Util;
 using AntDeployAgentWindows.WebApiCore;
-using System;
-using System.IO;
-using System.Linq;
-
-namespace AntDeployAgentWindows.MyApp.Service.Impl
+using System.Runtime.InteropServices;
+namespace AntDeployAgent.MyApp.Service.Impl
 {
     public class WindowServiceRollback : PublishProviderBasicAPI
     {
@@ -32,25 +36,11 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 }
 
 #if NETCORE
-                Log("netcore agent version ==>" + AntDeployAgentWindows.Version.VERSION);
+                Log("netcore agent version ==>" + Version.VERSION);
 #else
-                Log("netframework agent version ==>" + AntDeployAgentWindows.Version.VERSION);
+                Log("netframework agent version ==>" + Version.VERSION);
 #endif
-                var deployFolder = Path.Combine(_projectPublishFolder, "publish");
-
-                if (!Directory.Exists(deployFolder))
-                {
-
-                    if (Directory.Exists(_projectPublishFolder))
-                    {
-                        var temp = new DirectoryInfo(_projectPublishFolder);
-                        var tempFolderList = temp.GetDirectories();
-                        if (tempFolderList.Length == 1)
-                        {
-                            deployFolder = tempFolderList.First().FullName;
-                        }
-                    }
-                }
+                var deployFolder = findUploadFolder(_projectPublishFolder);
 
                 var incrementFolder = Path.Combine(_projectPublishFolder, "increment");
                 if (Directory.Exists(incrementFolder))
@@ -64,6 +54,7 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 }
 
                 Log("rollback from folder ==>" + deployFolder);
+
 
                 var service = WindowServiceHelper.GetWindowServiceByName(this._serviceName);
                 if (!string.IsNullOrEmpty(service.Item2))
@@ -80,6 +71,25 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
                 {
                     return $"can not find executable path of service:{_serviceName}";
                 }
+
+                //处理使用 nssm 安装的 Windows 服务程序
+                if (projectLocation.EndsWith("nssm.exe", true, CultureInfo.CurrentCulture))
+                {
+                    Log("service is installed by NSSM process.");
+
+                    var _nssmOutput = "";
+                    ProcessHepler.RunExternalExe(projectLocation, $"get {_serviceName} Application", output =>
+                    {
+                        _nssmOutput += Regex.Replace(output, @"\0", "");
+                    });
+
+                    if (string.IsNullOrEmpty(_nssmOutput.Trim()))
+                    {
+                        return $"can not find real executable path of nssm service:{_serviceName}";
+                    }
+                    projectLocation = _nssmOutput;
+                }
+
 
                 var projectLocationFolder = string.Empty;
                 try
@@ -134,6 +144,10 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
             catch (Exception ex1)
             {
                 return ex1.Message;
+            }
+            finally
+            {
+                cleanRollbackTemp();
             }
         }
 

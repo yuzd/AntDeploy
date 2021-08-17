@@ -1,14 +1,15 @@
-﻿using AntDeployAgentWindows.Model;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
+using AntDeployAgentWindows.Model;
+using AntDeployAgentWindows.MyApp.Service;
 using AntDeployAgentWindows.Operation;
 using AntDeployAgentWindows.Operation.OperationTypes;
 using AntDeployAgentWindows.Util;
 using AntDeployAgentWindows.WebApiCore;
-using System;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
 
-namespace AntDeployAgentWindows.MyApp.Service.Impl
+namespace AntDeployAgent.MyApp.Service.Impl
 {
     public class LinuxRollback : PublishProviderBasicAPI
     {
@@ -33,28 +34,14 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
 
 #if NETCORE
         if (!System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(OSPlatform.Windows)){
-            Log("linux agent version ==>" + AntDeployAgentWindows.Version.VERSION);
+            Log("linux agent version ==>" + Version.VERSION);
         }else{
-            Log("netcore agent version ==>" + AntDeployAgentWindows.Version.VERSION);
+            Log("netcore agent version ==>" + Version.VERSION);
         }
 #else
-                Log("netframework agent version ==>" + AntDeployAgentWindows.Version.VERSION);
+                Log("netframework agent version ==>" + Version.VERSION);
 #endif
-                var deployFolder = Path.Combine(_projectPublishFolder, "publish");
-
-                if (!Directory.Exists(deployFolder))
-                {
-
-                    if (Directory.Exists(_projectPublishFolder))
-                    {
-                        var temp = new DirectoryInfo(_projectPublishFolder);
-                        var tempFolderList = temp.GetDirectories();
-                        if (tempFolderList.Length == 1)
-                        {
-                            deployFolder = tempFolderList.First().FullName;
-                        }
-                    }
-                }
+                var deployFolder = findUploadFolder(_projectPublishFolder);
 
                 var incrementFolder = Path.Combine(_projectPublishFolder, "increment");
                 if (Directory.Exists(incrementFolder))
@@ -134,6 +121,10 @@ namespace AntDeployAgentWindows.MyApp.Service.Impl
             catch (Exception ex1)
             {
                 return ex1.Message;
+            }
+            finally
+            {
+                cleanRollbackTemp();
             }
         }
 

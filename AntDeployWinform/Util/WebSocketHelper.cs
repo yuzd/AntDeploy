@@ -131,9 +131,10 @@ namespace AntDeployWinform.Util
                    }
                }).Start();
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 //ignore
+                receiveAction.Debug($"WebSocket Connect[{uri}] Fail:" + e);
                 receiveAction.Debug($"WebSocket Connect Fail,Server excute logs will accept from http request");
             }
             if (string.IsNullOrEmpty(key))

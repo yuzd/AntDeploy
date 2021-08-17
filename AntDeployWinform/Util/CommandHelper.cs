@@ -4,6 +4,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Text;
+using AntDeployWinform.Models;
+using Newtonsoft.Json;
 using NLog;
 
 namespace AntDeployWinform.Util
@@ -14,7 +17,7 @@ namespace AntDeployWinform.Util
     /// </summary>
     public class CommandHelper
     {
-  
+
 
 
         public static string MsBuildPath = "";
@@ -27,7 +30,7 @@ namespace AntDeployWinform.Util
         /// <param name="logger"></param>
         /// <param name="isWeb"></param>
         /// <returns></returns>
-        public static bool RunMsbuild(string path, string publishPath, NLog.Logger logger, bool isWeb = false,Func<bool> checkCancel = null)
+        public static bool RunMsbuild(string path, string publishPath, NLog.Logger logger, bool isWeb = false, Func<bool> checkCancel = null)
         {
             var msBuild = MsBuildPath;
             if (string.IsNullOrEmpty(msBuild))
@@ -132,7 +135,7 @@ namespace AntDeployWinform.Util
         /// <param name="publishPath"></param>
         /// <param name="logger"></param>
         /// <returns></returns>
-        public static bool RunDotnetExe(string projectPath,string fileName, string publishPath, string arguments,
+        public static bool RunDotnetExe(string projectPath, string fileName, string publishPath, string arguments,
             NLog.Logger logger, Func<bool> checkCancel = null)
         {
             if (!string.IsNullOrEmpty(publishPath))
@@ -154,6 +157,88 @@ namespace AntDeployWinform.Util
             return RunDotnetExternalExe(string.Empty, $"dotnet", arguments, logger, checkCancel);
         }
 
+        public static bool RunJibExe(string publishPath,string rootPath, DockerImageConfig config2,
+            NLog.Logger logger, Func<bool> checkCancel = null)
+        {
+
+            var config = DockerImageConfigGo.get(config2);
+            //判断当前运行目录有没有jib.exe文件
+            var jibExe = Path.Combine(rootPath, "jib.exe");
+            if (!File.Exists(jibExe))
+            {
+                logger.Error($"can not found :{jibExe}");
+                return false;
+            }
+
+            config.ImageLayersFolder = publishPath;
+            var dockerImageCache= Path.Combine(new DirectoryInfo(publishPath).Parent.FullName, "dockerImage_cache");
+            config.ApplicationLayersCacheDirectory = dockerImageCache;
+            //转成一个json文件
+            var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
+            string projectPramPath = "";
+            string tarFolder = "";
+            //通过tarimage判断是打包到本地还是publish到远程
+            try
+            {
+                var bash = "";
+                if (ImageReference.Parse(config.TargetImage) == null)
+                {
+                    var output = config.TargetImage;
+                    config.TargetImage = Path.GetFileNameWithoutExtension(config.TargetImage);
+                    tarFolder = Path.GetDirectoryName(output);
+                    var projectPram = JsonConvert.SerializeObject(config);
+                    var md5 = CodingHelper.MD5(projectPram);
+                    projectPramPath = Path.Combine(path, md5 + "_param.json");
+                    File.WriteAllText(projectPramPath, projectPram, Encoding.UTF8);
+                    //打包到本地文件
+                    bash = $"tar --outputfile=\"{output}\" --configfile=\"{projectPramPath}\"";
+                }
+                else
+                {
+                    var projectPram = JsonConvert.SerializeObject(config);
+                    var md5 = CodingHelper.MD5(projectPram);
+                    projectPramPath = Path.Combine(path, md5 + "_param.json");
+                    File.WriteAllText(projectPramPath, projectPram, Encoding.UTF8);
+                    //发布到远程
+                    bash = $"push --configfile=\"{projectPramPath}\"";
+                }
+
+
+                return RunDotnetExternalExe(rootPath, $"jib.exe", bash, logger, checkCancel,true);
+            }
+            finally
+            {
+                LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "global pull image cache folder  ==> ");
+                publisEvent.Properties["ShowLink"] = "file://%LOCALAPPDATA%/fibdotnet";
+                publisEvent.LoggerName = "rich_docker_image_log";
+                logger.Log(publisEvent);
+
+                LogEventInfo publisEvent2 = new LogEventInfo(LogLevel.Info, "", "local build image cache folder  ==> ");
+                publisEvent2.Properties["ShowLink"] = "file://" + dockerImageCache.Replace("\\", "\\\\");
+                publisEvent2.LoggerName = "rich_docker_image_log";
+                logger.Log(publisEvent2);
+
+                if (!string.IsNullOrEmpty(tarFolder))
+                {
+                    LogEventInfo publisEvent3 =
+                        new LogEventInfo(LogLevel.Info, "", "local build image tar folder  ==> ");
+                    publisEvent3.Properties["ShowLink"] = "file://" + tarFolder.Replace("\\", "\\\\");
+                    publisEvent3.LoggerName = "rich_docker_image_log";
+                    logger.Log(publisEvent3);
+                }
+
+                try
+                {
+                    File.Delete(projectPramPath);
+
+                }
+                catch (Exception e)
+                {
+                }
+            }
+
+        }
         /// <summary>
         /// 执行dotnet Command命令
         /// </summary>
@@ -162,14 +247,15 @@ namespace AntDeployWinform.Util
         /// <param name="arguments"></param>
         /// <param name="logger"></param>
         /// <returns></returns>
-        private static bool RunDotnetExternalExe(string projectPath, string fileName, string arguments, NLog.Logger logger, Func<bool> checkCancel = null)
+        private static bool RunDotnetExternalExe(string projectPath, string fileName, string arguments, NLog.Logger logger, Func<bool> checkCancel = null,bool fullLog = false)
         {
             Process process = null;
-            BuildProgress pr = null;
+            IlogProgress pr = null;
             try
             {
                 try
                 {
+                    
                     logger.Info(fileName + " " + arguments);
                 }
                 catch (Exception)
@@ -181,8 +267,15 @@ namespace AntDeployWinform.Util
                     throw new ArgumentException(nameof(arguments));
                 }
 
+                if (fullLog)
+                {
+                    pr = new FullLogProgress(logger);
+                }
+                else
+                {
+                    pr = new BuildProgress(logger);
+                }
                 //执行dotnet命令如果 projectdir路径含有空格 或者 outDir 路径含有空格 都是没有问题的
-                pr = new BuildProgress(logger);
 
                 process = new Process();
 
@@ -217,7 +310,7 @@ namespace AntDeployWinform.Util
                             {
                                 //ignore
                             }
-                          
+
                             try
                             {
                                 process?.Kill();
@@ -234,7 +327,7 @@ namespace AntDeployWinform.Util
                         {
                             logger.Info(args.Data);
                         }
-                        if (args.Data.Contains(": warning"))
+                        if (args.Data.Contains(": warning") || args.Data.Contains("[Warn]"))
                         {
                             pr.Log(new BuildEventArgs
                             {
@@ -242,8 +335,13 @@ namespace AntDeployWinform.Util
                                 message = args.Data
                             });
                         }
-                        else if (args.Data.Contains(": error"))
+                        else if (args.Data.Contains(": error") || args.Data.Contains("[Error]"))
                         {
+                            if (pr is BuildProgress)
+                            {
+                                pr.Dispose();
+                                pr = new FullLogProgress(logger);//一旦有出错 后面就走全部日志
+                            }
                             logger.Error(args.Data);
                         }
                         else
@@ -260,7 +358,11 @@ namespace AntDeployWinform.Util
 
                 process.ErrorDataReceived += (sender, data) =>
                 {
-
+                    if (pr is BuildProgress)
+                    {
+                        pr.Dispose();
+                        pr = new FullLogProgress(logger);//一旦有出错 后面就走全部日志
+                    }
                     if (checkCancel != null)
                     {
                         var r = checkCancel();
@@ -321,7 +423,7 @@ namespace AntDeployWinform.Util
                         return false;
                     }
                 }
-               
+
                 logger?.Error(ex.Message);
                 return false;
             }
@@ -351,7 +453,7 @@ namespace AntDeployWinform.Util
                 {
                     //ignore
                 }
-                
+
             }
         }
 
@@ -406,10 +508,10 @@ namespace AntDeployWinform.Util
         /// <summary>
         /// 运行bash命令
         /// </summary>
-        public static bool RunCommand(string commandToRun,  NLog.Logger logger, Func<bool> checkCancel = null, string workingDirectory = null)
+        public static bool RunCommand(string commandToRun, NLog.Logger logger, Func<bool> checkCancel = null, string workingDirectory = null)
         {
             Process process = null;
-            BuildProgress pr = null;
+            IlogProgress pr = null;
 
             try
             {
@@ -479,6 +581,11 @@ namespace AntDeployWinform.Util
                         }
                         else if (args.Data.Contains(": error"))
                         {
+                            if (pr is BuildProgress)
+                            {
+                                pr.Dispose();
+                                pr = new FullLogProgress(logger);//一旦有出错 后面就走全部日志
+                            }
                             logger.Error(args.Data);
                         }
                         else
@@ -498,7 +605,11 @@ namespace AntDeployWinform.Util
 
                 process.ErrorDataReceived += (sender, data) =>
                 {
-
+                    if (pr is BuildProgress)
+                    {
+                        pr.Dispose();
+                        pr = new FullLogProgress(logger);//一旦有出错 后面就走全部日志
+                    }
                     if (checkCancel != null)
                     {
                         var r = checkCancel();
@@ -627,7 +738,42 @@ namespace AntDeployWinform.Util
 
     }
 
-    public class BuildProgress:IDisposable
+    public interface IlogProgress: IDisposable
+    {
+        void Log(BuildEventArgs ar);
+    }
+
+    public class FullLogProgress : IlogProgress
+    {
+        private readonly Logger _logger;
+        public FullLogProgress(Logger logger)
+        {
+            _logger = logger;
+        }
+        public void Dispose()
+        {
+
+        }
+
+        public void Log(BuildEventArgs objEventArgs)
+        {
+            if (objEventArgs.level == LogLevel.Warn)
+            {
+                _logger.Warn(objEventArgs.message);
+                return;
+            }
+
+            if (objEventArgs.level == LogLevel.Error)
+            {
+                _logger.Error(objEventArgs.message);
+                return;
+            }
+
+            _logger.Info(objEventArgs.message);
+        }
+    }
+
+    public class BuildProgress : IlogProgress
     {
         public event EventHandler<BuildEventArgs> BuildEvent;
 

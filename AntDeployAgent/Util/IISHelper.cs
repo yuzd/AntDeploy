@@ -192,6 +192,52 @@ namespace AntDeployAgentWindows.Util
             }
         }
 
+
+        public static void KillSiteProcess(string siteName)
+        {
+            try
+            {
+                int pid = 0;
+                using (ServerManager iisManager = new ServerManager())
+                {
+                    try
+                    {
+                        Site site = iisManager.Sites[siteName];
+                        if (site != null)
+                        {
+                            ApplicationPool applicationPool = iisManager.ApplicationPools[site.Applications[0].ApplicationPoolName];
+                            if (applicationPool != null && applicationPool.WorkerProcesses.Count > 0)
+                            {
+                                pid = applicationPool.WorkerProcesses[0].ProcessId;
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        //Ignore
+                    }
+                }
+
+                if (pid < 1)
+                {
+                    return;
+                }
+
+
+                using (Process process = Process.GetProcessById(pid))
+                {
+                    process.Kill();
+                    process.WaitForExit(5000);
+                    process.Close();
+                }
+            }
+            catch (Exception)
+            {
+                //ignore
+            }
+
+        }
+
         public static string WebsiteStop(string siteName)
         {
             try

@@ -104,9 +104,63 @@ namespace AntDeployWinform.Models
         public WindowsServiveConfig WindowsServiveConfig { get; set; } = new WindowsServiveConfig();
         public LinuxServiveConfig LinuxServiveConfig { get; set; } = new LinuxServiveConfig();
         public DockerConfig DockerConfig { get; set; } = new DockerConfig();
+        public DockerImageConfig DockerImageConfig { get; set; } = new DockerImageConfig();
 
     }
 
+    public class DockerImageConfigGo : DockerImageConfig
+    {
+        public string ImageLayersFolder { get; set; }
+        public string ImageWorkingDirectory { get; set; } = "/publish";
+
+        public string ApplicationLayersCacheDirectory { get; set; }
+
+        public static DockerImageConfigGo get(DockerImageConfig config)
+        {
+            DockerImageConfigGo d = new DockerImageConfigGo();
+            d.BaseHttpProxy = config.BaseHttpProxy;
+            d.BaseImage = config.BaseImage;
+            d.BaseImageCredential = config.BaseImageCredential;
+            d.TargetImage = config.TargetImage;
+            d.TargetHttpProxy = config.TargetHttpProxy;
+            d.TargetTags = config.TargetTags;
+            d.TargetImageCredential = config.TargetImageCredential;
+            d.ImageFormat = config.ImageFormat;
+            d.Entrypoint = config.Entrypoint;
+            d.Cmd = config.Cmd;
+            d.IgnoreList = config.IgnoreList;
+            return d;
+        }
+    }
+    public class DockerImageConfig
+    {
+        public DockerImageConfig()
+        {
+            BaseImageCredential = new ImageCredential();
+            TargetImageCredential = new ImageCredential();
+            IgnoreList = new List<string>();
+        }
+        public string BaseHttpProxy { get; set; }
+        public string BaseImage { get; set; }
+        public ImageCredential BaseImageCredential { get; set; }
+        public string TargetImage { get; set; }
+        public string TargetHttpProxy { get; set; }
+        public string[] TargetTags { get; set; }
+        public ImageCredential TargetImageCredential { get; set; }
+
+        public string ImageFormat { get; set; }
+      
+        public string[] Entrypoint { get; set; }
+        public string[] Cmd { get; set; }
+        public List<string> IgnoreList { get; set; }
+
+    }
+
+    public class ImageCredential
+    {
+        public string UserName { get; set; }
+        public string Password { get; set; }
+    }
     public class IIsConfig
     {
         public string SdkType { get; set; }

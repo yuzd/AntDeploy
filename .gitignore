@@ -263,3 +263,5 @@ Test/
 NLog.Windows.Forms/
 AntDeployAgentWindowsService/agent_publish/antdeploy/
 AntDeployAgentWindowsService/agent_publish/
+AntDeploy2019/AntDeployVsix/jib.exe
+AntDeploy/jib.exe

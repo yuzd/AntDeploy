@@ -39,6 +39,10 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.comboBox_service_start_type = new System.Windows.Forms.ComboBox();
+            this.txt_service_param = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.box_windows_service_nssm = new System.Windows.Forms.CheckBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -107,10 +111,38 @@
             resources.GetString("comboBox_service_start_type.Items1")});
             this.comboBox_service_start_type.Name = "comboBox_service_start_type";
             // 
+            // txt_service_param
+            // 
+            resources.ApplyResources(this.txt_service_param, "txt_service_param");
+            this.txt_service_param.Name = "txt_service_param";
+            // 
+            // label4
+            // 
+            resources.ApplyResources(this.label4, "label4");
+            this.label4.Name = "label4";
+            // 
+            // box_windows_service_nssm
+            // 
+            resources.ApplyResources(this.box_windows_service_nssm, "box_windows_service_nssm");
+            this.box_windows_service_nssm.Name = "box_windows_service_nssm";
+            this.box_windows_service_nssm.UseVisualStyleBackColor = true;
+            // 
+            // label5
+            // 
+            resources.ApplyResources(this.label5, "label5");
+            this.label5.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.label5.ForeColor = System.Drawing.Color.Red;
+            this.label5.Name = "label5";
+            this.label5.Click += new System.EventHandler(this.label5_Click);
+            // 
             // FirstService
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.box_windows_service_nssm);
+            this.Controls.Add(this.txt_service_param);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.comboBox_service_start_type);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.btn_continue);
@@ -143,5 +175,9 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox comboBox_service_start_type;
+        private System.Windows.Forms.TextBox txt_service_param;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.CheckBox box_windows_service_nssm;
+        private System.Windows.Forms.Label label5;
     }
 }
