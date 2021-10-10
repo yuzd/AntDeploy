@@ -1413,6 +1413,18 @@ namespace AntDeployWinform.Winform
                     {
                         try
                         {
+                            //检查是否启动了系统代理
+                            var systemProxy = WebRequest.GetSystemWebProxy();
+                            if (systemProxy != null)
+                            {
+                                var destination = new Uri($"http://{server.Item1}");
+                                var proxyServer = systemProxy.GetProxy(destination);
+                                if (proxyServer != null)
+                                {
+                                    this.nlog_config.Warn($"[pay attention] find system proxy:[{proxyServer}] for [http://{server.Item1}]");
+                                }
+                            }
+
                             this.nlog_config.Info($"Connect Start -> Host:【{server.Item1 + (!string.IsNullOrEmpty(server.Item3) ? $"[{server.Item3}]" : "")}】");
                             var result = client.DownloadString($"http://{server.Item1}/publish?Token={WebUtility.UrlEncode(server.Item2)}");
                             if (result.Equals("success"))
