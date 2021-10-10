@@ -6248,7 +6248,7 @@ namespace AntDeployWinform.Winform
         {
             if (string.IsNullOrEmpty(projectPath))
             {
-                GlobalConfig = new GlobalConfig() { ProjectPathList = new List<string>() };
+                GlobalConfig = new GlobalConfig() { ProjectPathList = new List<string>() ,IsChinease = CodingHelper.IsChineseSystem()};
                 return;
             }
 
@@ -6275,7 +6275,7 @@ namespace AntDeployWinform.Winform
             }
             else
             {
-                GlobalConfig = new GlobalConfig() { ProjectPathList = new List<string>() };
+                GlobalConfig = new GlobalConfig() { ProjectPathList = new List<string>(), IsChinease = CodingHelper.IsChineseSystem() };
             }
 
         }

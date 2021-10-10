@@ -17,6 +17,18 @@ namespace AntDeployWinform.Util
 {
     public static class CodingHelper
     {
+        //当前操作系统是否为简体中文
+        public static bool IsChineseSystem()
+        {
+            try
+            {
+                return System.Threading.Thread.CurrentThread.CurrentCulture.Name.StartsWith("zh");
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
 
         public static string GetWindowsPath(string path)
         {
