@@ -9,8 +9,8 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using AntDeployVsix;
 using Newtonsoft.Json;
+using AntDeployV2;
 
 namespace yuzd.AntDeploy
 {
@@ -27,6 +27,8 @@ namespace yuzd.AntDeploy
         public const string Web_Application = "{349C5851-65DF-11DA-9384-00065B846F21}";
         public const string Web_ASPNET5 = "{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}";
         public const string Web_ASPNET6 = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}";
+
+
         public static bool IsWebProject(Project project)
         {
             try
@@ -95,7 +97,7 @@ namespace yuzd.AntDeploy
         {
             try
             {
-                return AntDeployPackage.DTE.Version;
+                return AntDeployV2Package.DTE.Version;
             }
             catch (Exception)
             {
@@ -113,7 +115,7 @@ namespace yuzd.AntDeploy
         ///<summary>Gets the Solution Items solution folder in the current solution, creating it if it doesn't exist.</summary>
         public static Project GetSolutionItemsProject()
         {
-            Solution2 solution = AntDeployPackage.DTE.Solution as Solution2;
+            Solution2 solution = AntDeployV2Package.DTE.Solution as Solution2;
             return solution.Projects
                            .OfType<Project>()
                            .FirstOrDefault(p => p.Name.Equals(SolutionItemsFolder, StringComparison.OrdinalIgnoreCase))
@@ -134,7 +136,7 @@ namespace yuzd.AntDeploy
 
                 if (project == null || project.Collection == null)
                 {
-                    var doc = AntDeployPackage.DTE.ActiveDocument;
+                    var doc = AntDeployV2Package.DTE.ActiveDocument;
                     if (doc != null && !string.IsNullOrEmpty(doc.FullName))
                         return GetProjectFolder(doc.FullName);
                     return string.Empty;
@@ -225,7 +227,7 @@ namespace yuzd.AntDeploy
         {
             try
             {
-                Array activeSolutionProjects = AntDeployPackage.DTE.ActiveSolutionProjects as Array;
+                Array activeSolutionProjects = AntDeployV2Package.DTE.ActiveSolutionProjects as Array;
 
                 if (activeSolutionProjects != null && activeSolutionProjects.Length > 0)
                     return activeSolutionProjects.GetValue(0) as Project;
@@ -327,7 +329,7 @@ namespace yuzd.AntDeploy
         ///<summary>Gets the full paths to the currently selected item(s) in the Solution Explorer.</summary>
         public static IEnumerable<string> GetSelectedItemPaths(DTE2 dte = null)
         {
-            var items = (Array)(dte ?? AntDeployPackage.DTE).ToolWindows.SolutionExplorer.SelectedItems;
+            var items = (Array)(dte ?? AntDeployV2Package.DTE).ToolWindows.SolutionExplorer.SelectedItems;
             foreach (UIHierarchyItem selItem in items)
             {
                 var item = selItem.Object as ProjectItem;
@@ -340,7 +342,7 @@ namespace yuzd.AntDeploy
         ///<summary>Gets the the currently selected project(s) in the Solution Explorer.</summary>
         public static IEnumerable<Project> GetSelectedProjects()
         {
-            var items = (Array)AntDeployPackage.DTE.ToolWindows.SolutionExplorer.SelectedItems;
+            var items = (Array)AntDeployV2Package.DTE.ToolWindows.SolutionExplorer.SelectedItems;
             foreach (UIHierarchyItem selItem in items)
             {
                 var item = selItem.Object as Project;
@@ -356,7 +358,7 @@ namespace yuzd.AntDeploy
         {
             try
             {
-                var dte = AntDeployPackage.DTE;
+                var dte = AntDeployV2Package.DTE;
 
                 if (dte == null || !File.Exists(fileName) || dte.Solution.FindProjectItem(fileName) == null)
                     return true;
@@ -376,7 +378,7 @@ namespace yuzd.AntDeploy
         ///<summary>Gets the directory containing the active solution file.</summary>
         public static string GetSolutionFolderPath()
         {
-            EnvDTE.Solution solution = AntDeployPackage.DTE.Solution;
+            EnvDTE.Solution solution = AntDeployV2Package.DTE.Solution;
 
             if (solution == null)
                 return null;
@@ -414,7 +416,7 @@ namespace yuzd.AntDeploy
         ///<summary>Gets the the currently selected file(s) in the Solution Explorer.</summary>
         public static IEnumerable<ProjectItem> GetSelectedItems()
         {
-            var items = (Array)AntDeployPackage.DTE.ToolWindows.SolutionExplorer.SelectedItems;
+            var items = (Array)AntDeployV2Package.DTE.ToolWindows.SolutionExplorer.SelectedItems;
             foreach (UIHierarchyItem selItem in items)
             {
                 var item = selItem.Object as ProjectItem;
@@ -453,7 +455,7 @@ namespace yuzd.AntDeploy
 
         public static ProjectItem GetActiveFile()
         {
-            var doc = AntDeployPackage.DTE.ActiveDocument;
+            var doc = AntDeployV2Package.DTE.ActiveDocument;
 
             if (doc == null)
                 return null;
@@ -468,7 +470,7 @@ namespace yuzd.AntDeploy
         {
             try
             {
-                return AntDeployPackage.DTE.Solution.FindProjectItem(fileName);
+                return AntDeployV2Package.DTE.Solution.FindProjectItem(fileName);
             }
             catch (Exception exception)
             {
