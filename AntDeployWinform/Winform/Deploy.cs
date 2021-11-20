@@ -1421,7 +1421,7 @@ namespace AntDeployWinform.Winform
                                 var proxyServer = systemProxy.GetProxy(destination);
                                 if (proxyServer != null)
                                 {
-                                    this.nlog_config.Warn($"[pay attention] find system proxy:[{proxyServer}] for [http://{server.Item1}]");
+                                    this.nlog_config.Warn($"[pay attention] find system proxy:[{proxyServer}]");
                                 }
                             }
 
