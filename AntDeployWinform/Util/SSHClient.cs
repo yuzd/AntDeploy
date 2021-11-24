@@ -99,6 +99,7 @@ namespace AntDeployWinform.Util
         public string NetCoreEnvironment { get; set; }
         public string NetCoreENTRYPOINT { get; set; }
         public bool Increment { get; set; }
+        public bool UseAsiaShanghai { get; set; }
         public bool IsSelect { get; set; }
         public string ClientDateTimeFolderName { get; set; }
         public string ProjectDeployRoot { get; set; }
@@ -1350,6 +1351,14 @@ namespace AntDeployWinform.Util
 
                     writer.WriteLine($"ENV ASPNETCORE_URLS=http://*:{this.ContainerPort}");
                     _logger($"ENV ASPNETCORE_URLS=http://*:{this.ContainerPort}", NLog.LogLevel.Info);
+
+                    if (UseAsiaShanghai)
+                    {
+                        writer.WriteLine("RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime");
+                        _logger("RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime", NLog.LogLevel.Info);
+                    }
+                    //RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+                    //RUN echo 'Asia/Shanghai' >/etc/timezone
 
                     if (!string.IsNullOrEmpty(environment))
                     {

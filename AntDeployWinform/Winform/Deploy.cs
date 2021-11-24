@@ -605,6 +605,7 @@ namespace AntDeployWinform.Winform
             this.checkBox_Chinese.Checked = GlobalConfig.IsChinease;
             ProgressBox.IsEnableGroup = GlobalConfig.EnableEnvGroup;
             this.chk_global_useCheckBox.Checked = GlobalConfig.EnableEnvGroup;
+            this.chk_use_AsiaShanghai_timezone.Checked = GlobalConfig.UseAsiaShanghai;
             this.checkBox_save_deploy_log.Checked = GlobalConfig.SaveLogs;
             this.checkBox_multi_deploy.Checked = GlobalConfig.MultiInstance;
 
@@ -6907,6 +6908,7 @@ namespace AntDeployWinform.Winform
                            Volume = DeployConfig.DockerConfig.Volume,
                            Other = DeployConfig.DockerConfig.Other,
                            Remark = confirmResult.Item2,
+                           UseAsiaShanghai = GlobalConfig.UseAsiaShanghai,
                            Increment = this.PluginConfig.DockerEnableIncrement || this.PluginConfig.DockerServiceEnableSelectDeploy,
                            Sudo = this.PluginConfig.DockerEnableSudo?"sudo":"",
                            IsSelect = this.PluginConfig.DockerServiceEnableSelectDeploy,
@@ -9613,6 +9615,11 @@ namespace AntDeployWinform.Winform
             this.list_dockerImage_ignore.Items.RemoveAt(this.list_dockerImage_ignore.SelectedIndex);
             if (this.list_dockerImage_ignore.Items.Count >= 0)
                 this.list_dockerImage_ignore.SelectedIndex = this.list_dockerImage_ignore.Items.Count - 1;
+        }
+
+        private void chk_use_AsiaShanghai_timezone_Click(object sender, EventArgs e)
+        {
+            GlobalConfig.UseAsiaShanghai = this.chk_use_AsiaShanghai_timezone.Checked;
         }
     }
 }
