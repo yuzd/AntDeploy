@@ -132,12 +132,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="lib\win32\x64\git2-572e4d8.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="lib\win32\x86\git2-572e4d8.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Logo1.ico" />
     <Content Include="netstandard.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

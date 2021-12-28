@@ -9621,5 +9621,19 @@ namespace AntDeployWinform.Winform
         {
             GlobalConfig.UseAsiaShanghai = this.chk_use_AsiaShanghai_timezone.Checked;
         }
+
+        private void btn_auto_find_msbuild_Click(object sender, EventArgs e)
+        {
+            var msbuildPath = CommandHelper.GetMsBuildPath();
+            if (!string.IsNullOrEmpty(msbuildPath))
+            {
+                this.txt_msbuild_path.Text = msbuildPath;
+                CommandHelper.MsBuildPath = GlobalConfig.MsBuildPath = msbuildPath;
+            }
+            else
+            {
+                MessageBoxEx.Show(this, "Find Msbuild fail");
+            }
+        }
     }
 }

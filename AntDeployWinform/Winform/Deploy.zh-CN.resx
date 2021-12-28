@@ -386,6 +386,9 @@
   <data name="btn_linux_server_testAll.Text" xml:space="preserve">
     <value>测试连接全部</value>
   </data>
+  <data name="btn_auto_find_msbuild.Text" xml:space="preserve">
+    <value>自动查询</value>
+  </data>
   <data name="chk_use_AsiaShanghai_timezone.Size" type="System.Drawing.Size, System.Drawing">
     <value>324, 16</value>
   </data>
@@ -465,7 +468,10 @@
     <value>362, 9</value>
   </data>
   <data name="btn_choose_msbuild.Location" type="System.Drawing.Point, System.Drawing">
-    <value>523, 167</value>
+    <value>523, 162</value>
+  </data>
+  <data name="btn_choose_msbuild.Size" type="System.Drawing.Size, System.Drawing">
+    <value>69, 23</value>
   </data>
   <data name="label36.Location" type="System.Drawing.Point, System.Drawing">
     <value>49, 174</value>

@@ -238,6 +238,7 @@
             this.b_env_add_by_name = new System.Windows.Forms.Button();
             this.combo_env_list = new System.Windows.Forms.ComboBox();
             this.pag_advance_setting = new System.Windows.Forms.TabPage();
+            this.btn_auto_find_msbuild = new System.Windows.Forms.Button();
             this.chk_use_AsiaShanghai_timezone = new System.Windows.Forms.CheckBox();
             this.label52 = new System.Windows.Forms.Label();
             this.chk_global_useCheckBox = new System.Windows.Forms.CheckBox();
@@ -2012,6 +2013,7 @@
             // pag_advance_setting
             // 
             resources.ApplyResources(this.pag_advance_setting, "pag_advance_setting");
+            this.pag_advance_setting.Controls.Add(this.btn_auto_find_msbuild);
             this.pag_advance_setting.Controls.Add(this.chk_use_AsiaShanghai_timezone);
             this.pag_advance_setting.Controls.Add(this.label52);
             this.pag_advance_setting.Controls.Add(this.chk_global_useCheckBox);
@@ -2039,6 +2041,14 @@
             this.pag_advance_setting.Controls.Add(this.btn_shang);
             this.pag_advance_setting.Name = "pag_advance_setting";
             this.pag_advance_setting.UseVisualStyleBackColor = true;
+            // 
+            // btn_auto_find_msbuild
+            // 
+            resources.ApplyResources(this.btn_auto_find_msbuild, "btn_auto_find_msbuild");
+            this.btn_auto_find_msbuild.ForeColor = System.Drawing.Color.Red;
+            this.btn_auto_find_msbuild.Name = "btn_auto_find_msbuild";
+            this.btn_auto_find_msbuild.UseVisualStyleBackColor = true;
+            this.btn_auto_find_msbuild.Click += new System.EventHandler(this.btn_auto_find_msbuild_Click);
             // 
             // chk_use_AsiaShanghai_timezone
             // 
@@ -2520,5 +2530,6 @@
         private ExRichTextBox rich_config_log;
         private System.Windows.Forms.Label label67;
         private System.Windows.Forms.CheckBox chk_use_AsiaShanghai_timezone;
+        private System.Windows.Forms.Button btn_auto_find_msbuild;
     }
 }
