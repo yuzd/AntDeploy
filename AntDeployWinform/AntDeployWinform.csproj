@@ -39,6 +39,12 @@
     <Reference Include="Microsoft.Build.Locator">
       <HintPath>..\DLL\Microsoft.Build.Locator.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack">
+      <HintPath>..\DLL\Microsoft.WindowsAPICodePack.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack.Shell">
+      <HintPath>..\DLL\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\AntDeploy\Newtonsoft.Json.dll</HintPath>
@@ -49,6 +55,7 @@
     <Reference Include="NLog.Windows.Forms">
       <HintPath>..\DLL\NLog.Windows.Forms.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Configuration.Install" />
@@ -117,8 +124,10 @@
     <Compile Include="Util\HttpRequestClient.cs" />
     <Compile Include="Util\ImageReference.cs" />
     <Compile Include="Util\SSHClient.cs" />
+    <Compile Include="Util\SysMenu.cs" />
     <Compile Include="Util\WebSocketHelper.cs" />
     <Compile Include="Util\WebUtil.cs" />
+    <Compile Include="Util\WindowsMessageHelper.cs" />
     <Compile Include="Util\ZipHelper.cs" />
     <Compile Include="Vsix.cs" />
     <Compile Include="Winform\About.cs">

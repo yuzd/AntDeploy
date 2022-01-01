@@ -69,6 +69,8 @@ namespace AntDeployWinform.Winform
         private string iconPath = string.Empty;
 
         ToastHelper.NotificationService notificationService = new NotificationService();
+
+        private SystemMenu systemMemu;
         public Deploy(string projectPath = null, ProjectParam project = null)
         {
 
@@ -118,7 +120,22 @@ namespace AntDeployWinform.Winform
             this.txt_linux_service_env.DataBindings.Add("Text", this, "BindLinuxEnvName", false,DataSourceUpdateMode.OnPropertyChanged);
 
             notificationService.Init("AntDeploy");
+            systemMemu = new SystemMenu(this.Handle);
+            
         }
+
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == WindowsMessageHelper.JumplistHelpArgs)
+            {
+               Process.Start("https://github.com/yuzd/AntDeploy");
+            }
+            else
+            {
+                base.WndProc(ref m);
+            }
+        }
+
         public string BindDockerVolume
         {
             get { return _dockerVolume; }
@@ -411,12 +428,14 @@ namespace AntDeployWinform.Winform
                 this.btn_choose_folder.Visible = false;
                 this.btn_folder_clear.Visible = false;
 
-                this.Text += $"(Version:{Vsix.VERSION})[FolderDeploy:{ProjectName}]";
+                //this.Text += $"(Version:{Vsix.VERSION})[FolderDeploy:{ProjectName}]";
             }
-            else
-            {
-                this.Text += $"(Version:{Vsix.VERSION})[{ProjectName}]";
-            }
+            //else
+            //{
+            //    this.Text += $"(Version:{Vsix.VERSION})[{ProjectName}]";
+            //}
+
+            this.Text = Vsix.FORM_NAME;
 
             if (string.IsNullOrEmpty(project.DomainPath))
             {
