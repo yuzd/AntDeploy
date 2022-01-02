@@ -3,6 +3,7 @@ using AntDeployWinform.Models;
 using AntDeployWinform.Util;
 using AntDeployWinform.Winform;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
@@ -29,7 +30,8 @@ namespace AntDeployApp
 
                 if (args.Length == 2)
                 {
-                    if (File.Exists(args[1]))
+                    var file = args[1];
+                    if (File.Exists(file))
                     {
                         var fileInfo = File.ReadAllText(args[1]);
                         if (string.IsNullOrEmpty(fileInfo))
@@ -79,7 +81,14 @@ namespace AntDeployApp
                 switch (Environment.GetCommandLineArgs()[1])
                 {
                     case "help":
-                        WindowsMessageHelper.SendMessage(Vsix.FORM_NAME, WindowsMessageHelper.JumplistHelpArgs);
+                        Process.Start("https://github.com/yuzd/AntDeploy");
+                        break;
+                        
+                    default:
+                        File.WriteAllText(@"D:\1.txt", "dada");
+                        Application.EnableVisualStyles();
+                        Application.SetCompatibleTextRenderingDefault(false);
+                        Application.Run(new Deploy(Environment.GetCommandLineArgs()[1],new ProjectParam { IsFirst = true}));
                         break;
                 }
             }
