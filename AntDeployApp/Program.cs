@@ -85,12 +85,17 @@ namespace AntDeployApp
                         break;
                         
                     default:
-                        File.WriteAllText(@"D:\1.txt", "dada");
                         Application.EnableVisualStyles();
                         Application.SetCompatibleTextRenderingDefault(false);
                         Application.Run(new Deploy(Environment.GetCommandLineArgs()[1],new ProjectParam { IsFirst = true}));
                         break;
                 }
+            }
+            else
+            {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new Deploy());
             }
         }
     }
