@@ -60,6 +60,7 @@
       <ResourceName>Menus.ctmenu</ResourceName>
     </VSCTCompile>
     <None Include="Key.snk" />
+    <None Include="LibGit2Sharp.dll.config" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
@@ -106,6 +107,12 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Microsoft.Build.Locator.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Microsoft.WindowsAPICodePack.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Microsoft.WindowsAPICodePack.Shell.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="netstandard.dll">

@@ -18,9 +18,7 @@ namespace AntDeployApp
         [STAThread]
         static void Main()
         {
-            bool firstInstance = false;
-
-            Mutex mtx = new Mutex(true, Vsix.FORM_NAME, out firstInstance);
+            Mutex mtx = new Mutex(true, Vsix.FORM_NAME, out var firstInstance);
             if (firstInstance)
             {
                 string[] args = Environment.GetCommandLineArgs();
@@ -31,7 +29,19 @@ namespace AntDeployApp
                 if (args.Length == 2)
                 {
                     var file = args[1];
-                    if (File.Exists(file))
+                    bool isFile = File.Exists(file);
+                    var isCsprojFile = file.ToLower().EndsWith(".csproj");
+                    if (file.StartsWith("help"))
+                    {
+                        Process.Start("https://github.com/yuzd/AntDeploy");
+                    }
+                    else if (isCsprojFile || Directory.Exists(file))
+                    {
+                        Application.EnableVisualStyles();
+                        Application.SetCompatibleTextRenderingDefault(false);
+                        Application.Run(new Deploy(args[1], new ProjectParam { IsFirst = true }));
+                    }
+                    else if (isFile)
                     {
                         var fileInfo = File.ReadAllText(args[1]);
                         if (string.IsNullOrEmpty(fileInfo))

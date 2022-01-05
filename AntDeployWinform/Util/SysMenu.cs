@@ -40,6 +40,7 @@ namespace AntDeployWinform.Util
         public void AddToRecentList(List<string> projectPathList)
         {
             if (projectPathList == null || !projectPathList.Any()) return;
+            projectPathList = projectPathList.Distinct().ToList();
             JumpListCustomCategory userActionsCategory = new JumpListCustomCategory("Recent");
             var rt = new List<JumpListLink>();
             foreach (string projectPath in projectPathList)
@@ -48,9 +49,14 @@ namespace AntDeployWinform.Util
                 {
                     continue;
                 }
-                JumpListLink userActionLink = new JumpListLink(Assembly.GetEntryAssembly().Location, new FileInfo(projectPath).Name);
-                userActionLink.Arguments = projectPath;
-                rt.Add(userActionLink);
+
+                if (File.Exists(projectPath) || Directory.Exists(projectPath))
+                {
+                    JumpListLink userActionLink = new JumpListLink(Assembly.GetEntryAssembly().Location, new FileInfo(projectPath).Name);
+                    userActionLink.Arguments = projectPath;
+                    rt.Add(userActionLink);
+                }
+              
             }
             if (!rt.Any()) return;
             userActionsCategory.AddJumpListItems(rt.ToArray());
