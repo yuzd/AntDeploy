@@ -1,15 +1,9 @@
-﻿using AntDeployWinform.Models;
-using Microsoft.WindowsAPICodePack.Shell;
-using Microsoft.WindowsAPICodePack.Taskbar;
+﻿using Microsoft.WindowsAPICodePack.Taskbar;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace AntDeployWinform.Util
 {
@@ -39,29 +33,37 @@ namespace AntDeployWinform.Util
 
         public void AddToRecentList(List<string> projectPathList)
         {
-            if (projectPathList == null || !projectPathList.Any()) return;
-            projectPathList = projectPathList.Distinct().ToList();
-            JumpListCustomCategory userActionsCategory = new JumpListCustomCategory("Recent");
-            var rt = new List<JumpListLink>();
-            foreach (string projectPath in projectPathList)
+            try
             {
-                if (string.IsNullOrEmpty(projectPath))
+                if (projectPathList == null || !projectPathList.Any()) return;
+                projectPathList = projectPathList.Distinct().ToList();
+                JumpListCustomCategory userActionsCategory = new JumpListCustomCategory("Recent");
+                var rt = new List<JumpListLink>();
+                foreach (string projectPath in projectPathList)
                 {
-                    continue;
-                }
+                    if (string.IsNullOrEmpty(projectPath))
+                    {
+                        continue;
+                    }
 
-                if (File.Exists(projectPath) || Directory.Exists(projectPath))
-                {
-                    JumpListLink userActionLink = new JumpListLink(Assembly.GetEntryAssembly().Location, new FileInfo(projectPath).Name);
-                    userActionLink.Arguments = projectPath;
-                    rt.Add(userActionLink);
+                    if (File.Exists(projectPath) || Directory.Exists(projectPath))
+                    {
+                        JumpListLink userActionLink = new JumpListLink(Assembly.GetEntryAssembly().Location, new FileInfo(projectPath).Name);
+                        userActionLink.Arguments = projectPath;
+                        rt.Add(userActionLink);
+                    }
+
                 }
-              
+                if (!rt.Any()) return;
+                userActionsCategory.AddJumpListItems(rt.ToArray());
+                list.AddCustomCategories(userActionsCategory);
+                list.Refresh();
             }
-            if (!rt.Any()) return;
-            userActionsCategory.AddJumpListItems(rt.ToArray());
-            list.AddCustomCategories(userActionsCategory);
-            list.Refresh();
+            catch (Exception)
+            {
+                //有的系统不支持
+            }
+
         }
 
         /// <summary>
@@ -69,12 +71,20 @@ namespace AntDeployWinform.Util
         /// </summary>
         private void BuildList()
         {
-            JumpListCustomCategory userActionsCategory = new JumpListCustomCategory("Actions");
-            JumpListLink userActionLink = new JumpListLink(Assembly.GetEntryAssembly().Location, "Help & Github");
-            userActionLink.Arguments = "help";
-            userActionsCategory.AddJumpListItems(userActionLink);
-            list.AddCustomCategories(userActionsCategory);
-            list.Refresh();
+            try
+            {
+                JumpListCustomCategory userActionsCategory = new JumpListCustomCategory("Actions");
+                JumpListLink userActionLink = new JumpListLink(Assembly.GetEntryAssembly().Location, "Help & Github");
+                userActionLink.Arguments = "help";
+                userActionsCategory.AddJumpListItems(userActionLink);
+                list.AddCustomCategories(userActionsCategory);
+                list.Refresh();
+            }
+            catch (Exception)
+            {
+                //有的系统不支持
+            }
+           
         }
     }
 }

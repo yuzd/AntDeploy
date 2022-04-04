@@ -11,8 +11,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntDeployApp", "AntDeployApp\AntDeployApp.csproj", "{43A14241-BA20-4402-B1E3-9CD0838B9181}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntDeployAgentWindowsService", "AntDeployAgentWindowsService\AntDeployAgentWindowsService.csproj", "{D9587A7D-E2E5-4EF4-BA90-5F45BE6C472A}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AntDeployAgent", "AntDeployAgent\AntDeployAgent.csproj", "{7E116AC1-DCFA-4A76-959E-CFDEE3E1E836}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AntDeployAgentService", "AntDeployAgentService\AntDeployAgentService.csproj", "{79657373-4406-4509-9CDF-3B6D3D708FAA}"
@@ -47,12 +45,6 @@ Global
 		{43A14241-BA20-4402-B1E3-9CD0838B9181}.Release|Any CPU.Build.0 = Release|Any CPU
 		{43A14241-BA20-4402-B1E3-9CD0838B9181}.Release|x86.ActiveCfg = Release|Any CPU
 		{43A14241-BA20-4402-B1E3-9CD0838B9181}.Release|x86.Build.0 = Release|Any CPU
-		{D9587A7D-E2E5-4EF4-BA90-5F45BE6C472A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D9587A7D-E2E5-4EF4-BA90-5F45BE6C472A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D9587A7D-E2E5-4EF4-BA90-5F45BE6C472A}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{D9587A7D-E2E5-4EF4-BA90-5F45BE6C472A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D9587A7D-E2E5-4EF4-BA90-5F45BE6C472A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D9587A7D-E2E5-4EF4-BA90-5F45BE6C472A}.Release|x86.ActiveCfg = Release|Any CPU
 		{7E116AC1-DCFA-4A76-959E-CFDEE3E1E836}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7E116AC1-DCFA-4A76-959E-CFDEE3E1E836}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E116AC1-DCFA-4A76-959E-CFDEE3E1E836}.Debug|x86.ActiveCfg = Debug|Any CPU

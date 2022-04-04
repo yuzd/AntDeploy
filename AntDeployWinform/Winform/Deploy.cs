@@ -128,7 +128,14 @@ namespace AntDeployWinform.Winform
             this.txt_linux_service_env.DataBindings.Add("Text", this, "BindLinuxEnvName", false, DataSourceUpdateMode.OnPropertyChanged);
 
             notificationService.Init("AntDeploy");
-            systemMemu = new SystemMenu(this.Handle);
+            try
+            {
+                systemMemu = new SystemMenu(this.Handle);
+            }
+            catch (Exception e)
+            {
+                //有些系统不支持
+            }
 
         }
 
