@@ -42,8 +42,16 @@ namespace yuzd.AntDeploy
                     case Web_PROJECT_KIND_MVC4:
                     case Web_Application:
                     case Web_ASPNET5:
-                    case Web_ASPNET6:
                         return true;
+                    case Web_ASPNET6:
+                        var isWeb = false;
+                        var info = File.ReadAllLines(project.FullName);
+                        var firstLine = info.FirstOrDefault();
+                        if (!string.IsNullOrEmpty(firstLine))
+                        {
+                            isWeb = firstLine.Contains("Sdk=\"Microsoft.NET.Sdk.Web");
+                        }
+                        return isWeb;
                     default:
                         return false;
                 }
@@ -60,11 +68,23 @@ namespace yuzd.AntDeploy
         {
             try
             {
+                var isNetcoreapp = project.Properties.Item("TargetFrameworkMoniker").Value.ToString().Contains(".NETCoreApp");
+                if (isNetcoreapp) return true;
+            }
+            catch (Exception e)
+            {
+                //ignore
+            }
+
+            try
+            {
                 switch (project.Kind)
                 {
                     case CS_CORE_PROJECT_KIND:
                     case FS_CORE_PROJECT_KIND:
                     case VB_CORE_PROJECT_KIND:
+                    case Web_ASPNET5:
+                    case Web_ASPNET6:
                         return true;
 
                     default:
