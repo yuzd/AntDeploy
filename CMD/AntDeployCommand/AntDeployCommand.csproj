@@ -22,7 +22,7 @@
   <ItemGroup>
     <PackageReference Include="LibGit2Sharp" Version="0.26.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-    <PackageReference Include="SSH.NET" Version="2016.1.0" />
+    <PackageReference Include="SSH.NET" Version="2020.0.2" />
     <PackageReference Include="System.Net.WebSockets.Client.Managed" Version="1.0.22" />
     <PackageReference Include="System.Reactive" Version="4.1.5" />
   </ItemGroup>
