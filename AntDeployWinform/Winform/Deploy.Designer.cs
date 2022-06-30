@@ -160,6 +160,7 @@
             this.rich_windowservice_log = new AntDeployWinform.ExRichTextBox();
             this.b_windows_service_rollback = new AltoControls.AltoButton();
             this.page_linux_service = new System.Windows.Forms.TabPage();
+            this.label_how_to_linuxservice = new System.Windows.Forms.Label();
             this.btn_linux_serivce_stop = new AltoControls.AltoButton();
             this.b_linuxservice_deploy = new AltoControls.AltoButton();
             this.btn_linux_service_retry = new AltoControls.AltoButton();
@@ -1371,6 +1372,7 @@
             // page_linux_service
             // 
             resources.ApplyResources(this.page_linux_service, "page_linux_service");
+            this.page_linux_service.Controls.Add(this.label_how_to_linuxservice);
             this.page_linux_service.Controls.Add(this.btn_linux_serivce_stop);
             this.page_linux_service.Controls.Add(this.b_linuxservice_deploy);
             this.page_linux_service.Controls.Add(this.btn_linux_service_retry);
@@ -1389,6 +1391,14 @@
             this.page_linux_service.Controls.Add(this.b_linux_service_rollback);
             this.page_linux_service.Name = "page_linux_service";
             this.page_linux_service.UseVisualStyleBackColor = true;
+            // 
+            // label_how_to_linuxservice
+            // 
+            resources.ApplyResources(this.label_how_to_linuxservice, "label_how_to_linuxservice");
+            this.label_how_to_linuxservice.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.label_how_to_linuxservice.ForeColor = System.Drawing.Color.RoyalBlue;
+            this.label_how_to_linuxservice.Name = "label_how_to_linuxservice";
+            this.label_how_to_linuxservice.Click += new System.EventHandler(this.label_how_to_linuxservice_Click_1);
             // 
             // btn_linux_serivce_stop
             // 
@@ -2531,5 +2541,6 @@
         private System.Windows.Forms.Label label67;
         private System.Windows.Forms.CheckBox chk_use_AsiaShanghai_timezone;
         private System.Windows.Forms.Button btn_auto_find_msbuild;
+        private System.Windows.Forms.Label label_how_to_linuxservice;
     }
 }

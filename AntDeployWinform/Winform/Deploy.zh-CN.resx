@@ -335,6 +335,12 @@
   <data name="label49.Text" xml:space="preserve">
     <value>环境变量:</value>
   </data>
+  <data name="progress_linux_service_tip.Location" type="System.Drawing.Point, System.Drawing">
+    <value>109, 55</value>
+  </data>
+  <data name="progress_linux_service_tip.Size" type="System.Drawing.Size, System.Drawing">
+    <value>368, 34</value>
+  </data>
   <data name="tabPage_linux_service.Text" xml:space="preserve">
     <value>进度展示</value>
   </data>
@@ -353,11 +359,14 @@
   <data name="checkBox_Increment_linux_service.Text" xml:space="preserve">
     <value>增量发布</value>
   </data>
+  <data name="label47.Location" type="System.Drawing.Point, System.Drawing">
+    <value>43, 46</value>
+  </data>
   <data name="label47.Size" type="System.Drawing.Size, System.Drawing">
-    <value>149, 12</value>
+    <value>215, 12</value>
   </data>
   <data name="label47.Text" xml:space="preserve">
-    <value>注意:只能发布linux服务器</value>
+    <value>注意:只能发布装了agent的linux服务器</value>
   </data>
   <data name="label48.Size" type="System.Drawing.Size, System.Drawing">
     <value>77, 12</value>
@@ -381,10 +390,13 @@
     <value>测试连接全部</value>
   </data>
   <data name="page_winserver.Text" xml:space="preserve">
-    <value>Token服务器</value>
+    <value>Token服务器(需要装agent)</value>
   </data>
   <data name="btn_linux_server_testAll.Text" xml:space="preserve">
     <value>测试连接全部</value>
+  </data>
+  <data name="page_linux_server.Text" xml:space="preserve">
+    <value>linux服务器(docker发布)</value>
   </data>
   <data name="btn_auto_find_msbuild.Text" xml:space="preserve">
     <value>自动查询</value>

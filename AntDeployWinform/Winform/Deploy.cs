@@ -9673,5 +9673,11 @@ RETRY_WINDOWSSERVICE2:
                 MessageBoxEx.Show(this, "Find Msbuild fail");
             }
         }
+
+        private void label_how_to_linuxservice_Click_1(object sender, EventArgs e)
+        {
+            ProcessStartInfo sInfo = new ProcessStartInfo("https://www.cnblogs.com/yudongdong/p/14017569.html");
+            Process.Start(sInfo);
+        }
     }
 }
