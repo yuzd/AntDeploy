@@ -145,6 +145,12 @@
   <data name="b_iis_deploy.Location" type="System.Drawing.Point, System.Drawing">
     <value>509, 107</value>
   </data>
+  <data name="progress_iis_tip.Size" type="System.Drawing.Size, System.Drawing">
+    <value>400, 31</value>
+  </data>
+  <data name="progress_iis_tip.Text" xml:space="preserve">
+    <value>使用步骤 1. 在发布配置tab里面创建环境，添加token服务器(windows).           2. 选择对应的环境</value>
+  </data>
   <data name="btn_docker_retry.Text" xml:space="preserve">
     <value>重试</value>
   </data>
@@ -184,6 +190,12 @@
   </data>
   <data name="label27.Location" type="System.Drawing.Point, System.Drawing">
     <value>110, 17</value>
+  </data>
+  <data name="progress_docker_tip.Size" type="System.Drawing.Size, System.Drawing">
+    <value>366, 26</value>
+  </data>
+  <data name="progress_docker_tip.Text" xml:space="preserve">
+    <value>使用步骤 1. 在发布配置tab里面创建环境，添加linux服务器(ssh).          2. 选择对应的环境</value>
   </data>
   <data name="label56.Text" xml:space="preserve">
     <value>注意：该功能需要依赖一台安装docker的linux宿主机</value>
@@ -275,6 +287,19 @@
   <data name="tabPage_docker_image_ignore.Text" xml:space="preserve">
     <value>其他配置</value>
   </data>
+  <data name="label_how_to_dockerimage.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="label_how_to_dockerimage.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="label_how_to_dockerimage.Size" type="System.Drawing.Size, System.Drawing">
+    <value>29, 12</value>
+  </data>
+  <data name="label_how_to_dockerimage.Text" xml:space="preserve">
+    <value>Demo</value>
+  </data>
   <data name="label60.Size" type="System.Drawing.Size, System.Drawing">
     <value>59, 12</value>
   </data>
@@ -320,6 +345,12 @@
   <data name="checkBox_select_deploy_service.Text" xml:space="preserve">
     <value>选择指定文件发布</value>
   </data>
+  <data name="progress_window_service_tip.Size" type="System.Drawing.Size, System.Drawing">
+    <value>398, 31</value>
+  </data>
+  <data name="progress_window_service_tip.Text" xml:space="preserve">
+    <value>使用步骤 1. 在发布配置tab里面创建环境，添加token服务器(windows).           2. 选择对应的环境</value>
+  </data>
   <data name="b_linuxservice_deploy.Text" xml:space="preserve">
     <value>发布</value>
   </data>
@@ -339,7 +370,10 @@
     <value>109, 55</value>
   </data>
   <data name="progress_linux_service_tip.Size" type="System.Drawing.Size, System.Drawing">
-    <value>368, 34</value>
+    <value>386, 32</value>
+  </data>
+  <data name="progress_linux_service_tip.Text" xml:space="preserve">
+    <value>使用步骤 1. 在发布配置tab里面创建环境，添加token服务器(linux).           2. 选择对应的环境</value>
   </data>
   <data name="tabPage_linux_service.Text" xml:space="preserve">
     <value>进度展示</value>
@@ -493,5 +527,8 @@
   </data>
   <data name="label15.Text" xml:space="preserve">
     <value>指定特定文件夹发布：</value>
+  </data>
+  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>Inherit</value>
   </data>
 </root>

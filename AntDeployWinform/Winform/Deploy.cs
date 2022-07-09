@@ -9679,5 +9679,11 @@ RETRY_WINDOWSSERVICE2:
             ProcessStartInfo sInfo = new ProcessStartInfo("https://www.cnblogs.com/yudongdong/p/14017569.html");
             Process.Start(sInfo);
         }
+
+        private void label_how_to_dockerimage_Click(object sender, EventArgs e)
+        {
+            ProcessStartInfo sInfo = new ProcessStartInfo("https://mp.weixin.qq.com/s/ga3nCq-DNkqVER8eYCooXA");
+            Process.Start(sInfo);
+        }
     }
 }

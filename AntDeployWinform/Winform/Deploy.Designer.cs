@@ -265,6 +265,7 @@
             this.txt_msbuild_path = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
             this.btn_shang = new AltoControls.AltoButton();
+            this.label_how_to_dockerimage = new System.Windows.Forms.Label();
             this.tabcontrol.SuspendLayout();
             this.page_web_iis.SuspendLayout();
             this.tab_iis.SuspendLayout();
@@ -1023,6 +1024,7 @@
             // groupBox2
             // 
             resources.ApplyResources(this.groupBox2, "groupBox2");
+            this.groupBox2.Controls.Add(this.label_how_to_dockerimage);
             this.groupBox2.Controls.Add(this.label59);
             this.groupBox2.Controls.Add(this.label60);
             this.groupBox2.Controls.Add(this.txt_HttpProxy);
@@ -2235,6 +2237,14 @@
             this.btn_shang.Transparency = false;
             this.btn_shang.Click += new System.EventHandler(this.btn_shang_Click);
             // 
+            // label_how_to_dockerimage
+            // 
+            resources.ApplyResources(this.label_how_to_dockerimage, "label_how_to_dockerimage");
+            this.label_how_to_dockerimage.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.label_how_to_dockerimage.ForeColor = System.Drawing.Color.RoyalBlue;
+            this.label_how_to_dockerimage.Name = "label_how_to_dockerimage";
+            this.label_how_to_dockerimage.Click += new System.EventHandler(this.label_how_to_dockerimage_Click);
+            // 
             // Deploy
             // 
             resources.ApplyResources(this, "$this");
@@ -2542,5 +2552,6 @@
         private System.Windows.Forms.CheckBox chk_use_AsiaShanghai_timezone;
         private System.Windows.Forms.Button btn_auto_find_msbuild;
         private System.Windows.Forms.Label label_how_to_linuxservice;
+        private System.Windows.Forms.Label label_how_to_dockerimage;
     }
 }
