@@ -293,6 +293,13 @@ namespace AntDeployWinform.Util
                 theEvent2.LoggerName = receiveAction.Name;
                 theEvent2.Properties["ShowLink"] = "https://marketplace.visualstudio.com/items?itemName=nainaigu.AntDeploy";
                 this.receiveAction.Log(theEvent2);
+
+                {
+                    LogEventInfo theEvent3 = new LogEventInfo(LogLevel.Warn, "", "Join to QQ Group:488312978");
+                    theEvent3.LoggerName = receiveAction.Name;
+                    theEvent3.Properties["ShowLink"] = "https://qm.qq.com/cgi-bin/qm/qr?k=4fTosu9NM7_N6qddaJJj43vLH4fitHO7&jump_from=webapi";
+                    this.receiveAction.Log(theEvent3);
+                }
                 return;
             }
 
@@ -305,6 +312,13 @@ namespace AntDeployWinform.Util
             theEvent.LoggerName = receiveAction.Name;
             theEvent.Properties["ShowLink"] = "https://github.com/yuzd/AntDeployAgent/issues/1";
             this.receiveAction.Log(theEvent);
+
+            {
+                LogEventInfo theEvent3 = new LogEventInfo(LogLevel.Warn, "", "Join to QQ Group:488312978");
+                theEvent3.LoggerName = receiveAction.Name;
+                theEvent3.Properties["ShowLink"] = "https://qm.qq.com/cgi-bin/qm/qr?k=4fTosu9NM7_N6qddaJJj43vLH4fitHO7&jump_from=webapi";
+                this.receiveAction.Log(theEvent3);
+            }
         }
 
         /// <summary>
