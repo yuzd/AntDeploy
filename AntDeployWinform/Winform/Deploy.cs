@@ -4557,18 +4557,7 @@ RETRY_IIS2:
         {
             stop_windows_cancel_token = false;
             Condition = new AutoResetEvent(false);
-            if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath) && _project.IsWebProejct)
-            {
-                MessageBoxEx.Show(this, Strings.NotServiceProject);
-                return;
-            }
-
-            //检查工程文件里面是否含有 WebProjectProperties字样
-            if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath) && ProjectHelper.IsWebProject(ProjectPath))
-            {
-                MessageBoxEx.Show(this, Strings.NotServiceProject);
-                return;
-            }
+            
 
             var sdkTypeName = this.combo_windowservice_sdk_type.SelectedItem as string;
             if (string.IsNullOrWhiteSpace(sdkTypeName))
@@ -4579,6 +4568,7 @@ RETRY_IIS2:
 
             if (sdkTypeName.Equals("netcore"))
             {
+                // 针对netcore类型的 不管是workerservice模板还是webapi模板只要引用服务组件都可以部署成windows服务
                 if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath) && !_project.IsNetcorePorject)
                 {
                     MessageBoxEx.Show(this, Strings.NowNetcoreProject);
@@ -4593,6 +4583,22 @@ RETRY_IIS2:
                     {
                         return;
                     }
+                }
+            }
+            else
+            {
+                // 针对netframework类型的限制
+                if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath) && _project.IsWebProejct)
+                {
+                    MessageBoxEx.Show(this, Strings.NotServiceProject);
+                    return;
+                }
+
+                //检查工程文件里面是否含有 WebProjectProperties字样
+                if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath) && ProjectHelper.IsWebProject(ProjectPath))
+                {
+                    MessageBoxEx.Show(this, Strings.NotServiceProject);
+                    return;
                 }
             }
 
