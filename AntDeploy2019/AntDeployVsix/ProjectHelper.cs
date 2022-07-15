@@ -26,8 +26,7 @@ namespace yuzd.AntDeploy
         public const string Web_PROJECT_KIND_MVC4 = "{E3E379DF-F4C6-4180-9B81-6769533ABE47}";
         public const string Web_Application = "{349C5851-65DF-11DA-9384-00065B846F21}";
         public const string Web_ASPNET5 = "{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}";
-     
-
+        public const string Web_ASPNET6 = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}";
         public static bool IsWebProject(Project project)
         {
             try
@@ -41,6 +40,7 @@ namespace yuzd.AntDeploy
                     case Web_PROJECT_KIND_MVC4:
                     case Web_Application:
                     case Web_ASPNET5:
+                    case Web_ASPNET6:
                         return true;
                     default:
                         return false;

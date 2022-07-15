@@ -117,12 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="page_docker_img.Text" xml:space="preserve">
-    <value>Docker镜像发布</value>
-  </data>
-  <data name="page_linux_service.Text" xml:space="preserve">
-    <value>Linux服务发布</value>
-  </data>
   <data name="checkBox_iis_use_offlinehtm.Text" xml:space="preserve">
     <value>使用app_offline.htm</value>
   </data>
@@ -150,6 +144,12 @@
   </data>
   <data name="b_iis_deploy.Location" type="System.Drawing.Point, System.Drawing">
     <value>509, 107</value>
+  </data>
+  <data name="progress_iis_tip.Size" type="System.Drawing.Size, System.Drawing">
+    <value>400, 31</value>
+  </data>
+  <data name="progress_iis_tip.Text" xml:space="preserve">
+    <value>使用步骤 1. 在发布配置tab里面创建环境，添加token服务器(windows).           2. 选择对应的环境</value>
   </data>
   <data name="btn_docker_retry.Text" xml:space="preserve">
     <value>重试</value>
@@ -191,8 +191,11 @@
   <data name="label27.Location" type="System.Drawing.Point, System.Drawing">
     <value>110, 17</value>
   </data>
-  <data name="tabPage_docker_repo.Text" xml:space="preserve">
-    <value>配置镜像上传</value>
+  <data name="progress_docker_tip.Size" type="System.Drawing.Size, System.Drawing">
+    <value>366, 26</value>
+  </data>
+  <data name="progress_docker_tip.Text" xml:space="preserve">
+    <value>使用步骤 1. 在发布配置tab里面创建环境，添加linux服务器(ssh).          2. 选择对应的环境</value>
   </data>
   <data name="label56.Text" xml:space="preserve">
     <value>注意：该功能需要依赖一台安装docker的linux宿主机</value>
@@ -251,6 +254,9 @@
   <data name="label34.Text" xml:space="preserve">
     <value>密码:</value>
   </data>
+  <data name="tabPage_docker_repo.Text" xml:space="preserve">
+    <value>配置镜像上传</value>
+  </data>
   <data name="checkBox_Increment_docker.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -263,20 +269,36 @@
   <data name="checkBox_Increment_docker.Text" xml:space="preserve">
     <value>增量发布</value>
   </data>
+  <data name="altoButton1.Text" xml:space="preserve">
+    <value>发布</value>
+  </data>
   <data name="tabPage_docker_image.Text" xml:space="preserve">
     <value>日志</value>
-  </data>
-  <data name="tabPage_docker_image_ignore.Text" xml:space="preserve">
-    <value>其他配置</value>
-  </data>
-  <data name="groupBox4.Text" xml:space="preserve">
-    <value>排除规则【regex】</value>
   </data>
   <data name="btn_dockerImage_ignore_remove.Text" xml:space="preserve">
     <value>删除选中</value>
   </data>
   <data name="btn_dockerImage_ignore_add.Text" xml:space="preserve">
     <value>添加</value>
+  </data>
+  <data name="groupBox4.Text" xml:space="preserve">
+    <value>排除规则【regex】</value>
+  </data>
+  <data name="tabPage_docker_image_ignore.Text" xml:space="preserve">
+    <value>其他配置</value>
+  </data>
+  <data name="label_how_to_dockerimage.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="label_how_to_dockerimage.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="label_how_to_dockerimage.Size" type="System.Drawing.Size, System.Drawing">
+    <value>29, 12</value>
+  </data>
+  <data name="label_how_to_dockerimage.Text" xml:space="preserve">
+    <value>Demo</value>
   </data>
   <data name="label60.Size" type="System.Drawing.Size, System.Drawing">
     <value>59, 12</value>
@@ -289,9 +311,6 @@
   </data>
   <data name="label57.Text" xml:space="preserve">
     <value>基础镜像:</value>
-  </data>
-  <data name="altoButton1.Text" xml:space="preserve">
-    <value>发布</value>
   </data>
   <data name="label69.Size" type="System.Drawing.Size, System.Drawing">
     <value>59, 12</value>
@@ -308,6 +327,9 @@
   <data name="label64.Text" xml:space="preserve">
     <value>目标镜像:</value>
   </data>
+  <data name="page_docker_img.Text" xml:space="preserve">
+    <value>Docker镜像发布</value>
+  </data>
   <data name="btn_windows_serivce_stop.Location" type="System.Drawing.Point, System.Drawing">
     <value>511, 101</value>
   </data>
@@ -323,6 +345,12 @@
   <data name="checkBox_select_deploy_service.Text" xml:space="preserve">
     <value>选择指定文件发布</value>
   </data>
+  <data name="progress_window_service_tip.Size" type="System.Drawing.Size, System.Drawing">
+    <value>398, 31</value>
+  </data>
+  <data name="progress_window_service_tip.Text" xml:space="preserve">
+    <value>使用步骤 1. 在发布配置tab里面创建环境，添加token服务器(windows).           2. 选择对应的环境</value>
+  </data>
   <data name="b_linuxservice_deploy.Text" xml:space="preserve">
     <value>发布</value>
   </data>
@@ -337,6 +365,15 @@
   </data>
   <data name="label49.Text" xml:space="preserve">
     <value>环境变量:</value>
+  </data>
+  <data name="progress_linux_service_tip.Location" type="System.Drawing.Point, System.Drawing">
+    <value>109, 55</value>
+  </data>
+  <data name="progress_linux_service_tip.Size" type="System.Drawing.Size, System.Drawing">
+    <value>386, 32</value>
+  </data>
+  <data name="progress_linux_service_tip.Text" xml:space="preserve">
+    <value>使用步骤 1. 在发布配置tab里面创建环境，添加token服务器(linux).           2. 选择对应的环境</value>
   </data>
   <data name="tabPage_linux_service.Text" xml:space="preserve">
     <value>进度展示</value>
@@ -356,11 +393,14 @@
   <data name="checkBox_Increment_linux_service.Text" xml:space="preserve">
     <value>增量发布</value>
   </data>
+  <data name="label47.Location" type="System.Drawing.Point, System.Drawing">
+    <value>43, 46</value>
+  </data>
   <data name="label47.Size" type="System.Drawing.Size, System.Drawing">
-    <value>149, 12</value>
+    <value>215, 12</value>
   </data>
   <data name="label47.Text" xml:space="preserve">
-    <value>注意:只能发布linux服务器</value>
+    <value>注意:只能发布装了agent的linux服务器</value>
   </data>
   <data name="label48.Size" type="System.Drawing.Size, System.Drawing">
     <value>77, 12</value>
@@ -374,17 +414,32 @@
   <data name="b_linux_service_rollback.Text" xml:space="preserve">
     <value>回滚</value>
   </data>
+  <data name="page_linux_service.Text" xml:space="preserve">
+    <value>Linux服务发布</value>
+  </data>
   <data name="groupBox1.Text" xml:space="preserve">
     <value>Token服务器备份排除规则</value>
-  </data>
-  <data name="page_winserver.Text" xml:space="preserve">
-    <value>Token服务器</value>
   </data>
   <data name="btn_win_server_testAll.Text" xml:space="preserve">
     <value>测试连接全部</value>
   </data>
+  <data name="page_winserver.Text" xml:space="preserve">
+    <value>Token服务器(需要装agent)</value>
+  </data>
   <data name="btn_linux_server_testAll.Text" xml:space="preserve">
     <value>测试连接全部</value>
+  </data>
+  <data name="page_linux_server.Text" xml:space="preserve">
+    <value>linux服务器(docker发布)</value>
+  </data>
+  <data name="btn_auto_find_msbuild.Text" xml:space="preserve">
+    <value>自动查询</value>
+  </data>
+  <data name="chk_use_AsiaShanghai_timezone.Size" type="System.Drawing.Size, System.Drawing">
+    <value>324, 16</value>
+  </data>
+  <data name="chk_use_AsiaShanghai_timezone.Text" xml:space="preserve">
+    <value>AntDeploy创建的DockerFile默认使用Asia/Shanghai时区</value>
   </data>
   <data name="label52.Location" type="System.Drawing.Point, System.Drawing">
     <value>415, 287</value>
@@ -459,7 +514,10 @@
     <value>362, 9</value>
   </data>
   <data name="btn_choose_msbuild.Location" type="System.Drawing.Point, System.Drawing">
-    <value>523, 167</value>
+    <value>523, 162</value>
+  </data>
+  <data name="btn_choose_msbuild.Size" type="System.Drawing.Size, System.Drawing">
+    <value>69, 23</value>
   </data>
   <data name="label36.Location" type="System.Drawing.Point, System.Drawing">
     <value>49, 174</value>
@@ -470,7 +528,6 @@
   <data name="label15.Text" xml:space="preserve">
     <value>指定特定文件夹发布：</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>Inherit</value>
   </data>

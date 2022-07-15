@@ -265,3 +265,4 @@ AntDeployAgentWindowsService/agent_publish/antdeploy/
 AntDeployAgentWindowsService/agent_publish/
 AntDeploy2019/AntDeployVsix/jib.exe
 AntDeploy/jib.exe
+AntDeploy2022/AntDeployV2/jib.exe

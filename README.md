@@ -67,6 +67,9 @@ https://github.com/yuzd/AntDeployAgent/issues/23
 【demo演示】 如何用AntDeploy批量更新Agent
 https://github.com/yuzd/AntDeployAgent/issues/25
 
+【demo演示】使用nssm来部署netcore web项目到windows服务
+https://mp.weixin.qq.com/s/Q0O7ikVOiHNccd9Qdms-jw
+
 # IIS发布效果
 
 ![image](https://images4.c-ctrip.com/target/zb0q15000000xwkq07449.gif)

@@ -182,7 +182,7 @@ namespace AntDeployWinform.Util
             try
             {
                 var bash = "";
-                if (ImageReference.Parse(config.TargetImage) == null)
+                if (!config.TargetImage.StartsWith("http://") && ImageReference.Parse(config.TargetImage) == null)
                 {
                     var output = config.TargetImage;
                     config.TargetImage = Path.GetFileNameWithoutExtension(config.TargetImage);

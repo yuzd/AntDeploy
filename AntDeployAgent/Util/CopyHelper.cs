@@ -75,9 +75,9 @@ namespace AntDeployAgentWindows.Util
                 return RunCommand($"sudo rsync -a {SolutionDirectory}/ {TargetDirectory}", null, logger);
             }
 
-
+            //增加/r参数 防止待发布的文件夹只读属性会报错 感谢群友<海浪> 2021-10-11
             return RunCommand($" xcopy " + "\"" + SolutionDirectory + "\"" + " " + "\"" + TargetDirectory + "\"" +
-                       @" /s /e /Q /Y /I",null, logger);
+                       @" /s /e /Q /Y /I /r",null, logger);
 
             //ProcessStartInfo startInfo = new ProcessStartInfo();
             //startInfo.CreateNoWindow = false;

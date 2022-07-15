@@ -6,12 +6,13 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 using AntDeployWinform.Models;
+using AntDeployWinform.Util;
 
 namespace AntDeployWinform.Winform
 {
     public partial class SelectProject : Form
     {
-        private string _lang  = string.Empty;
+        private string _lang = string.Empty;
         public SelectProject(List<string> projectList = null)
         {
             InitializeComponent();
@@ -50,7 +51,7 @@ namespace AntDeployWinform.Winform
         {
             using (var fsd = new FolderSelectDialog())
             {
-                fsd.Title = !string.IsNullOrEmpty(_lang) && _lang.StartsWith("zh-")? "选择指定的文件夹发布" : "Select Folder To Deploy";
+                fsd.Title = !string.IsNullOrEmpty(_lang) && _lang.StartsWith("zh-") ? "选择指定的文件夹发布" : "Select Folder To Deploy";
                 if (fsd.ShowDialog(this.Handle))
                 {
                     var folder = fsd.FileName;
@@ -61,7 +62,7 @@ namespace AntDeployWinform.Winform
                     }
                 }
             }
-                
+
             //using (var fbd = new FolderBrowserDialog())
             //{
             //    DialogResult result = fbd.ShowDialog();
@@ -85,7 +86,7 @@ namespace AntDeployWinform.Winform
             {
                 if (!fdlg.FileName.ToLower().EndsWith(".csproj") && !fdlg.FileName.ToLower().EndsWith(".vbproj"))
                 {
-                    MessageBoxEx.Show(this,"Err:must be csproj file！");
+                    MessageBoxEx.Show(this, "Err:must be csproj file！");
                     return;
                 }
 
