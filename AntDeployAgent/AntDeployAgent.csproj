@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
     <Company>yuzd</Company>
     <Description>antdeploy agent for window sserver</Description>
     <PackageProjectUrl>https://github.com/yuzd</PackageProjectUrl>
@@ -29,7 +29,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net461' ">
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net472' ">
     <DefineConstants>TRACE;DEBUG;NETSTANDARD</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
@@ -50,7 +50,7 @@
     <PackageReference Include="TinyFox.Microsoft.Owin" Version="4.0.1" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
     <PackageReference Include="TinyFox" Version="4.2.8" />
     <Reference Include="System.Net" />
     <Reference Include="System.Configuration" />

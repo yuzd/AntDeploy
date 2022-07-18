@@ -31,6 +31,7 @@
 using System.Collections;
 using System.Collections.Specialized;
 using System.Xml;
+using System.Linq;
 
 namespace System.Configuration
 {
@@ -338,11 +339,11 @@ namespace System.Configuration
         private static ConfigInfo GetConfigInfo(XmlReader reader, SectionGroupInfo current)
         {
             ConfigInfo data = null;
-            if (current._sections != null)
+            if (current._sections != null && current._sections.AllKeys.Cast<string>().Any(u => String.Equals(u, reader.LocalName, StringComparison.OrdinalIgnoreCase)))
                 data = current._sections[reader.LocalName];
             if (data != null)
                 return data;
-            if (current._groups != null)
+            if (current._groups != null && current._groups.AllKeys.Cast<string>().Any(u => String.Equals(u, reader.LocalName, StringComparison.OrdinalIgnoreCase)))
                 data = current._groups[reader.LocalName];
             if (data != null)
                 return data;
