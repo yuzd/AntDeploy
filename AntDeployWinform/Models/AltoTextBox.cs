@@ -60,7 +60,11 @@ namespace AltoControls
             if (e.Control && e.KeyCode == Keys.A)
             {
                 box.SelectionStart = 0;
-                box.SelectionLength = Text.Length;
+                //box.SelectionLength = Text.Length;
+                if (!String.IsNullOrEmpty(Text) && Text.Length > 0 && box.Text.Length >= Text.Length)
+                {
+                    box.SelectionLength = Text.Length;
+                }
             }
         }
         protected override void OnTextChanged(EventArgs e)

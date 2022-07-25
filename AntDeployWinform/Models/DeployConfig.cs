@@ -85,6 +85,10 @@ namespace AntDeployWinform.Models
 
         public void RemoveEnv(int index)
         {
+            if (this.Env.Count <= index)
+            {
+                return;
+            }
             var env = this.Env[index];
             this.Env.RemoveAt(index);
             EnvChangeEvent?.Invoke(env, false,true);

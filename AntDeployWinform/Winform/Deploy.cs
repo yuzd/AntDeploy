@@ -69,41 +69,52 @@ namespace AntDeployWinform.Winform
         private string iconPath = string.Empty;
 
         ToastHelper.NotificationService notificationService = new NotificationService();
-
+        private string _formText = "";
         private SystemMenu systemMemu;
         public Deploy(string projectPath = null, ProjectParam project = null)
         {
+            this._formText = this.Text;
+            this.Deploy_InitLoad(projectPath, project);
+        }
 
+        /// <summary>
+        /// 窗体初始化
+        /// </summary>
+        /// <param name="projectPath"></param>
+        /// <param name="project"></param>
+        /// <param name="isFirstLoad">首次加载</param>
+        public void Deploy_InitLoad(string projectPath, ProjectParam project, bool isFirstLoad = true)
+        {            
             ConfigPath = ProjectHelper.GetPluginConfigPath();
             ReadConfig(ConfigPath);
 
-            LoadLanguage();
-
-            InitializeComponent();
-
-            Assembly assembly = typeof(Deploy).Assembly;
-            using (Stream stream = assembly.GetManifestResourceStream("AntDeployWinform.Resources.Logo12.ico"))
+            if (isFirstLoad)
             {
-                if (stream != null)
+                LoadLanguage();
+                InitializeComponent();
+                Assembly assembly = typeof(Deploy).Assembly;
+                using (Stream stream = assembly.GetManifestResourceStream("AntDeployWinform.Resources.Logo12.ico"))
                 {
-                    this.Icon = new Icon(stream);
-                    iconPath = Path.Combine(new FileInfo(ConfigPath).Directory.FullName, "antdeploy.ico");
-                    try
+                    if (stream != null)
                     {
-                        using (var stream2 = new System.IO.FileStream(iconPath, System.IO.FileMode.Create))
+                        this.Icon = new Icon(stream);
+                        iconPath = Path.Combine(new FileInfo(ConfigPath).Directory.FullName, "antdeploy.ico");
+                        try
                         {
+                            using (var stream2 = new System.IO.FileStream(iconPath, System.IO.FileMode.Create))
+                            {
 
-                            this.Icon.Save(stream2);
+                                this.Icon.Save(stream2);
+                            }
                         }
-                    }
-                    catch (Exception)
-                    {
-                        iconPath = null;
-                    }
+                        catch (Exception)
+                        {
+                            iconPath = null;
+                        }
 
+                    }
                 }
             }
-
             if (project != null && project.IsFirst)
             {
                 this.Activated -= Deploy_Activated;
@@ -111,32 +122,44 @@ namespace AntDeployWinform.Winform
             }
             else
             {
-                Init(projectPath, project);
+                Init(projectPath, project, isFirstLoad);
             }
 
-            NlogConfig();
-
-            Condition = new AutoResetEvent(false);
-
-            this.txt_iis_web_site_name.DataBindings.Add("Text", this, "BindWebSiteName", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txt_windowservice_name.DataBindings.Add("Text", this, "BindWindowsServiceName", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txt_docker_port.DataBindings.Add("Text", this, "BindDockerPort", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txt_docker_envname.DataBindings.Add("Text", this, "BindDockerEnvName", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txt_docker_volume.DataBindings.Add("Text", this, "BindDockerVolume", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txt_docker_other.DataBindings.Add("Text", this, "BindDockerOther", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txt_linuxservice_name.DataBindings.Add("Text", this, "BindLinuxServiceName", false, DataSourceUpdateMode.OnPropertyChanged);
-            this.txt_linux_service_env.DataBindings.Add("Text", this, "BindLinuxEnvName", false, DataSourceUpdateMode.OnPropertyChanged);
-
-            notificationService.Init("AntDeploy");
-            try
+            if (isFirstLoad)
             {
-                systemMemu = new SystemMenu(this.Handle);
-            }
-            catch (Exception e)
-            {
-                //有些系统不支持
-            }
+                NlogConfig();
 
+                Condition = new AutoResetEvent(false);
+
+                this.txt_iis_web_site_name.DataBindings.Add("Text", this, "BindWebSiteName", false, DataSourceUpdateMode.OnPropertyChanged);
+                this.txt_windowservice_name.DataBindings.Add("Text", this, "BindWindowsServiceName", false, DataSourceUpdateMode.OnPropertyChanged);
+                this.txt_docker_port.DataBindings.Add("Text", this, "BindDockerPort", false, DataSourceUpdateMode.OnPropertyChanged);
+                this.txt_docker_envname.DataBindings.Add("Text", this, "BindDockerEnvName", false, DataSourceUpdateMode.OnPropertyChanged);
+                this.txt_docker_volume.DataBindings.Add("Text", this, "BindDockerVolume", false, DataSourceUpdateMode.OnPropertyChanged);
+                this.txt_docker_other.DataBindings.Add("Text", this, "BindDockerOther", false, DataSourceUpdateMode.OnPropertyChanged);
+                this.txt_linuxservice_name.DataBindings.Add("Text", this, "BindLinuxServiceName", false, DataSourceUpdateMode.OnPropertyChanged);
+                this.txt_linux_service_env.DataBindings.Add("Text", this, "BindLinuxEnvName", false, DataSourceUpdateMode.OnPropertyChanged);
+
+                try
+                {
+#if !DEBUG
+                    notificationService.Init("AntDeploy");
+#endif
+                }
+                catch (Exception)
+                {
+                    //ignore
+                }
+
+                try
+                {
+                    systemMemu = new SystemMenu(this.Handle);
+                }
+                catch (Exception)
+                {
+                    //有些系统不支持
+                }
+            }
         }
 
         protected override void WndProc(ref Message m)
@@ -418,7 +441,7 @@ namespace AntDeployWinform.Winform
             {
                 if (!isFirst) return;
             }
-            ProjectName = Path.GetFileNameWithoutExtension(projectPath);
+            //ProjectName = Path.GetFileNameWithoutExtension(projectPath);
 
             if (File.Exists(projectPath))
             {
@@ -429,9 +452,12 @@ namespace AntDeployWinform.Winform
                     project = ProjectHelper.GetNetCoreParamInCsprojectFile(projectPath);
                 }
             }
-
+            ProjectName = "";
             if (Directory.Exists(projectPath))
             {
+                int index = projectPath.TrimEnd('\\').LastIndexOf("\\"); //是文件夹，文件夹名称可能也会有点
+                ProjectName = projectPath.TrimEnd('\\').Substring(index + 1);
+
                 ProjectFolderPath = projectPath;
                 project = new ProjectParam
                 {
@@ -442,11 +468,12 @@ namespace AntDeployWinform.Winform
                 this.btn_choose_folder.Visible = false;
                 this.btn_folder_clear.Visible = false;
 
-                this.Text += $"(Version:{Vsix.VERSION})[FolderDeploy:{ProjectName}]";
+                this.Text = $"{this._formText}(Version:{Vsix.VERSION})[FolderDeploy:{ProjectName}]";
             }
             else
             {
-                this.Text += $"(Version:{Vsix.VERSION})[{ProjectName}]";
+                ProjectName = Path.GetFileNameWithoutExtension(projectPath); //是文件，取文件名
+                this.Text = $"{this._formText}(Version:{Vsix.VERSION})[{ProjectName}]";
             }
 
             //this.Text = Vsix.FORM_NAME;
@@ -677,6 +704,11 @@ namespace AntDeployWinform.Winform
 
             if (DeployConfig == null) DeployConfig = new DeployConfig();
             DeployConfig.EnvChangeEvent += DeployConfigOnEnvChangeEvent;
+            this.combo_env_list.Items.Clear(); //添加前先清空旧数据
+            this.combo_iis_env.Items.Clear();
+            this.combo_windowservice_env.Items.Clear();
+            this.combo_linux_env.Items.Clear();
+            this.combo_docker_env.Items.Clear();
             if (DeployConfig.Env != null && DeployConfig.Env.Any())
             {
                 foreach (var env in DeployConfig.Env)
@@ -935,7 +967,7 @@ namespace AntDeployWinform.Winform
             RichTextBoxTarget.GetTargetByControl(rich_linuxservice_log)?.Dispose();
 
 
-
+            this.b_iis_init.Dispose();
             this.b_iis_rollback.Dispose();
             this.b_docker_rollback.Dispose();
             this.b_windows_service_rollback.Dispose();
@@ -952,48 +984,55 @@ namespace AntDeployWinform.Winform
             this.rich_linuxservice_log.Dispose();
         }
 
-        private void Unload()
+        /// <summary>
+        /// 保存配置
+        /// </summary>
+        /// <param name="dispose"></param>
+        private void Unload(bool dispose=true)
         {
             try
             {
-                if (this.tabPage_docker.Tag is Dictionary<string, ProgressBox> progressBoxList)
+                if (dispose)
                 {
-                    foreach (var box in progressBoxList)
+                    if (this.tabPage_docker.Tag is Dictionary<string, ProgressBox> progressBoxList)
                     {
-                        box.Value.Dispose();
-                        //this.tabPage_docker.Controls.Remove(box.Value);
+                        foreach (var box in progressBoxList)
+                        {
+                            box.Value.Dispose();
+                            //this.tabPage_docker.Controls.Remove(box.Value);
+                        }
                     }
-                }
 
-                if (this.tabPage_progress.Tag is Dictionary<string, ProgressBox> progressBoxList2)
-                {
-                    foreach (var box in progressBoxList2)
+                    if (this.tabPage_progress.Tag is Dictionary<string, ProgressBox> progressBoxList2)
                     {
-                        box.Value.Dispose();
-                        //this.tabPage_progress.Controls.Remove(box.Value);
+                        foreach (var box in progressBoxList2)
+                        {
+                            box.Value.Dispose();
+                            //this.tabPage_progress.Controls.Remove(box.Value);
+                        }
                     }
-                }
 
-                if (this.tabPage_windows_service.Tag is Dictionary<string, ProgressBox> progressBoxList3)
-                {
-                    foreach (var box in progressBoxList3)
+                    if (this.tabPage_windows_service.Tag is Dictionary<string, ProgressBox> progressBoxList3)
                     {
-                        box.Value.Dispose();
-                        //this.tabPage_windows_service.Controls.Remove(box.Value);
+                        foreach (var box in progressBoxList3)
+                        {
+                            box.Value.Dispose();
+                            //this.tabPage_windows_service.Controls.Remove(box.Value);
+                        }
                     }
-                }
-                if (this.tabPage_linux_service.Tag is Dictionary<string, ProgressBox> progressBoxList4)
-                {
-                    foreach (var box in progressBoxList4)
+                    if (this.tabPage_linux_service.Tag is Dictionary<string, ProgressBox> progressBoxList4)
                     {
-                        box.Value.Dispose();
-                        //this.tabPage_windows_service.Controls.Remove(box.Value);
+                        foreach (var box in progressBoxList4)
+                        {
+                            box.Value.Dispose();
+                            //this.tabPage_windows_service.Controls.Remove(box.Value);
+                        }
                     }
                 }
 
                 dockerImageParams();
                 GlobalConfig.MsBuildPath = this.txt_msbuild_path.Text.Trim();
-                GlobalConfig.ProjectPathList = GlobalConfig.ProjectPathList.Take(10).ToList();
+                GlobalConfig.ProjectPathList = GlobalConfig.ProjectPathList.Take(15).ToList();
                 PluginConfig.LastTabIndex = this.tabcontrol.SelectedIndex;
                 PluginConfig.IISEnableIncrement = this.checkBox_Increment_iis.Checked;
                 PluginConfig.WindowsServiceEnableIncrement = this.checkBox_Increment_window_service.Checked;
@@ -2316,6 +2355,7 @@ namespace AntDeployWinform.Winform
 
         private void b_iis_deploy_Click(object sender, EventArgs e)
         {
+            Unload(false);
             stop_iis_cancel_token = false;
             Condition = new AutoResetEvent(false);
             //判断当前项目是否是web项目
@@ -2559,10 +2599,10 @@ namespace AntDeployWinform.Winform
                             this.nlog_iis.Info("-----------------Select File Start-----------------");
                             this.BeginInvokeLambda(() =>
                             {
-                                var slectFileForm = new SelectFile(fileList, publishPath);
+                                var slectFileForm = new SelectFile(fileList, publishPath, ignoreList);
                                 slectFileForm.ShowDialog();
                                 // ReSharper disable once AccessToDisposedClosure
-                                DoSelectDeployIIS(slectFileForm.SelectedFileList, publishPath, serverList, backUpIgnoreList, Port, PoolName, PhysicalPath, PoolAlwaysRunning, gitModel, confirmResult.Item2);
+                                DoSelectDeployIIS(slectFileForm.SelectedFileList, publishPath, serverList, backUpIgnoreList, Port, PoolName, PhysicalPath, PoolAlwaysRunning, gitModel, confirmResult.Item2, ignoreList);
                             });
                             return;
                         }
@@ -2591,9 +2631,9 @@ namespace AntDeployWinform.Winform
                         this.nlog_iis.Info("-----------------Select File Start-----------------");
                         this.BeginInvokeLambda(() =>
                         {
-                            var slectFileForm = new SelectFile(publishPath);
+                            var slectFileForm = new SelectFile(publishPath, ignoreList);
                             slectFileForm.ShowDialog();
-                            DoSelectDeployIIS(slectFileForm.SelectedFileList, publishPath, serverList, backUpIgnoreList, Port, PoolName, PhysicalPath, PoolAlwaysRunning, null, confirmResult.Item2);
+                            DoSelectDeployIIS(slectFileForm.SelectedFileList, publishPath, serverList, backUpIgnoreList, Port, PoolName, PhysicalPath, PoolAlwaysRunning, null, confirmResult.Item2, ignoreList);
                         });
 
 
@@ -3103,7 +3143,8 @@ RETRY_IIS:
             }
         }
 
-        private void DoSelectDeployIIS(List<string> fileList, string publishPath, List<Server> serverList, List<string> backUpIgnoreList, string Port, string PoolName, string PhysicalPath, bool alwaysRun, GitClient gitModel, string remark)
+        private void DoSelectDeployIIS(List<string> fileList, string publishPath, List<Server> serverList, List<string> backUpIgnoreList, 
+            string Port, string PoolName, string PhysicalPath, bool alwaysRun, GitClient gitModel, string remark, List<string> ignoreList)
         {
             try
             {
@@ -3127,7 +3168,7 @@ RETRY_IIS:
                         this.nlog_iis.Info("Select Files count:" + fileList.Count);
                         this.nlog_iis.Debug("ignore package ignoreList");
                         byte[] zipBytes = null;
-                        List<string> ignoreList = new List<string>();
+                        //List<string> ignoreList = new List<string>();
                         try
                         {
                             zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, fileList, CompressionLevel.Optimal, true,
@@ -3160,6 +3201,12 @@ RETRY_IIS:
                         var allfailServerList = new List<Server>();
                         var retryTimes = 0;
 RETRY_IIS2:
+                        if (stop_iis_cancel_token)
+                        {
+                            this.nlog_iis.Warn($"deploy task was canceled!");
+                            PackageError(this.tabPage_progress, serverList.First().Host);
+                            return;
+                        }
                         var failServerList = new List<Server>();
                         var index = 0;
                         var allSuccess = true;
@@ -3381,6 +3428,13 @@ RETRY_IIS2:
                                 _subcribe?.Dispose();
                             }
 
+                        }
+
+                        if (stop_iis_cancel_token)
+                        {
+                            this.nlog_iis.Warn($"deploy task was canceled!");
+                            PackageError(this.tabPage_progress, serverList.First().Host);
+                            return;
                         }
 
                         //交互
@@ -3829,6 +3883,7 @@ RETRY_IIS2:
                     }
                 }
 
+                this.b_iis_init.Enabled = flag;
                 this.b_iis_rollback.Enabled = flag;
                 this.b_iis_deploy.Enabled = flag;
                 if (!ignore)
@@ -4931,10 +4986,10 @@ RETRY_IIS2:
                             this.nlog_windowservice.Info("-----------------Select File Start-----------------");
                             this.BeginInvokeLambda(() =>
                             {
-                                var slectFileForm = new SelectFile(fileList, publishPath);
+                                var slectFileForm = new SelectFile(fileList, publishPath, ignoreList);
                                 slectFileForm.ShowDialog();
                                 // ReSharper disable once AccessToDisposedClosure
-                                DoWindowsServiceSelectDeploy(slectFileForm.SelectedFileList, publishPath, serverList, serviceName, isProjectInstallService, execFilePath, PhysicalPath, backUpIgnoreList, gitModel, confirmResult.Item2);
+                                DoWindowsServiceSelectDeploy(slectFileForm.SelectedFileList, publishPath, serverList, serviceName, isProjectInstallService, execFilePath, PhysicalPath, backUpIgnoreList, gitModel, confirmResult.Item2, ignoreList);
                             });
                             return;
                         }
@@ -4968,9 +5023,9 @@ RETRY_IIS2:
                         this.nlog_windowservice.Info("-----------------Select File Start-----------------");
                         this.BeginInvokeLambda(() =>
                         {
-                            var slectFileForm = new SelectFile(publishPath);
+                            var slectFileForm = new SelectFile(publishPath, ignoreList);
                             slectFileForm.ShowDialog();
-                            DoWindowsServiceSelectDeploy(slectFileForm.SelectedFileList, publishPath, serverList, serviceName, isProjectInstallService, execFilePath, PhysicalPath, backUpIgnoreList, null, confirmResult.Item2);
+                            DoWindowsServiceSelectDeploy(slectFileForm.SelectedFileList, publishPath, serverList, serviceName, isProjectInstallService, execFilePath, PhysicalPath, backUpIgnoreList, null, confirmResult.Item2, ignoreList);
                         });
                         return;
                     }
@@ -5381,7 +5436,8 @@ RETRY_WINDOWSSERVICE:
         }
 
 
-        private void DoWindowsServiceSelectDeploy(List<string> fileList, string publishPath, List<Server> serverList, string serviceName, bool isProjectInstallService, string execFilePath, string PhysicalPath, List<string> backUpIgnoreList, GitClient gitModel, string remark)
+        private void DoWindowsServiceSelectDeploy(List<string> fileList, string publishPath, List<Server> serverList, string serviceName, bool isProjectInstallService, 
+            string execFilePath, string PhysicalPath, List<string> backUpIgnoreList, GitClient gitModel, string remark, List<string> ignoreList)
         {
             new Task(async () =>
             {
@@ -5404,7 +5460,7 @@ RETRY_WINDOWSSERVICE:
                     }
                     this.nlog_windowservice.Info("Select Files count:" + fileList.Count);
                     this.nlog_windowservice.Debug("ignore package ignoreList");
-                    List<string> ignoreList = new List<string>();
+                    //List<string> ignoreList = new List<string>();
                     try
                     {
                         zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, fileList, CompressionLevel.Optimal, true,
@@ -6236,7 +6292,18 @@ RETRY_WINDOWSSERVICE2:
                 return;
             }
 
-            ProjectConfigPath = Path.Combine(ProjectFolderPath, "AntDeploy.json");
+            //ProjectConfigPath = Path.Combine(ProjectFolderPath, "AntDeploy.json");
+            ProjectConfigPath = ""; //Path.Combine(ProjectFolderPath, "AntDeploy.json");
+            string rootPath = Path.GetDirectoryName(ProjectFolderPath.TrimEnd('\\'));
+            string dirName = ProjectFolderPath.Substring(rootPath.Length).Trim('\\');
+            string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData); //其他文件不要写入发布文件夹
+            string newDir = Path.Combine(appDataPath, "AntDeploy", $"{dirName}_config");
+            if (!Directory.Exists(newDir))
+            {
+                Directory.CreateDirectory(newDir);
+            }
+            ProjectConfigPath = Path.Combine(newDir, "AntDeploy.json");
+
             if (File.Exists(ProjectConfigPath))
             {
                 var config = File.ReadAllText(ProjectConfigPath, Encoding.UTF8);
@@ -6689,7 +6756,7 @@ RETRY_WINDOWSSERVICE2:
                            this.nlog_docker.Info("-----------------Select File Start-----------------");
                            this.BeginInvokeLambda(() =>
                            {
-                               var slectFileForm = new SelectFile(fileList, publishPath);
+                               var slectFileForm = new SelectFile(fileList, publishPath, ignoreList);
                                slectFileForm.ShowDialog();
 
                                if (slectFileForm.SelectedFileList == null || !slectFileForm.SelectedFileList.Any())
@@ -6746,7 +6813,7 @@ RETRY_WINDOWSSERVICE2:
                        this.nlog_docker.Info("-----------------Select File Start-----------------");
                        this.BeginInvokeLambda(() =>
                        {
-                           var slectFileForm = new SelectFile(publishPath);
+                           var slectFileForm = new SelectFile(publishPath, ignoreList);
                            slectFileForm.ShowDialog();
                            if (slectFileForm.SelectedFileList == null || !slectFileForm.SelectedFileList.Any())
                            {
@@ -8788,11 +8855,11 @@ RETRY_DOCKER:
                             this.nlog_linux.Info("-----------------Select File Start-----------------");
                             this.BeginInvokeLambda(() =>
                             {
-                                var slectFileForm = new SelectFile(fileList, publishPath);
+                                var slectFileForm = new SelectFile(fileList, publishPath, ignoreList);
                                 slectFileForm.ShowDialog();
 
                                 //增量 选择特定文件发布
-                                DoLinuxServiceSelectDeploy(slectFileForm.SelectedFileList, publishPath, serverList, serviceName, DeployConfig.LinuxServiveConfig.EnvParam, useDotnet, execFilePath, PhysicalPath, backUpIgnoreList, gitModel, confirmResult.Item2);
+                                DoLinuxServiceSelectDeploy(slectFileForm.SelectedFileList, publishPath, serverList, serviceName, DeployConfig.LinuxServiveConfig.EnvParam, useDotnet, execFilePath, PhysicalPath, backUpIgnoreList, gitModel, confirmResult.Item2, ignoreList);
                             });
                             return;
                         }
@@ -8822,11 +8889,11 @@ RETRY_DOCKER:
                         this.nlog_linux.Info("-----------------Select File Start-----------------");
                         this.BeginInvokeLambda(() =>
                         {
-                            var slectFileForm = new SelectFile(publishPath);
+                            var slectFileForm = new SelectFile(publishPath, ignoreList);
                             slectFileForm.ShowDialog();
 
                             //选择特定文件发布
-                            DoLinuxServiceSelectDeploy(slectFileForm.SelectedFileList, publishPath, serverList, serviceName, DeployConfig.LinuxServiveConfig.EnvParam, useDotnet, execFilePath, PhysicalPath, backUpIgnoreList, null, confirmResult.Item2);
+                            DoLinuxServiceSelectDeploy(slectFileForm.SelectedFileList, publishPath, serverList, serviceName, DeployConfig.LinuxServiveConfig.EnvParam, useDotnet, execFilePath, PhysicalPath, backUpIgnoreList, null, confirmResult.Item2, ignoreList);
                         });
                         return;
                     }
@@ -9189,7 +9256,8 @@ RETRY_WINDOWSSERVICE:
         }
 
 
-        private void DoLinuxServiceSelectDeploy(List<string> fileList, string publishPath, List<Server> serverList, string serviceName, string envParam, bool useDotnet, string execFilePath, string PhysicalPath, List<string> backUpIgnoreList, GitClient gitModel, string remark)
+        private void DoLinuxServiceSelectDeploy(List<string> fileList, string publishPath, List<Server> serverList, string serviceName, string envParam, bool useDotnet, 
+            string execFilePath, string PhysicalPath, List<string> backUpIgnoreList, GitClient gitModel, string remark, List<string> ignoreList)
         {
             new Task(async () =>
             {
@@ -9212,7 +9280,7 @@ RETRY_WINDOWSSERVICE:
                     }
                     this.nlog_linux.Info("Select Files count:" + fileList.Count);
                     this.nlog_linux.Debug("ignore package ignoreList");
-                    List<string> ignoreList = new List<string>();
+                    //List<string> ignoreList = new List<string>();
                     try
                     {
                         zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, fileList, CompressionLevel.Optimal, true,
@@ -9690,6 +9758,17 @@ RETRY_WINDOWSSERVICE2:
         {
             ProcessStartInfo sInfo = new ProcessStartInfo("https://mp.weixin.qq.com/s/ga3nCq-DNkqVER8eYCooXA");
             Process.Start(sInfo);
+        }
+
+        /// <summary>
+        /// IIS发布初始化
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void b_iis_init_Click(object sender, EventArgs e)
+        {
+            this.Deploy_InitLoad(null, null, false);
+            this.combo_iis_env_SelectedIndexChanged(null, null);
         }
     }
 }
