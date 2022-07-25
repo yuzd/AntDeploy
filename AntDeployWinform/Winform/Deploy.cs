@@ -2602,7 +2602,7 @@ namespace AntDeployWinform.Winform
                                 var slectFileForm = new SelectFile(fileList, publishPath, ignoreList);
                                 slectFileForm.ShowDialog();
                                 // ReSharper disable once AccessToDisposedClosure
-                                DoSelectDeployIIS(slectFileForm.SelectedFileList, publishPath, serverList, backUpIgnoreList, Port, PoolName, PhysicalPath, PoolAlwaysRunning, gitModel, confirmResult.Item2);
+                                DoSelectDeployIIS(slectFileForm.SelectedFileList, publishPath, serverList, backUpIgnoreList, Port, PoolName, PhysicalPath, PoolAlwaysRunning, gitModel, confirmResult.Item2, ignoreList);
                             });
                             return;
                         }
@@ -2633,7 +2633,7 @@ namespace AntDeployWinform.Winform
                         {
                             var slectFileForm = new SelectFile(publishPath, ignoreList);
                             slectFileForm.ShowDialog();
-                            DoSelectDeployIIS(slectFileForm.SelectedFileList, publishPath, serverList, backUpIgnoreList, Port, PoolName, PhysicalPath, PoolAlwaysRunning, null, confirmResult.Item2);
+                            DoSelectDeployIIS(slectFileForm.SelectedFileList, publishPath, serverList, backUpIgnoreList, Port, PoolName, PhysicalPath, PoolAlwaysRunning, null, confirmResult.Item2, ignoreList);
                         });
 
 
@@ -3143,7 +3143,8 @@ RETRY_IIS:
             }
         }
 
-        private void DoSelectDeployIIS(List<string> fileList, string publishPath, List<Server> serverList, List<string> backUpIgnoreList, string Port, string PoolName, string PhysicalPath, bool alwaysRun, GitClient gitModel, string remark)
+        private void DoSelectDeployIIS(List<string> fileList, string publishPath, List<Server> serverList, List<string> backUpIgnoreList, 
+            string Port, string PoolName, string PhysicalPath, bool alwaysRun, GitClient gitModel, string remark, List<string> ignoreList)
         {
             try
             {
@@ -3167,7 +3168,7 @@ RETRY_IIS:
                         this.nlog_iis.Info("Select Files count:" + fileList.Count);
                         this.nlog_iis.Debug("ignore package ignoreList");
                         byte[] zipBytes = null;
-                        List<string> ignoreList = new List<string>();
+                        //List<string> ignoreList = new List<string>();
                         try
                         {
                             zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, fileList, CompressionLevel.Optimal, true,
@@ -3200,6 +3201,12 @@ RETRY_IIS:
                         var allfailServerList = new List<Server>();
                         var retryTimes = 0;
 RETRY_IIS2:
+                        if (stop_iis_cancel_token)
+                        {
+                            this.nlog_iis.Warn($"deploy task was canceled!");
+                            PackageError(this.tabPage_progress, serverList.First().Host);
+                            return;
+                        }
                         var failServerList = new List<Server>();
                         var index = 0;
                         var allSuccess = true;
@@ -3421,6 +3428,13 @@ RETRY_IIS2:
                                 _subcribe?.Dispose();
                             }
 
+                        }
+
+                        if (stop_iis_cancel_token)
+                        {
+                            this.nlog_iis.Warn($"deploy task was canceled!");
+                            PackageError(this.tabPage_progress, serverList.First().Host);
+                            return;
                         }
 
                         //交互
@@ -4975,7 +4989,7 @@ RETRY_IIS2:
                                 var slectFileForm = new SelectFile(fileList, publishPath, ignoreList);
                                 slectFileForm.ShowDialog();
                                 // ReSharper disable once AccessToDisposedClosure
-                                DoWindowsServiceSelectDeploy(slectFileForm.SelectedFileList, publishPath, serverList, serviceName, isProjectInstallService, execFilePath, PhysicalPath, backUpIgnoreList, gitModel, confirmResult.Item2);
+                                DoWindowsServiceSelectDeploy(slectFileForm.SelectedFileList, publishPath, serverList, serviceName, isProjectInstallService, execFilePath, PhysicalPath, backUpIgnoreList, gitModel, confirmResult.Item2, ignoreList);
                             });
                             return;
                         }
@@ -5011,7 +5025,7 @@ RETRY_IIS2:
                         {
                             var slectFileForm = new SelectFile(publishPath, ignoreList);
                             slectFileForm.ShowDialog();
-                            DoWindowsServiceSelectDeploy(slectFileForm.SelectedFileList, publishPath, serverList, serviceName, isProjectInstallService, execFilePath, PhysicalPath, backUpIgnoreList, null, confirmResult.Item2);
+                            DoWindowsServiceSelectDeploy(slectFileForm.SelectedFileList, publishPath, serverList, serviceName, isProjectInstallService, execFilePath, PhysicalPath, backUpIgnoreList, null, confirmResult.Item2, ignoreList);
                         });
                         return;
                     }
@@ -5422,7 +5436,8 @@ RETRY_WINDOWSSERVICE:
         }
 
 
-        private void DoWindowsServiceSelectDeploy(List<string> fileList, string publishPath, List<Server> serverList, string serviceName, bool isProjectInstallService, string execFilePath, string PhysicalPath, List<string> backUpIgnoreList, GitClient gitModel, string remark)
+        private void DoWindowsServiceSelectDeploy(List<string> fileList, string publishPath, List<Server> serverList, string serviceName, bool isProjectInstallService, 
+            string execFilePath, string PhysicalPath, List<string> backUpIgnoreList, GitClient gitModel, string remark, List<string> ignoreList)
         {
             new Task(async () =>
             {
@@ -5445,7 +5460,7 @@ RETRY_WINDOWSSERVICE:
                     }
                     this.nlog_windowservice.Info("Select Files count:" + fileList.Count);
                     this.nlog_windowservice.Debug("ignore package ignoreList");
-                    List<string> ignoreList = new List<string>();
+                    //List<string> ignoreList = new List<string>();
                     try
                     {
                         zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, fileList, CompressionLevel.Optimal, true,
@@ -8844,7 +8859,7 @@ RETRY_DOCKER:
                                 slectFileForm.ShowDialog();
 
                                 //增量 选择特定文件发布
-                                DoLinuxServiceSelectDeploy(slectFileForm.SelectedFileList, publishPath, serverList, serviceName, DeployConfig.LinuxServiveConfig.EnvParam, useDotnet, execFilePath, PhysicalPath, backUpIgnoreList, gitModel, confirmResult.Item2);
+                                DoLinuxServiceSelectDeploy(slectFileForm.SelectedFileList, publishPath, serverList, serviceName, DeployConfig.LinuxServiveConfig.EnvParam, useDotnet, execFilePath, PhysicalPath, backUpIgnoreList, gitModel, confirmResult.Item2, ignoreList);
                             });
                             return;
                         }
@@ -8878,7 +8893,7 @@ RETRY_DOCKER:
                             slectFileForm.ShowDialog();
 
                             //选择特定文件发布
-                            DoLinuxServiceSelectDeploy(slectFileForm.SelectedFileList, publishPath, serverList, serviceName, DeployConfig.LinuxServiveConfig.EnvParam, useDotnet, execFilePath, PhysicalPath, backUpIgnoreList, null, confirmResult.Item2);
+                            DoLinuxServiceSelectDeploy(slectFileForm.SelectedFileList, publishPath, serverList, serviceName, DeployConfig.LinuxServiveConfig.EnvParam, useDotnet, execFilePath, PhysicalPath, backUpIgnoreList, null, confirmResult.Item2, ignoreList);
                         });
                         return;
                     }
@@ -9241,7 +9256,8 @@ RETRY_WINDOWSSERVICE:
         }
 
 
-        private void DoLinuxServiceSelectDeploy(List<string> fileList, string publishPath, List<Server> serverList, string serviceName, string envParam, bool useDotnet, string execFilePath, string PhysicalPath, List<string> backUpIgnoreList, GitClient gitModel, string remark)
+        private void DoLinuxServiceSelectDeploy(List<string> fileList, string publishPath, List<Server> serverList, string serviceName, string envParam, bool useDotnet, 
+            string execFilePath, string PhysicalPath, List<string> backUpIgnoreList, GitClient gitModel, string remark, List<string> ignoreList)
         {
             new Task(async () =>
             {
@@ -9264,7 +9280,7 @@ RETRY_WINDOWSSERVICE:
                     }
                     this.nlog_linux.Info("Select Files count:" + fileList.Count);
                     this.nlog_linux.Debug("ignore package ignoreList");
-                    List<string> ignoreList = new List<string>();
+                    //List<string> ignoreList = new List<string>();
                     try
                     {
                         zipBytes = ZipHelper.DoCreateFromDirectory(publishPath, fileList, CompressionLevel.Optimal, true,
