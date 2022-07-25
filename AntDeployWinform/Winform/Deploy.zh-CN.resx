@@ -142,6 +142,15 @@
   <data name="checkBox_select_deploy_iis.Text" xml:space="preserve">
     <value>选择指定文件发布</value>
   </data>
+  <data name="b_iis_init.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Comic Sans MS, 10pt, style=Bold</value>
+  </data>
+  <data name="b_iis_init.Size" type="System.Drawing.Size, System.Drawing">
+    <value>62, 29</value>
+  </data>
+  <data name="b_iis_init.Text" xml:space="preserve">
+    <value>初始化</value>
+  </data>
   <data name="b_iis_deploy.Location" type="System.Drawing.Point, System.Drawing">
     <value>509, 107</value>
   </data>
@@ -527,8 +536,5 @@
   </data>
   <data name="label15.Text" xml:space="preserve">
     <value>指定特定文件夹发布：</value>
-  </data>
-  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>Inherit</value>
   </data>
 </root>

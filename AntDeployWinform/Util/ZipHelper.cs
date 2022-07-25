@@ -185,38 +185,7 @@ namespace AntDeployWinform.Util
                         var mathchEntryName = includeBaseDirectory? entryName.Substring(directoryInfo.Name.Length): "/"+entryName;
                         if (ignoreList != null && ignoreList.Count > 0)
                         {
-                            var haveMatch = false;
-                            foreach (var ignorRule in ignoreList)
-                            {
-                                try
-                                {
-                                    if (ignorRule.StartsWith("*"))
-                                    {
-                                        var ignorRule2 = ignorRule.Substring(1);
-                                        if (mathchEntryName.EndsWith(ignorRule2))
-                                        {
-                                            haveMatch = true;
-                                            break;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        var isMatch = Regex.Match(mathchEntryName, ignorRule, RegexOptions.IgnoreCase);//忽略大小写
-                                        if (isMatch.Success)
-                                        {
-                                            haveMatch = true;
-                                            break;
-                                        }
-                                    }
-
-                                }
-                                catch (Exception ex)
-                                {
-                                    throw new Exception($"Ignore Rule 【{ignorRule}】 regular error:" + ex.Message);
-                                }
-                            }
-
-                            if (haveMatch)
+                            if (IsIgnore(mathchEntryName, ignoreList))
                             {
                                 continue;
                             }
@@ -335,6 +304,57 @@ namespace AntDeployWinform.Util
         }
 
         /// <summary>
+        /// 是否符合过滤规则
+        /// </summary>
+        /// <param name="mathchEntryName"></param>
+        /// <param name="ignoreList"></param>
+        /// <returns></returns>
+        public static bool IsIgnore(string mathchEntryName, List<string> ignoreList)
+        {
+            if (ignoreList == null || ignoreList.Count <= 0)
+            {
+                return false;
+            }
+            if (String.IsNullOrWhiteSpace(mathchEntryName))
+            {
+                return true;
+            }
+
+            var haveMatch = false;
+            foreach (var ignorRule in ignoreList)
+            {
+                try
+                {
+                    if (ignorRule.StartsWith("*"))
+                    {
+                        var ignorRule2 = ignorRule.Substring(1);
+                        if (mathchEntryName.EndsWith(ignorRule2, StringComparison.OrdinalIgnoreCase))
+                        {
+                            haveMatch = true;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        var isMatch = Regex.Match(mathchEntryName, ignorRule, RegexOptions.IgnoreCase);//忽略大小写
+                        if (isMatch.Success)
+                        {
+                            haveMatch = true;
+                            break;
+                        }
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"Ignore Rule 【{ignorRule}】 regular error:" + ex.Message);
+                }
+            }
+
+            return haveMatch;
+        }
+
+        /// <summary>
         /// 打包文件夹
         /// </summary>
         /// <param name="sourceDirectoryName"></param>
@@ -380,38 +400,7 @@ namespace AntDeployWinform.Util
                         var mathchEntryName = includeBaseDirectory? entryName.Substring(directoryInfo.Name.Length): "/"+entryName;
                         if (ignoreList != null && ignoreList.Count > 0)
                         {
-                            var haveMatch = false;
-                            foreach (var ignorRule in ignoreList)
-                            {
-                                try
-                                {
-                                    if (ignorRule.StartsWith("*"))
-                                    {
-                                        var ignorRule2 = ignorRule.Substring(1);
-                                        if (mathchEntryName.EndsWith(ignorRule2))
-                                        {
-                                            haveMatch = true;
-                                            break;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        var isMatch = Regex.Match(mathchEntryName, ignorRule, RegexOptions.IgnoreCase);//忽略大小写
-                                        if (isMatch.Success)
-                                        {
-                                            haveMatch = true;
-                                            break;
-                                        }
-                                    }
-
-                                }
-                                catch (Exception ex)
-                                {
-                                    throw new Exception($"Ignore Rule 【{ignorRule}】 regular error:" + ex.Message);
-                                }
-                            }
-
-                            if (haveMatch)
+                            if (IsIgnore(mathchEntryName, ignoreList))
                             {
                                 continue;
                             }

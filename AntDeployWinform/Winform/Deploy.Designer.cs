@@ -115,6 +115,7 @@
             this.txt_dockerImage_ignore = new System.Windows.Forms.TextBox();
             this.list_dockerImage_ignore = new System.Windows.Forms.ListBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label_how_to_dockerimage = new System.Windows.Forms.Label();
             this.label59 = new System.Windows.Forms.Label();
             this.label60 = new System.Windows.Forms.Label();
             this.txt_HttpProxy = new System.Windows.Forms.TextBox();
@@ -265,7 +266,7 @@
             this.txt_msbuild_path = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
             this.btn_shang = new AltoControls.AltoButton();
-            this.label_how_to_dockerimage = new System.Windows.Forms.Label();
+            this.b_iis_init = new AltoControls.AltoButton();
             this.tabcontrol.SuspendLayout();
             this.page_web_iis.SuspendLayout();
             this.tab_iis.SuspendLayout();
@@ -325,6 +326,7 @@
             this.page_web_iis.Controls.Add(this.btn_iis_stop);
             this.page_web_iis.Controls.Add(this.btn_iis_retry);
             this.page_web_iis.Controls.Add(this.checkBox_select_deploy_iis);
+            this.page_web_iis.Controls.Add(this.b_iis_init);
             this.page_web_iis.Controls.Add(this.b_iis_rollback);
             this.page_web_iis.Controls.Add(this.checkBox_Increment_iis);
             this.page_web_iis.Controls.Add(this.label25);
@@ -1035,6 +1037,14 @@
             this.groupBox2.Controls.Add(this.txt_BaseImage_username);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.TabStop = false;
+            // 
+            // label_how_to_dockerimage
+            // 
+            resources.ApplyResources(this.label_how_to_dockerimage, "label_how_to_dockerimage");
+            this.label_how_to_dockerimage.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.label_how_to_dockerimage.ForeColor = System.Drawing.Color.RoyalBlue;
+            this.label_how_to_dockerimage.Name = "label_how_to_dockerimage";
+            this.label_how_to_dockerimage.Click += new System.EventHandler(this.label_how_to_dockerimage_Click);
             // 
             // label59
             // 
@@ -2237,13 +2247,22 @@
             this.btn_shang.Transparency = false;
             this.btn_shang.Click += new System.EventHandler(this.btn_shang_Click);
             // 
-            // label_how_to_dockerimage
+            // b_iis_init
             // 
-            resources.ApplyResources(this.label_how_to_dockerimage, "label_how_to_dockerimage");
-            this.label_how_to_dockerimage.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.label_how_to_dockerimage.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.label_how_to_dockerimage.Name = "label_how_to_dockerimage";
-            this.label_how_to_dockerimage.Click += new System.EventHandler(this.label_how_to_dockerimage_Click);
+            resources.ApplyResources(this.b_iis_init, "b_iis_init");
+            this.b_iis_init.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(168)))), ((int)(((byte)(183)))));
+            this.b_iis_init.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(164)))), ((int)(((byte)(183)))));
+            this.b_iis_init.BackColor = System.Drawing.Color.Transparent;
+            this.b_iis_init.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.b_iis_init.ForeColor = System.Drawing.Color.Black;
+            this.b_iis_init.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+            this.b_iis_init.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+            this.b_iis_init.Name = "b_iis_init";
+            this.b_iis_init.Radius = 10;
+            this.b_iis_init.Stroke = false;
+            this.b_iis_init.StrokeColor = System.Drawing.Color.Gray;
+            this.b_iis_init.Transparency = false;
+            this.b_iis_init.Click += new System.EventHandler(this.b_iis_init_Click);
             // 
             // Deploy
             // 
@@ -2553,5 +2572,6 @@
         private System.Windows.Forms.Button btn_auto_find_msbuild;
         private System.Windows.Forms.Label label_how_to_linuxservice;
         private System.Windows.Forms.Label label_how_to_dockerimage;
+        private AltoControls.AltoButton b_iis_init;
     }
 }
