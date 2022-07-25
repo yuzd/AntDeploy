@@ -6292,7 +6292,7 @@ RETRY_WINDOWSSERVICE2:
                 return;
             }
 
-            //ProjectConfigPath = Path.Combine(ProjectFolderPath, "AntDeploy.json");
+            var old_ProjectConfigPath = Path.Combine(ProjectFolderPath, "AntDeploy.json");
             ProjectConfigPath = ""; //Path.Combine(ProjectFolderPath, "AntDeploy.json");
             string rootPath = Path.GetDirectoryName(ProjectFolderPath.TrimEnd('\\'));
             string dirName = ProjectFolderPath.Substring(rootPath.Length).Trim('\\');
@@ -6303,6 +6303,11 @@ RETRY_WINDOWSSERVICE2:
                 Directory.CreateDirectory(newDir);
             }
             ProjectConfigPath = Path.Combine(newDir, "AntDeploy.json");
+            //AntDeploy.json发布配置文件与发布文件隔离开 兼容老的配置文件第一次默认转移
+            if (File.Exists(old_ProjectConfigPath) && !File.Exists(ProjectConfigPath))
+            {
+                File.Copy(old_ProjectConfigPath, ProjectConfigPath, false);
+            }
 
             if (File.Exists(ProjectConfigPath))
             {
