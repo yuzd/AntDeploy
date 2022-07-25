@@ -306,6 +306,12 @@ namespace AntDeployAgentWindows.Util
             }
         }
 
+        /// <summary>
+        /// 是否符合排除规则
+        /// </summary>
+        /// <param name="entryName"></param>
+        /// <param name="backignoreUpList">正则</param>
+        /// <returns></returns>
         private static bool IsMacthIgnore(string entryName, List<string> backignoreUpList)
         {
             var haveMatch = false;
@@ -316,7 +322,7 @@ namespace AntDeployAgentWindows.Util
                     if (ignorRule.StartsWith("*"))
                     {
                         var ignorRule2 = ignorRule.Substring(1);
-                        if (entryName.EndsWith(ignorRule2))
+                        if (entryName.EndsWith(ignorRule2, StringComparison.OrdinalIgnoreCase)) //忽略大小写
                         {
                             haveMatch = true;
                             break;
@@ -333,8 +339,9 @@ namespace AntDeployAgentWindows.Util
                     }
 
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
+                    //ignore
                 }
             }
 

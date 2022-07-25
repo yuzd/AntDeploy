@@ -17,7 +17,9 @@ namespace System.Configuration.System.Configuration
             {"startup","System.Configuration.IgnoreSection, System.Configuration"},
             {"windows","System.Configuration.IgnoreSection, System.Configuration"},
             {"system.webServer","System.Configuration.IgnoreSection, System.Configuration"},
-            {"system.runtime.remoting","System.Configuration.IgnoreSection, System.Configuration"}
+            {"system.runtime.remoting","System.Configuration.IgnoreSection, System.Configuration"},
+            {"system.net","System.Net.Configuration, System.Configuration"},
+            {"system.web","System.Web.Configuration, System.Configuration"}
         };
     }
 }

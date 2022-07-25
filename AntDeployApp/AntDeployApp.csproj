@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>AntDeployApp</RootNamespace>
     <AssemblyName>AntDeployApp</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <IsWebBootstrapper>false</IsWebBootstrapper>

@@ -45,6 +45,7 @@
             this.treeView1.CheckBoxes = true;
             resources.ApplyResources(this.treeView1, "treeView1");
             this.treeView1.Name = "treeView1";
+            this.treeView1.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterCheck);
             // 
             // SelectFile
             // 
@@ -57,6 +58,7 @@
             this.MinimizeBox = false;
             this.Name = "SelectFile";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SelectFile_FormClosing);
+            this.Shown += new System.EventHandler(this.SelectFile_Shown);
             this.ResumeLayout(false);
 
         }
