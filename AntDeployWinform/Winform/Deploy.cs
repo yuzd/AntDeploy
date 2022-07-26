@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using NLog;
 using NLog.Config;
 using NLog.Windows.Forms;
+using NLog.Windows.Forms.Targets;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -72,8 +73,7 @@ namespace AntDeployWinform.Winform
         private string _formText = "";
         private SystemMenu systemMemu;
         public Deploy(string projectPath = null, ProjectParam project = null)
-        {
-            this._formText = this.Text;
+        {            
             this.Deploy_InitLoad(projectPath, project);
         }
 
@@ -92,6 +92,7 @@ namespace AntDeployWinform.Winform
             {
                 LoadLanguage();
                 InitializeComponent();
+                this._formText = this.Text;
                 Assembly assembly = typeof(Deploy).Assembly;
                 using (Stream stream = assembly.GetManifestResourceStream("AntDeployWinform.Resources.Logo12.ico"))
                 {
@@ -507,7 +508,8 @@ namespace AntDeployWinform.Winform
         {
 
             #region Nlog
-
+            
+            /*
             var config = new LoggingConfiguration();
             var richTarget = new RichTextBoxTarget
             {
@@ -520,8 +522,7 @@ namespace AntDeployWinform.Winform
                 MaxLines = 0,
                 AllowAccessoryFormCreation = false,
                 SupportLinks = true,
-                UseDefaultRowColoringRules = true
-
+                UseDefaultRowColoringRules = true,                
             };
             config.AddTarget("rich_iis_log", richTarget);
             LoggingRule rule1 = new LoggingRule("*", LogLevel.Debug, richTarget);
@@ -622,7 +623,8 @@ namespace AntDeployWinform.Winform
             config.LoggingRules.Add(rule5);
 
             LogManager.Configuration = config;
-
+            */
+            LogManager.Setup().SetupExtensions(ext => ext.RegisterAssembly(typeof(RichTextBoxTarget).Assembly));
             nlog_iis = NLog.LogManager.GetLogger("rich_iis_log");
             nlog_windowservice = NLog.LogManager.GetLogger("rich_windowservice_log");
             nlog_linux = NLog.LogManager.GetLogger("rich_linuxservice_log");
@@ -3166,7 +3168,8 @@ RETRY_IIS:
                             return;
                         }
                         this.nlog_iis.Info("Select Files count:" + fileList.Count);
-                        this.nlog_iis.Debug("ignore package ignoreList");
+                        //this.nlog_iis.Debug("ignore package ignoreList");
+                        this.nlog_iis.Info($"package ignoreList Count:{ignoreList.Count}, backUp IgnoreList Count:{backUpIgnoreList.Count}");
                         byte[] zipBytes = null;
                         //List<string> ignoreList = new List<string>();
                         try
@@ -5459,7 +5462,8 @@ RETRY_WINDOWSSERVICE:
                         return;
                     }
                     this.nlog_windowservice.Info("Select Files count:" + fileList.Count);
-                    this.nlog_windowservice.Debug("ignore package ignoreList");
+                    //this.nlog_windowservice.Debug("ignore package ignoreList");
+                    this.nlog_windowservice.Info($"package ignoreList Count:{ignoreList.Count}, backUp IgnoreList Count:{backUpIgnoreList.Count}");
                     //List<string> ignoreList = new List<string>();
                     try
                     {
@@ -6768,7 +6772,8 @@ RETRY_WINDOWSSERVICE2:
 
                                fileList = slectFileForm.SelectedFileList;
                                this.nlog_docker.Info("Select Files count:" + fileList.Count);
-                               this.nlog_docker.Debug("ignore package ignoreList");
+                               //this.nlog_docker.Debug("ignore package ignoreList");
+                               this.nlog_docker.Info($"package ignoreList Count:{ignoreList.Count}");
                                Condition.Set();
                            });
 
@@ -6823,7 +6828,8 @@ RETRY_WINDOWSSERVICE2:
                            }
                            fileList = slectFileForm.SelectedFileList;
                            this.nlog_docker.Info("Select Files count:" + fileList.Count);
-                           this.nlog_docker.Debug("ignore package ignoreList");
+                           //this.nlog_docker.Debug("ignore package ignoreList");
+                           this.nlog_docker.Info($"package ignoreList Count:{ignoreList.Count}");
                            Condition.Set();
                        });
 
@@ -9279,7 +9285,8 @@ RETRY_WINDOWSSERVICE:
                         return;
                     }
                     this.nlog_linux.Info("Select Files count:" + fileList.Count);
-                    this.nlog_linux.Debug("ignore package ignoreList");
+                    //this.nlog_linux.Debug("ignore package ignoreList");
+                    this.nlog_linux.Info($"package ignoreList Count:{ignoreList.Count}, backUp IgnoreList Count:{backUpIgnoreList.Count}");
                     //List<string> ignoreList = new List<string>();
                     try
                     {
