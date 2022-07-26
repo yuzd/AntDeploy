@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 using NLog;
 using NLog.Config;
 using NLog.Windows.Forms;
-using NLog.Windows.Forms.Targets;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
