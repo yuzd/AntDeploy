@@ -201,6 +201,7 @@ namespace AntDeployWinform.Winform
             }
 
             parentNode = treeView1.AddNode(treeView1.Nodes, di.Name, "", di.FullName);
+            UpdateProgress();
             Util.FileHelper.ResortFileList(fileStructs, dir);
             LoadFiles(dir, parentNode, fileStructs);
             LoadSubDirectories(dir, parentNode, fileStructs);

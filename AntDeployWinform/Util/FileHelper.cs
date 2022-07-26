@@ -121,6 +121,16 @@ namespace AntDeployWinform.Util
                     }
                 }
             }
+            else
+            {
+                // 如果这个文件夹下面一个文件都没有
+                files.Add(new Models.FileStruct
+                {
+                    FileFullName = dirInfo.FullName,
+                    UpdateTime = dirInfo.LastWriteTime,
+                    IsFile = false
+                });
+            }
             DirectoryInfo[] allDir = dirInfo.GetDirectories();
             foreach (DirectoryInfo di in allDir)
             {
