@@ -1,5 +1,6 @@
 ﻿using AntDeployWinform.Models;
 using AntDeployWinform.Util;
+using CCWin;
 using Newtonsoft.Json;
 using NLog;
 using NLog.Config;
@@ -21,11 +22,12 @@ using System.Windows.Forms;
 using ToastHelper;
 using Exception = System.Exception;
 using Process = System.Diagnostics.Process;
+using MessageBoxEx = AntDeployWinform.Models.MessageBoxEx;
 
 namespace AntDeployWinform.Winform
 {
     [Serializable]
-    public partial class Deploy : Form
+    public partial class Deploy : CCSkinMain
     {
         private AutoResetEvent Condition { get; set; }
         private string ProjectConfigPath;
@@ -170,7 +172,13 @@ namespace AntDeployWinform.Winform
             }
             else
             {
-                base.WndProc(ref m);
+                try
+                {
+                    base.WndProc(ref m);
+                }
+                catch (Exception)
+                {
+                }
             }
         }
 
@@ -399,7 +407,7 @@ namespace AntDeployWinform.Winform
 
         private void Init(string projectPath, ProjectParam project = null, bool isFirst = true)
         {
-            if (string.IsNullOrEmpty(projectPath))
+            if (string.IsNullOrEmpty(projectPath) || (project!=null && project.OpenNewWindow))
             {
                 if (isFirst)
                 {
@@ -415,12 +423,12 @@ namespace AntDeployWinform.Winform
                 this.page_docker_img.Enabled = false;
                 SelectProject selectProject = new SelectProject(GlobalConfig.ProjectPathList);
                 var r = selectProject.ShowDialog();
-                if (r == DialogResult.Cancel)
+                if (r == DialogResult.Cancel && string.IsNullOrEmpty(projectPath))
                 {
                     this.Close();
                     return;
                 }
-                else
+                else if(r == DialogResult.OK)
                 {
                     projectPath = selectProject.SelectProjectPath;
                     //保存记录
@@ -968,7 +976,6 @@ namespace AntDeployWinform.Winform
             RichTextBoxTarget.GetTargetByControl(rich_linuxservice_log)?.Dispose();
 
 
-            this.b_iis_init.Dispose();
             this.b_iis_rollback.Dispose();
             this.b_docker_rollback.Dispose();
             this.b_windows_service_rollback.Dispose();
@@ -3885,7 +3892,6 @@ RETRY_IIS2:
                     }
                 }
 
-                this.b_iis_init.Enabled = flag;
                 this.b_iis_rollback.Enabled = flag;
                 this.b_iis_deploy.Enabled = flag;
                 if (!ignore)
@@ -9771,15 +9777,19 @@ RETRY_WINDOWSSERVICE2:
             Process.Start(sInfo);
         }
 
-        /// <summary>
-        /// IIS发布初始化
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void b_iis_init_Click(object sender, EventArgs e)
+
+        private void Deploy_SysBottomClick(object sender, CCWin.SkinControl.SysButtonEventArgs e)
         {
-            this.Deploy_InitLoad(null, null, false);
-            this.combo_iis_env_SelectedIndexChanged(null, null);
+            if (e.SysButton.Name == "btn_question")
+            {
+                About about = new About();
+                about.ShowDialog();
+            }
+            else if (e.SysButton.Name == "btn_open_new")
+            {
+                this.Deploy_InitLoad(this.ProjectPath, new ProjectParam { OpenNewWindow = true}, false);
+                this.combo_iis_env_SelectedIndexChanged(null, null);
+            }
         }
     }
 }

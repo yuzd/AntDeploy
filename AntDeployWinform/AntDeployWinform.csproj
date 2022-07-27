@@ -36,6 +36,9 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CSkin">
+      <HintPath>..\DLL\CSkin.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Build.Locator">
       <HintPath>..\DLL\Microsoft.Build.Locator.dll</HintPath>
     </Reference>
