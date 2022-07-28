@@ -203,6 +203,9 @@
     <EmbeddedResource Include="Winform\About.resx">
       <DependentUpon>About.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Winform\About.zh-CN.resx">
+      <DependentUpon>About.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Winform\About.zh-Hans.resx">
       <DependentUpon>About.cs</DependentUpon>
     </EmbeddedResource>
@@ -305,6 +308,9 @@
     <PackageReference Include="WinFormAnimation">
       <Version>1.6.0.4</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\video.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
