@@ -432,18 +432,17 @@ namespace AntDeployWinform.Winform
                 {
                     projectPath = selectProject.SelectProjectPath;
                     //保存记录
-
-                    this.page_set.Enabled = true;
-                    this.page_docker.Enabled = true;
-                    this.page_docker_img.Enabled = true;
-                    this.page_window_service.Enabled = true;
-                    this.page_linux_service.Enabled = true;
-                    this.page_web_iis.Enabled = true;
-                    this.pag_advance_setting.Enabled = true;
-
-                    this.BringToFront();
                 }
 
+                this.page_set.Enabled = true;
+                this.page_docker.Enabled = true;
+                this.page_docker_img.Enabled = true;
+                this.page_window_service.Enabled = true;
+                this.page_linux_service.Enabled = true;
+                this.page_web_iis.Enabled = true;
+                this.pag_advance_setting.Enabled = true;
+
+                this.BringToFront();
             }
             else
             {
@@ -7711,12 +7710,23 @@ RETRY_DOCKER:
                 log.Info("Visual Studio Version : " + vsVersion);
             }
 
+            if (!string.IsNullOrEmpty(ProjectConfigPath))
+            {
+                var fileInfo = new FileInfo(ProjectConfigPath);
+                if (fileInfo.Exists && !string.IsNullOrEmpty(fileInfo.DirectoryName))
+                {
+                    LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "【AntDeploy.json】 ");
+                    publisEvent.Properties["ShowLink"] = "file://" + fileInfo.DirectoryName.Replace("\\", "\\\\");
+                    publisEvent.LoggerName = log.Name;
+                    log.Log(publisEvent);
+                }
+            }
             if (!string.IsNullOrEmpty(ProjectPath))
             {
                 var fileInfo = new FileInfo(ProjectPath);
                 if (fileInfo.Exists && !string.IsNullOrEmpty(fileInfo.DirectoryName))
                 {
-                    LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "CurrentProjectFolder:");
+                    LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "【CurrentProjectFolder】");
                     publisEvent.Properties["ShowLink"] = "file://" + fileInfo.DirectoryName.Replace("\\", "\\\\");
                     publisEvent.LoggerName = log.Name;
                     log.Log(publisEvent);
