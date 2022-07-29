@@ -108,7 +108,7 @@ namespace AntDeployWinform.Util
                         hasFile = true;
                     }
                 }
-                if (hasFile)
+                if (hasFile && !String.Equals(rootDir, dirInfo.FullName, StringComparison.OrdinalIgnoreCase))
                 {
                     if (files.All(u => !String.Equals(u.FileFullName, dirInfo.FullName, StringComparison.OrdinalIgnoreCase)))
                     {
