@@ -431,9 +431,8 @@ namespace AntDeployWinform.Winform
                 else if(r == DialogResult.OK)
                 {
                     projectPath = selectProject.SelectProjectPath;
-                    //保存记录
                 }
-
+                //保存记录
                 this.page_set.Enabled = true;
                 this.page_docker.Enabled = true;
                 this.page_docker_img.Enabled = true;
@@ -453,7 +452,7 @@ namespace AntDeployWinform.Winform
             if (File.Exists(projectPath))
             {
                 ProjectPath = projectPath;
-                if (project == null)
+                if (project == null || project.OpenNewWindow)
                 {
                     //读配置
                     project = ProjectHelper.GetNetCoreParamInCsprojectFile(projectPath);

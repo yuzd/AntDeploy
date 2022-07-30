@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using AntDeployWinform.Models;
 
 namespace AntDeployWinform.Winform
 {
@@ -66,7 +67,7 @@ namespace AntDeployWinform.Winform
                 progressBar1.Maximum = list.Count;
                 DirectoryInfo di = new DirectoryInfo(this._dir);
 
-                parentNode = treeView1.AddNode(treeView1.Nodes, "/", di.Name, di.FullName);
+                parentNode = treeView1.Nodes.Add( "/", di.Name, di.FullName);
                 //获取变更的文件路径列表
                 PopulateTreeView(this.treeView1, this._dir, list, parentNode, this._ignoreList);
             }
@@ -133,11 +134,11 @@ namespace AntDeployWinform.Winform
                         }
                         if (lastNode == null)
                         {
-                            lastNode = treeView1.AddNode(treeView.Nodes, subPathAgg, text, "");
+                            lastNode = treeView.Nodes.Add(subPathAgg, text, "");
                         }
                         else
                         {
-                            lastNode = treeView1.AddNode(lastNode.Nodes, subPathAgg, text, "");
+                            lastNode = lastNode.Nodes.Add(subPathAgg, text, "");
                         }
 
                         var path2 = subPathAgg;
@@ -200,7 +201,7 @@ namespace AntDeployWinform.Winform
                 progressBar1.Maximum = progressBar1.Maximum - gistFilecounts - 1;
             }
 
-            parentNode = treeView1.AddNode(treeView1.Nodes, di.Name, "", di.FullName);
+            parentNode = treeView1.Nodes.Add(di.Name, di.Name, di.FullName);
             UpdateProgress();
             Util.FileHelper.ResortFileList(fileStructs, dir);
             LoadFiles(dir, parentNode, fileStructs);
@@ -218,7 +219,7 @@ namespace AntDeployWinform.Winform
             {
                 if (subdirectory.FileFullName.EndsWith(".git")) continue;
                 DirectoryInfo di = new DirectoryInfo(subdirectory.FileFullName);
-                TreeNode tds = treeView1.AddNode(td.Nodes, di.Name, "", di.FullName);
+                TreeNode tds = td.Nodes.Add( di.Name, di.Name, di.FullName);
                 LoadFiles(subdirectory.FileFullName, tds, fileStructs);
                 LoadSubDirectories(subdirectory.FileFullName, tds, fileStructs);
                 UpdateProgress();
@@ -238,7 +239,7 @@ namespace AntDeployWinform.Winform
                 //TreeNode tds = treeView1.AddNode(td.Nodes,fi.Name,"",fi.FullName);
                 string fileName = Path.GetFileName(file.FileFullName);
                 string text = $"{fileName} ({file.UpdateTime:yyyy-MM-dd HH:mm})";
-                TreeNode tds = treeView1.AddNode(td.Nodes, fileName, text, file.FileFullName);
+                TreeNode tds = td.Nodes.Add( fileName, text, file.FileFullName);
                 UpdateProgress();
 
             }
@@ -276,12 +277,11 @@ namespace AntDeployWinform.Winform
         }
         private void GetCheckedNodes(TreeNodeCollection nodes, List<string> fileList)
         {
-            foreach (System.Windows.Forms.TreeNode aNode in nodes)
+            foreach (TreeNode aNode in nodes)
             {
-                TriStateTreeView.CheckBoxState state = treeView1.GetTreeNodeCheckBoxState(aNode);
                 //edit
-                if (state == TriStateTreeView.CheckBoxState.Checked && aNode.Nodes.Count == 0)
-                    fileList.Add(aNode.Tag as string);
+                if (aNode.Checked && aNode.Nodes.Count == 0)
+                    fileList.Add(aNode.ImageKey);
 
                 if (aNode.Nodes.Count != 0)
                     GetCheckedNodes(aNode.Nodes, fileList);
@@ -336,13 +336,16 @@ namespace AntDeployWinform.Winform
 
         private void treeView1_AfterCheck(object sender, TreeViewEventArgs e)
         {
-            //通过鼠标或者键盘触发事件，防止修改节点的Checked状态时候再次进入
-            if (e.Action == TreeViewAction.ByMouse || e.Action == TreeViewAction.ByKeyboard)
+            if (e.Action != TreeViewAction.Unknown)
             {
-                bool state = e.Node.Checked;
-                //this.SetParentNodeCheckedState(e.Node, state);
-                //this.SetChildNodeCheckedState(e.Node, state);
-                this.treeView1.SetTreeNodeCheckBoxChecked(e.Node, state);
+                e.Node.Descendants().ToList().ForEach(x =>
+                {
+                    x.Checked = e.Node.Checked;
+                });
+                e.Node.Ancestors().ToList().ForEach(x =>
+                {
+                    x.Checked = x.Descendants().ToList().Any(y => y.Checked);
+                });
             }
         }
 
