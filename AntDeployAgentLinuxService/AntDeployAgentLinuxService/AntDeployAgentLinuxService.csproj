@@ -22,6 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="AntAgent.service">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="AntDeployAgentLinuxService.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -29,5 +29,7 @@ namespace AntDeployWinform.Models
         public string NetCoreSDKVersion { get; set; }
         public string DomainPath { get; set; }
         public bool IsFirst { get; set; }
+        //是否是打开新的窗口
+        public bool OpenNewWindow { get; set; }
     }
 }

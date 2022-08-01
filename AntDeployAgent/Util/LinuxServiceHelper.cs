@@ -186,6 +186,10 @@ namespace AntDeployAgentWindows.Util
             all.Add("SyslogIdentifier=" + serviceName);
             all.Add("Restart=always");
             all.Add("RestartSec=5");
+            all.Add("KillSignal=SIGINT");
+            //https://stackoverflow.com/questions/47082358/asp-net-core-web-api-application-cant-be-started
+            all.Add("Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false");
+           
 
             if (!string.IsNullOrEmpty(env))
             {
@@ -195,7 +199,8 @@ namespace AntDeployAgentWindows.Util
                     all.Add($"Environment={item.Trim()}");
                 }
             }
-
+            // 解决非root权限无法使用1024以下端口的问题
+            //all.Add("AmbientCapabilities=CAP_NET_BIND_SERVICE");
             all.Add("[Install]");
             all.Add("WantedBy=multi-user.target");
 

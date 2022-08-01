@@ -60,7 +60,9 @@
       <ResourceName>Menus.ctmenu</ResourceName>
     </VSCTCompile>
     <None Include="Key.snk" />
-    <None Include="LibGit2Sharp.dll.config" />
+    <Content Include="nlog.config">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
@@ -91,6 +93,9 @@
     <Content Include="CircularProgressBar.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="CSkin.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="en\AntDeployWinform.resources.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -100,12 +105,8 @@
     <Content Include="LibGit2Sharp.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="lib\win32\x64\git2-572e4d8.dll">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="lib\win32\x86\git2-572e4d8.dll">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
+    <Content Include="lib\win32\x64\git2-106a5f2.dll" />
+    <Content Include="lib\win32\x86\git2-106a5f2.dll" />
     <Content Include="Microsoft.Build.Locator.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
