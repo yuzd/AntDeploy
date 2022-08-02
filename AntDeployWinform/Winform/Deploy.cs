@@ -500,11 +500,11 @@ namespace AntDeployWinform.Winform
             {
                 PluginConfig.DeployFolderPath = projectPath;
             }
+            if (GlobalConfig.ProjectPathList == null) GlobalConfig.ProjectPathList = new List<string>();
+            GlobalConfig.ProjectPathList.Insert(0, projectPath);
+            GlobalConfig.ProjectPathList = GlobalConfig.ProjectPathList.Distinct().ToList();
             if (!isFirst)
             {
-                if (GlobalConfig.ProjectPathList == null) GlobalConfig.ProjectPathList = new List<string>();
-                GlobalConfig.ProjectPathList.Insert(0, projectPath);
-                GlobalConfig.ProjectPathList = GlobalConfig.ProjectPathList.Distinct().ToList();
                 Reload();
             }
         }
