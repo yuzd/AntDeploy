@@ -35,7 +35,7 @@ namespace AntDeployWinform.Util
                     value = 1;
                 }
                 else if (!String.Equals(rootPath, xpath, StringComparison.OrdinalIgnoreCase)
-                         && String.Equals(rootPath, ypath, StringComparison.OrdinalIgnoreCase))
+                    && String.Equals(rootPath, ypath, StringComparison.OrdinalIgnoreCase))
                 {
                     value = -1;
                 }
@@ -83,7 +83,7 @@ namespace AntDeployWinform.Util
             FileInfo[] allFile = dirInfo.GetFiles();
             if (allFile.Length > 0)
             {
-                bool hasFile = false;
+                //bool hasFile = false;
                 var maxFileLastWriteTime = new DateTime(1970, 1, 1);
                 foreach (FileInfo fi in allFile)
                 {
@@ -99,16 +99,16 @@ namespace AntDeployWinform.Util
                             FileFullName = fi.FullName,
                             UpdateTime = fi.LastWriteTime,
                             IsFile = true,
-                            RelativePath= relativePath
+                            RelativePath = relativePath
                         });
                         if (fi.LastWriteTime > maxFileLastWriteTime)
                         {
                             maxFileLastWriteTime = fi.LastWriteTime;
                         }
-                        hasFile = true;
+                        //hasFile = true;
                     }
                 }
-                if (hasFile && !String.Equals(rootDir, dirInfo.FullName, StringComparison.OrdinalIgnoreCase))
+                if (!String.Equals(rootDir, dirInfo.FullName, StringComparison.OrdinalIgnoreCase))
                 {
                     if (files.All(u => !String.Equals(u.FileFullName, dirInfo.FullName, StringComparison.OrdinalIgnoreCase)))
                     {
@@ -118,24 +118,42 @@ namespace AntDeployWinform.Util
                             UpdateTime = maxFileLastWriteTime,
                             IsFile = false
                         });
+
+                        //设置父文件夹时间
+                        foreach (var dirStruct in files)
+                        {
+                            if (!dirStruct.IsFile
+                                && dirStruct.UpdateTime < maxFileLastWriteTime
+                                && dirInfo.FullName.StartsWith($"{dirStruct.FileFullName}\\", StringComparison.OrdinalIgnoreCase))
+                            {
+                                dirStruct.UpdateTime = maxFileLastWriteTime;
+                            }
+                        }
                     }
                 }
             }
-            else
+            else if (!String.Equals(rootDir, dirInfo.FullName, StringComparison.OrdinalIgnoreCase))
             {
                 // 如果这个文件夹下面一个文件都没有
                 files.Add(new Models.FileStruct
                 {
                     FileFullName = dirInfo.FullName,
-                    UpdateTime = dirInfo.LastWriteTime,
+                    //UpdateTime = dirInfo.LastWriteTime,
                     IsFile = false
                 });
             }
+
             DirectoryInfo[] allDir = dirInfo.GetDirectories();
             foreach (DirectoryInfo di in allDir)
             {
+                string relativePath = "/" + di.FullName.Substring(rootDir.Length).Trim('/', '\\').Replace("\\", "/") + "/";
+                if (ZipHelper.IsIgnore(relativePath, ignoreList))
+                {
+                    continue;
+                }
                 GetAllFileInfos(files, di.FullName,ignoreList, rootDir);
             }
         }
+
     }
 }
