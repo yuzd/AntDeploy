@@ -105,8 +105,12 @@
     <Content Include="LibGit2Sharp.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="lib\win32\x64\git2-106a5f2.dll" />
-    <Content Include="lib\win32\x86\git2-106a5f2.dll" />
+    <Content Include="lib\win32\x64\git2-106a5f2.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="lib\win32\x86\git2-106a5f2.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Microsoft.Build.Locator.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
