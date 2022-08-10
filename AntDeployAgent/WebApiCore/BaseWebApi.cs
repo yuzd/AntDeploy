@@ -100,6 +100,7 @@ namespace AntDeployAgentWindows.WebApiCore
                 }
                 catch (Exception ex)
                 {
+                    Console.WriteLine(ex);
                     DeployResult obj = new DeployResult {Success = false, Msg = ex.Message};
                     Response.ContentType = "application/json";
                     Response.Write(JsonConvert.SerializeObject(obj));

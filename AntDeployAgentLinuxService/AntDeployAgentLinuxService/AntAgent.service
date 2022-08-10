@@ -1,0 +1,14 @@
+[Unit]
+Description=AntAgent
+
+[Service]
+Type=notify
+WorkingDirectory=/usr/AntAgent
+ExecStart=/usr/AntAgent/AntDeployAgentLinuxService
+SyslogIdentifier=AntAgent
+Restart=always        
+RestartSec=5
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target

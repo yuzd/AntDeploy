@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -41,6 +42,14 @@ namespace AntDeployWinform.Winform
                     pictureBox2.Image = Image.FromStream(stream);
                 }
             }
+            using (Stream stream = assembly.GetManifestResourceStream("AntDeployWinform.Resources.video.png"))
+            {
+                if (stream != null)
+                {
+                    pictureBox3.Image = Image.FromStream(stream);
+                }
+            }
         }
+
     }
 }

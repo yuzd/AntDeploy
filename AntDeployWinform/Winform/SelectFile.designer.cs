@@ -1,4 +1,6 @@
-﻿namespace AntDeployWinform.Winform
+﻿using AntDeployWinform.Models;
+
+namespace AntDeployWinform.Winform
 {
     partial class SelectFile
     {
@@ -28,11 +30,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SelectFile));
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.treeView1 = new TriStateTreeView.TriStateTreeViewCtrl();
+            this.treeView1 = new AntDeployWinform.Models.ExTreeView();
             this.SuspendLayout();
             // 
             // progressBar1
@@ -66,7 +67,7 @@
         #endregion
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
-        private TriStateTreeView.TriStateTreeViewCtrl treeView1;
+        private ExTreeView treeView1;
     }
 }
 
