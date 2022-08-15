@@ -59,10 +59,12 @@ namespace AntDeployWinform.Winform
         {
             if (this._fileList == null)
             {
+                // 只选择了 指定文件发布
                 this.LoadDirectory(this._dir, this._ignoreList);
             }
             else
             {
+                // 选择了增量且选择了 指定文件
                 var list = this._fileList.Select(r => '/' + r).ToList();
                 progressBar1.Maximum = list.Count;
                 DirectoryInfo di = new DirectoryInfo(this._dir);
@@ -155,10 +157,13 @@ namespace AntDeployWinform.Winform
                         if (File.Exists(fullPath))
                         {
                             lastNode.Tag = fullPath;
+                            lastNode.ImageKey = fullPath;
                         }
                         else
                         {
                             lastNode.Tag = fullPath;
+                            lastNode.ImageKey = fullPath;
+
                         }
                     }
                     else
