@@ -686,7 +686,7 @@ namespace AntDeployWinform.Util
             }
             else
             {
-                //如果项目中存在dockerFile 那么check 该DockerFile的Expose是否配置了 没有配置就报错
+                //如果项目中存在dockerFile 那么check 该DockerFile的Expose是否配置了 没有配置就读界面配置的，界面没有配置就用默认的
                 try
                 {
                     var dockerFileText = _sftpClient.ReadAllText(dockFilePath);
@@ -862,6 +862,12 @@ namespace AntDeployWinform.Util
                                 add = true;
                                 allLines.Insert(entryPointIndex, "EXPOSE " + port);
                                 _logger($"Add EXPOSE " + port + $" to dockerFile  : 【{dockFilePath}】", NLog.LogLevel.Info);
+
+                                // 如果有自定义dockerfile且没有配置EXPOSE，除了加上EXPOSE以外还check下有没有配置urls
+                                if (!dockerFileText.Contains("ENV ASPNETCORE_URLS=") && dockerFileText.Contains("dotnet"))
+                                {
+                                    allLines.Insert(entryPointIndex, "ENV ASPNETCORE_URLS=http://*:" + port);
+                                }
                             }
 
                             if (!haveEnv && !string.IsNullOrEmpty(NetCoreEnvironment))

@@ -30,7 +30,7 @@ namespace AntDeployWinform.Winform
     public partial class Deploy : CCSkinMain
     {
         private AutoResetEvent Condition { get; set; }
-        private string ProjectConfigPath;
+        private Tuple<string,string> ProjectConfigPath;
         private string ProjectFolderPath;
         private string ProjectName;
         private string ProjectPath;
@@ -677,6 +677,7 @@ namespace AntDeployWinform.Winform
             this.checkBox_Chinese.Checked = GlobalConfig.IsChinease;
             ProgressBox.IsEnableGroup = GlobalConfig.EnableEnvGroup;
             this.chk_global_useCheckBox.Checked = GlobalConfig.EnableEnvGroup;
+            this.chk_global_saveconfig_in_projectFolder.Checked = GlobalConfig.EnableAntDeployJson;
             this.chk_use_AsiaShanghai_timezone.Checked = GlobalConfig.UseAsiaShanghai;
             this.checkBox_save_deploy_log.Checked = GlobalConfig.SaveLogs;
             this.checkBox_multi_deploy.Checked = GlobalConfig.MultiInstance;
@@ -1072,11 +1073,7 @@ namespace AntDeployWinform.Winform
                 PluginConfig.RepositoryImageName = this.txt_docker_rep_image.Text.Trim();
 
 
-                if (!string.IsNullOrEmpty(ProjectConfigPath))
-                {
-                    var configJson = JsonConvert.SerializeObject(DeployConfig, Formatting.Indented);
-                    File.WriteAllText(ProjectConfigPath, configJson, Encoding.UTF8);
-                }
+                saveAntDeployJson();
 
                 if (!string.IsNullOrEmpty(PluginConfigPath))
                 {
@@ -6300,7 +6297,7 @@ RETRY_WINDOWSSERVICE2:
             }
 
             var old_ProjectConfigPath = Path.Combine(ProjectFolderPath, "AntDeploy.json");
-            ProjectConfigPath = ""; //Path.Combine(ProjectFolderPath, "AntDeploy.json");
+            var antdeployJsonInProjectPath = old_ProjectConfigPath;
             string rootPath = Path.GetDirectoryName(ProjectFolderPath.TrimEnd('\\'));
             string dirName = ProjectFolderPath.Substring(rootPath.Length).Trim('\\');
             string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData); //其他文件不要写入发布文件夹
@@ -6309,16 +6306,22 @@ RETRY_WINDOWSSERVICE2:
             {
                 Directory.CreateDirectory(newDir);
             }
-            ProjectConfigPath = Path.Combine(newDir, "AntDeploy.json");
+            var new_ProjectConfigPath = Path.Combine(newDir, "AntDeploy.json");
             //AntDeploy.json发布配置文件与发布文件隔离开 兼容老的配置文件第一次默认转移
-            if (File.Exists(old_ProjectConfigPath) && !File.Exists(ProjectConfigPath))
+            if (File.Exists(old_ProjectConfigPath) && !File.Exists(new_ProjectConfigPath))
             {
-                File.Copy(old_ProjectConfigPath, ProjectConfigPath, false);
+                File.Copy(old_ProjectConfigPath, new_ProjectConfigPath, false);
             }
 
-            if (File.Exists(ProjectConfigPath))
+            if (File.Exists(new_ProjectConfigPath))
             {
-                var config = File.ReadAllText(ProjectConfigPath, Encoding.UTF8);
+                var useAntJsonInProjectPath = GlobalConfig.EnableAntDeployJson && File.Exists(old_ProjectConfigPath);
+                var config = useAntJsonInProjectPath ? File.ReadAllText(old_ProjectConfigPath, Encoding.UTF8): File.ReadAllText(new_ProjectConfigPath, Encoding.UTF8);
+                if (useAntJsonInProjectPath)
+                {
+                    // 强制使用项目文件夹下的AntDeploy.json
+                    File.Copy(old_ProjectConfigPath, new_ProjectConfigPath, true);
+                }
                 if (!string.IsNullOrEmpty(config))
                 {
                     DeployConfig = JsonConvert.DeserializeObject<DeployConfig>(config);
@@ -6337,6 +6340,8 @@ RETRY_WINDOWSSERVICE2:
                     if (DeployConfig.IIsConfig == null) DeployConfig.IIsConfig = new IIsConfig();
                 }
             }
+
+            ProjectConfigPath = new Tuple<string, string>(new_ProjectConfigPath, antdeployJsonInProjectPath);
         }
 
         private void ReadPluginConfig(string projectPath)
@@ -7709,13 +7714,13 @@ RETRY_DOCKER:
                 log.Info("Visual Studio Version : " + vsVersion);
             }
 
-            if (!string.IsNullOrEmpty(ProjectConfigPath))
+            if (ProjectConfigPath!=null)
             {
-                var fileInfo = new FileInfo(ProjectConfigPath);
-                if (fileInfo.Exists && !string.IsNullOrEmpty(fileInfo.DirectoryName))
+                var fileInfo = new FileInfo(GlobalConfig.EnableAntDeployJson ? ProjectConfigPath.Item2 : ProjectConfigPath.Item1);
+                if (fileInfo.Exists && !string.IsNullOrEmpty(fileInfo.FullName))
                 {
                     LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "【AntDeploy.json】 ");
-                    publisEvent.Properties["ShowLink"] = "file://" + fileInfo.DirectoryName.Replace("\\", "\\\\");
+                    publisEvent.Properties["ShowLink"] = "file://" + fileInfo.FullName.Replace("\\", "\\\\") ;
                     publisEvent.LoggerName = log.Name;
                     log.Log(publisEvent);
                 }
@@ -9798,6 +9803,22 @@ RETRY_WINDOWSSERVICE2:
             {
                 this.Deploy_InitLoad(this.ProjectPath, new ProjectParam { OpenNewWindow = true}, false);
                 this.combo_iis_env_SelectedIndexChanged(null, null);
+            }
+        }
+
+        private void chk_global_saveconfig_in_projectFolder_Click(object sender, EventArgs e)
+        {
+            GlobalConfig.EnableAntDeployJson = this.chk_global_saveconfig_in_projectFolder.Checked;
+            saveAntDeployJson();
+        }
+
+        private void saveAntDeployJson()
+        {
+            if (!string.IsNullOrEmpty(ProjectConfigPath.Item1))
+            {
+                var configJson = JsonConvert.SerializeObject(DeployConfig, Formatting.Indented);
+                File.WriteAllText(ProjectConfigPath.Item1, configJson, Encoding.UTF8);
+                if (GlobalConfig.EnableAntDeployJson && !string.IsNullOrEmpty(ProjectConfigPath.Item2)) File.WriteAllText(ProjectConfigPath.Item2, configJson, Encoding.UTF8);
             }
         }
     }
