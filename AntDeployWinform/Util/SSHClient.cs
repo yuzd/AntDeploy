@@ -1155,18 +1155,24 @@ namespace AntDeployWinform.Util
                 var uploadImageName =$"{(string.IsNullOrEmpty(this.RepositoryUrl)?"": this.RepositoryUrl+"/")}{this.RepositoryNameSpace}/{uploadImage.ToLower()}:{uploadTag}";
                 _sshClient.RunCommand($"{Sudo} docker rmi {uploadImageName}");
                 string uploadCommand;
+                string uploadCommandLog;
                 if (string.IsNullOrEmpty(this.RepositoryUrl))
                 {
+                    uploadCommandLog =
+                        $"set -e;{Sudo} docker login -u {this.RepositoryUserName} -p {{PWD}}; {Sudo} docker tag {currentImageInfo.Item3} {uploadImageName};{Sudo} docker push {uploadImageName}";
+
                     uploadCommand =
                         $"set -e;{Sudo} docker login -u {this.RepositoryUserName} -p {this.RepositoryUserPwd}; {Sudo} docker tag {currentImageInfo.Item3} {uploadImageName};{Sudo} docker push {uploadImageName}";
                 }
                 else
                 {
+                    uploadCommandLog =
+                        $"set -e;{Sudo} docker login -u {this.RepositoryUserName} -p {{PWD}} {this.RepositoryUrl}; {Sudo} docker tag {currentImageInfo.Item3} {uploadImageName};{Sudo} docker push {uploadImageName}";
                     uploadCommand =
                         $"set -e;{Sudo} docker login -u {this.RepositoryUserName} -p {this.RepositoryUserPwd} {this.RepositoryUrl}; {Sudo} docker tag {currentImageInfo.Item3} {uploadImageName};{Sudo} docker push {uploadImageName}";
                 }
                 
-                _logger($"[upload image] - " + uploadCommand, LogLevel.Warn);
+                _logger($"[upload image] - " + uploadCommandLog, LogLevel.Warn);
                 var rr11 = _sshClient.CreateCommand(uploadCommand);
                 var result = rr11.BeginExecute();
                 using (var reader = new StreamReader(rr11.OutputStream, Encoding.UTF8, true, 1024, true))
