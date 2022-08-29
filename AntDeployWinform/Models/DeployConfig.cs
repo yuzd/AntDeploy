@@ -54,7 +54,7 @@ namespace AntDeployWinform.Models
 
         public string GetNetCorePublishRuntimeArg()
         {
-            if (string.IsNullOrEmpty(NetCorePublishMode))
+            if (string.IsNullOrEmpty(NetCorePublishMode) || NetCorePublishMode == "Default")
             {
                 return string.Empty;
             }

@@ -4840,7 +4840,7 @@ RETRY_IIS2:
                         if (isNetcore)
                         {
                             var runtime = "";
-                            if (string.IsNullOrEmpty(PluginConfig.NetCorePublishMode))
+                            if (string.IsNullOrEmpty(PluginConfig.NetCorePublishMode) || PluginConfig.NetCorePublishMode=="Default")
                             {
                                 runtime = " --runtime win-x64";
                             }
@@ -8789,15 +8789,15 @@ RETRY_DOCKER:
                     if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath))
                     {
                         var path = publishPath + "\\";
-                        runtime = " --runtime linux-x64";
-                        //if (string.IsNullOrEmpty(PluginConfig.NetCorePublishMode))
-                        //{
-
-                        //}
-                        //else
-                        //{
-                        //    runtime = PluginConfig.GetNetCorePublishRuntimeArg();
-                        //}
+                        
+                        if (string.IsNullOrEmpty(PluginConfig.NetCorePublishMode) || PluginConfig.NetCorePublishMode == "Default")
+                        {
+                            runtime = " --runtime linux-x64";
+                        }
+                        else
+                        {
+                            runtime = PluginConfig.GetNetCorePublishRuntimeArg();
+                        }
 
                         //如果runtime 为空的话 代表服务端需要用dotnet 来运行了
 
