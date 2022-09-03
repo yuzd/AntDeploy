@@ -1,3 +1,4 @@
+using CCWin.SkinControl;
 using System;
 using System.Drawing;
 using System.IO;
@@ -96,7 +97,16 @@ namespace AntDeployWinform.Winform
             this.btnCancel.ForeColor = Color.Red;
             lblQuestion.Text = question;
             Text = caption;
-            txtInput.Text = defaultInput;
+            if (!string.IsNullOrEmpty(defaultInput) && defaultInput == "hide")
+            {
+                txtInput.Visible = false;
+                label1.Visible = false;
+            }
+            else
+            {
+                txtInput.Text = defaultInput;
+            }
+            
             if (IsHandleCreated)
                 SetGui();
             else

@@ -185,5 +185,11 @@
   </data>
   <data name="ConfirmContinue" xml:space="preserve">
     <value>是否继续</value>
-  </data>  
+  </data>
+  <data name="DockerFileNotSetCopy" xml:space="preserve">
+    <value>工程所在目录发现Dockerfile,但是没有配置Copy,如果继续将使用默认的Dockerfile</value>
+  </data>
+  <data name="DockerFileWarn" xml:space="preserve">
+    <value>注意DockerFile</value>
+  </data>
 </root>

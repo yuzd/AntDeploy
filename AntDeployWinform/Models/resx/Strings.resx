@@ -186,4 +186,10 @@
   <data name="ConfirmContinue" xml:space="preserve">
     <value>Confirm</value>
   </data>
+  <data name="DockerFileNotSetCopy" xml:space="preserve">
+    <value>Dockerfile found , but not set copied, will use default Dockerfile if continue!</value>
+  </data>
+  <data name="DockerFileWarn" xml:space="preserve">
+    <value>Dockerfile Warn</value>
+  </data>
 </root>

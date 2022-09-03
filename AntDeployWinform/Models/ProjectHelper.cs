@@ -134,6 +134,47 @@ namespace AntDeployWinform.Models
             }
         }
 
+        /**
+         * 如果项目中有 检查有没有把Dockerfile设置为Copy
+         */
+        public static bool CheckDockerFileIsSetCopy(string projectPath)
+        {
+            try
+            {
+                //检查是有存在
+                var dockerfile = Path.Combine(new FileInfo(projectPath).DirectoryName, "Dockerfile");
+                if (!File.Exists(dockerfile))
+                {
+                    return true;
+                }
+
+                var setCopy = false;
+                var info = File.ReadAllLines(projectPath);
+                var isDockerLine = false;
+                foreach (var line in info)
+                {
+                    if (line.Contains("Update=\"Dockerfile\""))
+                    {
+                        isDockerLine = true;
+                    }
+                    else if (isDockerLine)
+                    {
+                        isDockerLine = false;
+                        if (line.Contains("Always") || line.Contains("PreserveNewest"))
+                        {
+                            setCopy =  true;
+                            break;
+                        }
+                    }
+                }
+               
+                return setCopy;
+            }
+            catch (Exception)
+            {
+                return true;
+            }
+        }
 
         public static string GetProjectSkdInNetCoreProject(string projectPath)
         {

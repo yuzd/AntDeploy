@@ -127,8 +127,11 @@
   <data name="pictureBox3.Size" type="System.Drawing.Size, System.Drawing">
     <value>209, 163</value>
   </data>
+  <data name="label5.Size" type="System.Drawing.Size, System.Drawing">
+    <value>338, 33</value>
+  </data>
   <data name="label5.Text" xml:space="preserve">
-    <value>查看视频教程: https://mp.weixin.qq.com/mp/profile_ext?action=home&amp;real_type=43&amp;__biz=MzI5Mjg3MzM3OA==&amp;scene=136#wechat_redirect</value>
+    <value>查看视频教程(单击打开): https://www.bilibili.com/video/BV1sP411j7eK</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
     <value>608, 375</value>

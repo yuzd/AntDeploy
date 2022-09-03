@@ -106,6 +106,24 @@ namespace AntDeployWinform {
         }
         
         /// <summary>
+        ///   查找类似 Dockerfile found , but not set copied, will use default Dockerfile if continue! 的本地化字符串。
+        /// </summary>
+        public static string DockerFileNotSetCopy {
+            get {
+                return ResourceManager.GetString("DockerFileNotSetCopy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Dockerfile Warn 的本地化字符串。
+        /// </summary>
+        public static string DockerFileWarn {
+            get {
+                return ResourceManager.GetString("DockerFileWarn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 please input Registry param! 的本地化字符串。
         /// </summary>
         public static string DockerRepositoryRequired {

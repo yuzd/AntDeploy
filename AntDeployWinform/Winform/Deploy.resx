@@ -4111,7 +4111,7 @@
     <value>NoControl</value>
   </data>
   <data name="btn_linux_serivce_stop.Location" type="System.Drawing.Point, System.Drawing">
-    <value>505, 93</value>
+    <value>505, 86</value>
   </data>
   <data name="btn_linux_serivce_stop.Size" type="System.Drawing.Size, System.Drawing">
     <value>107, 43</value>
@@ -4144,7 +4144,7 @@
     <value>NoControl</value>
   </data>
   <data name="b_linuxservice_deploy.Location" type="System.Drawing.Point, System.Drawing">
-    <value>505, 93</value>
+    <value>505, 86</value>
   </data>
   <data name="b_linuxservice_deploy.Size" type="System.Drawing.Size, System.Drawing">
     <value>107, 43</value>
@@ -4174,7 +4174,7 @@
     <value>NoControl</value>
   </data>
   <data name="btn_linux_service_retry.Location" type="System.Drawing.Point, System.Drawing">
-    <value>392, 93</value>
+    <value>392, 86</value>
   </data>
   <data name="btn_linux_service_retry.Size" type="System.Drawing.Size, System.Drawing">
     <value>107, 43</value>
@@ -6612,6 +6612,9 @@
   <data name="&gt;&gt;tabcontrol.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
+  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>zh-CN</value>
+  </metadata>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -6620,9 +6623,6 @@
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
     <value>645, 519</value>
-  </data>
-  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
   </data>
   <data name="$this.MiniDownBack" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>

@@ -6634,6 +6634,17 @@ RETRY_WINDOWSSERVICE2:
             {
                 _project.NetCoreSDKVersion = ProjectHelper.GetProjectSkdInNetCoreProject(ProjectPath);
             }
+
+            if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath) && !ProjectHelper.CheckDockerFileIsSetCopy(ProjectPath))
+            {
+                var confirmDockerfile = ShowInputMsgBox(Strings.DockerFileWarn,
+                    Strings.DockerFileNotSetCopy,"hide" );
+                if (!confirmDockerfile.Item1)
+                {
+                    return;
+                }
+            }
+
             var SDKVersion = _project.NetCoreSDKVersion;
             if (string.IsNullOrEmpty(SDKVersion))
             {
@@ -9622,7 +9633,15 @@ RETRY_WINDOWSSERVICE2:
             {
                 DeployConfig.DockerImageConfig.ImageFormat = "Docker";
             }
-
+            if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath) && !ProjectHelper.CheckDockerFileIsSetCopy(ProjectPath))
+            {
+                var confirmDockerfile = ShowInputMsgBox(Strings.DockerFileWarn,
+                    Strings.DockerFileNotSetCopy, "hide");
+                if (!confirmDockerfile.Item1)
+                {
+                    return;
+                }
+            }
             this.rich_docker_image_log.Text = "";
 
 

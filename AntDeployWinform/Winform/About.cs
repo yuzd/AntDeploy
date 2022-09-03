@@ -51,5 +51,10 @@ namespace AntDeployWinform.Winform
             }
         }
 
+        private void label5_Click(object sender, EventArgs e)
+        {
+            ProcessStartInfo sInfo = new ProcessStartInfo("https://www.bilibili.com/video/BV1sP411j7eK");
+            Process.Start(sInfo);
+        }
     }
 }
