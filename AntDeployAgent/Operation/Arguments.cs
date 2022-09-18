@@ -37,6 +37,7 @@ namespace AntDeployAgentWindows.Operation
         public string TempPhysicalPath { get;  set; }
         public string Site1 { get;  set; }
         public string Site2 { get;  set; }
+        public object Extention { get;  set; }
 
         public List<string> BackUpIgnoreList { get;  set; }
       
