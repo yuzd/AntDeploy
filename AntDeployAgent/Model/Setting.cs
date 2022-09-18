@@ -159,19 +159,22 @@ namespace AntDeployAgentWindows.Model
             }
         }
 
-        public static void ClearOldFolders(bool isIis, string projectFolderName, Action<string> logger = null)
+        public static void ClearOldFolders(string type, string projectFolderName, Action<string> logger = null)
         {
             logger?.Invoke($"start check old published folder :{projectFolderName}");
-            if (isIis)
+            if (type == "linux")
             {
-                //是否是linux下的
-                if (!System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
-                    CheckOldFolder(PublishLinuxPathFolder, projectFolderName, logger);
-                    CheckOldFolder(BackUpLinuxPathFolder, projectFolderName, logger);
-                    return;
-                }
-
+                CheckOldFolder(PublishLinuxPathFolder, projectFolderName, logger);
+                CheckOldFolder(BackUpLinuxPathFolder, projectFolderName, logger);
+       
+            }
+            else if (type == "docker")
+            {
+                CheckOldFolder(PublishDockerPathFolder, projectFolderName, logger);
+                CheckOldFolder(BackUpDockerPathFolder, projectFolderName, logger);
+            }
+            else if (type == "iis")
+            {
                 CheckOldFolder(PublishIIsPathFolder, projectFolderName, logger);
                 CheckOldFolder(BackUpIIsPathFolder, projectFolderName, logger);
             }
@@ -222,7 +225,7 @@ namespace AntDeployAgentWindows.Model
 
                 var applicationFolders = !string.IsNullOrEmpty(projectFolder) ? new List<string> { Path.Combine(path, projectFolder) }.ToArray() : Directory.GetDirectories(path);
                 if (applicationFolders.Length < 1) return;
-
+                logger?.Invoke($"found deploy folders:{applicationFolders.Length}");
                 foreach (var applicationFolder in applicationFolders)
                 {
                     var subFolders = Directory.GetDirectories(applicationFolder);
@@ -281,9 +284,10 @@ namespace AntDeployAgentWindows.Model
                             logger?.Invoke($"delete old folder:{target.FullName}");
                             Directory.Delete(target.FullName, true);
                         }
-                        catch
+                        catch(Exception e)
                         {
                             //ignore
+                            logger?.Invoke($"delete old folder fail:{e.Message}");
                         }
                     }
 
