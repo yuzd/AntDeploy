@@ -18,7 +18,7 @@ namespace AntDeployAgent.Model
         public string RepositoryNameSpace { get; set; }
         public string RepositoryImageName { get; set; }
         public string ProjectDeployRoot { get; set; }
-        public string Remark { get; set; }
+        public bool RollBack { get; set; }
         public string Volume { get; set; }
         public string Other { get; set; }
         public bool UseAsiaShanghai { get; set; }

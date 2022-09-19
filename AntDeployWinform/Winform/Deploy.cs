@@ -6652,12 +6652,24 @@ RETRY_WINDOWSSERVICE2:
                 return;
             }
 
-            var serverList = DeployConfig.Env.Where(r => r.Name.Equals(envName)).Select(r => r.LinuxServerList)
+            var serverList = new List<BaseServer>();
+            var linuxServers = DeployConfig.Env.Where(r => r.Name.Equals(envName)).Select(r => r.LinuxServerList)
                 .FirstOrDefault();
-
-            if (serverList == null || !serverList.Any())
+            if (linuxServers.Any())
             {
-                MessageBoxEx.Show(this, Strings.NoLinuxServer);
+                serverList.AddRange(linuxServers);
+            }
+
+            var tokenServers = DeployConfig.Env.Where(r => r.Name.Equals(envName)).Select(r => r.LinuxServerList)
+                .FirstOrDefault();
+            if (tokenServers.Any())
+            {
+                serverList.AddRange(tokenServers);
+            }
+
+            if (!serverList.Any())
+            {
+                MessageBoxEx.Show(this, Strings.EnvHaveNoServer);
                 return;
             }
 
