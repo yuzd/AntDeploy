@@ -120,7 +120,7 @@ namespace AntDeployAgentWindows.Util
             //    }
             //}
         }
-        public static bool RunExternalExe(string command,  Action<string> logger)
+        public static bool RunExternalExe(string command,  Action<string> logger,bool warp =true)
         {
             Process process = null;
             try
@@ -133,32 +133,30 @@ namespace AntDeployAgentWindows.Util
                     FileName = (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "cmd" : "bash"),
                     RedirectStandardOutput = true,
                     RedirectStandardInput = true,
+                    RedirectStandardError = true,
                     UseShellExecute = false,
                     WorkingDirectory = workingDirectory
                 };
 
                
                 process = Process.Start(processStartInfo);
-
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
                 process.OutputDataReceived += (sender, args) =>
                 {
                     if (!string.IsNullOrWhiteSpace(args.Data))
                     {
-                        logger(args.Data);
+                        logger?.Invoke((warp?"【Command】":"")+args.Data);
                     }
                 };
-
-                process.StandardInput.WriteLine($"{command} & exit");
-              
-              
-                process.BeginOutputReadLine();
-
                 process.ErrorDataReceived += (sender, data) =>
                 {
-                    if (!string.IsNullOrWhiteSpace(data.Data)) logger(data.Data);
+                    if (!string.IsNullOrWhiteSpace(data.Data)) logger?.Invoke((warp?"【Command】":"")+data.Data);
                 };
-                process.BeginErrorReadLine();
+                process.StandardInput.WriteLine($"{command} & exit");
                 process.WaitForExit();
+                process.CancelOutputRead();
+                process.CancelErrorRead();
                 //var err = process.StandardError.ReadToEnd();
                 return process.ExitCode == 0;
             }

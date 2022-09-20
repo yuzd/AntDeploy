@@ -86,6 +86,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
             }
             else
             {
+                logger($"dockerFile found in: [{dockerFile}]");
                 CheckDockerFile(dockerFile);
             }
             if (string.IsNullOrEmpty(model.RealPort))
@@ -145,11 +146,10 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
 
             try
             {
-                if (CopyHelper.RunCommand($"{model.Sudo} docker stop -t 10 {continarName}", null, this.logger))
+                if (CopyHelper.RunExternalExe($"{model.Sudo} docker stop -t 10 {continarName}", null))
                 {
                     logger($"{model.Sudo} docker stop -t 10 {continarName}");
                 }
-
                 Thread.Sleep(5000);
             }
             catch (Exception)
@@ -160,9 +160,9 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
             try
             {
                 //查看容器有没有在runing 如果有就干掉它
-                if (CopyHelper.RunCommand($"{model.Sudo} docker rm -f {continarName}", null, this.logger))
+                if (CopyHelper.RunExternalExe($"{model.Sudo} docker rm -f {continarName}", null))
                 {
-                    logger($"{model.Sudo} docker rm -f {continarName}");
+                    this.logger($"{model.Sudo} docker rm -f {continarName}");
                 }
             }
             catch (Exception)
@@ -173,7 +173,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
             // 根据image启动一个容器
             var dockerRunRt = ($"{model.Sudo} docker run -d {runContainerName}{volume}{(string.IsNullOrEmpty(model.Other) ? "" : $" {model.Other}")} --restart=always {(!model.RealServerPort.Equals("0") && !model.RealPort.Equals("0") ? $"-p {model.RealServerPort}:{model.RealPort}" : "")} {specialName}:{args.TempPhysicalPath}");
 
-            var runSuccess = CopyHelper.RunCommand(dockerRunRt, null, this.logger);
+            var runSuccess = CopyHelper.RunExternalExe(dockerRunRt,  this.logger);
             if (!runSuccess)
             {
                 throw new Exception("start docker run Fail ");
@@ -186,10 +186,9 @@ DockerServiceBuildImageOnlyLEVEL:
             }
             Tuple<string, string, string> currentImageInfo = null;
             //把旧的image给删除
-            CopyHelper.RunCommand($"{model.Sudo} docker images --format '{{.Repository}}:{{.Tag}}:{{.ID}}' | grep '^" + specialName + ":'", null,
-                null, (msg) =>
+            CopyHelper.RunExternalExe(model.Sudo + " docker images "+ specialName + " --format '{{.Repository}}:{{.Tag}}:{{.ID}}'", (msg) =>
                 {
-                    var deleteImageArr = msg.Split('\n');
+                    var deleteImageArr = msg.Replace("'","").Split('\n');
                     var clearOldImages = false;
                     foreach (var imageName in deleteImageArr)
                     {
@@ -221,13 +220,13 @@ DockerServiceBuildImageOnlyLEVEL:
                         }
                     }
 
-                });
+                },false);
 
 
             try
             {
                 //查看是否有<none>的image 把它删掉 因为我们创建image的时候每次都会覆盖所以会产生一些没有的image
-                CopyHelper.RunCommand($"if {model.Sudo} docker images -f \"dangling=true\" | grep ago --quiet; then {model.Sudo} docker rmi -f $({model.Sudo} docker images -f \"dangling=true\" -q); fi");
+                CopyHelper.RunCommand($"docker rmi $(docker images -f \"dangling=true\" -q)");
 
             }
             catch (Exception)
@@ -249,18 +248,18 @@ DockerServiceBuildImageOnlyLEVEL:
                     }
                     else
                     {
-                        logger($"[Error][upload image] - image name invaild");
+                        logger($"【Error】[upload image] - image name invaild");
                     }
                 }
 
                 uploadImage = uploadImage.Replace("：", ":");
                 if (System.Text.RegularExpressions.Regex.IsMatch(uploadImage, @"[\u4e00-\u9fa5]"))
                 {
-                    logger($"[Error][upload image] - image name invaild");
+                    logger($"【Error】[upload image] - image name invaild");
                 }
                 if (System.Text.RegularExpressions.Regex.IsMatch(uploadTag, @"[\u4e00-\u9fa5]"))
                 {
-                    logger($"[Error][upload image] - image tab name invaild");
+                    logger($"【Error】[upload image] - image tab name invaild");
                 }
 
                 var uploadImageName = $"{(string.IsNullOrEmpty(model.RepositoryUrl) ? "" : model.RepositoryUrl + "/")}{model.RepositoryNameSpace}/{uploadImage.ToLower()}:{uploadTag}";
@@ -293,7 +292,7 @@ DockerServiceBuildImageOnlyLEVEL:
 
                 if (!rr11)
                 {
-                    logger($"[Error][upload image] - Fail");
+                    logger($"【Error】[upload image] - Fail");
                 }
                 else
                 {
