@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
@@ -129,7 +128,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
             }
 
             //执行docker build 生成一个镜像
-            var dockerBuildResult = CopyHelper.RunCommand($"{model.Sudo} docker build --no-cache --rm -t {specialName}:{args.TempPhysicalPath} -f {dockerFile} {args.AppFolder} ", null, this.logger);
+            var dockerBuildResult = CopyHelper.RunExternalExe($"{model.Sudo} docker build --no-cache --rm -t {specialName}:{args.TempPhysicalPath} -f {dockerFile} {args.AppFolder} ", this.logger);
             if (!dockerBuildResult)
             {
                 throw new Exception("build docker image fail");

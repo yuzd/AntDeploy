@@ -157,6 +157,18 @@ namespace AntDeployAgentWindows.Model
             {
                 Directory.CreateDirectory(BackUpWindowServicePathFolder);
             }
+            
+            // windows 也可能支持docker
+            PublishDockerPathFolder = Path.Combine(PublishPathFolder, "docker");
+            if (!Directory.Exists(PublishDockerPathFolder))
+            {
+                Directory.CreateDirectory(PublishDockerPathFolder);
+            }
+            BackUpDockerPathFolder = Path.Combine(PublishPathFolder, "docker_backup");
+            if (!Directory.Exists(BackUpDockerPathFolder))
+            {
+                Directory.CreateDirectory(BackUpDockerPathFolder);
+            }
         }
 
         public static void ClearOldFolders(string type, string projectFolderName, Action<string> logger = null)

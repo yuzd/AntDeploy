@@ -71,7 +71,7 @@ namespace AntDeployAgent.MyApp.Service.Impl
                 try
                 {
                     Log("start unzip file");
-                    ZipFile.ExtractToDirectory(_zipFile, _projectPublishFolder);
+                    ZipFile.ExtractToDirectory(_zipFile, Path.Combine(_projectPublishFolder,"publish"));
                 }
                 catch (Exception ex)
                 {
@@ -202,7 +202,7 @@ namespace AntDeployAgent.MyApp.Service.Impl
             DockerParamModel = JsonConvert.DeserializeObject<DockerParamModel>(_param.TextValue);
 
 
-            var serviceNameItem = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("projectName"));
+            var serviceNameItem = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("serviceName"));
             if (serviceNameItem == null || string.IsNullOrEmpty(serviceNameItem.TextValue))
             {
                 return "projectName required";
