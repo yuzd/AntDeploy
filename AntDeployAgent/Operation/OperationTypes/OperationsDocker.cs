@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
@@ -87,6 +86,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
             }
             else
             {
+                logger($"dockerFile found in: [{dockerFile}]");
                 CheckDockerFile(dockerFile);
             }
             if (string.IsNullOrEmpty(model.RealPort))
@@ -129,7 +129,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
             }
 
             //执行docker build 生成一个镜像
-            var dockerBuildResult = CopyHelper.RunCommand($"{model.Sudo} docker build --no-cache --rm -t {specialName}:{args.TempPhysicalPath} -f {dockerFile} {args.AppFolder} ", null, this.logger);
+            var dockerBuildResult = CopyHelper.RunExternalExe($"{model.Sudo} docker build --no-cache --rm -t {specialName}:{args.TempPhysicalPath} -f {dockerFile} {args.AppFolder} ", this.logger);
             if (!dockerBuildResult)
             {
                 throw new Exception("build docker image fail");
@@ -146,11 +146,10 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
 
             try
             {
-                if (CopyHelper.RunCommand($"{model.Sudo} docker stop -t 10 {continarName}", null, this.logger))
+                if (CopyHelper.RunExternalExe($"{model.Sudo} docker stop -t 10 {continarName}", null))
                 {
                     logger($"{model.Sudo} docker stop -t 10 {continarName}");
                 }
-
                 Thread.Sleep(5000);
             }
             catch (Exception)
@@ -161,9 +160,9 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
             try
             {
                 //查看容器有没有在runing 如果有就干掉它
-                if (CopyHelper.RunCommand($"{model.Sudo} docker rm -f {continarName}", null, this.logger))
+                if (CopyHelper.RunExternalExe($"{model.Sudo} docker rm -f {continarName}", null))
                 {
-                    logger($"{model.Sudo} docker rm -f {continarName}");
+                    this.logger($"{model.Sudo} docker rm -f {continarName}");
                 }
             }
             catch (Exception)
@@ -174,7 +173,7 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
             // 根据image启动一个容器
             var dockerRunRt = ($"{model.Sudo} docker run -d {runContainerName}{volume}{(string.IsNullOrEmpty(model.Other) ? "" : $" {model.Other}")} --restart=always {(!model.RealServerPort.Equals("0") && !model.RealPort.Equals("0") ? $"-p {model.RealServerPort}:{model.RealPort}" : "")} {specialName}:{args.TempPhysicalPath}");
 
-            var runSuccess = CopyHelper.RunCommand(dockerRunRt, null, this.logger);
+            var runSuccess = CopyHelper.RunExternalExe(dockerRunRt,  this.logger);
             if (!runSuccess)
             {
                 throw new Exception("start docker run Fail ");
@@ -187,10 +186,9 @@ DockerServiceBuildImageOnlyLEVEL:
             }
             Tuple<string, string, string> currentImageInfo = null;
             //把旧的image给删除
-            CopyHelper.RunCommand($"{model.Sudo} docker images --format '{{.Repository}}:{{.Tag}}:{{.ID}}' | grep '^" + specialName + ":'", null,
-                null, (msg) =>
+            CopyHelper.RunExternalExe(model.Sudo + " docker images "+ specialName + " --format '{{.Repository}}:{{.Tag}}:{{.ID}}'", (msg) =>
                 {
-                    var deleteImageArr = msg.Split('\n');
+                    var deleteImageArr = msg.Replace("'","").Split('\n');
                     var clearOldImages = false;
                     foreach (var imageName in deleteImageArr)
                     {
@@ -222,14 +220,24 @@ DockerServiceBuildImageOnlyLEVEL:
                         }
                     }
 
-                });
+                },false);
 
 
             try
             {
                 //查看是否有<none>的image 把它删掉 因为我们创建image的时候每次都会覆盖所以会产生一些没有的image
-                CopyHelper.RunCommand($"if {model.Sudo} docker images -f \"dangling=true\" | grep ago --quiet; then {model.Sudo} docker rmi -f $({model.Sudo} docker images -f \"dangling=true\" -q); fi");
-
+                CopyHelper.RunExternalExe(model.Sudo + " docker images -f \"dangling=true\" --format '{{.Repository}}:{{.Tag}}:{{.ID}}'", (msg) =>
+                {
+                    var deleteImageArr = msg.Replace("'","").Split('\n');
+                    foreach (var imageName in deleteImageArr)
+                    {
+                        var imageArr = imageName.Split(':');
+                        if (imageArr.Length == 3)
+                        {
+                            CopyHelper.RunCommand($"{model.Sudo} docker rmi {imageArr[2]}");
+                        }
+                    }
+                },false);
             }
             catch (Exception)
             {
@@ -250,18 +258,18 @@ DockerServiceBuildImageOnlyLEVEL:
                     }
                     else
                     {
-                        logger($"[Error][upload image] - image name invaild");
+                        logger($"【Error】[upload image] - image name invaild");
                     }
                 }
 
                 uploadImage = uploadImage.Replace("：", ":");
                 if (System.Text.RegularExpressions.Regex.IsMatch(uploadImage, @"[\u4e00-\u9fa5]"))
                 {
-                    logger($"[Error][upload image] - image name invaild");
+                    logger($"【Error】[upload image] - image name invaild");
                 }
                 if (System.Text.RegularExpressions.Regex.IsMatch(uploadTag, @"[\u4e00-\u9fa5]"))
                 {
-                    logger($"[Error][upload image] - image tab name invaild");
+                    logger($"【Error】[upload image] - image tab name invaild");
                 }
 
                 var uploadImageName = $"{(string.IsNullOrEmpty(model.RepositoryUrl) ? "" : model.RepositoryUrl + "/")}{model.RepositoryNameSpace}/{uploadImage.ToLower()}:{uploadTag}";
@@ -273,34 +281,36 @@ DockerServiceBuildImageOnlyLEVEL:
                 if (string.IsNullOrEmpty(model.RepositoryUrl))
                 {
                     uploadCommandLog =
-                        $"set -e;{model.Sudo} docker login -u {model.RepositoryUserName} -p {{PWD}}; {model.Sudo} docker tag {currentImageInfo.Item3} {uploadImageName};{model.Sudo} docker push {uploadImageName}";
+                        $"{model.Sudo} docker login -u {model.RepositoryUserName} -p {{PWD}}; {model.Sudo} docker tag {currentImageInfo.Item3} {uploadImageName};{model.Sudo} docker push {uploadImageName}";
 
                     uploadCommand =
-                        $"set -e;{model.Sudo} docker login -u {model.RepositoryUserName} -p {model.RepositoryUserPwd}; {model.Sudo} docker tag {currentImageInfo.Item3} {uploadImageName};{model.Sudo} docker push {uploadImageName}";
+                        $"{model.Sudo} docker login -u {model.RepositoryUserName} -p {model.RepositoryUserPwd} & {model.Sudo} docker tag {currentImageInfo.Item3} {uploadImageName} & {model.Sudo} docker push {uploadImageName}";
                 }
                 else
                 {
                     uploadCommandLog =
-                        $"set -e;{model.Sudo} docker login -u {model.RepositoryUserName} -p {{PWD}} {model.RepositoryUrl}; {model.Sudo} docker tag {currentImageInfo.Item3} {uploadImageName};{model.Sudo} docker push {uploadImageName}";
+                        $"{model.Sudo} docker login -u {model.RepositoryUserName} -p {{PWD}} {model.RepositoryUrl}; {model.Sudo} docker tag {currentImageInfo.Item3} {uploadImageName};{model.Sudo} docker push {uploadImageName}";
                     uploadCommand =
-                        $"set -e;{model.Sudo} docker login -u {model.RepositoryUserName} -p {model.RepositoryUserPwd} {model.RepositoryUrl}; {model.Sudo} docker tag {currentImageInfo.Item3} {uploadImageName};{model.Sudo} docker push {uploadImageName}";
+                        $"{model.Sudo} docker login -u {model.RepositoryUserName} -p {model.RepositoryUserPwd} {model.RepositoryUrl} & {model.Sudo} docker tag {currentImageInfo.Item3} {uploadImageName} & {model.Sudo} docker push {uploadImageName}";
                 }
 
-                logger($"[Warn][upload image] - " + uploadCommandLog);
+                logger($"[upload image] - " + uploadCommandLog);
                 var rr11 = CopyHelper.RunExternalExe(uploadCommand, (msg) =>
                 {
-                    logger($"[Warn][upload image] - {msg}");
+                    logger($"[upload image] - {msg}");
                 });
 
+                
+                CopyHelper.RunCommand($"{model.Sudo} docker rmi {uploadImageName}");
+                
                 if (!rr11)
                 {
-                    logger($"[Error][upload image] - Fail");
+                    throw new Exception("[upload image] - Fail");
                 }
                 else
                 {
                     logger($"[upload image] - Success");
                 }
-                CopyHelper.RunCommand($"{model.Sudo} docker rmi {uploadImageName}");
             }
 
         }

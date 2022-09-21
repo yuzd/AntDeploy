@@ -157,6 +157,18 @@ namespace AntDeployAgentWindows.Model
             {
                 Directory.CreateDirectory(BackUpWindowServicePathFolder);
             }
+            
+            // windows 也可能支持docker
+            PublishDockerPathFolder = Path.Combine(PublishPathFolder, "docker");
+            if (!Directory.Exists(PublishDockerPathFolder))
+            {
+                Directory.CreateDirectory(PublishDockerPathFolder);
+            }
+            BackUpDockerPathFolder = Path.Combine(PublishPathFolder, "docker_backup");
+            if (!Directory.Exists(BackUpDockerPathFolder))
+            {
+                Directory.CreateDirectory(BackUpDockerPathFolder);
+            }
         }
 
         public static void ClearOldFolders(string type, string projectFolderName, Action<string> logger = null)
@@ -225,11 +237,16 @@ namespace AntDeployAgentWindows.Model
 
                 var applicationFolders = !string.IsNullOrEmpty(projectFolder) ? new List<string> { Path.Combine(path, projectFolder) }.ToArray() : Directory.GetDirectories(path);
                 if (applicationFolders.Length < 1) return;
-                logger?.Invoke($"found deploy folders:{applicationFolders.Length}");
                 foreach (var applicationFolder in applicationFolders)
                 {
                     var subFolders = Directory.GetDirectories(applicationFolder);
-                    if (subFolders.Length < (path.EndsWith("_backup") ? BackUpLimit : _oldPulishLimit)) continue;//还没超过最低的保留记录数
+                    logger?.Invoke($"found deploy folders:{subFolders.Length}->{applicationFolder}");
+                    var limits = (path.EndsWith("_backup") ? BackUpLimit : _oldPulishLimit);
+                    if (subFolders.Length < limits)
+                    {
+                        logger?.Invoke($"config limit:{limits},ignore delete");
+                        continue;//还没超过最低的保留记录数
+                    }
                     //找到current.txt文件 记录着当前正在使用的版本
                     var currentText = Path.Combine(applicationFolder, "current.txt");
                     var currentVersion = "";
@@ -264,7 +281,8 @@ namespace AntDeployAgentWindows.Model
                     var targetList = oldFolderList.OrderByDescending(r => r.DateTime)
                         .Where(r => r.DiffDays >= _clearOldPublishFolderOverDays)
                         .ToList();
-
+                    
+                    logger?.Invoke($"deploy folders count:{oldFolderList.Count}, overDays({_clearOldPublishFolderOverDays}) folders count:{targetList.Count}, limit:{limits}");
                     var diff = subFolders.Length - targetList.Count;
                     var oldLimit = (path.EndsWith("_backup") ? BackUpLimit : _oldPulishLimit);
                     if (diff >= 0 && diff < oldLimit)
