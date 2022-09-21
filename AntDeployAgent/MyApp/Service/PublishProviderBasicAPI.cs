@@ -152,7 +152,7 @@ namespace AntDeployAgentWindows.MyApp.Service
             return CheckData(formHandler);
         }
 
-        protected string findUploadFolder(string _projectPublishFolder,bool isPublish = false)
+        protected string findUploadFolder(string _projectPublishFolder, bool isPublish = false, bool docker = false)
         {
 
             var deployFolder = Path.Combine(_projectPublishFolder, "publish");
@@ -174,7 +174,7 @@ namespace AntDeployAgentWindows.MyApp.Service
                 if (!File.Exists(zipFile)) return deployFolder;
 
                 //解压
-                ZipFile.ExtractToDirectory(zipFile, _projectPublishFolder);
+                ZipFile.ExtractToDirectory(zipFile, docker?Path.Combine(_projectPublishFolder,"publish"):_projectPublishFolder);
                 temp = new DirectoryInfo(_projectPublishFolder);
                 tempFolderList = temp.GetDirectories();
                 if (tempFolderList.Length == 1)

@@ -41,7 +41,7 @@ namespace AntDeployAgent.MyApp.Service.Impl
 #else
                 Log("netframework agent version ==>" + Version.VERSION);
 #endif
-                var deployFolder = findUploadFolder(_projectPublishFolder);
+                var deployFolder = findUploadFolder(_projectPublishFolder,docker:true);
 
                 var incrementFolder = Path.Combine(_projectPublishFolder, "increment");
                 if (Directory.Exists(incrementFolder))

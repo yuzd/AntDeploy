@@ -226,8 +226,18 @@ DockerServiceBuildImageOnlyLEVEL:
             try
             {
                 //查看是否有<none>的image 把它删掉 因为我们创建image的时候每次都会覆盖所以会产生一些没有的image
-                CopyHelper.RunCommand($"docker rmi $(docker images -f \"dangling=true\" -q)");
-
+                CopyHelper.RunExternalExe(model.Sudo + " docker images -f \"dangling=true\" --format '{{.Repository}}:{{.Tag}}:{{.ID}}'", (msg) =>
+                {
+                    var deleteImageArr = msg.Replace("'","").Split('\n');
+                    foreach (var imageName in deleteImageArr)
+                    {
+                        var imageArr = imageName.Split(':');
+                        if (imageArr.Length == 3)
+                        {
+                            CopyHelper.RunCommand($"{model.Sudo} docker rmi {imageArr[2]}");
+                        }
+                    }
+                },false);
             }
             catch (Exception)
             {
@@ -271,34 +281,36 @@ DockerServiceBuildImageOnlyLEVEL:
                 if (string.IsNullOrEmpty(model.RepositoryUrl))
                 {
                     uploadCommandLog =
-                        $"set -e;{model.Sudo} docker login -u {model.RepositoryUserName} -p {{PWD}}; {model.Sudo} docker tag {currentImageInfo.Item3} {uploadImageName};{model.Sudo} docker push {uploadImageName}";
+                        $"{model.Sudo} docker login -u {model.RepositoryUserName} -p {{PWD}}; {model.Sudo} docker tag {currentImageInfo.Item3} {uploadImageName};{model.Sudo} docker push {uploadImageName}";
 
                     uploadCommand =
-                        $"set -e;{model.Sudo} docker login -u {model.RepositoryUserName} -p {model.RepositoryUserPwd}; {model.Sudo} docker tag {currentImageInfo.Item3} {uploadImageName};{model.Sudo} docker push {uploadImageName}";
+                        $"{model.Sudo} docker login -u {model.RepositoryUserName} -p {model.RepositoryUserPwd} & {model.Sudo} docker tag {currentImageInfo.Item3} {uploadImageName} & {model.Sudo} docker push {uploadImageName}";
                 }
                 else
                 {
                     uploadCommandLog =
-                        $"set -e;{model.Sudo} docker login -u {model.RepositoryUserName} -p {{PWD}} {model.RepositoryUrl}; {model.Sudo} docker tag {currentImageInfo.Item3} {uploadImageName};{model.Sudo} docker push {uploadImageName}";
+                        $"{model.Sudo} docker login -u {model.RepositoryUserName} -p {{PWD}} {model.RepositoryUrl}; {model.Sudo} docker tag {currentImageInfo.Item3} {uploadImageName};{model.Sudo} docker push {uploadImageName}";
                     uploadCommand =
-                        $"set -e;{model.Sudo} docker login -u {model.RepositoryUserName} -p {model.RepositoryUserPwd} {model.RepositoryUrl}; {model.Sudo} docker tag {currentImageInfo.Item3} {uploadImageName};{model.Sudo} docker push {uploadImageName}";
+                        $"{model.Sudo} docker login -u {model.RepositoryUserName} -p {model.RepositoryUserPwd} {model.RepositoryUrl} & {model.Sudo} docker tag {currentImageInfo.Item3} {uploadImageName} & {model.Sudo} docker push {uploadImageName}";
                 }
 
-                logger($"[Warn][upload image] - " + uploadCommandLog);
+                logger($"[upload image] - " + uploadCommandLog);
                 var rr11 = CopyHelper.RunExternalExe(uploadCommand, (msg) =>
                 {
-                    logger($"[Warn][upload image] - {msg}");
+                    logger($"[upload image] - {msg}");
                 });
 
+                
+                CopyHelper.RunCommand($"{model.Sudo} docker rmi {uploadImageName}");
+                
                 if (!rr11)
                 {
-                    logger($"【Error】[upload image] - Fail");
+                    throw new Exception("[upload image] - Fail");
                 }
                 else
                 {
                     logger($"[upload image] - Success");
                 }
-                CopyHelper.RunCommand($"{model.Sudo} docker rmi {uploadImageName}");
             }
 
         }
