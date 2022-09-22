@@ -84,6 +84,17 @@ namespace AntDeployWinform.Util
             }
         }
 
+        public string WorkSpace
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(this.WorkDir)) return "antdeploy";
+
+                return WorkDir;
+            }
+        }
+
+
         #region 镜像上传
         public bool DockerServiceEnableUpload { get; set; }
         public bool DockerServiceBuildImageOnly { get; set; }
@@ -104,6 +115,9 @@ namespace AntDeployWinform.Util
         public string ClientDateTimeFolderName { get; set; }
         public string ProjectDeployRoot { get; set; }
         public string RemoveDaysFromPublished { get; set; }
+
+        public string WorkDir { get; set; }
+        
         public string Remark { get; set; }
         public string Volume { get; set; }
         public string Other { get; set; }
@@ -306,10 +320,10 @@ namespace AntDeployWinform.Util
 
         public void ChangeToFolder(string changeTo)
         {
-            if (changeTo.StartsWith("/"))
-            {
-                changeTo = changeTo.Substring(1);
-            }
+            //if (changeTo.StartsWith("/"))
+            //{
+            //    changeTo = changeTo.Substring(1);
+            //}
             _sftpClient.ChangeDirectory(changeTo);
             _logger($"Changed directory to {changeTo}", NLog.LogLevel.Info);
         }
@@ -396,7 +410,7 @@ namespace AntDeployWinform.Util
         /// <param name="destinationFolder"></param>
         /// <param name="pageNumber">数量</param>
         /// <returns></returns>
-        public Tuple<string, List<Tuple<string, string>>> GetDeployHistory(string destinationFolder, int pageNumber = 0)
+        public Tuple<string, List<Tuple<string, string>>> GetDeployHistory( int pageNumber = 0)
         {
             var currentVersion = string.Empty;
             var dic = new Dictionary<string,Tuple<string,string,DateTime>>();
@@ -404,7 +418,7 @@ namespace AntDeployWinform.Util
             {
                 //获取当前版本是哪个
 
-
+                string destinationFolder = WorkSpace;
                 if (!destinationFolder.EndsWith("/")) destinationFolder = destinationFolder + "/";
 
                 destinationFolder = destinationFolder + PorjectName + "/";
@@ -476,7 +490,7 @@ namespace AntDeployWinform.Util
             return new Tuple<string, List<Tuple<string, string>>>(currentVersion, dic.Values.ToList().OrderByDescending(r => r.Item3).Select(r => new Tuple<string, string>(r.Item1, r.Item2)).ToList());
         }
 
-        public void PublishZip(Stream stream, string destinationFolder, string destinationfileName,Func<bool> continuetask = null,Dictionary<string,Tuple<string,bool>> chineseMapper = null)
+        public void PublishZip(Stream stream,  string destinationfileName,Func<bool> continuetask = null,Dictionary<string,Tuple<string,bool>> chineseMapper = null)
         {
             bool CheckCancel()
             {
@@ -491,6 +505,7 @@ namespace AntDeployWinform.Util
 
                 return false;
             }
+            string destinationFolder = WorkSpace;
 
             if (!destinationFolder.EndsWith("/")) destinationFolder = destinationFolder + "/";
             //按照项目分文件夹
@@ -500,7 +515,6 @@ namespace AntDeployWinform.Util
 
             //创建项目根目录
             var deploySaveFolder = projectPath + "deploy/";
-
             ProjectDeployRoot = deploySaveFolder;
             try
             {
@@ -512,14 +526,14 @@ namespace AntDeployWinform.Util
                         return;
                     }
                 }
-                CreateServerDirectoryIfItDoesntExist(deploySaveFolder);
+              
                 Upload(stream, destinationFolder, destinationfileName);
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 if (CheckCancel()) return;
-
+                _logger(e.ToString(), NLog.LogLevel.Error);
                 throw;
             }
 
@@ -612,9 +626,13 @@ namespace AntDeployWinform.Util
         /// <param name="version">具体的日期文件夹路径</param>
         public void RollBack(string version)
         {
-            var path = "antdeploy/" + PorjectName + "/" + version + "/";
+            string destinationFolder = WorkSpace;
 
-            ProjectDeployRoot = "antdeploy/" + PorjectName + "/" + "deploy/";
+            if (!destinationFolder.EndsWith("/")) destinationFolder = destinationFolder + "/";
+
+            var path = destinationFolder + PorjectName + "/" + version + "/";
+
+            ProjectDeployRoot = destinationFolder + PorjectName + "/" + "deploy/";
 
             ChangeToFolder(path);
 
@@ -1238,10 +1256,11 @@ namespace AntDeployWinform.Util
             {
                 return;
             }
-
+            var destinationFolder = WorkSpace;
+            if (!destinationFolder.EndsWith("/")) destinationFolder = destinationFolder + "/";
             _sftpClient.ChangeDirectory(RootFolder);
             var now = DateTime.Now.Date;
-            var histroryList = GetDeployHistoryWithOutRemark("antdeploy");
+            var histroryList = GetDeployHistoryWithOutRemark(destinationFolder);
             if (histroryList.Count <= 10) return;
             var oldFolderList = new List<OldFolder>();
             foreach (var histroy in histroryList)
@@ -1284,7 +1303,7 @@ namespace AntDeployWinform.Util
             {
                 try
                 {
-                    var toDelete = $"antdeploy/{PorjectName}/{target.Name}/";
+                    var toDelete = $"{destinationFolder}{PorjectName}/{target.Name}/";
                     this.DeleteDirectory(toDelete);
                     _logger($"Remove backup version success: {toDelete}", LogLevel.Info);
                 }
@@ -1588,16 +1607,25 @@ namespace AntDeployWinform.Util
         /// <param name="serverDestinationPath"></param>
         private void CreateServerDirectoryIfItDoesntExist(string serverDestinationPath)
         {
-            if (serverDestinationPath[0] == '/')
-                serverDestinationPath = serverDestinationPath.Substring(1);
-
-            string[] directories = serverDestinationPath.Split('/');
-            for (int i = 0; i < directories.Length; i++)
+            //if (serverDestinationPath[0] == '/')
+            //    serverDestinationPath = serverDestinationPath.Substring(1);
+            try
             {
-                string dirName = string.Join("/", directories, 0, i + 1);
-                if (!_sftpClient.Exists(dirName))
-                    _sftpClient.CreateDirectory(dirName);
+                string[] directories = serverDestinationPath.Split('/');
+                for (int i = 0; i < directories.Length; i++)
+                {
+                    string dirName = string.Join("/", directories, 0, i + 1);
+                    if (string.IsNullOrEmpty(dirName)) continue;
+                    if (!_sftpClient.Exists(dirName))
+                        _sftpClient.CreateDirectory(dirName);
+                }
             }
+            catch (Exception)
+            {
+                _logger("create folder fail:" + serverDestinationPath,LogLevel.Warn);
+                throw;
+            }
+           
         }
 
 

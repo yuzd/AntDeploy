@@ -858,6 +858,10 @@ namespace AntDeployWinform.Winform
                 {
                     this.t_docker_delete_days.Text = DeployConfig.DockerConfig.RemoveDaysFromPublished;
                 }
+                if (!string.IsNullOrEmpty(DeployConfig.DockerConfig.WorkDir))
+                {
+                    this.txt_docker_workspace.Text = DeployConfig.DockerConfig.WorkDir;
+                }
 
                 if (!string.IsNullOrEmpty(DeployConfig.DockerConfig.Volume))
                 {
@@ -1061,6 +1065,7 @@ namespace AntDeployWinform.Winform
                 this.BindDockerPort = DeployConfig.DockerConfig.Prot = this.txt_docker_port.Text.Trim();
                 this.BindDockerEnvName = DeployConfig.DockerConfig.AspNetCoreEnv = this.txt_docker_envname.Text.Trim();
                 DeployConfig.DockerConfig.RemoveDaysFromPublished = this.t_docker_delete_days.Text.Trim();
+                DeployConfig.DockerConfig.WorkDir = this.txt_docker_workspace.Text.Trim();
                 this.BindDockerVolume = DeployConfig.DockerConfig.Volume = this.txt_docker_volume.Text.Trim();
                 this.BindDockerOther = DeployConfig.DockerConfig.Other = this.txt_docker_other.Text.Trim();
 
@@ -6598,7 +6603,8 @@ RETRY_WINDOWSSERVICE2:
             {
                 DeployConfig.DockerConfig.RemoveDaysFromPublished = "";
             }
-
+            var workdir = this.txt_docker_workspace.Text.Trim();
+            DeployConfig.DockerConfig.WorkDir = workdir;
 
             //必须是netcore应用
             var isNetcoreProject = _project.IsNetcorePorject;
@@ -7066,6 +7072,7 @@ RETRY_DOCKER:
                                NetCoreEnvironment = DeployConfig.DockerConfig.AspNetCoreEnv,
                                ClientDateTimeFolderName = clientDateTimeFolderName,
                                RemoveDaysFromPublished = DeployConfig.DockerConfig.RemoveDaysFromPublished,
+                               WorkDir = DeployConfig.DockerConfig.WorkDir,
                                Volume = DeployConfig.DockerConfig.Volume,
                                Other = DeployConfig.DockerConfig.Other,
                                Remark = confirmResult.Item2,
@@ -7095,7 +7102,7 @@ RETRY_DOCKER:
 
                                try
                                {
-                                   sshClient.PublishZip(zipBytes, "antdeploy", "publish.zip", () => !stop_docker_cancel_token, chineseFileList);
+                                   sshClient.PublishZip(zipBytes, "publish.zip", () => !stop_docker_cancel_token, chineseFileList);
                                    UpdateUploadProgress(this.tabPage_docker, server.Host, 100);
 
                                    if (stop_docker_cancel_token)
@@ -7407,6 +7414,8 @@ RETRY_DOCKER:
             {
                 _project.NetCoreSDKVersion = ProjectHelper.GetProjectSkdInNetCoreProject(ProjectPath);
             }
+            var workdir = this.txt_docker_workspace.Text.Trim();
+            DeployConfig.DockerConfig.WorkDir = workdir;
             var SDKVersion = _project.NetCoreSDKVersion;
             //if (string.IsNullOrEmpty(SDKVersion))
             //{
@@ -7541,6 +7550,7 @@ RETRY_DOCKER:
                                 NetCoreVersion = SDKVersion,
                                 NetCorePort = DeployConfig.DockerConfig.Prot,
                                 NetCoreEnvironment = DeployConfig.DockerConfig.AspNetCoreEnv,
+                                WorkDir = DeployConfig.DockerConfig.WorkDir
                             })
                             {
                                 var connectResult = sshClient.Connect();
@@ -7553,7 +7563,7 @@ RETRY_DOCKER:
                                     continue;
                                 }
 
-                                versionList = sshClient.GetDeployHistory("antdeploy", 10);
+                                versionList = sshClient.GetDeployHistory(10);
                             }
 
                             if (versionList == null || versionList.Item2.Count <= 1)
@@ -7618,7 +7628,8 @@ RETRY_DOCKER:
                                 NetCoreVersion = SDKVersion,
                                 NetCorePort = DeployConfig.DockerConfig.Prot,
                                 NetCoreEnvironment = DeployConfig.DockerConfig.AspNetCoreEnv,
-                                Sudo = this.PluginConfig.DockerEnableSudo ? "sudo" : ""
+                                Sudo = this.PluginConfig.DockerEnableSudo ? "sudo" : "",
+                                WorkDir = DeployConfig.DockerConfig.WorkDir
                             })
                             {
                                 var connectResult = sshClient.Connect();
@@ -7928,6 +7939,7 @@ RETRY_DOCKER:
 
                 this.checkBoxdocker_rep_uploadOnly.Enabled = flag;
                 this.t_docker_delete_days.Enabled = flag;
+                this.txt_docker_workspace.Enabled = flag;
                 this.txt_docker_volume.Enabled = flag;
                 this.txt_docker_other.Enabled = flag;
                 this.b_docker_rollback.Enabled = flag;
@@ -8508,6 +8520,7 @@ RETRY_DOCKER:
                 }
                 if (!string.IsNullOrEmpty(pwd))
                 {
+                    DeployConfig.DockerConfig.WorkDir = this.txt_docker_workspace.Text.Trim();
                     new Task(() =>
                     {
                         try
@@ -8522,6 +8535,7 @@ RETRY_DOCKER:
                                 NetCoreENTRYPOINT = ENTRYPOINT,
                                 NetCorePort = DeployConfig.DockerConfig.Prot,
                                 NetCoreEnvironment = DeployConfig.DockerConfig.AspNetCoreEnv,
+                                WorkDir = DeployConfig.DockerConfig.WorkDir
                             })
                             {
                                 var connectResult = sshClient.Connect();
@@ -8530,7 +8544,7 @@ RETRY_DOCKER:
                                     ShowThreadMessageBox("get history list fail");
                                     return;
                                 }
-                                versionList = sshClient.GetDeployHistory("antdeploy", 10);
+                                versionList = sshClient.GetDeployHistory( 10);
                             }
 
                             if (versionList == null || versionList.Item2.Count < 1)
