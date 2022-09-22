@@ -74,6 +74,7 @@ namespace AntDeployAgent.MyApp.Service.Impl
                     Extention = new DockerParamModel
                     {
                         NetCoreENTRYPOINT = _serviceName,
+                        PorjectName = _serviceName,
                         RollBack = true
                     }
                 };

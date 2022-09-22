@@ -62,6 +62,9 @@
     <Content Include="AntDeployApp.exe.config">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="nlog.config">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <None Include="Resources\Images.png" />
   </ItemGroup>
   <ItemGroup>
@@ -98,6 +101,9 @@
     <Content Include="CircularProgressBar.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="CSkin.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="en\AntDeployWinform.resources.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -107,10 +113,10 @@
     <Content Include="LibGit2Sharp.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="lib\win32\x64\git2-572e4d8.dll">
+    <Content Include="lib\win32\x64\git2-106a5f2.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="lib\win32\x86\git2-572e4d8.dll">
+    <Content Include="lib\win32\x86\git2-106a5f2.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Microsoft.Build.Locator.dll">

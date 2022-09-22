@@ -7202,7 +7202,7 @@ RETRY_DOCKER:
                            HttpRequestClient httpRequestClient = new HttpRequestClient();
                            httpRequestClient.SetFieldValue("publishType", "docker");
                            httpRequestClient.SetFieldValue("isIncrement", this.PluginConfig.DockerEnableIncrement ? "true" : "");
-                           httpRequestClient.SetFieldValue("serviceName", ENTRYPOINT);
+                           httpRequestClient.SetFieldValue("serviceName", ENTRYPOINT.Replace(".dll",""));
                            httpRequestClient.SetFieldValue("id", loggerId);
                            httpRequestClient.SetFieldValue("remark", confirmResult.Item2);
                            httpRequestClient.SetFieldValue("mac", CodingHelper.GetMacAddress());

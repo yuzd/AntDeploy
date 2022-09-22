@@ -65,7 +65,7 @@ namespace AntDeployAgent.MyApp.Service.Impl
 
 #else
                 Log("netframework agent version ==>" + Version.VERSION);
-#endif
+#endif 
                 Log("upload success ==>" + _zipFile);
                 //解压
                 try
@@ -207,7 +207,7 @@ namespace AntDeployAgent.MyApp.Service.Impl
             {
                 return "projectName required";
             }
-            DockerParamModel.NetCoreENTRYPOINT = serviceNameItem.TextValue.Trim();
+            DockerParamModel.PorjectName = serviceNameItem.TextValue.Trim();
 
             //发布版本
             var dateTimeFolderName = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("deployFolderName"));

@@ -99,8 +99,8 @@ namespace AntDeployAgentWindows.Operation.OperationTypes
                 model.RealServerPort = model.ServerPort;
             }
 
-            var specialName = model.PorjectName;
-            var continarName = "d_" + model.PorjectName;
+            var specialName = model.GetSafeProjectName();
+            var continarName = "d_" + model.GetSafeProjectName();
             var runContainerName = $"--name {continarName}";
             string volume = GetVolume();
 
