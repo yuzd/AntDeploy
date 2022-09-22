@@ -32,18 +32,7 @@ namespace AntDeployAgent.Model
         public string RealPort { get; set; }
         public string RealServerPort { get; set; }
 
-        public string PorjectName
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(NetCoreENTRYPOINT))
-                {
-                    return GetSafeProjectName(NetCoreENTRYPOINT.Replace(".dll", "")).ToLower();
-                }
-
-                return string.Empty;
-            }
-        }
+        public string PorjectName { get; set; }
         /// <summary>
         /// 宿主机开启的端口
         /// </summary>
@@ -84,8 +73,9 @@ namespace AntDeployAgent.Model
             }
         }
 
-        private string GetSafeProjectName(string projectName)
+        public  string GetSafeProjectName()
         {
+            var projectName = PorjectName;
             foreach (char c in Path.GetInvalidFileNameChars())
             {
                 projectName = projectName.Replace(System.Char.ToString(c), "");
@@ -93,7 +83,7 @@ namespace AntDeployAgent.Model
             var aa = Regex.Replace(projectName, "[ \\[ \\] \\^ \\-_*×――(^)（^）$%~!@#$…&%￥—+=<>《》!！??？:：•`·、。，；,.;\"‘’“”-]", "");
             aa = aa.Replace(" ", "").Replace("　", "");
             aa = Regex.Replace(aa, @"[~!@#\$%\^&\*\(\)\+=\|\\\}\]\{\[:;<,>\?\/""]+", "");
-            return aa;
+            return aa.ToLower();
         }
     }
 }

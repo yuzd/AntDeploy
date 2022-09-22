@@ -237,6 +237,8 @@ namespace AntDeployWinform.Models
         public string AspNetCoreEnv { get; set; }
         public string LastEnvName { get; set; }
         public string RemoveDaysFromPublished { get; set; }
+
+        public string WorkDir { get; set; }
         public string Volume { get; set; }
         public string Other { get; set; }
 
