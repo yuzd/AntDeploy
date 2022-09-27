@@ -513,9 +513,9 @@ namespace AntDeployWinform.Winform
         private void NlogConfig()
         {
 
-            #region Nlog
+            #region Nlog 修改过的dll 不能升级，否则会导致在某些windows系统上出现中文乱码的问题
             
-            /*
+        
             var config = new LoggingConfiguration();
             var richTarget = new RichTextBoxTarget
             {
@@ -629,8 +629,7 @@ namespace AntDeployWinform.Winform
             config.LoggingRules.Add(rule5);
 
             LogManager.Configuration = config;
-            */
-            LogManager.Setup().SetupExtensions(ext => ext.RegisterAssembly(typeof(RichTextBoxTarget).Assembly));
+            
             nlog_iis = NLog.LogManager.GetLogger("rich_iis_log");
             nlog_windowservice = NLog.LogManager.GetLogger("rich_windowservice_log");
             nlog_linux = NLog.LogManager.GetLogger("rich_linuxservice_log");
