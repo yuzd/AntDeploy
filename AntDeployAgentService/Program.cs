@@ -58,6 +58,7 @@ namespace AntDeployAgentService
 
             if (isService)
             {
+                Console.WriteLine("Current Version：" + AntDeployAgent.Version.VERSION);
                 builder.UseWindowsService().Build().Run();
             }
             else
