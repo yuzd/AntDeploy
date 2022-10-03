@@ -675,8 +675,6 @@ namespace AntDeployWinform.Winform
         private void Reload()
         {
             this.checkBox_Chinese.Checked = GlobalConfig.IsChinease;
-            ProgressBox.IsEnableGroup = GlobalConfig.EnableEnvGroup;
-            this.chk_global_useCheckBox.Checked = GlobalConfig.EnableEnvGroup;
             this.chk_global_saveconfig_in_projectFolder.Checked = GlobalConfig.EnableAntDeployJson;
             this.chk_use_AsiaShanghai_timezone.Checked = GlobalConfig.UseAsiaShanghai;
             this.checkBox_save_deploy_log.Checked = GlobalConfig.SaveLogs;
@@ -8767,11 +8765,6 @@ RETRY_DOCKER:
             this.rich_config_log.Text = "";
         }
 
-        private void chk_global_useCheckBox_Click(object sender, EventArgs e)
-        {
-            GlobalConfig.EnableEnvGroup = this.chk_global_useCheckBox.Checked;
-            MessageBoxEx.ShowOk(this, "please reload antdeploy!");
-        }
 
         private void checkBox_Increment_linux_service_CheckedChanged(object sender, EventArgs e)
         {

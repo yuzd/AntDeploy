@@ -311,20 +311,20 @@
   <data name="txt_docker_workspace.Size" type="System.Drawing.Size, System.Drawing">
     <value>591, 21</value>
   </data>
-  <data name="label24.AutoSize" type="System.Boolean, mscorlib">
-    <value>False</value>
+  <data name="groupBox6.Text" xml:space="preserve">
+    <value>注意：这里面的配置只针对ssh方式部署docker才有效，token服务器方式的话参考agent配置文件</value>
   </data>
-  <data name="label24.Size" type="System.Drawing.Size, System.Drawing">
-    <value>471, 35</value>
+  <data name="chk_use_AsiaShanghai_timezone.Size" type="System.Drawing.Size, System.Drawing">
+    <value>324, 16</value>
   </data>
-  <data name="label24.Text" xml:space="preserve">
-    <value>注意：docker发布支持发布到ssh服务器和token服务器，此tab的配置内容只针对发布到SSH服务器才会生效，token服务器的话可以修改agent配置文件</value>
+  <data name="chk_use_AsiaShanghai_timezone.Text" xml:space="preserve">
+    <value>AntDeploy创建的DockerFile默认使用Asia/Shanghai时区</value>
   </data>
   <data name="tabPage_ssh.Size" type="System.Drawing.Size, System.Drawing">
     <value>612, 277</value>
   </data>
   <data name="tabPage_ssh.Text" xml:space="preserve">
-    <value>SSH-docker部署配置</value>
+    <value>docker部署配置</value>
   </data>
   <data name="tabControl_docker.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 157</value>
@@ -572,12 +572,6 @@
   <data name="btn_auto_find_msbuild.Text" xml:space="preserve">
     <value>自动查询</value>
   </data>
-  <data name="chk_use_AsiaShanghai_timezone.Size" type="System.Drawing.Size, System.Drawing">
-    <value>324, 16</value>
-  </data>
-  <data name="chk_use_AsiaShanghai_timezone.Text" xml:space="preserve">
-    <value>AntDeploy创建的DockerFile默认使用Asia/Shanghai时区</value>
-  </data>
   <data name="label52.Location" type="System.Drawing.Point, System.Drawing">
     <value>415, 287</value>
   </data>
@@ -677,9 +671,6 @@
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
     <value>636, 518</value>
-  </data>
-  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>Inherit</value>
   </data>
   <data name="$this.MiniDownBack" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>

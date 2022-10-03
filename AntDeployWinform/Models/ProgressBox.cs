@@ -15,7 +15,7 @@ namespace AntDeployWinform.Models
     }
     public class ProgressBox : GroupBox
     {
-        public static bool IsEnableGroup = false;
+        public static bool IsEnableGroup = true;
 
         public CircularProgressBar.CircularProgressBar progress_iis_build;
         public CircularProgressBar.CircularProgressBar progress_iis_package;
@@ -58,7 +58,7 @@ namespace AntDeployWinform.Models
 
             this.CheckBox.Location = new System.Drawing.Point(10, Progressheight - 20);
             this.CheckBox.Size = new System.Drawing.Size(20, 20);
-            this.CheckBox.Checked = false;
+            this.CheckBox.Checked = true;
             this.CheckBox.Visible = IsEnableGroup;
 
             // 
