@@ -11,6 +11,10 @@ https://marketplace.visualstudio.com/items?itemName=nainaigu.AntDeploy
 * 支持脱离Visual Studio独立使用（跨平台支持windows系统和mac系统）
 * 支持Agent批量更新
 
+# 系列视频已全部录制完成
+
+https://www.bilibili.com/video/BV1sP411j7eK
+
 # (如要安装Windows服务器上agent服务)How to install 
 
 https://github.com/yuzd/AntDeployAgent/issues/1
