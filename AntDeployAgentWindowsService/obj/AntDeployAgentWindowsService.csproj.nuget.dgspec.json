@@ -1,0 +1,86 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\Administrator\\Desktop\\AntDeploy-master\\AntDeployAgentWindowsService\\AntDeployAgentWindowsService.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\Administrator\\Desktop\\AntDeploy-master\\AntDeployAgentWindowsService\\AntDeployAgentWindowsService.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Administrator\\Desktop\\AntDeploy-master\\AntDeployAgentWindowsService\\AntDeployAgentWindowsService.csproj",
+        "projectName": "AntDeployAgentWindowsService",
+        "projectPath": "C:\\Users\\Administrator\\Desktop\\AntDeploy-master\\AntDeployAgentWindowsService\\AntDeployAgentWindowsService.csproj",
+        "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Administrator\\Desktop\\AntDeploy-master\\AntDeployAgentWindowsService\\obj\\",
+        "projectStyle": "PackageReference",
+        "skipContentFileWrite": true,
+        "fallbackFolders": [
+          "d:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net461"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net461": {
+            "projectReferences": {
+              "C:\\Users\\Administrator\\Desktop\\AntDeploy-master\\AntDeployAgentWindows\\AntDeployAgentWindows.csproj": {
+                "projectPath": "C:\\Users\\Administrator\\Desktop\\AntDeploy-master\\AntDeployAgentWindows\\AntDeployAgentWindows.csproj"
+              }
+            }
+          }
+        }
+      },
+      "frameworks": {
+        "net461": {
+          "dependencies": {
+            "System.Reflection.TypeExtensions": {
+              "target": "Package",
+              "version": "[4.7.0, )"
+            },
+            "TinyFox": {
+              "target": "Package",
+              "version": "[4.1.0, )"
+            }
+          }
+        }
+      },
+      "runtimes": {
+        "win": {
+          "#import": []
+        },
+        "win-x64": {
+          "#import": []
+        },
+        "win-x86": {
+          "#import": []
+        }
+      }
+    },
+    "C:\\Users\\Administrator\\Desktop\\AntDeploy-master\\AntDeployAgentWindows\\AntDeployAgentWindows.csproj": {
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Administrator\\Desktop\\AntDeploy-master\\AntDeployAgentWindows\\AntDeployAgentWindows.csproj",
+        "projectName": "AntDeployAgentWindows",
+        "projectPath": "C:\\Users\\Administrator\\Desktop\\AntDeploy-master\\AntDeployAgentWindows\\AntDeployAgentWindows.csproj",
+        "frameworks": {
+          "net461": {
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "net461": {}
+      }
+    }
+  }
+}

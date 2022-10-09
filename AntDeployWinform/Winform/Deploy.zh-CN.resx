@@ -1,0 +1,788 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="checkBox_iis_use_offlinehtm.Text" xml:space="preserve">
+    <value>使用app_offline.htm</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="checkBox_iis_restart_site.Size" type="System.Drawing.Size, System.Drawing">
+    <value>84, 16</value>
+  </data>
+  <data name="checkBox_iis_restart_site.Text" xml:space="preserve">
+    <value>不关闭站点</value>
+  </data>
+  <data name="btn_iis_stop.Location" type="System.Drawing.Point, System.Drawing">
+    <value>507, 108</value>
+  </data>
+  <data name="btn_iis_retry.Location" type="System.Drawing.Point, System.Drawing">
+    <value>396, 109</value>
+  </data>
+  <data name="btn_iis_retry.Text" xml:space="preserve">
+    <value>重试</value>
+  </data>
+  <data name="checkBox_select_deploy_iis.Size" type="System.Drawing.Size, System.Drawing">
+    <value>120, 16</value>
+  </data>
+  <data name="checkBox_select_deploy_iis.Text" xml:space="preserve">
+    <value>选择指定文件发布</value>
+  </data>
+  <data name="b_iis_deploy.Location" type="System.Drawing.Point, System.Drawing">
+    <value>509, 107</value>
+  </data>
+  <data name="progress_iis_tip.Size" type="System.Drawing.Size, System.Drawing">
+    <value>400, 31</value>
+  </data>
+  <data name="progress_iis_tip.Text" xml:space="preserve">
+    <value>使用步骤 1. 在发布配置tab里面创建环境，添加token服务器(windows).           2. 选择对应的环境</value>
+  </data>
+  <data name="tabPage_progress.Size" type="System.Drawing.Size, System.Drawing">
+    <value>606, 292</value>
+  </data>
+  <data name="rich_iis_log.Size" type="System.Drawing.Size, System.Drawing">
+    <value>600, 286</value>
+  </data>
+  <data name="tabPage_iis_log.Size" type="System.Drawing.Size, System.Drawing">
+    <value>606, 292</value>
+  </data>
+  <data name="tab_iis.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 139</value>
+  </data>
+  <data name="tab_iis.Size" type="System.Drawing.Size, System.Drawing">
+    <value>614, 318</value>
+  </data>
+  <data name="page_web_iis.Size" type="System.Drawing.Size, System.Drawing">
+    <value>620, 460</value>
+  </data>
+  <data name="b_docker_deploy.Location" type="System.Drawing.Point, System.Drawing">
+    <value>511, 107</value>
+  </data>
+  <data name="btn_docker_retry.Location" type="System.Drawing.Point, System.Drawing">
+    <value>391, 107</value>
+  </data>
+  <data name="btn_docker_retry.Text" xml:space="preserve">
+    <value>重试</value>
+  </data>
+  <data name="btn_docker_stop.Location" type="System.Drawing.Point, System.Drawing">
+    <value>511, 107</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="checkBox_select_deploy_docker.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="checkBox_select_deploy_docker.Location" type="System.Drawing.Point, System.Drawing">
+    <value>212, 134</value>
+  </data>
+  <data name="checkBox_select_deploy_docker.Size" type="System.Drawing.Size, System.Drawing">
+    <value>120, 16</value>
+  </data>
+  <data name="checkBox_select_deploy_docker.Text" xml:space="preserve">
+    <value>选择指定文件发布</value>
+  </data>
+  <data name="txt_docker_volume.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Comic Sans MS, 10pt</value>
+  </data>
+  <data name="txt_docker_volume.Location" type="System.Drawing.Point, System.Drawing">
+    <value>157, 9</value>
+  </data>
+  <data name="txt_docker_volume.Size" type="System.Drawing.Size, System.Drawing">
+    <value>396, 26</value>
+  </data>
+  <data name="label46.Size" type="System.Drawing.Size, System.Drawing">
+    <value>455, 12</value>
+  </data>
+  <data name="label46.Text" xml:space="preserve">
+    <value>Docker run 自定义参数: --network xxx -e XXX=YYY --name xxx --link other:tag</value>
+  </data>
+  <data name="label45.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 59</value>
+  </data>
+  <data name="label27.Location" type="System.Drawing.Point, System.Drawing">
+    <value>110, 17</value>
+  </data>
+  <data name="label_docker_demo.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 136</value>
+  </data>
+  <data name="progress_docker_tip.Size" type="System.Drawing.Size, System.Drawing">
+    <value>366, 26</value>
+  </data>
+  <data name="progress_docker_tip.Text" xml:space="preserve">
+    <value>使用步骤 1. 在发布配置tab里面创建环境，添加linux服务器(ssh).          2. 选择对应的环境</value>
+  </data>
+  <data name="tabPage_docker.Size" type="System.Drawing.Size, System.Drawing">
+    <value>612, 277</value>
+  </data>
+  <data name="rich_docker_log.Size" type="System.Drawing.Size, System.Drawing">
+    <value>606, 271</value>
+  </data>
+  <data name="tabPage_docker_log.Size" type="System.Drawing.Size, System.Drawing">
+    <value>612, 277</value>
+  </data>
+  <data name="label56.Text" xml:space="preserve">
+    <value>注意：该功能需要依赖一台安装docker的linux宿主机</value>
+  </data>
+  <data name="label55.Size" type="System.Drawing.Size, System.Drawing">
+    <value>283, 13</value>
+  </data>
+  <data name="label55.Text" xml:space="preserve">
+    <value>注意:该功能需要依赖一台装有docker的linux宿主机</value>
+  </data>
+  <data name="label54.Location" type="System.Drawing.Point, System.Drawing">
+    <value>217, 196</value>
+  </data>
+  <data name="label54.Size" type="System.Drawing.Size, System.Drawing">
+    <value>177, 36</value>
+  </data>
+  <data name="label54.Text" xml:space="preserve">
+    <value>镜像名称格式: imagename:tag [不加tag用默认的日期版本号]</value>
+  </data>
+  <data name="checkBoxdocker_rep_uploadOnly.Size" type="System.Drawing.Size, System.Drawing">
+    <value>234, 24</value>
+  </data>
+  <data name="checkBoxdocker_rep_uploadOnly.Text" xml:space="preserve">
+    <value>在宿主机上只打包镜像不运行容器</value>
+  </data>
+  <data name="checkBoxdocker_rep_enable.Text" xml:space="preserve">
+    <value>开启镜像上传</value>
+  </data>
+  <data name="label44.Size" type="System.Drawing.Size, System.Drawing">
+    <value>65, 12</value>
+  </data>
+  <data name="label44.Text" xml:space="preserve">
+    <value> 镜像名称:</value>
+  </data>
+  <data name="label43.Size" type="System.Drawing.Size, System.Drawing">
+    <value>83, 12</value>
+  </data>
+  <data name="label43.Text" xml:space="preserve">
+    <value>    仓库名称:</value>
+  </data>
+  <data name="label40.Size" type="System.Drawing.Size, System.Drawing">
+    <value>95, 12</value>
+  </data>
+  <data name="label40.Text" xml:space="preserve">
+    <value>      镜像地址:</value>
+  </data>
+  <data name="label31.Size" type="System.Drawing.Size, System.Drawing">
+    <value>89, 12</value>
+  </data>
+  <data name="label31.Text" xml:space="preserve">
+    <value>   登录用户名:</value>
+  </data>
+  <data name="label34.Size" type="System.Drawing.Size, System.Drawing">
+    <value>35, 12</value>
+  </data>
+  <data name="label34.Text" xml:space="preserve">
+    <value>密码:</value>
+  </data>
+  <data name="tabPage_docker_repo.Size" type="System.Drawing.Size, System.Drawing">
+    <value>612, 277</value>
+  </data>
+  <data name="tabPage_docker_repo.Text" xml:space="preserve">
+    <value>配置镜像上传</value>
+  </data>
+  <data name="label68.Location" type="System.Drawing.Point, System.Drawing">
+    <value>7, 63</value>
+  </data>
+  <data name="label68.Size" type="System.Drawing.Size, System.Drawing">
+    <value>137, 12</value>
+  </data>
+  <data name="label68.Text" xml:space="preserve">
+    <value>部署到ssh服务器的目录:</value>
+  </data>
+  <data name="txt_docker_workspace.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 78</value>
+  </data>
+  <data name="txt_docker_workspace.Size" type="System.Drawing.Size, System.Drawing">
+    <value>591, 21</value>
+  </data>
+  <data name="groupBox6.Text" xml:space="preserve">
+    <value>注意：这里面的配置只针对ssh方式部署docker才有效，token服务器方式的话参考agent配置文件</value>
+  </data>
+  <data name="chk_use_AsiaShanghai_timezone.Size" type="System.Drawing.Size, System.Drawing">
+    <value>324, 16</value>
+  </data>
+  <data name="chk_use_AsiaShanghai_timezone.Text" xml:space="preserve">
+    <value>AntDeploy创建的DockerFile默认使用Asia/Shanghai时区</value>
+  </data>
+  <data name="tabPage_ssh.Size" type="System.Drawing.Size, System.Drawing">
+    <value>612, 277</value>
+  </data>
+  <data name="tabPage_ssh.Text" xml:space="preserve">
+    <value>docker部署配置</value>
+  </data>
+  <data name="tabControl_docker.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 157</value>
+  </data>
+  <data name="tabControl_docker.Size" type="System.Drawing.Size, System.Drawing">
+    <value>620, 303</value>
+  </data>
+  <data name="checkBox_Increment_docker.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="checkBox_Increment_docker.Location" type="System.Drawing.Point, System.Drawing">
+    <value>134, 135</value>
+  </data>
+  <data name="checkBox_Increment_docker.Size" type="System.Drawing.Size, System.Drawing">
+    <value>72, 16</value>
+  </data>
+  <data name="checkBox_Increment_docker.Text" xml:space="preserve">
+    <value>增量发布</value>
+  </data>
+  <data name="page_docker.Size" type="System.Drawing.Size, System.Drawing">
+    <value>620, 460</value>
+  </data>
+  <data name="altoButton1.Text" xml:space="preserve">
+    <value>发布</value>
+  </data>
+  <data name="rich_docker_image_log.Size" type="System.Drawing.Size, System.Drawing">
+    <value>606, 264</value>
+  </data>
+  <data name="tabPage_docker_image.Size" type="System.Drawing.Size, System.Drawing">
+    <value>612, 270</value>
+  </data>
+  <data name="tabPage_docker_image.Text" xml:space="preserve">
+    <value>日志</value>
+  </data>
+  <data name="btn_dockerImage_ignore_remove.Text" xml:space="preserve">
+    <value>删除选中</value>
+  </data>
+  <data name="btn_dockerImage_ignore_add.Text" xml:space="preserve">
+    <value>添加</value>
+  </data>
+  <data name="groupBox4.Text" xml:space="preserve">
+    <value>排除规则【regex】</value>
+  </data>
+  <data name="tabPage_docker_image_ignore.Size" type="System.Drawing.Size, System.Drawing">
+    <value>612, 270</value>
+  </data>
+  <data name="tabPage_docker_image_ignore.Text" xml:space="preserve">
+    <value>其他配置</value>
+  </data>
+  <data name="tabControl_dockerimage.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 164</value>
+  </data>
+  <data name="tabControl_dockerimage.Size" type="System.Drawing.Size, System.Drawing">
+    <value>620, 296</value>
+  </data>
+  <data name="label_how_to_dockerimage.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label_how_to_dockerimage.Size" type="System.Drawing.Size, System.Drawing">
+    <value>29, 12</value>
+  </data>
+  <data name="label_how_to_dockerimage.Text" xml:space="preserve">
+    <value>Demo</value>
+  </data>
+  <data name="label60.Size" type="System.Drawing.Size, System.Drawing">
+    <value>59, 12</value>
+  </data>
+  <data name="label60.Text" xml:space="preserve">
+    <value>Http代理:</value>
+  </data>
+  <data name="label57.Size" type="System.Drawing.Size, System.Drawing">
+    <value>59, 12</value>
+  </data>
+  <data name="label57.Text" xml:space="preserve">
+    <value>基础镜像:</value>
+  </data>
+  <data name="label69.Size" type="System.Drawing.Size, System.Drawing">
+    <value>59, 12</value>
+  </data>
+  <data name="label69.Text" xml:space="preserve">
+    <value>Http代理:</value>
+  </data>
+  <data name="label64.Location" type="System.Drawing.Point, System.Drawing">
+    <value>17, 14</value>
+  </data>
+  <data name="label64.Size" type="System.Drawing.Size, System.Drawing">
+    <value>59, 12</value>
+  </data>
+  <data name="label64.Text" xml:space="preserve">
+    <value>目标镜像:</value>
+  </data>
+  <data name="page_docker_img.Size" type="System.Drawing.Size, System.Drawing">
+    <value>620, 460</value>
+  </data>
+  <data name="page_docker_img.Text" xml:space="preserve">
+    <value>Docker镜像发布</value>
+  </data>
+  <data name="btn_windows_serivce_stop.Location" type="System.Drawing.Point, System.Drawing">
+    <value>511, 101</value>
+  </data>
+  <data name="btn_windows_service_retry.Location" type="System.Drawing.Point, System.Drawing">
+    <value>399, 101</value>
+  </data>
+  <data name="btn_windows_service_retry.Text" xml:space="preserve">
+    <value>重试</value>
+  </data>
+  <data name="checkBox_select_deploy_service.Size" type="System.Drawing.Size, System.Drawing">
+    <value>120, 16</value>
+  </data>
+  <data name="checkBox_select_deploy_service.Text" xml:space="preserve">
+    <value>选择指定文件发布</value>
+  </data>
+  <data name="progress_window_service_tip.Size" type="System.Drawing.Size, System.Drawing">
+    <value>398, 31</value>
+  </data>
+  <data name="progress_window_service_tip.Text" xml:space="preserve">
+    <value>使用步骤 1. 在发布配置tab里面创建环境，添加token服务器(windows).           2. 选择对应的环境</value>
+  </data>
+  <data name="tabPage_windows_service.Size" type="System.Drawing.Size, System.Drawing">
+    <value>612, 303</value>
+  </data>
+  <data name="rich_windowservice_log.Size" type="System.Drawing.Size, System.Drawing">
+    <value>606, 297</value>
+  </data>
+  <data name="tabPage2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>612, 303</value>
+  </data>
+  <data name="tabControl_window_service.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 131</value>
+  </data>
+  <data name="tabControl_window_service.Size" type="System.Drawing.Size, System.Drawing">
+    <value>620, 329</value>
+  </data>
+  <data name="page_window_service.Size" type="System.Drawing.Size, System.Drawing">
+    <value>620, 460</value>
+  </data>
+  <data name="label49.Location" type="System.Drawing.Point, System.Drawing">
+    <value>26, 96</value>
+  </data>
+  <data name="label49.Size" type="System.Drawing.Size, System.Drawing">
+    <value>59, 12</value>
+  </data>
+  <data name="label49.Text" xml:space="preserve">
+    <value>环境变量:</value>
+  </data>
+  <data name="progress_linux_service_tip.Location" type="System.Drawing.Point, System.Drawing">
+    <value>109, 55</value>
+  </data>
+  <data name="progress_linux_service_tip.Size" type="System.Drawing.Size, System.Drawing">
+    <value>386, 32</value>
+  </data>
+  <data name="progress_linux_service_tip.Text" xml:space="preserve">
+    <value>使用步骤 1. 在发布配置tab里面创建环境，添加token服务器(linux).           2. 选择对应的环境</value>
+  </data>
+  <data name="tabPage_linux_service.Size" type="System.Drawing.Size, System.Drawing">
+    <value>612, 303</value>
+  </data>
+  <data name="tabPage_linux_service.Text" xml:space="preserve">
+    <value>进度展示</value>
+  </data>
+  <data name="rich_linuxservice_log.Size" type="System.Drawing.Size, System.Drawing">
+    <value>606, 297</value>
+  </data>
+  <data name="tabPage3.Size" type="System.Drawing.Size, System.Drawing">
+    <value>612, 303</value>
+  </data>
+  <data name="tabPage3.Text" xml:space="preserve">
+    <value>发布日志</value>
+  </data>
+  <data name="tabControl_linux_service.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 131</value>
+  </data>
+  <data name="tabControl_linux_service.Size" type="System.Drawing.Size, System.Drawing">
+    <value>620, 329</value>
+  </data>
+  <data name="checkBox_select_deploy_linuxservice.Size" type="System.Drawing.Size, System.Drawing">
+    <value>120, 16</value>
+  </data>
+  <data name="checkBox_select_deploy_linuxservice.Text" xml:space="preserve">
+    <value>选择指定文件发布</value>
+  </data>
+  <data name="checkBox_Increment_linux_service.Size" type="System.Drawing.Size, System.Drawing">
+    <value>72, 16</value>
+  </data>
+  <data name="checkBox_Increment_linux_service.Text" xml:space="preserve">
+    <value>增量发布</value>
+  </data>
+  <data name="label47.Location" type="System.Drawing.Point, System.Drawing">
+    <value>43, 46</value>
+  </data>
+  <data name="label47.Size" type="System.Drawing.Size, System.Drawing">
+    <value>215, 12</value>
+  </data>
+  <data name="label47.Text" xml:space="preserve">
+    <value>注意:只能发布装了agent的linux服务器</value>
+  </data>
+  <data name="label48.Size" type="System.Drawing.Size, System.Drawing">
+    <value>77, 12</value>
+  </data>
+  <data name="label48.Text" xml:space="preserve">
+    <value>   服务名称:</value>
+  </data>
+  <data name="label50.Text" xml:space="preserve">
+    <value>环境名称:</value>
+  </data>
+  <data name="b_linuxservice_deploy.Text" xml:space="preserve">
+    <value>发布</value>
+  </data>
+  <data name="btn_linux_service_retry.Text" xml:space="preserve">
+    <value>重试</value>
+  </data>
+  <data name="b_linux_service_rollback.Text" xml:space="preserve">
+    <value>回滚</value>
+  </data>
+  <data name="page_linux_service.Size" type="System.Drawing.Size, System.Drawing">
+    <value>620, 460</value>
+  </data>
+  <data name="page_linux_service.Text" xml:space="preserve">
+    <value>Linux服务发布</value>
+  </data>
+  <data name="groupBox1.Text" xml:space="preserve">
+    <value>Token服务器备份排除规则</value>
+  </data>
+  <data name="btn_win_server_testAll.Text" xml:space="preserve">
+    <value>测试连接全部</value>
+  </data>
+  <data name="page_winserver.Text" xml:space="preserve">
+    <value>Token服务器(需要装agent)</value>
+  </data>
+  <data name="btn_linux_server_testAll.Text" xml:space="preserve">
+    <value>测试连接全部</value>
+  </data>
+  <data name="page_linux_server.Text" xml:space="preserve">
+    <value>linux服务器(docker发布)</value>
+  </data>
+  <data name="page_set.Size" type="System.Drawing.Size, System.Drawing">
+    <value>620, 460</value>
+  </data>
+  <data name="chk_global_saveconfig_in_projectFolder.Size" type="System.Drawing.Size, System.Drawing">
+    <value>216, 16</value>
+  </data>
+  <data name="chk_global_saveconfig_in_projectFolder.Text" xml:space="preserve">
+    <value>AntDeploy.json保存在项目文件夹下</value>
+  </data>
+  <data name="btn_auto_find_msbuild.Text" xml:space="preserve">
+    <value>自动查询</value>
+  </data>
+  <data name="label52.Location" type="System.Drawing.Point, System.Drawing">
+    <value>415, 287</value>
+  </data>
+  <data name="chk_global_useCheckBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>180, 16</value>
+  </data>
+  <data name="chk_global_useCheckBox.Text" xml:space="preserve">
+    <value>开启环境下服务器可分组功能</value>
+  </data>
+  <data name="checkBox_multi_deploy.Location" type="System.Drawing.Point, System.Drawing">
+    <value>409, 37</value>
+  </data>
+  <data name="checkBox_multi_deploy.Size" type="System.Drawing.Size, System.Drawing">
+    <value>192, 16</value>
+  </data>
+  <data name="checkBox_multi_deploy.Text" xml:space="preserve">
+    <value>Vs里可以同时打开多个发布窗口</value>
+  </data>
+  <data name="checkBox_save_deploy_log.Location" type="System.Drawing.Point, System.Drawing">
+    <value>217, 37</value>
+  </data>
+  <data name="checkBox_save_deploy_log.Size" type="System.Drawing.Size, System.Drawing">
+    <value>132, 16</value>
+  </data>
+  <data name="checkBox_save_deploy_log.Text" xml:space="preserve">
+    <value>保存发布日志到本地</value>
+  </data>
+  <data name="label30.Location" type="System.Drawing.Point, System.Drawing">
+    <value>73, 340</value>
+  </data>
+  <data name="label30.Size" type="System.Drawing.Size, System.Drawing">
+    <value>83, 12</value>
+  </data>
+  <data name="label30.Text" xml:space="preserve">
+    <value>Http代理配置:</value>
+  </data>
+  <data name="label16.Text" xml:space="preserve">
+    <value>如果选择了指定特定文件夹,会过滤编译步骤！</value>
+  </data>
+  <data name="btn_folder_clear.Text" xml:space="preserve">
+    <value>清除</value>
+  </data>
+  <data name="btn_choose_folder.Text" xml:space="preserve">
+    <value>选择</value>
+  </data>
+  <data name="label42.Location" type="System.Drawing.Point, System.Drawing">
+    <value>440, 256</value>
+  </data>
+  <data name="label41.Location" type="System.Drawing.Point, System.Drawing">
+    <value>416, 272</value>
+  </data>
+  <data name="label38.Location" type="System.Drawing.Point, System.Drawing">
+    <value>333, 237</value>
+  </data>
+  <data name="label38.Size" type="System.Drawing.Size, System.Drawing">
+    <value>293, 12</value>
+  </data>
+  <data name="label38.Text" xml:space="preserve">
+    <value>NetCore发布模式如果没有设置采用以下默认值:      </value>
+  </data>
+  <data name="combo_netcore_publish_mode.Location" type="System.Drawing.Point, System.Drawing">
+    <value>168, 234</value>
+  </data>
+  <data name="label37.Size" type="System.Drawing.Size, System.Drawing">
+    <value>107, 12</value>
+  </data>
+  <data name="label37.Text" xml:space="preserve">
+    <value>NetCore 发布模式:</value>
+  </data>
+  <data name="label_without_vs.Location" type="System.Drawing.Point, System.Drawing">
+    <value>362, 9</value>
+  </data>
+  <data name="btn_choose_msbuild.Location" type="System.Drawing.Point, System.Drawing">
+    <value>523, 162</value>
+  </data>
+  <data name="btn_choose_msbuild.Size" type="System.Drawing.Size, System.Drawing">
+    <value>69, 23</value>
+  </data>
+  <data name="label36.Location" type="System.Drawing.Point, System.Drawing">
+    <value>49, 174</value>
+  </data>
+  <data name="txt_msbuild_path.Location" type="System.Drawing.Point, System.Drawing">
+    <value>168, 160</value>
+  </data>
+  <data name="label15.Text" xml:space="preserve">
+    <value>指定特定文件夹发布：</value>
+  </data>
+  <data name="pag_advance_setting.Size" type="System.Drawing.Size, System.Drawing">
+    <value>620, 460</value>
+  </data>
+  <data name="tabcontrol.Size" type="System.Drawing.Size, System.Drawing">
+    <value>628, 486</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="$this.BackgroundImageLayout" type="System.Windows.Forms.ImageLayout, System.Windows.Forms">
+    <value>Tile</value>
+  </data>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>636, 518</value>
+  </data>
+  <data name="$this.MiniDownBack" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABsAAAAWCAYAAAAxSueLAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        vAAADrwBlbxySQAAAGZJREFUSEu9zbENhEAMAEHqoP8C+FK+lLvoQp7gA6QhXCxNspbl7Tf7ixgrjBXG
+        CmOFscJYYawwVhgrjBXGCmOF8WaMcay1vk+uve6A8WbO+dGTv2uvO2CsMFYYK4wVxgpjhTGw7Sefmnyz
+        WObEMwAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="$this.MiniMouseBack" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABsAAAAWCAYAAAAxSueLAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        vAAADrwBlbxySQAAAGZJREFUSEu9zbENhEAMAEHqoP8C+FK+lLvoQp7gA6QhXCxNspbl7Tf7ixgrjBXG
+        CmOFscJYYawwVhgrjBXGCmOF8WaMcay1vk+uve6A8WbO+dGTv2uvO2CsMFYYK4wVxgpjhTGw7Sefmnyz
+        WObEMwAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="$this.MiniNormlBack" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABsAAAAWCAYAAAAxSueLAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        vAAADrwBlbxySQAAAGZJREFUSEu9zbENhEAMAEHqoP8C+FK+lLvoQp7gA6QhXCxNspbl7Tf7ixgrjBXG
+        CmOFscJYYawwVhgrjBXGCmOF8WaMcay1vk+uve6A8WbO+dGTv2uvO2CsMFYYK4wVxgpjhTGw7Sefmnyz
+        WObEMwAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="cmSysButton1.SysButtonDown" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAAmNJREFUWEft
+        l8FLFFEcx4eiDhJBBGWFBwusDp76BzxJhxA6CHaQCqRzkKcuLUSBCHXo5EXv3tqDdBAkvUnHOtS4RWs7
+        rpZa21aU1bfvc36yb978ZpydXQmiD3wP4773/X7defPerPefpnmBQ56PfmrYW8Iodcsr4Qqv+2TEHuFj
+        hJqhkKI1apKFLsmsNuBjgP/lrBWSVcXWi/gYdEyb10sUxK1JzETNMI+aLtHO8IYGxX0XzD3XDdqhAUlJ
+        QVlwxTqw+QuZMWPNHNdn2zuV8FGLTHr+XVxzYOa6ftSIpCn4mLYHX1sVpxYwHrYn9VjSFHzU7MGFdXEh
+        T76E11lkY65tT+8V6pLmYLZSGXSwBBx5CzyoiQu5TqOj/Nv+JcdQ0cNNmURiBUIp23a4n+NYGbjwIdTE
+        V3EhG1xYz34Ai9TCN2COnyXJRi1gsmLwUOmqNMLdAnlRC5gDzKW7gqId7hao/w6/AVtP5ZuobMkghYQC
+        oxLb4HgZ99IK3PgU/cyopwrskzWRRMIaGJbYBoffYMgNsAss8Jk2167GWGyKSiKhQL/EWgTo6F2LFrjz
+        WVxaQNkHsP1So3FuFYFdwKj0U5xykLATzkhcnJPLeOQWMJqnUY2LMCuJZ0GolK2YnK3ivVbCVoH3fp5B
+        ti7z9ilhUe16GJGuAHe1UFeTfAx3wm9+VMJ0ZTiOSXeAOS3U1kVut/e5D1zdUIM0ZXwhEbKUOLOiBsWV
+        972wZwXTWrDR6QA4wENLDbSV+6VUOPUOt1kksjBPLCtBcbXhtdyis4zx81Wsd7xWw3a0Bz9MXP7aT7N/
+        E8/7A4JLlr0HD1scAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="cmSysButton1.SysButtonMouse" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAAmNJREFUWEft
+        l8FLFFEcx4eiDhJBBGWFBwusDp76BzxJhxA6CHaQCqRzkKcuLUSBCHXo5EXv3tqDdBAkvUnHOtS4RWs7
+        rpZa21aU1bfvc36yb978ZpydXQmiD3wP4773/X7defPerPefpnmBQ56PfmrYW8Iodcsr4Qqv+2TEHuFj
+        hJqhkKI1apKFLsmsNuBjgP/lrBWSVcXWi/gYdEyb10sUxK1JzETNMI+aLtHO8IYGxX0XzD3XDdqhAUlJ
+        QVlwxTqw+QuZMWPNHNdn2zuV8FGLTHr+XVxzYOa6ftSIpCn4mLYHX1sVpxYwHrYn9VjSFHzU7MGFdXEh
+        T76E11lkY65tT+8V6pLmYLZSGXSwBBx5CzyoiQu5TqOj/Nv+JcdQ0cNNmURiBUIp23a4n+NYGbjwIdTE
+        V3EhG1xYz34Ai9TCN2COnyXJRi1gsmLwUOmqNMLdAnlRC5gDzKW7gqId7hao/w6/AVtP5ZuobMkghYQC
+        oxLb4HgZ99IK3PgU/cyopwrskzWRRMIaGJbYBoffYMgNsAss8Jk2167GWGyKSiKhQL/EWgTo6F2LFrjz
+        WVxaQNkHsP1So3FuFYFdwKj0U5xykLATzkhcnJPLeOQWMJqnUY2LMCuJZ0GolK2YnK3ivVbCVoH3fp5B
+        ti7z9ilhUe16GJGuAHe1UFeTfAx3wm9+VMJ0ZTiOSXeAOS3U1kVut/e5D1zdUIM0ZXwhEbKUOLOiBsWV
+        972wZwXTWrDR6QA4wENLDbSV+6VUOPUOt1kksjBPLCtBcbXhtdyis4zx81Wsd7xWw3a0Bz9MXP7aT7N/
+        E8/7A4JLlr0HD1scAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="cmSysButton1.SysButtonNorml" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAAvhJREFUWEft
+        l01o1EAYhucgKKJHPelBEEEvCgoqXupFBEURWkRKQWVBPIpWwYs9ePAPPIjiSUFUsOKhHkRQ9CDipRdN
+        U9vtz8rulq67LtvWtrv5mRm/L/liuplJm7QWQXzgZTPZzPt+SWYmCftPWsomW9Mw2AHbYB2OwS7A9nmr
+        j52oG6yFDlke7D6WcfrYK/iVsTJYGfTA/coOU7el0zDZEcdkb7WB8wiKfbnkQux+dlZnnkoGu0926YCz
+        fqM1XITwapBtMqDDbZ3RXDlDW6VbPOkJt3XHNMlkZ8h+fvCeaw1Q5krJq/eksHMyCu7j1Tv6fiT0pph4
+        4gacWzguJZ+kuHiEnYcrsk3pj0JvitEDB2WinVDOyG6yT45trlJ8SBmKU4F7/0LpYK6Q0imRbXLwVile
+        IFxLKK4Z2ctW6zrwH7fIMj1usUPxQ+FqSrEh3vJKBzj9a6Wb3SJ5bj+c/TjZpYdPdivhKMyi2BBc2/FP
+        d3iHlOPnfJUukhXx8zVt+IjZXk8B3kyoPaQWtgvaAjCLYkPwwcJzLWE4qnKDrIDpd7Tvut+uf/HNBtbB
+        qU57u4LRz2uPvDbiZDc3h4Mwi2JD3NzBnqbwuWEInj3uq97129aQdAY3eIYBvwsIjgGc7KamcBQ+QSk2
+        hI/suqIUEL0FECqFRQ0AZgde5gBhF6Wof4YrMkvtnBKOwsc3xYZYAxuPKgWgljIIJ55oC4h9dxDFU65S
+        wMwHskuPO3ZaV0CV4lRE/tigUgCKT5FlcvhUjy4cZ8BjilPho3s7tQVMPCfb5GjDQQu+pIh865hSQO0p
+        TMNP4LrweODlLm0wKtF7AawF6myYeAYFfPTVyMLA/A5JMxTpLzi46rmFdm1woMSvaOLbofdNBZSv+kXg
+        AlO5BtOz09svSpdiH71RWSZrI/tkKEVo5A5v14ZFZRmsi2zTIQqt3bpgFB/dow2LatHhAXx032WRb6uk
+        DccB90e/D5zhnTdFob3qDKzXBnpajg+TKH/t0+wfhbFf3UKpu0QJvF0AAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="cmSysButton2.SysButtonDown" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAAU9JREFUWEft
+        lT1LA0EYhC8QsAl2KdMJYqMIYpHKKqWgCCKijSASsFJBJIQgWhhIlRSKneD/dGbZWfbwIHfHviHFPfCw
+        7HsfM5BjkzWsC9fwt6QLeAWT8QCLgpZ5CpOgF+6U9Any/neYhLhAGQ6hnklC1QJEz9SRP3kOXahS4BXG
+        L60qP/qAhlUK8N66Ki9Qp0BdmgJLC+zBt2hm6RB2YBiwwKrCJUuEza1fZ5BlLO1DZn3BUODEr/fQGv6Z
+        Mcsd5yrw4tdjaM0EMuuSGxX48esutKQHlbXPgQrQOdyElhxB5W1wEBf490dhwA1k1tjtQFzgjANDWpAf
+        HrPOOSBxgQMODNmCygrfmgafsMuBIQPIrG/Y5oCowLPb2XIHmfXodh4VuHA7O/jFTyGzcmeNCvB4LDo2
+        U6qsbRj4gLqwCkcwB5txWHRzannOMK9hXciyP1E8vUTpwLgHAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="cmSysButton2.SysButtonMouse" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAAb1JREFUWEft
+        l7FLAzEUxg9XZxERlCang4iD4CIIOri56ODg5OLi4h/g0slBHAVxtc1duVHQUQcd3FwcnOxQhy6CeNfY
+        TjV5vtpr+mqlfYpDf/Dxcvf69TtILk29Af+KWInsd9JKbOBH+UkCka8Est5FOs75y2jhhQjrpOckyMyh
+        jQ8iiFPFSkGsYRQNYeJVKCOMoiFNjNKBvMYoGsdQtQZuYRRNM1zcVXL+PN7+OxoPYN93vNV1X+hV+PWt
+        fD1A4G/a6x/uC73qAULTNJpxQc7aazNnjykDr0LxBKFpPpv+Sz3rDcWRP9JmYpU4x9gm2Lyx47cws9Rq
+        4JY4gNA00FDyFMZ5udNu4tN7KLYgNI1tJErs2bGZ/yPXxCnytwQbqzAO5aVrYlTNrjMITWObOpoex3Ep
+        ZWCWuIdAF9MsQs1NjrWb+KSVryDQxTQvbI2VXHFNzNqHQBez8A5tNXvBLmFikw7lOgS6JEpu22pexRPK
+        yKWqElMQ6GJOLAtQlbyljEwqQxhF+Wx02FbzCr4SRhaZab6CsE7oSExQRi7pUBxjFE0t8mcoI5fMAlzE
+        qM7Ycz91iOhbv/V/YkB/eN4Hg/I2q+cVEiUAAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="cmSysButton2.SysButtonNorml" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACkAAAAgCAYAAACPb1E+AAAABGdBTUEAALGPC/xhBQAAAkVJREFUWEfN
+        mN1LU3EYx39d1DlrZURCF70gBCraRURCeBF6F5ntLPCm/0AQvAhCQaYud7aLYBJErRcGVsLW2ui2G2+E
+        rMxwbmelpBEtX4JIvdPV4znbM3zZc7YJ+mxf+Nyd7/P7HDjPOXCEkbjb3qa57TFNVaAQCbeS1Fz28NRd
+        5Vy6zJG4S+mjZAqi39SMaqvDMfsb/cDPOQLFwiVKHr4bOETJg3dJXFV+6M9qh04Vjt3bUIeWEv1G/dpA
+        62XUy4S6sAxY/aLevIGKZSsJCdU+iorFS855m2Dh4QX47TvPQvJBw18IS9VFS/55Vg3wWuYnLI/AfSEV
+        lJz1NtIDuAjLXXklYy4bzPuq6DIfc3klx/ubIfXqMFXkxG8qOTVgg2lvHVVixnLLVPK94zosD1USJU6k
+        CQBxwFQy6mkgSsyEpHbTV9BEfyskH52li2xYJsEnDppKjjub4V+oxAsTkTrSgkZ2ChoL89VbSxf5iIFf
+        yKiYK1kWCxOROlEvk52SUc8lushHAoaEFfUy2SpoLMwvX8kX5jaqbWar5EdnE/wPWYgiG9PwQlSg2may
+        gukvzGCpF8ZyB7W2Jyv5ztECK89PEEU2vsHLY8dRa3uykpOei1SRk25Uyo0h+ElfmPnHZ6giF99h+Ggl
+        KuXGkPzgvEIVOelBHTpRfWFmBmuoIg8h+Se8sZ5EHTqjPdcWF56cogfw0Isq5hlztAxr9+qpMgdvISgO
+        oUr+jHRdDS49PZ1aD1qpQXvOWuBIai1QEYCIXMRvGSE2ABthc710djaIAAAAAElFTkSuQmCC
+</value>
+  </data>
+</root>

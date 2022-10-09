@@ -1,0 +1,317 @@
+{
+  "version": 3,
+  "targets": {
+    ".NETFramework,Version=v4.6.1": {
+      "System.Reflection.TypeExtensions/4.7.0": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "mscorlib"
+        ],
+        "compile": {
+          "ref/net461/System.Reflection.TypeExtensions.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net461/System.Reflection.TypeExtensions.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "TinyFox/4.1.0": {
+        "type": "package",
+        "compile": {
+          "lib/net451/TinyFox.dll": {}
+        },
+        "runtime": {
+          "lib/net451/TinyFox.dll": {}
+        }
+      },
+      "AntDeployAgentWindows/1.0.0": {
+        "type": "project",
+        "compile": {
+          "bin/placeholder/AntDeployAgentWindows.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/AntDeployAgentWindows.dll": {}
+        }
+      }
+    },
+    ".NETFramework,Version=v4.6.1/win": {
+      "System.Reflection.TypeExtensions/4.7.0": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "mscorlib"
+        ],
+        "compile": {
+          "ref/net461/System.Reflection.TypeExtensions.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net461/System.Reflection.TypeExtensions.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "TinyFox/4.1.0": {
+        "type": "package",
+        "compile": {
+          "lib/net451/TinyFox.dll": {}
+        },
+        "runtime": {
+          "lib/net451/TinyFox.dll": {}
+        }
+      },
+      "AntDeployAgentWindows/1.0.0": {
+        "type": "project",
+        "compile": {
+          "bin/placeholder/AntDeployAgentWindows.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/AntDeployAgentWindows.dll": {}
+        }
+      }
+    },
+    ".NETFramework,Version=v4.6.1/win-x64": {
+      "System.Reflection.TypeExtensions/4.7.0": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "mscorlib"
+        ],
+        "compile": {
+          "ref/net461/System.Reflection.TypeExtensions.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net461/System.Reflection.TypeExtensions.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "TinyFox/4.1.0": {
+        "type": "package",
+        "compile": {
+          "lib/net451/TinyFox.dll": {}
+        },
+        "runtime": {
+          "lib/net451/TinyFox.dll": {}
+        }
+      },
+      "AntDeployAgentWindows/1.0.0": {
+        "type": "project",
+        "compile": {
+          "bin/placeholder/AntDeployAgentWindows.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/AntDeployAgentWindows.dll": {}
+        }
+      }
+    },
+    ".NETFramework,Version=v4.6.1/win-x86": {
+      "System.Reflection.TypeExtensions/4.7.0": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "mscorlib"
+        ],
+        "compile": {
+          "ref/net461/System.Reflection.TypeExtensions.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net461/System.Reflection.TypeExtensions.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "TinyFox/4.1.0": {
+        "type": "package",
+        "compile": {
+          "lib/net451/TinyFox.dll": {}
+        },
+        "runtime": {
+          "lib/net451/TinyFox.dll": {}
+        }
+      },
+      "AntDeployAgentWindows/1.0.0": {
+        "type": "project",
+        "compile": {
+          "bin/placeholder/AntDeployAgentWindows.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/AntDeployAgentWindows.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "System.Reflection.TypeExtensions/4.7.0": {
+      "sha512": "VybpaOQQhqE6siHppMktjfGBw1GCwvCqiufqmP8F1nj7fTUNtW35LOEt3UZTEsECfo+ELAl/9o9nJx3U91i7vA==",
+      "type": "package",
+      "path": "system.reflection.typeextensions/4.7.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net46/System.Reflection.TypeExtensions.dll",
+        "lib/net461/System.Reflection.TypeExtensions.dll",
+        "lib/net461/System.Reflection.TypeExtensions.xml",
+        "lib/netcore50/System.Reflection.TypeExtensions.dll",
+        "lib/netcoreapp1.0/System.Reflection.TypeExtensions.dll",
+        "lib/netcoreapp2.0/_._",
+        "lib/netstandard1.3/System.Reflection.TypeExtensions.dll",
+        "lib/netstandard1.3/System.Reflection.TypeExtensions.xml",
+        "lib/netstandard1.5/System.Reflection.TypeExtensions.dll",
+        "lib/netstandard1.5/System.Reflection.TypeExtensions.xml",
+        "lib/netstandard2.0/System.Reflection.TypeExtensions.dll",
+        "lib/netstandard2.0/System.Reflection.TypeExtensions.xml",
+        "lib/uap10.0.16299/_._",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "lib/xamarintvos10/_._",
+        "lib/xamarinwatchos10/_._",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
+        "ref/net46/System.Reflection.TypeExtensions.dll",
+        "ref/net461/System.Reflection.TypeExtensions.dll",
+        "ref/net461/System.Reflection.TypeExtensions.xml",
+        "ref/net472/System.Reflection.TypeExtensions.dll",
+        "ref/net472/System.Reflection.TypeExtensions.xml",
+        "ref/netcoreapp2.0/_._",
+        "ref/netstandard1.3/System.Reflection.TypeExtensions.dll",
+        "ref/netstandard1.3/System.Reflection.TypeExtensions.xml",
+        "ref/netstandard1.3/de/System.Reflection.TypeExtensions.xml",
+        "ref/netstandard1.3/es/System.Reflection.TypeExtensions.xml",
+        "ref/netstandard1.3/fr/System.Reflection.TypeExtensions.xml",
+        "ref/netstandard1.3/it/System.Reflection.TypeExtensions.xml",
+        "ref/netstandard1.3/ja/System.Reflection.TypeExtensions.xml",
+        "ref/netstandard1.3/ko/System.Reflection.TypeExtensions.xml",
+        "ref/netstandard1.3/ru/System.Reflection.TypeExtensions.xml",
+        "ref/netstandard1.3/zh-hans/System.Reflection.TypeExtensions.xml",
+        "ref/netstandard1.3/zh-hant/System.Reflection.TypeExtensions.xml",
+        "ref/netstandard1.5/System.Reflection.TypeExtensions.dll",
+        "ref/netstandard1.5/System.Reflection.TypeExtensions.xml",
+        "ref/netstandard1.5/de/System.Reflection.TypeExtensions.xml",
+        "ref/netstandard1.5/es/System.Reflection.TypeExtensions.xml",
+        "ref/netstandard1.5/fr/System.Reflection.TypeExtensions.xml",
+        "ref/netstandard1.5/it/System.Reflection.TypeExtensions.xml",
+        "ref/netstandard1.5/ja/System.Reflection.TypeExtensions.xml",
+        "ref/netstandard1.5/ko/System.Reflection.TypeExtensions.xml",
+        "ref/netstandard1.5/ru/System.Reflection.TypeExtensions.xml",
+        "ref/netstandard1.5/zh-hans/System.Reflection.TypeExtensions.xml",
+        "ref/netstandard1.5/zh-hant/System.Reflection.TypeExtensions.xml",
+        "ref/netstandard2.0/System.Reflection.TypeExtensions.dll",
+        "ref/netstandard2.0/System.Reflection.TypeExtensions.xml",
+        "ref/uap10.0.16299/_._",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._",
+        "ref/xamarintvos10/_._",
+        "ref/xamarinwatchos10/_._",
+        "runtimes/aot/lib/netcore50/System.Reflection.TypeExtensions.dll",
+        "runtimes/aot/lib/uap10.0.16299/_._",
+        "system.reflection.typeextensions.4.7.0.nupkg.sha512",
+        "system.reflection.typeextensions.nuspec",
+        "useSharedDesignerContext.txt",
+        "version.txt"
+      ]
+    },
+    "TinyFox/4.1.0": {
+      "sha512": "hcYAFccaqt0NTgT5dSFx19LRNnWoUv/M2I7E/XsfrRqoOSA1PeCshlP9FlCb+drj/qwp8EyVWfaacRRubONdiQ==",
+      "type": "package",
+      "path": "tinyfox/4.1.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net451/TinyFox.dll",
+        "lib/netstandard2.0/TinyFox.dll",
+        "tinyfox.4.1.0.nupkg.sha512",
+        "tinyfox.nuspec"
+      ]
+    },
+    "AntDeployAgentWindows/1.0.0": {
+      "type": "project",
+      "path": "../AntDeployAgentWindows/AntDeployAgentWindows.csproj",
+      "msbuildProject": "../AntDeployAgentWindows/AntDeployAgentWindows.csproj"
+    }
+  },
+  "projectFileDependencyGroups": {
+    ".NETFramework,Version=v4.6.1": [
+      "AntDeployAgentWindows >= 1.0.0",
+      "System.Reflection.TypeExtensions >= 4.7.0",
+      "TinyFox >= 4.1.0"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\Administrator\\.nuget\\packages\\": {},
+    "d:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {},
+    "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "C:\\Users\\Administrator\\Desktop\\AntDeploy-master\\AntDeployAgentWindowsService\\AntDeployAgentWindowsService.csproj",
+      "projectName": "AntDeployAgentWindowsService",
+      "projectPath": "C:\\Users\\Administrator\\Desktop\\AntDeploy-master\\AntDeployAgentWindowsService\\AntDeployAgentWindowsService.csproj",
+      "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Administrator\\Desktop\\AntDeploy-master\\AntDeployAgentWindowsService\\obj\\",
+      "projectStyle": "PackageReference",
+      "skipContentFileWrite": true,
+      "fallbackFolders": [
+        "d:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+        "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+      ],
+      "configFilePaths": [
+        "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+      ],
+      "originalTargetFrameworks": [
+        "net461"
+      ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net461": {
+          "projectReferences": {
+            "C:\\Users\\Administrator\\Desktop\\AntDeploy-master\\AntDeployAgentWindows\\AntDeployAgentWindows.csproj": {
+              "projectPath": "C:\\Users\\Administrator\\Desktop\\AntDeploy-master\\AntDeployAgentWindows\\AntDeployAgentWindows.csproj"
+            }
+          }
+        }
+      }
+    },
+    "frameworks": {
+      "net461": {
+        "dependencies": {
+          "System.Reflection.TypeExtensions": {
+            "target": "Package",
+            "version": "[4.7.0, )"
+          },
+          "TinyFox": {
+            "target": "Package",
+            "version": "[4.1.0, )"
+          }
+        }
+      }
+    },
+    "runtimes": {
+      "win": {
+        "#import": []
+      },
+      "win-x64": {
+        "#import": []
+      },
+      "win-x86": {
+        "#import": []
+      }
+    }
+  }
+}

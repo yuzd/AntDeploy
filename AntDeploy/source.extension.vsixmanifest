@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+    <Metadata>
+        <Identity Id="AntDeploy.51be3f7e-0e8b-4ad4-b2c9-126445f2ce6a" Version="7.32" Language="en-US" Publisher="nainaigu" />
+        <DisplayName>AntDeploy</DisplayName>
+        <Description xml:space="preserve">Tools to deploy applications to remote server(iis,windowsService,docker) support netframwork and dotnetcore,support rollback and increment deploy</Description>
+        <MoreInfo>https://github.com/yuzd</MoreInfo>
+        <GettingStartedGuide>https://github.com/yuzd/AntDeployAgent/issues</GettingStartedGuide>
+        <Icon>Resources\__TemplateIcon.png</Icon>
+        <PreviewImage>Resources\antpreview.png</PreviewImage>
+        <Tags>deploy;docker;iis;windowsservice;rollback;increment;</Tags>
+    </Metadata>
+    <Installation>
+        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[12.0,17.0)" />
+    </Installation>
+    <Dependencies>
+        <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
+        <Dependency Id="Microsoft.VisualStudio.MPF.12.0" DisplayName="Visual Studio MPF 12.0" d:Source="Installed" Version="[12.0]" />
+    </Dependencies>
+    <Prerequisites>
+        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[12.0,)" DisplayName="Visual Studio core editor" />
+    </Prerequisites>
+    <Assets>
+        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+    </Assets>
+</PackageManifest>

@@ -1,0 +1,313 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{DD2721A8-5956-4259-B68F-4E6B21A7BF0F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>AntDeployWinform</RootNamespace>
+    <AssemblyName>AntDeployWinform</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CSkin">
+      <HintPath>..\DLL\CSkin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Build.Locator">
+      <HintPath>..\DLL\Microsoft.Build.Locator.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack">
+      <HintPath>..\DLL\Microsoft.WindowsAPICodePack.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack.Shell">
+      <HintPath>..\DLL\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\AntDeploy\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DLL\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DLL\NLog.Windows.Forms.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="ToastHelper">
+      <HintPath>..\AntDeploy\ToastHelper.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AntDeployForm.cs" />
+    <Compile Include="Models\AltoButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Models\AltoTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Models\DeployConfig.cs" />
+    <Compile Include="Models\ExRichTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Models\ExTreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Models\FileStruct.cs" />
+    <Compile Include="Models\FolderSelectDialog.cs" />
+    <Compile Include="Models\GetVersionResult.cs" />
+    <Compile Include="Models\Helpers\ExtensionMethods.cs" />
+    <Compile Include="Models\Helpers\RoundedRectangleF.cs" />
+    <Compile Include="Models\Helpers\Transparenter.cs" />
+    <Compile Include="Models\LinuxArgModel.cs" />
+    <Compile Include="Models\MessageBoxEx.cs" />
+    <Compile Include="Models\ProgressBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Models\ProjectHelper.cs" />
+    <Compile Include="Models\ProjectParam.cs" />
+    <Compile Include="Models\resx\Strings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\RichTextBoxPrintHelper.cs" />
+    <Compile Include="Models\SpinningCircles.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Models\TempFileHelper.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\CodingHelper.cs" />
+    <Compile Include="Util\CommandHelper.cs" />
+    <Compile Include="Util\FileHelper.cs" />
+    <Compile Include="Util\GitClient.cs" />
+    <Compile Include="Util\HttpRequestClient.cs" />
+    <Compile Include="Util\ImageReference.cs" />
+    <Compile Include="Util\SSHClient.cs" />
+    <Compile Include="Util\StackTraceHelper.cs" />
+    <Compile Include="Util\SysMenu.cs" />
+    <Compile Include="Util\WebSocketHelper.cs" />
+    <Compile Include="Util\WebUtil.cs" />
+    <Compile Include="Util\WindowsMessageHelper.cs" />
+    <Compile Include="Util\ZipHelper.cs" />
+    <Compile Include="Vsix.cs" />
+    <Compile Include="Winform\About.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Winform\About.Designer.cs">
+      <DependentUpon>About.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Winform\Deploy.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Winform\Deploy.Designer.cs">
+      <DependentUpon>Deploy.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Winform\FirstCreate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Winform\FirstCreate.Designer.cs">
+      <DependentUpon>FirstCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Winform\FirstService.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Winform\FirstService.Designer.cs">
+      <DependentUpon>FirstService.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Winform\InputDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Winform\InputDialog.Designer.cs">
+      <DependentUpon>InputDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Winform\RollBack.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Winform\RollBack.Designer.cs">
+      <DependentUpon>RollBack.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Winform\SelectFile.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Winform\SelectFile.designer.cs">
+      <DependentUpon>SelectFile.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Winform\SelectProject.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Winform\SelectProject.Designer.cs">
+      <DependentUpon>SelectProject.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Models\resx\Strings.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>AntDeployWinform</CustomToolNamespace>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Models\resx\Strings.zh.resx" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="Winform\About.en.resx">
+      <DependentUpon>About.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Winform\About.resx">
+      <DependentUpon>About.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Winform\About.zh-CN.resx">
+      <DependentUpon>About.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Winform\About.zh-Hans.resx">
+      <DependentUpon>About.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Winform\Deploy.resx">
+      <DependentUpon>Deploy.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Winform\Deploy.zh-CN.resx">
+      <DependentUpon>Deploy.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Winform\Deploy.zh-Hans.resx">
+      <DependentUpon>Deploy.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Winform\Deploy.zh.resx">
+      <DependentUpon>Deploy.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Winform\FirstCreate.resx">
+      <DependentUpon>FirstCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Winform\FirstCreate.zh-CN.resx">
+      <DependentUpon>FirstCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Winform\FirstService.resx">
+      <DependentUpon>FirstService.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Winform\FirstService.zh-CN.resx">
+      <DependentUpon>FirstService.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Winform\InputDialog.resx">
+      <DependentUpon>InputDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Winform\InputDialog.zh-CN.resx">
+      <DependentUpon>InputDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Winform\RollBack.resx">
+      <DependentUpon>RollBack.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Winform\RollBack.zh-CN.resx">
+      <DependentUpon>RollBack.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Winform\SelectFile.resx">
+      <DependentUpon>SelectFile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Winform\SelectFile.zh-CN.resx">
+      <DependentUpon>SelectFile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Winform\SelectProject.resx">
+      <DependentUpon>SelectProject.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Winform\SelectProject.zh-CN.resx">
+      <DependentUpon>SelectProject.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Winform\SelectProject.zh-Hans.resx">
+      <DependentUpon>SelectProject.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\qq.jpg" />
+    <EmbeddedResource Include="Resources\Logo1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Logo12.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\zan.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="CircularProgressBar">
+      <Version>2.8.0.16</Version>
+    </PackageReference>
+    <PackageReference Include="LibGit2Sharp">
+      <Version>0.26.2</Version>
+    </PackageReference>
+    <PackageReference Include="SSH.NET">
+      <Version>2020.0.2</Version>
+    </PackageReference>
+    <PackageReference Include="System.Net.WebSockets.Client.Managed">
+      <Version>1.0.22</Version>
+    </PackageReference>
+    <PackageReference Include="System.Reactive">
+      <Version>5.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="WinFormAnimation">
+      <Version>1.6.0.4</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\video.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xCopy "$(TargetDir)lib\win32" "$(SolutionDir)AntDeploy2019\AntDeployVsix\lib\win32\" /e /y
+
+xCopy "$(TargetDir)lib\win32" "$(SolutionDir)AntDeploy2022\AntDeployV2\lib\win32\" /e /y</PostBuildEvent>
+  </PropertyGroup>
+</Project>
