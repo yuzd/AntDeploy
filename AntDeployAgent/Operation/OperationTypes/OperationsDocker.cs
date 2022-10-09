@@ -302,7 +302,7 @@ DockerServiceBuildImageOnlyLEVEL:
 
                 
                 CopyHelper.RunCommand($"{model.Sudo} docker rmi {uploadImageName}");
-                
+                CopyHelper.RunCommand($"{model.Sudo} docker rmi {currentImageInfo.Item3}");
                 if (!rr11)
                 {
                     throw new Exception("[upload image] - Fail");

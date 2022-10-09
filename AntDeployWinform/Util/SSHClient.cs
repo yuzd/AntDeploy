@@ -1216,8 +1216,11 @@ namespace AntDeployWinform.Util
                 else
                 {
                     _logger($"[upload image] - Success", LogLevel.Info);
+                  
                 }
                 _sshClient.RunCommand($"{Sudo} docker rmi {uploadImageName}");
+                // 删除打包好的镜像
+                _sshClient.RunCommand($"{Sudo} docker rmi {currentImageInfo.Item3}");
             }
 
             try
