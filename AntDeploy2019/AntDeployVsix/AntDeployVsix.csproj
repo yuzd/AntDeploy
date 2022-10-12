@@ -62,9 +62,6 @@
     <Content Include="AntDeployApp.exe.config">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="nlog.config">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <None Include="Resources\Images.png" />
   </ItemGroup>
   <ItemGroup>
