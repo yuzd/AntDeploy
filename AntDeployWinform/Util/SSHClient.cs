@@ -707,6 +707,11 @@ namespace AntDeployWinform.Util
                 //如果项目中存在dockerFile 那么check 该DockerFile的Expose是否配置了 没有配置就读界面配置的，界面没有配置就用默认的
                 try
                 {
+                    if (!string.IsNullOrEmpty(Sudo))
+                    {
+                        // 针对非root权限的账号，需要用sudo的 先给DOCKERFILE设置个权限
+                        _sshClient.RunCommand($"{Sudo} chmod 777 \"{dockFilePath}\";");
+                    }
                     var dockerFileText = _sftpClient.ReadAllText(dockFilePath);
                     if (string.IsNullOrEmpty(dockerFileText))
                     {
@@ -921,6 +926,7 @@ namespace AntDeployWinform.Util
                                     }
                                     writer.Flush();
                                 }
+                                _logger($"Update dockFile step1 【{dockFilePath}】", LogLevel.Info);
                             }
                         }
                     }
@@ -955,6 +961,7 @@ namespace AntDeployWinform.Util
                                 } 
                                 writer.Flush();
                             }
+                            _logger($"Update dockFile step2【{dockFilePath}】", LogLevel.Info);
                         }
                        
                     }
