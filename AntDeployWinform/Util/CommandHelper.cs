@@ -52,14 +52,14 @@ namespace AntDeployWinform.Util
                     logger.Error($"msbuild.exe path `{msBuild}` not found. please set it in Config tab page.");
                     goto CONTINUEWEB;
                 }
-
-                var vsfolder = msbuildFolder.Directory?.Parent?.Parent?.Parent;
+                var vsfolder = msbuildFolder.Directory.Name == "amd64" || msbuildFolder.Directory.Name == "arm64"?
+                    msbuildFolder.Directory?.Parent?.Parent?.Parent?.Parent : msbuildFolder.Directory?.Parent?.Parent?.Parent;
                 if (vsfolder == null)
                 {
                     logger.Warn($"can not found visual stuidio install path by `{msBuild}` . please use `msbuild` in visual studio installed path");
                     goto CONTINUEWEB;
                 }
-
+                // 这里要兼容一下amd64的情况
                 var vsfolderToolPath = Path.Combine(vsfolder.FullName, "Common7", "Tools");
                 if (!Directory.Exists(vsfolderToolPath))
                 {
