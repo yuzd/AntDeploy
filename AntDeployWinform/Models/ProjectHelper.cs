@@ -153,7 +153,7 @@ namespace AntDeployWinform.Models
                 var isDockerLine = false;
                 foreach (var line in info)
                 {
-                    if (line.Contains("Update=\"Dockerfile\""))
+                    if (line.Contains("\"Dockerfile\"") )
                     {
                         isDockerLine = true;
                     }
