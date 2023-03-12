@@ -276,9 +276,8 @@ namespace AntDeployWinform.Util
                     pr = new BuildProgress(logger);
                 }
                 //执行dotnet命令如果 projectdir路径含有空格 或者 outDir 路径含有空格 都是没有问题的
-
+               
                 process = new Process();
-
                 process.StartInfo.WorkingDirectory = projectPath;
                 process.StartInfo.FileName = fileName;
                 process.StartInfo.Arguments = arguments;
@@ -288,7 +287,8 @@ namespace AntDeployWinform.Util
                 process.StartInfo.Verb = "runas";
                 process.StartInfo.RedirectStandardError = true;
                 process.StartInfo.RedirectStandardOutput = true;
-
+                process.StartInfo.StandardOutputEncoding = Encoding.UTF8;
+                process.StartInfo.StandardErrorEncoding = Encoding.UTF8;
 
 
                 process.Start();
