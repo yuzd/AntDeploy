@@ -115,6 +115,7 @@
             this.rich_docker_image_log = new AntDeployWinform.ExRichTextBox();
             this.tabPage_docker_image_ignore = new System.Windows.Forms.TabPage();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.cbx_SkipExistingImages = new System.Windows.Forms.CheckBox();
             this.label67 = new System.Windows.Forms.Label();
             this.btn_dockerImage_ignore_remove = new System.Windows.Forms.Button();
             this.btn_dockerImage_ignore_add = new System.Windows.Forms.Button();
@@ -1012,6 +1013,7 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.cbx_SkipExistingImages);
             this.groupBox4.Controls.Add(this.label67);
             this.groupBox4.Controls.Add(this.btn_dockerImage_ignore_remove);
             this.groupBox4.Controls.Add(this.btn_dockerImage_ignore_add);
@@ -1020,6 +1022,13 @@
             resources.ApplyResources(this.groupBox4, "groupBox4");
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.TabStop = false;
+            // 
+            // cbx_SkipExistingImages
+            // 
+            resources.ApplyResources(this.cbx_SkipExistingImages, "cbx_SkipExistingImages");
+            this.cbx_SkipExistingImages.Name = "cbx_SkipExistingImages";
+            this.cbx_SkipExistingImages.UseVisualStyleBackColor = true;
+            this.cbx_SkipExistingImages.Click += new System.EventHandler(this.cbx_SkipExistingImages_Click);
             // 
             // label67
             // 
@@ -2617,5 +2626,6 @@
         private System.Windows.Forms.TextBox txt_docker_workspace;
         private System.Windows.Forms.CheckBox chk_use_AsiaShanghai_timezone;
         private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.CheckBox cbx_SkipExistingImages;
     }
 }

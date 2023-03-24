@@ -817,6 +817,7 @@ namespace AntDeployWinform.Winform
                 this.txt_Cmd.Text = DeployConfig.DockerImageConfig.Cmd != null && DeployConfig.DockerImageConfig.Cmd.Any() ? string.Join("->", DeployConfig.DockerImageConfig.Cmd) : "";
                 this.txt_TargetHttpProxy.Text = DeployConfig.DockerImageConfig.TargetHttpProxy;
                 this.cmbo_ImageFormat.SelectedItem = DeployConfig.DockerImageConfig.ImageFormat;
+                this.cbx_SkipExistingImages.Checked = DeployConfig.DockerImageConfig.SkipExistingImages;
                 if (DeployConfig.DockerImageConfig.IgnoreList != null)
                 {
                     foreach (var item in DeployConfig.DockerImageConfig.IgnoreList)
@@ -7918,6 +7919,7 @@ RETRY_DOCKER:
                 this.page_linux_service.Enabled = flag;
                 this.page_window_service.Enabled = flag;
                 this.pag_advance_setting.Enabled = flag;
+                this.cbx_SkipExistingImages.Enabled = flag;
 
             });
 
@@ -10014,7 +10016,7 @@ RETRY_WINDOWSSERVICE2:
             DeployConfig.DockerImageConfig.TargetHttpProxy = this.txt_TargetHttpProxy.Text;
             DeployConfig.DockerImageConfig.Entrypoint = (this.txt_Entrypoint.Text ?? string.Empty).Split(new string[] { "->" }, StringSplitOptions.None).ToArray();
             DeployConfig.DockerImageConfig.Cmd = (this.txt_Cmd.Text ?? string.Empty).Split(new string[] { "->" }, StringSplitOptions.None).ToArray();
-
+            DeployConfig.DockerImageConfig.SkipExistingImages = this.cbx_SkipExistingImages.Checked;
 
 
         }
@@ -10049,16 +10051,24 @@ RETRY_WINDOWSSERVICE2:
             {
                 DeployConfig.DockerImageConfig.ImageFormat = "Docker";
             }
-            if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath) && !ProjectHelper.CheckDockerFileIsSetCopy(ProjectPath))
-            {
-                var confirmDockerfile = ShowInputMsgBox(Strings.DockerFileWarn,
-                    Strings.DockerFileNotSetCopy, "hide");
-                if (!confirmDockerfile.Item1)
-                {
-                    return;
-                }
-            }
+            // if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath) && !ProjectHelper.CheckDockerFileIsSetCopy(ProjectPath))
+            // {
+            //     var confirmDockerfile = ShowInputMsgBox(Strings.DockerFileWarn,
+            //         Strings.DockerFileNotSetCopy, "hide");
+            //     if (!confirmDockerfile.Item1)
+            //     {
+            //         return;
+            //     }
+            // }
             this.rich_docker_image_log.Text = "";
+            if (DeployConfig.DockerImageConfig.IgnoreList == null)
+            {
+                DeployConfig.DockerImageConfig.IgnoreList = new List<string> { "AntDeploy.json" };
+            }
+            else if (!DeployConfig.DockerImageConfig.IgnoreList.Contains("AntDeploy.json"))
+            {
+                DeployConfig.DockerImageConfig.IgnoreList.Add("AntDeploy.json");
+            }
 
 
             new Task(() =>
@@ -10255,6 +10265,11 @@ RETRY_WINDOWSSERVICE2:
                 File.WriteAllText(ProjectConfigPath.Item1, configJson, Encoding.UTF8);
                 if (GlobalConfig.EnableAntDeployJson && !string.IsNullOrEmpty(ProjectConfigPath.Item2)) File.WriteAllText(ProjectConfigPath.Item2, configJson, Encoding.UTF8);
             }
+        }
+       
+        private void cbx_SkipExistingImages_Click(object sender, EventArgs e)
+        {
+            DeployConfig.DockerImageConfig.SkipExistingImages = cbx_SkipExistingImages.Checked;
         }
     }
 }

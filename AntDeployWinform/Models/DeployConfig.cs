@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using LibGit2Sharp;
 
 namespace AntDeployWinform.Models
 {
@@ -134,6 +135,7 @@ namespace AntDeployWinform.Models
             d.Entrypoint = config.Entrypoint;
             d.Cmd = config.Cmd;
             d.IgnoreList = config.IgnoreList;
+            d.SkipExistingImages = config.SkipExistingImages;
             return d;
         }
     }
@@ -158,6 +160,7 @@ namespace AntDeployWinform.Models
         public string[] Entrypoint { get; set; }
         public string[] Cmd { get; set; }
         public List<string> IgnoreList { get; set; }
+        public bool SkipExistingImages { get; set; }
 
     }
 

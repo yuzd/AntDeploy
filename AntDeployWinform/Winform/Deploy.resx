@@ -2286,6 +2286,30 @@
   <data name="&gt;&gt;tabPage_docker_image.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
+  <data name="cbx_SkipExistingImages.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 138</value>
+  </data>
+  <data name="cbx_SkipExistingImages.Size" type="System.Drawing.Size, System.Drawing">
+    <value>145, 18</value>
+  </data>
+  <data name="cbx_SkipExistingImages.TabIndex" type="System.Int32, mscorlib">
+    <value>41</value>
+  </data>
+  <data name="cbx_SkipExistingImages.Text" xml:space="preserve">
+    <value>SkipExistingImages</value>
+  </data>
+  <data name="&gt;&gt;cbx_SkipExistingImages.Name" xml:space="preserve">
+    <value>cbx_SkipExistingImages</value>
+  </data>
+  <data name="&gt;&gt;cbx_SkipExistingImages.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cbx_SkipExistingImages.Parent" xml:space="preserve">
+    <value>groupBox4</value>
+  </data>
+  <data name="&gt;&gt;cbx_SkipExistingImages.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="label67.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -2314,7 +2338,7 @@
     <value>groupBox4</value>
   </data>
   <data name="&gt;&gt;label67.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>1</value>
   </data>
   <data name="btn_dockerImage_ignore_remove.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -2341,7 +2365,7 @@
     <value>groupBox4</value>
   </data>
   <data name="&gt;&gt;btn_dockerImage_ignore_remove.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>2</value>
   </data>
   <data name="btn_dockerImage_ignore_add.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -2368,7 +2392,7 @@
     <value>groupBox4</value>
   </data>
   <data name="&gt;&gt;btn_dockerImage_ignore_add.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>3</value>
   </data>
   <data name="txt_dockerImage_ignore.Location" type="System.Drawing.Point, System.Drawing">
     <value>3, 17</value>
@@ -2389,7 +2413,7 @@
     <value>groupBox4</value>
   </data>
   <data name="&gt;&gt;txt_dockerImage_ignore.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>4</value>
   </data>
   <data name="list_dockerImage_ignore.ItemHeight" type="System.Int32, mscorlib">
     <value>12</value>
@@ -2413,7 +2437,7 @@
     <value>groupBox4</value>
   </data>
   <data name="&gt;&gt;list_dockerImage_ignore.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>5</value>
   </data>
   <data name="groupBox4.Location" type="System.Drawing.Point, System.Drawing">
     <value>2, 3</value>
@@ -6651,9 +6675,6 @@
   <data name="&gt;&gt;tabcontrol.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>zh-CN</value>
-  </metadata>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
