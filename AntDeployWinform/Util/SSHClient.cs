@@ -1479,11 +1479,16 @@ namespace AntDeployWinform.Util
                 }
             }
 
-            cmd.EndExecute(result);
-
+            var rt = cmd.EndExecute(result);
+            _logger("result:" + rt, LogLevel.Info);
             if (!string.IsNullOrEmpty(cmd.Error))
             {
                 if (cmd.Error.Contains("unable to resolve host"))
+                {
+                    _logger(cmd.Error, LogLevel.Warn);
+                    return true;
+                }
+                else if (cmd.Error.Contains("writing image sha256:"))
                 {
                     _logger(cmd.Error, LogLevel.Warn);
                     return true;
