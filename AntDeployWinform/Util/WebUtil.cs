@@ -189,7 +189,7 @@ namespace AntDeployWinform.Util
             {
                 retyrTimes++;
                 
-                if (retyrTimes > 6)
+                if (retyrTimes > 10)
                 {
                     logger.Warn($"Fire WebSite Url Fail:{ex1.Message}");
                 }
@@ -202,10 +202,7 @@ namespace AntDeployWinform.Util
             }
             if (needRetry)
             {
-                if (needLog)
-                {
-                    Thread.Sleep(2000);
-                }
+                Thread.Sleep(2000);
                 goto RETRY;
             }
             return false;
