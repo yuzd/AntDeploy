@@ -921,6 +921,7 @@
             resources.ApplyResources(this.chk_use_AsiaShanghai_timezone, "chk_use_AsiaShanghai_timezone");
             this.chk_use_AsiaShanghai_timezone.Name = "chk_use_AsiaShanghai_timezone";
             this.chk_use_AsiaShanghai_timezone.UseVisualStyleBackColor = true;
+            this.chk_use_AsiaShanghai_timezone.Click += new System.EventHandler(this.chk_use_AsiaShanghai_timezone_Click);
             // 
             // checkBox_Increment_docker
             // 
