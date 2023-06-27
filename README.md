@@ -1,6 +1,15 @@
 # AntDeploy
 Download url:
+
+vs2022的版本
+https://marketplace.visualstudio.com/items?itemName=nainaigu.AntDeploy2022
+
+vs2019请使用：
+https://marketplace.visualstudio.com/items?itemName=nainaigu.AntDeployVsix
+
+更老的：
 https://marketplace.visualstudio.com/items?itemName=nainaigu.AntDeploy
+
 
 # 功能
 * 支持docker一键部署(支持netcore)
