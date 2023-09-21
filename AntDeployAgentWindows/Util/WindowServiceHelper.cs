@@ -160,6 +160,13 @@ namespace AntDeployAgentWindows.Util
 
                 if (key == null) return null;
                 var value = key.GetValue("ImagePath").ToString();
+                if(value.IndexOf('"')>-1)
+                {
+                    var fas = value.Split(" ")[0].Replace("\"","");
+                    key.Close();
+                    return fas;
+                }
+
                 key.Close();
                 return value;
             }
