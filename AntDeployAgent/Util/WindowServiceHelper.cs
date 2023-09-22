@@ -138,6 +138,12 @@ namespace AntDeployAgentWindows.Util
 
                 if (key == null) return null;
                 var value = key.GetValue("ImagePath").ToString();
+                if(value.IndexOf('"')>-1)
+                {
+                    var res = value.Split(' ')[0].Replace("\"","");
+                    key.Close();
+                    return res;
+                }
                 key.Close();
                 return value;
             }
