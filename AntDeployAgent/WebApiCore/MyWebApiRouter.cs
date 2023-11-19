@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AntDeployAgentWindows.MyApp;
+using AntDeployAgentWindows.WebSocketApp;
 using Microsoft.Owin;
 
 namespace AntDeployAgentWindows.WebApiCore
@@ -23,6 +24,23 @@ namespace AntDeployAgentWindows.WebApiCore
 
             //用户请求的URL路径
             var path = c.Request.Path.Value;
+
+            //将不同的请求路径交给不同的处理模块处理
+            if (path == "/publish" || path.StartsWith("/publish/")) return new PublishService();
+            if (path == "/rollback" || path.StartsWith("/rollback/")) return new RollbackService();
+            if (path == "/version" || path.StartsWith("/version/")) return new VersionService();
+            if (path == "/logger" || path.StartsWith("/logger/")) return new LoggerService();
+
+
+            return null;
+
+        }
+        
+        public BaseWebApi RouteTo(IDictionary<string, object> env)
+        {
+
+            //用户请求的URL路径
+            var path = new PathString(env.Get<string>("owin.RequestPath")).Value;
 
             //将不同的请求路径交给不同的处理模块处理
             if (path == "/publish" || path.StartsWith("/publish/")) return new PublishService();

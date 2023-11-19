@@ -1,12 +1,13 @@
-﻿using AntDeployAgentWindows.Model;
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Text;
+using System.Threading.Tasks;
+using AntDeployAgentWindows.Model;
 using AntDeployAgentWindows.WebApiCore;
 using AntDeployAgentWindows.WebSocket.WebSocketApp;
 using Microsoft.Owin.Builder;
 using Owin;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AntDeployAgentWindows
 {
@@ -27,8 +28,8 @@ namespace AntDeployAgentWindows
         {
             var builder = new AppBuilder();
             Configuration(builder);
-            _owinAppFunc = Microsoft.Owin.Builder.AppBuilderExtensions.Build(builder);
-            var deployDir = System.Configuration.ConfigurationManager.AppSettings["DeployDir"];
+            _owinAppFunc = AppBuilderExtensions.Build(builder);
+            var deployDir = ConfigurationManager.AppSettings["DeployDir"];
             if (!string.IsNullOrEmpty(deployDir))
             {
                 Setting.InitWebRoot(deployDir, true);
@@ -40,11 +41,8 @@ namespace AntDeployAgentWindows
 #else
                 Setting.InitWebRoot(AppDomain.CurrentDomain.BaseDirectory);
 #endif
-
             }
-
         }
-
 
 
         /// <summary>
@@ -54,12 +52,11 @@ namespace AntDeployAgentWindows
         /// <param name="builder">App生成器</param>
         public void Configuration(IAppBuilder builder)
         {
-
             //websocket中间件
             builder.UseWebSocket();
 
             //预处理中间件，放在第一位
-            builder.UseJwsIntegration();
+            // builder.UseJwsIntegration();
 
 
             // 添加FastWebApi中间件，具体实现，在WebApiMiddleware.cs文件中
@@ -80,10 +77,7 @@ namespace AntDeployAgentWindows
 
                 return Task.FromResult(0);
             });
-
         }
-
-
 
 
         /// <summary>
@@ -93,13 +87,23 @@ namespace AntDeployAgentWindows
         /// <returns></returns>
         public Task OwinMain(IDictionary<string, object> env)
         {
+            return _owinAppFunc(env);
             // 客户所有的请求以及输入输出IO流都在字典参数中
             // 字典的 key/value 符合 OWIN 1.0 及其扩展标准
 
             // 由于本Demo使用的是 Microsoft.Owin 架构
             // 所以直接进入Microsoft.Owin 的处理管道 
-            return _owinAppFunc != null ? _owinAppFunc(env) : null;
+
+
+            // if (AntDeployAgentWindows.WebSocketApp.WebSocket.IsWebSocket(env))
+            // {
+            //     return new MyWebSocketWork(env).Open();
+            // }
+            //
+            //
+            // return new MyWebApiRouter().RouteTo(env).ProcessRequest(env);
         }
+
 
         public void Stop()
         {

@@ -316,6 +316,11 @@ namespace AntDeployAgentWindows.WebSocketApp
             });
         }
 
+        public bool IsClose()
+        {
+            return _isClosed;
+        }
+
 
         #endregion
 
@@ -342,7 +347,10 @@ namespace AntDeployAgentWindows.WebSocketApp
                 throw err;
             }
 
-            if (_isClosed) throw new Exception("WebSocket Is Closed.");
+            if (_isClosed)
+            {
+                return;
+            }
             //if (_writting) throw new Exception("WebSocket Is Writting.");
 
             _writting = true;

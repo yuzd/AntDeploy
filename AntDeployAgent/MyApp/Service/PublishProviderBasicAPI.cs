@@ -1,16 +1,13 @@
-﻿using AntDeployAgentWindows.WebApiCore;
-using AntDeployAgentWindows.WebSocketApp;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 using AntDeployAgentWindows.Model;
+using AntDeployAgentWindows.WebApiCore;
+using AntDeployAgentWindows.WebSocketApp;
 using Newtonsoft.Json;
 
 namespace AntDeployAgentWindows.MyApp.Service
@@ -18,7 +15,6 @@ namespace AntDeployAgentWindows.MyApp.Service
     public abstract class PublishProviderBasicAPI : CommonProcessor, IPublishProviderAPI
     {
         private object obj = new object();
-        private bool webSocketDisposed = false;
 
         private static readonly ConcurrentDictionary<string, ReaderWriterLockSlim> locker = new ConcurrentDictionary<string, ReaderWriterLockSlim>();
         public abstract string ProviderName { get; }
@@ -29,6 +25,8 @@ namespace AntDeployAgentWindows.MyApp.Service
         public abstract string DeployExcutor(FormHandler.FormItem fileItem);
         public abstract string CheckData(FormHandler formHandler);
         private FormHandler _formHandler;
+        private string _wsKey;
+
         public string Deploy(FormHandler.FormItem fileItem)
         {
             //按照项目名称 不能并发发布
@@ -108,7 +106,21 @@ namespace AntDeployAgentWindows.MyApp.Service
             if (projectRootPath == null || !projectRootPath.Exists) return re;
             //每次发布完成后清理老的发布历史记录 只清理自己项目的 
             //防止别的项目正在回滚到某个版本，你这边发现这个版本已经过时了就删除了
-            Setting.ClearOldFolders(ProviderName , projectRootPath.Name, Log);
+            Setting.ClearOldFolders(ProviderName, projectRootPath.Name, Log);
+
+            MyWebSocketWork.WebSockets.TryRemove(_wsKey, out var d);
+            try
+            {
+                WebSocket.Close();
+                WebSocket = null;
+            }
+            catch
+            {
+                // ignore 
+            }
+
+            // GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
+            // GC.Collect();
             return re;
         }
 
@@ -131,12 +143,11 @@ namespace AntDeployAgentWindows.MyApp.Service
             var wsKey = formHandler.FormItems.FirstOrDefault(r => r.FieldName.Equals("wsKey"));
             if (wsKey != null && !string.IsNullOrEmpty(wsKey.TextValue))
             {
-                var _wsKey = wsKey.TextValue;
+                _wsKey = wsKey.TextValue;
 
                 if (MyWebSocketWork.WebSockets.TryGetValue(_wsKey, out var sockert))
                 {
                     WebSocket = sockert;
-                    WebSocket.OnClose += sender => { webSocketDisposed = true; };
                 }
             }
 
@@ -154,7 +165,6 @@ namespace AntDeployAgentWindows.MyApp.Service
 
         protected string findUploadFolder(string _projectPublishFolder, bool isPublish = false, bool docker = false)
         {
-
             var deployFolder = Path.Combine(_projectPublishFolder, "publish");
 
             if (!Directory.Exists(_projectPublishFolder)) return deployFolder;
@@ -174,7 +184,7 @@ namespace AntDeployAgentWindows.MyApp.Service
                 if (!File.Exists(zipFile)) return deployFolder;
 
                 //解压
-                ZipFile.ExtractToDirectory(zipFile, docker?Path.Combine(_projectPublishFolder,"publish"):_projectPublishFolder);
+                ZipFile.ExtractToDirectory(zipFile, docker ? Path.Combine(_projectPublishFolder, "publish") : _projectPublishFolder);
                 temp = new DirectoryInfo(_projectPublishFolder);
                 tempFolderList = temp.GetDirectories();
                 if (tempFolderList.Length == 1)
@@ -192,13 +202,14 @@ namespace AntDeployAgentWindows.MyApp.Service
             {
                 return;
             }
+
             var temp = new DirectoryInfo(ProjectPublishFolder);
             var tempFolderList = temp.GetDirectories();
             if (tempFolderList.Length == 1)
             {
                 var deployFolder = tempFolderList.First();
                 if (deployFolder.Name == "increment" || deployFolder.Name == "_deploy_") return;
-                
+
                 Directory.Delete(deployFolder.FullName, true);
             }
         }
@@ -226,7 +237,7 @@ namespace AntDeployAgentWindows.MyApp.Service
         {
             try
             {
-                if (WebSocket != null && !webSocketDisposed)
+                if (WebSocket != null)
                 {
                     try
                     {

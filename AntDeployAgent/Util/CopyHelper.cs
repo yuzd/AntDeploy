@@ -235,7 +235,14 @@ namespace AntDeployAgentWindows.Util
                 {
                     //ignore
                 }
-
+                try
+                {
+                    process.Dispose();
+                }
+                catch (Exception)
+                {
+                    //ignore
+                }
                 return isSuccess;
             }
             catch (Exception ex)

@@ -5,6 +5,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>AntDeployAgentWindowsService</AssemblyName>
     <LangVersion>7.1</LangVersion>
+    <ServerGarbageCollection>false</ServerGarbageCollection>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

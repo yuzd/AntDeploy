@@ -103,51 +103,54 @@ namespace AntDeployAgentWindows.WebApiCore
 
 
             //把数据读到缓冲区以备处理
-            var buffer = new MemoryStream();
-            var tmpbuffer = new byte[1024 * 64];
-            uint nextsize = sumsize; //sumsize:POST正文的总长度
-
-            //循环读取所有正文数据并写入内存流
-            while (nextsize > 0)
+            using (var buffer = new MemoryStream())
             {
-                var len = context.Request.Body.Read(tmpbuffer, 0, tmpbuffer.Length);
-                if (len < 1) throw new Exception("Network Is Disconnect?");
-                nextsize -= (uint)len;
+                //var tmpbuffer = new byte[1024 * 64];
+                //uint nextsize = sumsize; //sumsize:POST正文的总长度
 
-                buffer.Write(tmpbuffer, 0, len);
-            }
+                //循环读取所有正文数据并写入内存流
+                //while (nextsize > 0)
+                //{
+                //    var len = context.Request.Body.Read(tmpbuffer, 0, tmpbuffer.Length);
+                //    if (len < 1) continue;
+                //    nextsize -= (uint)len;
 
-            //正文类型
-            var contentTypes = context.Request.ContentType.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                //    buffer.Write(tmpbuffer, 0, len);
+                //}
+                context.Request.Body.CopyTo(buffer);
 
 
-            //处理多实体
-            /////////////////////////////
+                //正文类型
+                var contentTypes = context.Request.ContentType.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 
-            if (contentTypes.Length > 1)
-            {
-                var ism = false;    //是否是多实体
-                var boundar = "";   //分隔线
-                foreach (var s in contentTypes)
+
+                //处理多实体
+                /////////////////////////////
+
+                if (contentTypes.Length > 1)
                 {
-                    //Content-Type:multipart/form-data; boundary=abcdef
-                    var ss = s.Trim().ToLower();
-                    if (ss == "multipart/form-data") ism = true;
-                    if (ss.StartsWith("boundary=")) boundar = "--" + s.Trim().Substring(9);
+                    var ism = false;    //是否是多实体
+                    var boundar = "";   //分隔线
+                    foreach (var s in contentTypes)
+                    {
+                        //Content-Type:multipart/form-data; boundary=abcdef
+                        var ss = s.Trim().ToLower();
+                        if (ss == "multipart/form-data") ism = true;
+                        if (ss.StartsWith("boundary=")) boundar = "--" + s.Trim().Substring(9);
+                    }
+
+                    //如果是，处理
+                    if (ism && boundar != "")
+                    {
+                        ParseMultipart(buffer.ToArray(), boundar);
+                        return;
+                    }
                 }
 
-                //如果是，处理
-                if (ism && boundar != "")
-                {
-                    ParseMultipart(buffer.ToArray(), boundar);
-                    return;
-                }
+                //处理其它格式（x-www-form-urlencoded）
+                /////////////////////////////
+                ParseForm(buffer.ToArray(), null);
             }
-
-            //处理其它格式（x-www-form-urlencoded）
-            /////////////////////////////
-            ParseForm(buffer.ToArray(), null);
-
         }
 
 
