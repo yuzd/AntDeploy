@@ -1,49 +1,55 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-    <AssemblyName>AntDeployAgentWindowsService</AssemblyName>
-    <LangVersion>7.1</LangVersion>
-    <ServerGarbageCollection>false</ServerGarbageCollection>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net7.0</TargetFramework>
+		<AssemblyName>AntDeployAgentWindowsService</AssemblyName>
+		<LangVersion>7.1</LangVersion>
+		<ServerGarbageCollection>false</ServerGarbageCollection>
+		<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+		<TrimMode>partial</TrimMode>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <Prefer32Bit>false</Prefer32Bit>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DefineConstants>TRACE;NETSTANDARD</DefineConstants>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<Prefer32Bit>false</Prefer32Bit>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<DefineConstants>TRACE;NETSTANDARD</DefineConstants>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>TRACE;NETSTANDARD</DefineConstants>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<DefineConstants>TRACE;NETSTANDARD</DefineConstants>
+	</PropertyGroup>
+	<ItemGroup>
+		<TrimmerRootAssembly Include="System.Configuration.ConfigurationManager" />
+		<TrimmerRootAssembly Include="TinyFox.Microsoft.Owin" />
+		<TrimmerRootAssembly Include="TinyFox" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Remove="nssm.exe" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Remove="nssm.exe" />
-  </ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="nssm.exe" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="nssm.exe" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
+		<PackageReference Include="System.ServiceProcess.ServiceController" Version="6.0.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
-    <PackageReference Include="System.ServiceProcess.ServiceController" Version="6.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\AntDeployAgent\AntDeployAgent.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\AntDeployAgent\AntDeployAgent.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="App.config">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
-    <None Update="_deploy_end_.bat">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Update="App.config">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</None>
+		<None Update="_deploy_end_.bat">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 
 </Project>

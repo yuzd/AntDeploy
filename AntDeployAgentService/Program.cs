@@ -43,7 +43,6 @@ namespace AntDeployAgentService
 #if NETSTANDARD
             Startup.RootPath = pathToContentRoot;
             TinyFoxService.WebRoot = Path.Combine(pathToContentRoot, "wwwroot");
-            ConfigurationManager.Initialize(pathToExe);
 #endif
             var isService = !(Debugger.IsAttached || args.Contains("--console"));
 
