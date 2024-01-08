@@ -31,7 +31,7 @@ namespace AntDeployWinform.Winform
     public partial class Deploy : CCSkinMain
     {
         private AutoResetEvent Condition { get; set; }
-        private Tuple<string,string> ProjectConfigPath;
+        private Tuple<string, string> ProjectConfigPath;
         private string ProjectFolderPath;
         private string ProjectName;
         private string ProjectPath;
@@ -75,7 +75,7 @@ namespace AntDeployWinform.Winform
         private string _formText = "";
         private SystemMenu systemMemu;
         public Deploy(string projectPath = null, ProjectParam project = null)
-        {            
+        {
             this.Deploy_InitLoad(projectPath, project);
         }
 
@@ -86,7 +86,7 @@ namespace AntDeployWinform.Winform
         /// <param name="project"></param>
         /// <param name="isFirstLoad">首次加载</param>
         public void Deploy_InitLoad(string projectPath, ProjectParam project, bool isFirstLoad = true)
-        {            
+        {
             ConfigPath = ProjectHelper.GetPluginConfigPath();
             ReadConfig(ConfigPath);
 
@@ -408,7 +408,7 @@ namespace AntDeployWinform.Winform
 
         private void Init(string projectPath, ProjectParam project = null, bool isFirst = true)
         {
-            if (string.IsNullOrEmpty(projectPath) || (project!=null && project.OpenNewWindow))
+            if (string.IsNullOrEmpty(projectPath) || (project != null && project.OpenNewWindow))
             {
                 if (isFirst)
                 {
@@ -429,7 +429,7 @@ namespace AntDeployWinform.Winform
                     this.Close();
                     return;
                 }
-                else if(r == DialogResult.OK)
+                else if (r == DialogResult.OK)
                 {
                     projectPath = selectProject.SelectProjectPath;
                 }
@@ -514,8 +514,8 @@ namespace AntDeployWinform.Winform
         {
 
             #region Nlog 修改过的dll 不能升级，否则会导致在某些windows系统上出现中文乱码的问题
-            
-        
+
+
             var config = new LoggingConfiguration();
             var richTarget = new RichTextBoxTarget
             {
@@ -528,7 +528,7 @@ namespace AntDeployWinform.Winform
                 MaxLines = 0,
                 AllowAccessoryFormCreation = false,
                 SupportLinks = true,
-                UseDefaultRowColoringRules = true,                
+                UseDefaultRowColoringRules = true,
             };
             config.AddTarget("rich_iis_log", richTarget);
             LoggingRule rule1 = new LoggingRule("*", LogLevel.Debug, richTarget);
@@ -629,7 +629,7 @@ namespace AntDeployWinform.Winform
             config.LoggingRules.Add(rule5);
 
             LogManager.Configuration = config;
-            
+
             nlog_iis = NLog.LogManager.GetLogger("rich_iis_log");
             nlog_windowservice = NLog.LogManager.GetLogger("rich_windowservice_log");
             nlog_linux = NLog.LogManager.GetLogger("rich_linuxservice_log");
@@ -997,7 +997,7 @@ namespace AntDeployWinform.Winform
         /// 保存配置
         /// </summary>
         /// <param name="dispose"></param>
-        private void Unload(bool dispose=true)
+        private void Unload(bool dispose = true)
         {
             try
             {
@@ -2682,7 +2682,7 @@ namespace AntDeployWinform.Winform
                     dateTimeFolderNameParent = DateTime.Now.ToString("yyyyMMddHHmmss");
                     var allfailServerList = new List<Server>();
                     var retryTimes = 0;
-RETRY_IIS:
+                    RETRY_IIS:
                     var failServerList = new List<Server>();
                     var index = 0;
                     var allSuccess = true;
@@ -3149,7 +3149,7 @@ RETRY_IIS:
             }
         }
 
-        private void DoSelectDeployIIS(List<string> fileList, string publishPath, List<Server> serverList, List<string> backUpIgnoreList, 
+        private void DoSelectDeployIIS(List<string> fileList, string publishPath, List<Server> serverList, List<string> backUpIgnoreList,
             string Port, string PoolName, string PhysicalPath, bool alwaysRun, GitClient gitModel, string remark, List<string> ignoreList)
         {
             try
@@ -3207,7 +3207,7 @@ RETRY_IIS:
                         dateTimeFolderNameParent = DateTime.Now.ToString("yyyyMMddHHmmss");
                         var allfailServerList = new List<Server>();
                         var retryTimes = 0;
-RETRY_IIS2:
+                        RETRY_IIS2:
                         if (stop_iis_cancel_token)
                         {
                             this.nlog_iis.Warn($"deploy task was canceled!");
@@ -4618,7 +4618,7 @@ RETRY_IIS2:
         {
             stop_windows_cancel_token = false;
             Condition = new AutoResetEvent(false);
-            
+
 
             var sdkTypeName = this.combo_windowservice_sdk_type.SelectedItem as string;
             if (string.IsNullOrWhiteSpace(sdkTypeName))
@@ -4843,7 +4843,7 @@ RETRY_IIS2:
                         if (isNetcore)
                         {
                             var runtime = "";
-                            if (string.IsNullOrEmpty(PluginConfig.NetCorePublishMode) || PluginConfig.NetCorePublishMode=="Default")
+                            if (string.IsNullOrEmpty(PluginConfig.NetCorePublishMode) || PluginConfig.NetCorePublishMode == "Default")
                             {
                                 runtime = " --runtime win-x64";
                             }
@@ -5072,7 +5072,7 @@ RETRY_IIS2:
                     dateTimeFolderNameParent = DateTime.Now.ToString("yyyyMMddHHmmss");
                     var retryTimes = 0;
                     var allfailServerList = new List<Server>();
-RETRY_WINDOWSSERVICE:
+                    RETRY_WINDOWSSERVICE:
                     var failServerList = new List<Server>();
                     var index = 0;
                     var allSuccess = true;
@@ -5442,7 +5442,7 @@ RETRY_WINDOWSSERVICE:
         }
 
 
-        private void DoWindowsServiceSelectDeploy(List<string> fileList, string publishPath, List<Server> serverList, string serviceName, bool isProjectInstallService, 
+        private void DoWindowsServiceSelectDeploy(List<string> fileList, string publishPath, List<Server> serverList, string serviceName, bool isProjectInstallService,
             string execFilePath, string PhysicalPath, List<string> backUpIgnoreList, GitClient gitModel, string remark, List<string> ignoreList)
         {
             new Task(async () =>
@@ -5499,7 +5499,7 @@ RETRY_WINDOWSSERVICE:
                     dateTimeFolderNameParent = DateTime.Now.ToString("yyyyMMddHHmmss");
                     var retryTimes = 0;
                     var allfailServerList = new List<Server>();
-RETRY_WINDOWSSERVICE2:
+                    RETRY_WINDOWSSERVICE2:
                     var failServerList = new List<Server>();
                     var index = 0;
                     var allSuccess = true;
@@ -6319,7 +6319,7 @@ RETRY_WINDOWSSERVICE2:
             if (File.Exists(new_ProjectConfigPath))
             {
                 var useAntJsonInProjectPath = GlobalConfig.EnableAntDeployJson && File.Exists(old_ProjectConfigPath);
-                var config = useAntJsonInProjectPath ? File.ReadAllText(old_ProjectConfigPath, Encoding.UTF8): File.ReadAllText(new_ProjectConfigPath, Encoding.UTF8);
+                var config = useAntJsonInProjectPath ? File.ReadAllText(old_ProjectConfigPath, Encoding.UTF8) : File.ReadAllText(new_ProjectConfigPath, Encoding.UTF8);
                 if (useAntJsonInProjectPath)
                 {
                     // 强制使用项目文件夹下的AntDeploy.json
@@ -6642,7 +6642,7 @@ RETRY_WINDOWSSERVICE2:
             if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath) && !ProjectHelper.CheckDockerFileIsSetCopy(ProjectPath))
             {
                 var confirmDockerfile = ShowInputMsgBox(Strings.DockerFileWarn,
-                    Strings.DockerFileNotSetCopy,"hide" );
+                    Strings.DockerFileNotSetCopy, "hide");
                 if (!confirmDockerfile.Item1)
                 {
                     return;
@@ -6954,7 +6954,7 @@ RETRY_WINDOWSSERVICE2:
                    var clientDateTimeFolderName = string.Empty;
                    var retryTimes = 0;
                    var allfailServerList = new List<BaseServer>();
-RETRY_DOCKER:
+                   RETRY_DOCKER:
                    var failServerList = new List<BaseServer>();
                    var index = 0;
                    var allSuccess = true;
@@ -7121,23 +7121,32 @@ RETRY_DOCKER:
                                        //fire the website
                                        if (!string.IsNullOrEmpty(server.DockerFireUrl))
                                        {
-                                           LogEventInfo publisEvent22 = new LogEventInfo(LogLevel.Info, "", "Start to Fire Url,TimeOut：10senconds  ==> ");
-                                           publisEvent22.Properties["ShowLink"] = server.DockerFireUrl;
-                                           publisEvent22.LoggerName = "rich_docker_log";
-                                           this.nlog_docker.Log(publisEvent22);
-
-                                           var fireRt = WebUtil.IsHttpGetOk(server.DockerFireUrl, this.nlog_docker);
-                                           if (fireRt)
+                                           if (!server.IsHttpUrl)
                                            {
-                                               UpdateDeployProgress(this.tabPage_docker, server.Host, true);
-                                               this.nlog_docker.Info($"Host:{getHostDisplayName(server)},Success Fire Url");
+                                               //进行版本替换
+                                               var command = server.DockerFireUrl.Replace("{image}", PluginConfig.RepositoryImageName);
+                                               sshClient.RunSheell(command);
                                            }
                                            else
                                            {
-                                               UpdateDeployProgress(this.tabPage_docker, server.Host, false);
-                                               allSuccess = false;
-                                               failServerList.Add(server);
-                                               failCount++;
+                                               LogEventInfo publisEvent22 = new LogEventInfo(LogLevel.Info, "", "Start to Fire Url,TimeOut：10senconds  ==> ");
+                                               publisEvent22.Properties["ShowLink"] = server.DockerFireUrl;
+                                               publisEvent22.LoggerName = "rich_docker_log";
+                                               this.nlog_docker.Log(publisEvent22);
+
+                                               var fireRt = WebUtil.IsHttpGetOk(server.DockerFireUrl, this.nlog_docker);
+                                               if (fireRt)
+                                               {
+                                                   UpdateDeployProgress(this.tabPage_docker, server.Host, true);
+                                                   this.nlog_docker.Info($"Host:{getHostDisplayName(server)},Success Fire Url");
+                                               }
+                                               else
+                                               {
+                                                   UpdateDeployProgress(this.tabPage_docker, server.Host, false);
+                                                   allSuccess = false;
+                                                   failServerList.Add(server);
+                                                   failCount++;
+                                               }
                                            }
                                        }
                                        else
@@ -7159,7 +7168,7 @@ RETRY_DOCKER:
                                }
                            }
                        }
-                       else if(server is Server tokenServer)
+                       else if (server is Server tokenServer)
                        {
                            if (string.IsNullOrEmpty(tokenServer.Token))
                            {
@@ -7171,7 +7180,8 @@ RETRY_DOCKER:
                                continue;
                            }
 
-                           var obj = new {
+                           var obj = new
+                           {
                                NetCoreENTRYPOINT = ENTRYPOINT,
                                NetCoreVersion = SDKVersion,
                                NetCorePort = DeployConfig.DockerConfig.Prot,
@@ -7195,11 +7205,11 @@ RETRY_DOCKER:
                            };
 
                            ProgressPercentageForWindowsService = 0;
-                           ProgressCurrentHostForWindowsService=server.Host;
+                           ProgressCurrentHostForWindowsService = server.Host;
                            HttpRequestClient httpRequestClient = new HttpRequestClient();
                            httpRequestClient.SetFieldValue("publishType", "docker");
                            httpRequestClient.SetFieldValue("isIncrement", this.PluginConfig.DockerEnableIncrement ? "true" : "");
-                           httpRequestClient.SetFieldValue("serviceName", ENTRYPOINT.Replace(".dll",""));
+                           httpRequestClient.SetFieldValue("serviceName", ENTRYPOINT.Replace(".dll", ""));
                            httpRequestClient.SetFieldValue("id", loggerId);
                            httpRequestClient.SetFieldValue("remark", confirmResult.Item2);
                            httpRequestClient.SetFieldValue("mac", CodingHelper.GetMacAddress());
@@ -7209,7 +7219,7 @@ RETRY_DOCKER:
                            httpRequestClient.SetFieldValue("Token", tokenServer.Token);
                            httpRequestClient.SetFieldValue("param", JsonConvert.SerializeObject(obj));
                            httpRequestClient.SetFieldValue("backUpIgnore", (backUpIgnoreList != null && backUpIgnoreList.Any()) ? string.Join("@_@", backUpIgnoreList) : "");
-                           httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream",bytesall);
+                           httpRequestClient.SetFieldValue("publish", "publish.zip", "application/octet-stream", bytesall);
                            HttpLogger HttpLogger = new HttpLogger
                            {
                                Key = loggerId,
@@ -7239,8 +7249,8 @@ RETRY_DOCKER:
                                            .FromEventPattern<UploadProgressChangedEventArgs>(client, "UploadProgressChanged")
                                            .Sample(TimeSpan.FromMilliseconds(100))
                                            .Subscribe(arg => { ClientOnUploadProgressChanged2(arg.Sender, arg.EventArgs); });
-                                    //client.UploadProgressChanged += ClientOnUploadProgressChanged2;
-                                });
+                                       //client.UploadProgressChanged += ClientOnUploadProgressChanged2;
+                                   });
                                if (ProgressPercentageForWindowsService == 0 && !uploadResult.Item1) UploadError(this.tabPage_docker, server.Host);
                                if ((ProgressPercentageForWindowsService > 0 && ProgressPercentageForWindowsService < 100))
                                    UpdateUploadProgress(this.tabPage_docker, ProgressCurrentHostForWindowsService, 100); //结束上传
@@ -7300,7 +7310,7 @@ RETRY_DOCKER:
                                    }
                                }
                            }
-                           catch(Exception e1)
+                           catch (Exception e1)
                            {
                                allSuccess = false;
                                failCount++;
@@ -7478,7 +7488,7 @@ RETRY_DOCKER:
                         UpdatePackageProgress(this.tabPage_docker, server2.Host, 100);
                         UpdateUploadProgress(this.tabPage_docker, server2.Host, 100);
 
-                        if(server2 is LinuxServer server)
+                        if (server2 is LinuxServer server)
                         {
                             #region 参数Check
 
@@ -7689,7 +7699,7 @@ RETRY_DOCKER:
                                 }
                             }
                         }
-                        else if(server2 is Server tokenServer)
+                        else if (server2 is Server tokenServer)
                         {
                             if (string.IsNullOrEmpty(tokenServer.Token))
                             {
@@ -7718,7 +7728,7 @@ RETRY_DOCKER:
                                Token = tokenServer.Token,
                                Type = "docker",
                                Mac = CodingHelper.GetMacAddress(),
-                               Name = ENTRYPOINT.Replace(".dll",""),
+                               Name = ENTRYPOINT.Replace(".dll", ""),
                                WithArgs = true
                            }, nlog_docker);
 
@@ -7787,7 +7797,7 @@ RETRY_DOCKER:
                             HttpRequestClient httpRequestClient = new HttpRequestClient();
                             httpRequestClient.SetFieldValue("publishType", "docker_rollback");
                             httpRequestClient.SetFieldValue("id", loggerId);
-                            httpRequestClient.SetFieldValue("serviceName", ENTRYPOINT.Replace(".dll",""));
+                            httpRequestClient.SetFieldValue("serviceName", ENTRYPOINT.Replace(".dll", ""));
                             httpRequestClient.SetFieldValue("deployFolderName", _rollBackVersion.Version);
                             httpRequestClient.SetFieldValue("Token", tokenServer.Token);
                             HttpLogger HttpLogger = new HttpLogger
@@ -8118,13 +8128,13 @@ RETRY_DOCKER:
                 log.Info("Visual Studio Version : " + vsVersion);
             }
 
-            if (ProjectConfigPath!=null)
+            if (ProjectConfigPath != null)
             {
                 var fileInfo = new FileInfo(GlobalConfig.EnableAntDeployJson ? ProjectConfigPath.Item2 : ProjectConfigPath.Item1);
                 if (fileInfo.Exists && !string.IsNullOrEmpty(fileInfo.FullName))
                 {
                     LogEventInfo publisEvent = new LogEventInfo(LogLevel.Info, "", "【AntDeploy.json】 ");
-                    publisEvent.Properties["ShowLink"] = "file://" + fileInfo.FullName.Replace("\\", "\\\\") ;
+                    publisEvent.Properties["ShowLink"] = "file://" + fileInfo.FullName.Replace("\\", "\\\\");
                     publisEvent.LoggerName = log.Name;
                     log.Log(publisEvent);
                 }
@@ -8483,7 +8493,7 @@ RETRY_DOCKER:
                         return;
                     }
 
-                     pwd = CodingHelper.AESDecrypt(server2.Pwd);
+                    pwd = CodingHelper.AESDecrypt(server2.Pwd);
                     if (string.IsNullOrEmpty(pwd))
                     {
                         MessageBoxEx.Show(this, "Server Pwd is Empty!");
@@ -8491,7 +8501,7 @@ RETRY_DOCKER:
                     }
                     #endregion
                 }
-                else if(Server is Server tokenServer)
+                else if (Server is Server tokenServer)
                 {
                     if (string.IsNullOrEmpty(tokenServer.Host))
                     {
@@ -8541,7 +8551,7 @@ RETRY_DOCKER:
                                     ShowThreadMessageBox("get history list fail");
                                     return;
                                 }
-                                versionList = sshClient.GetDeployHistory( 10);
+                                versionList = sshClient.GetDeployHistory(10);
                             }
 
                             if (versionList == null || versionList.Item2.Count < 1)
@@ -8588,7 +8598,7 @@ RETRY_DOCKER:
                 MessageBoxEx.Show(this, "ServiceName is not correct!");
                 return;
             }
-            if(ServerType == ServerType.DOCKER && string.IsNullOrEmpty(ENTRYPOINTDOCKER))
+            if (ServerType == ServerType.DOCKER && string.IsNullOrEmpty(ENTRYPOINTDOCKER))
             {
                 MessageBoxEx.Show(this, "ProjectName is not correct!");
                 return;
@@ -8640,10 +8650,10 @@ RETRY_DOCKER:
                         {
                             Token = server.Token,
                             Mac = CodingHelper.GetMacAddress(),
-                            Type = ServerType == ServerType.LINUXSERVICE ? "linux" : ServerType == ServerType.IIS ? "iis" : ServerType == ServerType.DOCKER ? "docker":"winservice",
-                            Name =!string.IsNullOrEmpty(ENTRYPOINTDOCKER) ? ENTRYPOINTDOCKER :  ServerType == ServerType.LINUXSERVICE ? DeployConfig.LinuxServiveConfig.ServiceName : ServerType == ServerType.IIS ? DeployConfig.IIsConfig.WebSiteName : DeployConfig.WindowsServiveConfig.ServiceName,
+                            Type = ServerType == ServerType.LINUXSERVICE ? "linux" : ServerType == ServerType.IIS ? "iis" : ServerType == ServerType.DOCKER ? "docker" : "winservice",
+                            Name = !string.IsNullOrEmpty(ENTRYPOINTDOCKER) ? ENTRYPOINTDOCKER : ServerType == ServerType.LINUXSERVICE ? DeployConfig.LinuxServiveConfig.ServiceName : ServerType == ServerType.IIS ? DeployConfig.IIsConfig.WebSiteName : DeployConfig.WindowsServiveConfig.ServiceName,
                             WithArgs = true
-                        }, ServerType == ServerType.LINUXSERVICE ? nlog_linux : ServerType == ServerType.IIS ? nlog_iis : ServerType == ServerType.DOCKER ? nlog_docker :nlog_windowservice);
+                        }, ServerType == ServerType.LINUXSERVICE ? nlog_linux : ServerType == ServerType.IIS ? nlog_iis : ServerType == ServerType.DOCKER ? nlog_docker : nlog_windowservice);
 
                     if (getVersionResult == null)
                     {
@@ -8679,7 +8689,7 @@ RETRY_DOCKER:
                     {
                         EnableForLinuxService(true);
                     }
-                    else if(ServerType == ServerType.DOCKER)
+                    else if (ServerType == ServerType.DOCKER)
                     {
                         EnableForDocker(true);
                     }
@@ -9216,7 +9226,7 @@ RETRY_DOCKER:
                     if (string.IsNullOrEmpty(PluginConfig.DeployFolderPath))
                     {
                         var path = publishPath + "\\";
-                        
+
                         if (string.IsNullOrEmpty(PluginConfig.NetCorePublishMode) || PluginConfig.NetCorePublishMode == "Default")
                         {
                             runtime = " --runtime linux-x64";
@@ -9391,7 +9401,7 @@ RETRY_DOCKER:
                     dateTimeFolderNameParent = DateTime.Now.ToString("yyyyMMddHHmmss");
                     var retryTimes = 0;
                     var allfailServerList = new List<Server>();
-RETRY_WINDOWSSERVICE:
+                    RETRY_WINDOWSSERVICE:
                     var failServerList = new List<Server>();
                     var index = 0;
                     var allSuccess = true;
@@ -9713,7 +9723,7 @@ RETRY_WINDOWSSERVICE:
         }
 
 
-        private void DoLinuxServiceSelectDeploy(List<string> fileList, string publishPath, List<Server> serverList, string serviceName, string envParam, bool useDotnet, 
+        private void DoLinuxServiceSelectDeploy(List<string> fileList, string publishPath, List<Server> serverList, string serviceName, string envParam, bool useDotnet,
             string execFilePath, string PhysicalPath, List<string> backUpIgnoreList, GitClient gitModel, string remark, List<string> ignoreList)
         {
             new Task(async () =>
@@ -9770,7 +9780,7 @@ RETRY_WINDOWSSERVICE:
                     dateTimeFolderNameParent = DateTime.Now.ToString("yyyyMMddHHmmss");
                     var retryTimes = 0;
                     var allfailServerList = new List<Server>();
-RETRY_WINDOWSSERVICE2:
+                    RETRY_WINDOWSSERVICE2:
                     var failServerList = new List<Server>();
                     var index = 0;
                     var allSuccess = true;
@@ -10236,7 +10246,7 @@ RETRY_WINDOWSSERVICE2:
             }
             else if (e.SysButton.Name == "btn_open_new")
             {
-                this.Deploy_InitLoad(this.ProjectPath, new ProjectParam { OpenNewWindow = true}, false);
+                this.Deploy_InitLoad(this.ProjectPath, new ProjectParam { OpenNewWindow = true }, false);
                 this.combo_iis_env_SelectedIndexChanged(null, null);
             }
         }
