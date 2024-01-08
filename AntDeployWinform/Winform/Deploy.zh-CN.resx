@@ -117,33 +117,54 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="checkBox_iis_use_offlinehtm.Size" type="System.Drawing.Size, System.Drawing">
+    <value>159, 18</value>
+  </data>
   <data name="checkBox_iis_use_offlinehtm.Text" xml:space="preserve">
     <value>使用app_offline.htm</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="checkBox_iis_restart_site.Size" type="System.Drawing.Size, System.Drawing">
-    <value>84, 16</value>
+    <value>96, 18</value>
   </data>
   <data name="checkBox_iis_restart_site.Text" xml:space="preserve">
     <value>不关闭站点</value>
   </data>
-  <data name="btn_iis_stop.Location" type="System.Drawing.Point, System.Drawing">
-    <value>507, 108</value>
-  </data>
-  <data name="btn_iis_retry.Location" type="System.Drawing.Point, System.Drawing">
-    <value>396, 109</value>
-  </data>
-  <data name="btn_iis_retry.Text" xml:space="preserve">
-    <value>重试</value>
-  </data>
   <data name="checkBox_select_deploy_iis.Size" type="System.Drawing.Size, System.Drawing">
-    <value>120, 16</value>
+    <value>138, 18</value>
   </data>
   <data name="checkBox_select_deploy_iis.Text" xml:space="preserve">
     <value>选择指定文件发布</value>
   </data>
-  <data name="b_iis_deploy.Location" type="System.Drawing.Point, System.Drawing">
-    <value>509, 107</value>
+  <data name="checkBox_Increment_iis.Size" type="System.Drawing.Size, System.Drawing">
+    <value>82, 18</value>
+  </data>
+  <data name="label25.Size" type="System.Drawing.Size, System.Drawing">
+    <value>189, 14</value>
+  </data>
+  <data name="label9.Size" type="System.Drawing.Size, System.Drawing">
+    <value>217, 14</value>
+  </data>
+  <data name="combo_iis_env.Size" type="System.Drawing.Size, System.Drawing">
+    <value>161, 22</value>
+  </data>
+  <data name="label8.Size" type="System.Drawing.Size, System.Drawing">
+    <value>70, 14</value>
+  </data>
+  <data name="txt_iis_web_site_name.Size" type="System.Drawing.Size, System.Drawing">
+    <value>161, 23</value>
+  </data>
+  <data name="label7.Size" type="System.Drawing.Size, System.Drawing">
+    <value>98, 14</value>
+  </data>
+  <data name="combo_iis_sdk_type.Size" type="System.Drawing.Size, System.Drawing">
+    <value>161, 22</value>
+  </data>
+  <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
+    <value>63, 14</value>
+  </data>
+  <data name="label_iis_demo.Size" type="System.Drawing.Size, System.Drawing">
+    <value>35, 14</value>
   </data>
   <data name="progress_iis_tip.Size" type="System.Drawing.Size, System.Drawing">
     <value>400, 31</value>
@@ -151,35 +172,29 @@
   <data name="progress_iis_tip.Text" xml:space="preserve">
     <value>使用步骤 1. 在发布配置tab里面创建环境，添加token服务器(windows).           2. 选择对应的环境</value>
   </data>
-  <data name="tabPage_progress.Size" type="System.Drawing.Size, System.Drawing">
-    <value>606, 292</value>
+  <data name="tabPage_progress.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 24</value>
   </data>
-  <data name="rich_iis_log.Size" type="System.Drawing.Size, System.Drawing">
-    <value>600, 286</value>
+  <data name="tabPage_progress.Size" type="System.Drawing.Size, System.Drawing">
+    <value>606, 290</value>
+  </data>
+  <data name="tabPage_iis_log.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 24</value>
   </data>
   <data name="tabPage_iis_log.Size" type="System.Drawing.Size, System.Drawing">
-    <value>606, 292</value>
+    <value>606, 290</value>
   </data>
   <data name="tab_iis.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 139</value>
+    <value>3, 137</value>
   </data>
   <data name="tab_iis.Size" type="System.Drawing.Size, System.Drawing">
     <value>614, 318</value>
   </data>
+  <data name="page_web_iis.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 24</value>
+  </data>
   <data name="page_web_iis.Size" type="System.Drawing.Size, System.Drawing">
-    <value>620, 460</value>
-  </data>
-  <data name="b_docker_deploy.Location" type="System.Drawing.Point, System.Drawing">
-    <value>511, 107</value>
-  </data>
-  <data name="btn_docker_retry.Location" type="System.Drawing.Point, System.Drawing">
-    <value>391, 107</value>
-  </data>
-  <data name="btn_docker_retry.Text" xml:space="preserve">
-    <value>重试</value>
-  </data>
-  <data name="btn_docker_stop.Location" type="System.Drawing.Point, System.Drawing">
-    <value>511, 107</value>
+    <value>620, 458</value>
   </data>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="checkBox_select_deploy_docker.AutoSize" type="System.Boolean, mscorlib">
@@ -189,34 +204,61 @@
     <value>212, 134</value>
   </data>
   <data name="checkBox_select_deploy_docker.Size" type="System.Drawing.Size, System.Drawing">
-    <value>120, 16</value>
+    <value>138, 18</value>
   </data>
   <data name="checkBox_select_deploy_docker.Text" xml:space="preserve">
     <value>选择指定文件发布</value>
   </data>
-  <data name="txt_docker_volume.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Comic Sans MS, 10pt</value>
+  <data name="label53.Size" type="System.Drawing.Size, System.Drawing">
+    <value>112, 14</value>
   </data>
-  <data name="txt_docker_volume.Location" type="System.Drawing.Point, System.Drawing">
-    <value>157, 9</value>
-  </data>
-  <data name="txt_docker_volume.Size" type="System.Drawing.Size, System.Drawing">
-    <value>396, 26</value>
+  <data name="label28.Size" type="System.Drawing.Size, System.Drawing">
+    <value>294, 14</value>
   </data>
   <data name="label46.Size" type="System.Drawing.Size, System.Drawing">
-    <value>455, 12</value>
+    <value>532, 14</value>
   </data>
   <data name="label46.Text" xml:space="preserve">
     <value>Docker run 自定义参数: --network xxx -e XXX=YYY --name xxx --link other:tag</value>
   </data>
+  <data name="txt_docker_other.Size" type="System.Drawing.Size, System.Drawing">
+    <value>579, 23</value>
+  </data>
+  <data name="label21.Size" type="System.Drawing.Size, System.Drawing">
+    <value>42, 14</value>
+  </data>
+  <data name="label23.Size" type="System.Drawing.Size, System.Drawing">
+    <value>168, 14</value>
+  </data>
+  <data name="txt_docker_port.Size" type="System.Drawing.Size, System.Drawing">
+    <value>62, 23</value>
+  </data>
   <data name="label45.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 59</value>
+  </data>
+  <data name="label45.Size" type="System.Drawing.Size, System.Drawing">
+    <value>49, 14</value>
+  </data>
+  <data name="txt_docker_envname.Size" type="System.Drawing.Size, System.Drawing">
+    <value>53, 23</value>
   </data>
   <data name="label27.Location" type="System.Drawing.Point, System.Drawing">
     <value>110, 17</value>
   </data>
+  <data name="label27.Size" type="System.Drawing.Size, System.Drawing">
+    <value>56, 14</value>
+  </data>
+  <data name="combo_docker_env.Size" type="System.Drawing.Size, System.Drawing">
+    <value>193, 22</value>
+  </data>
+  <data name="label22.Size" type="System.Drawing.Size, System.Drawing">
+    <value>70, 14</value>
+  </data>
   <data name="label_docker_demo.Location" type="System.Drawing.Point, System.Drawing">
     <value>3, 136</value>
+  </data>
+  <data name="label_docker_demo.Size" type="System.Drawing.Size, System.Drawing">
+    <value>35, 14</value>
   </data>
   <data name="progress_docker_tip.Size" type="System.Drawing.Size, System.Drawing">
     <value>366, 26</value>
@@ -224,14 +266,17 @@
   <data name="progress_docker_tip.Text" xml:space="preserve">
     <value>使用步骤 1. 在发布配置tab里面创建环境，添加linux服务器(ssh).          2. 选择对应的环境</value>
   </data>
-  <data name="tabPage_docker.Size" type="System.Drawing.Size, System.Drawing">
-    <value>612, 277</value>
+  <data name="tabPage_docker.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 24</value>
   </data>
-  <data name="rich_docker_log.Size" type="System.Drawing.Size, System.Drawing">
-    <value>606, 271</value>
+  <data name="tabPage_docker.Size" type="System.Drawing.Size, System.Drawing">
+    <value>612, 275</value>
+  </data>
+  <data name="tabPage_docker_log.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 24</value>
   </data>
   <data name="tabPage_docker_log.Size" type="System.Drawing.Size, System.Drawing">
-    <value>612, 277</value>
+    <value>612, 275</value>
   </data>
   <data name="label56.Text" xml:space="preserve">
     <value>注意：该功能需要依赖一台安装docker的linux宿主机</value>
@@ -260,74 +305,101 @@
   <data name="checkBoxdocker_rep_enable.Text" xml:space="preserve">
     <value>开启镜像上传</value>
   </data>
+  <data name="txt_docker_rep_image.Size" type="System.Drawing.Size, System.Drawing">
+    <value>269, 23</value>
+  </data>
   <data name="label44.Size" type="System.Drawing.Size, System.Drawing">
-    <value>65, 12</value>
+    <value>77, 14</value>
   </data>
   <data name="label44.Text" xml:space="preserve">
     <value> 镜像名称:</value>
   </data>
   <data name="label43.Size" type="System.Drawing.Size, System.Drawing">
-    <value>83, 12</value>
+    <value>98, 14</value>
   </data>
   <data name="label43.Text" xml:space="preserve">
     <value>    仓库名称:</value>
   </data>
+  <data name="txt_docker_rep_namespace.Size" type="System.Drawing.Size, System.Drawing">
+    <value>269, 23</value>
+  </data>
   <data name="label40.Size" type="System.Drawing.Size, System.Drawing">
-    <value>95, 12</value>
+    <value>112, 14</value>
   </data>
   <data name="label40.Text" xml:space="preserve">
     <value>      镜像地址:</value>
   </data>
+  <data name="txt_docker_rep_domain.Size" type="System.Drawing.Size, System.Drawing">
+    <value>269, 23</value>
+  </data>
+  <data name="txt_docker_rep_pwd.Size" type="System.Drawing.Size, System.Drawing">
+    <value>114, 23</value>
+  </data>
   <data name="label31.Size" type="System.Drawing.Size, System.Drawing">
-    <value>89, 12</value>
+    <value>105, 14</value>
   </data>
   <data name="label31.Text" xml:space="preserve">
     <value>   登录用户名:</value>
   </data>
+  <data name="txt_docker_rep_name.Size" type="System.Drawing.Size, System.Drawing">
+    <value>118, 23</value>
+  </data>
   <data name="label34.Size" type="System.Drawing.Size, System.Drawing">
-    <value>35, 12</value>
+    <value>42, 14</value>
   </data>
   <data name="label34.Text" xml:space="preserve">
     <value>密码:</value>
   </data>
+  <data name="tabPage_docker_repo.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 24</value>
+  </data>
   <data name="tabPage_docker_repo.Size" type="System.Drawing.Size, System.Drawing">
-    <value>612, 277</value>
+    <value>612, 275</value>
   </data>
   <data name="tabPage_docker_repo.Text" xml:space="preserve">
     <value>配置镜像上传</value>
+  </data>
+  <data name="label13.Size" type="System.Drawing.Size, System.Drawing">
+    <value>21, 14</value>
   </data>
   <data name="label68.Location" type="System.Drawing.Point, System.Drawing">
     <value>7, 63</value>
   </data>
   <data name="label68.Size" type="System.Drawing.Size, System.Drawing">
-    <value>137, 12</value>
+    <value>161, 14</value>
   </data>
   <data name="label68.Text" xml:space="preserve">
     <value>部署到ssh服务器的目录:</value>
+  </data>
+  <data name="t_docker_delete_days.Size" type="System.Drawing.Size, System.Drawing">
+    <value>37, 23</value>
   </data>
   <data name="txt_docker_workspace.Location" type="System.Drawing.Point, System.Drawing">
     <value>9, 78</value>
   </data>
   <data name="txt_docker_workspace.Size" type="System.Drawing.Size, System.Drawing">
-    <value>591, 21</value>
+    <value>591, 23</value>
   </data>
   <data name="groupBox6.Text" xml:space="preserve">
     <value>注意：这里面的配置只针对ssh方式部署docker才有效，token服务器方式的话参考agent配置文件</value>
   </data>
   <data name="chk_use_AsiaShanghai_timezone.Size" type="System.Drawing.Size, System.Drawing">
-    <value>324, 16</value>
+    <value>376, 18</value>
   </data>
   <data name="chk_use_AsiaShanghai_timezone.Text" xml:space="preserve">
     <value>AntDeploy创建的DockerFile默认使用Asia/Shanghai时区</value>
   </data>
+  <data name="tabPage_ssh.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 24</value>
+  </data>
   <data name="tabPage_ssh.Size" type="System.Drawing.Size, System.Drawing">
-    <value>612, 277</value>
+    <value>612, 275</value>
   </data>
   <data name="tabPage_ssh.Text" xml:space="preserve">
     <value>docker部署配置</value>
   </data>
   <data name="tabControl_docker.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 157</value>
+    <value>0, 155</value>
   </data>
   <data name="tabControl_docker.Size" type="System.Drawing.Size, System.Drawing">
     <value>620, 303</value>
@@ -339,25 +411,28 @@
     <value>134, 135</value>
   </data>
   <data name="checkBox_Increment_docker.Size" type="System.Drawing.Size, System.Drawing">
-    <value>72, 16</value>
+    <value>82, 18</value>
   </data>
   <data name="checkBox_Increment_docker.Text" xml:space="preserve">
     <value>增量发布</value>
   </data>
+  <data name="page_docker.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 24</value>
+  </data>
   <data name="page_docker.Size" type="System.Drawing.Size, System.Drawing">
-    <value>620, 460</value>
+    <value>620, 458</value>
   </data>
-  <data name="altoButton1.Text" xml:space="preserve">
-    <value>发布</value>
-  </data>
-  <data name="rich_docker_image_log.Size" type="System.Drawing.Size, System.Drawing">
-    <value>606, 264</value>
+  <data name="tabPage_docker_image.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 24</value>
   </data>
   <data name="tabPage_docker_image.Size" type="System.Drawing.Size, System.Drawing">
-    <value>612, 270</value>
+    <value>612, 268</value>
   </data>
   <data name="tabPage_docker_image.Text" xml:space="preserve">
     <value>日志</value>
+  </data>
+  <data name="label67.Size" type="System.Drawing.Size, System.Drawing">
+    <value>84, 14</value>
   </data>
   <data name="btn_dockerImage_ignore_remove.Text" xml:space="preserve">
     <value>删除选中</value>
@@ -365,17 +440,29 @@
   <data name="btn_dockerImage_ignore_add.Text" xml:space="preserve">
     <value>添加</value>
   </data>
+  <data name="txt_dockerImage_ignore.Size" type="System.Drawing.Size, System.Drawing">
+    <value>146, 23</value>
+  </data>
+  <data name="list_dockerImage_ignore.ItemHeight" type="System.Int32, mscorlib">
+    <value>14</value>
+  </data>
+  <data name="list_dockerImage_ignore.Size" type="System.Drawing.Size, System.Drawing">
+    <value>434, 130</value>
+  </data>
   <data name="groupBox4.Text" xml:space="preserve">
     <value>排除规则【regex】</value>
   </data>
+  <data name="tabPage_docker_image_ignore.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 24</value>
+  </data>
   <data name="tabPage_docker_image_ignore.Size" type="System.Drawing.Size, System.Drawing">
-    <value>612, 270</value>
+    <value>612, 268</value>
   </data>
   <data name="tabPage_docker_image_ignore.Text" xml:space="preserve">
     <value>其他配置</value>
   </data>
   <data name="tabControl_dockerimage.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 164</value>
+    <value>0, 162</value>
   </data>
   <data name="tabControl_dockerimage.Size" type="System.Drawing.Size, System.Drawing">
     <value>620, 296</value>
@@ -384,58 +471,136 @@
     <value>True</value>
   </data>
   <data name="label_how_to_dockerimage.Size" type="System.Drawing.Size, System.Drawing">
-    <value>29, 12</value>
+    <value>35, 14</value>
   </data>
   <data name="label_how_to_dockerimage.Text" xml:space="preserve">
     <value>Demo</value>
   </data>
+  <data name="label59.Size" type="System.Drawing.Size, System.Drawing">
+    <value>35, 14</value>
+  </data>
   <data name="label60.Size" type="System.Drawing.Size, System.Drawing">
-    <value>59, 12</value>
+    <value>70, 14</value>
   </data>
   <data name="label60.Text" xml:space="preserve">
     <value>Http代理:</value>
   </data>
+  <data name="txt_HttpProxy.Size" type="System.Drawing.Size, System.Drawing">
+    <value>110, 23</value>
+  </data>
+  <data name="txt_BaseImage_pwd.Size" type="System.Drawing.Size, System.Drawing">
+    <value>94, 23</value>
+  </data>
+  <data name="txt_BaseImage.Size" type="System.Drawing.Size, System.Drawing">
+    <value>544, 23</value>
+  </data>
+  <data name="label58.Size" type="System.Drawing.Size, System.Drawing">
+    <value>70, 14</value>
+  </data>
   <data name="label57.Size" type="System.Drawing.Size, System.Drawing">
-    <value>59, 12</value>
+    <value>70, 14</value>
   </data>
   <data name="label57.Text" xml:space="preserve">
     <value>基础镜像:</value>
   </data>
+  <data name="txt_BaseImage_username.Size" type="System.Drawing.Size, System.Drawing">
+    <value>114, 23</value>
+  </data>
   <data name="label69.Size" type="System.Drawing.Size, System.Drawing">
-    <value>59, 12</value>
+    <value>70, 14</value>
   </data>
   <data name="label69.Text" xml:space="preserve">
     <value>Http代理:</value>
+  </data>
+  <data name="txt_TargetHttpProxy.Size" type="System.Drawing.Size, System.Drawing">
+    <value>110, 23</value>
+  </data>
+  <data name="txt_Cmd.Size" type="System.Drawing.Size, System.Drawing">
+    <value>287, 23</value>
+  </data>
+  <data name="label65.Size" type="System.Drawing.Size, System.Drawing">
+    <value>84, 14</value>
+  </data>
+  <data name="txt_Entrypoint.Size" type="System.Drawing.Size, System.Drawing">
+    <value>175, 23</value>
+  </data>
+  <data name="cmbo_ImageFormat.Size" type="System.Drawing.Size, System.Drawing">
+    <value>67, 22</value>
+  </data>
+  <data name="txt_TargetImage_pwd.Size" type="System.Drawing.Size, System.Drawing">
+    <value>95, 23</value>
+  </data>
+  <data name="txt_TargetImage_username.Size" type="System.Drawing.Size, System.Drawing">
+    <value>115, 23</value>
+  </data>
+  <data name="txt_TargetImage.Size" type="System.Drawing.Size, System.Drawing">
+    <value>357, 23</value>
   </data>
   <data name="label64.Location" type="System.Drawing.Point, System.Drawing">
     <value>17, 14</value>
   </data>
   <data name="label64.Size" type="System.Drawing.Size, System.Drawing">
-    <value>59, 12</value>
+    <value>70, 14</value>
   </data>
   <data name="label64.Text" xml:space="preserve">
     <value>目标镜像:</value>
   </data>
+  <data name="txt_TargetImage_tag.Size" type="System.Drawing.Size, System.Drawing">
+    <value>57, 23</value>
+  </data>
+  <data name="label63.Size" type="System.Drawing.Size, System.Drawing">
+    <value>35, 14</value>
+  </data>
+  <data name="label66.Size" type="System.Drawing.Size, System.Drawing">
+    <value>35, 14</value>
+  </data>
+  <data name="label62.Size" type="System.Drawing.Size, System.Drawing">
+    <value>70, 14</value>
+  </data>
+  <data name="label61.Size" type="System.Drawing.Size, System.Drawing">
+    <value>35, 14</value>
+  </data>
+  <data name="page_docker_img.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 24</value>
+  </data>
   <data name="page_docker_img.Size" type="System.Drawing.Size, System.Drawing">
-    <value>620, 460</value>
+    <value>620, 458</value>
   </data>
   <data name="page_docker_img.Text" xml:space="preserve">
     <value>Docker镜像发布</value>
   </data>
-  <data name="btn_windows_serivce_stop.Location" type="System.Drawing.Point, System.Drawing">
-    <value>511, 101</value>
-  </data>
-  <data name="btn_windows_service_retry.Location" type="System.Drawing.Point, System.Drawing">
-    <value>399, 101</value>
-  </data>
-  <data name="btn_windows_service_retry.Text" xml:space="preserve">
-    <value>重试</value>
-  </data>
   <data name="checkBox_select_deploy_service.Size" type="System.Drawing.Size, System.Drawing">
-    <value>120, 16</value>
+    <value>138, 18</value>
   </data>
   <data name="checkBox_select_deploy_service.Text" xml:space="preserve">
     <value>选择指定文件发布</value>
+  </data>
+  <data name="checkBox_Increment_window_service.Size" type="System.Drawing.Size, System.Drawing">
+    <value>82, 18</value>
+  </data>
+  <data name="label_windows_serivce_demo.Size" type="System.Drawing.Size, System.Drawing">
+    <value>35, 14</value>
+  </data>
+  <data name="label26.Size" type="System.Drawing.Size, System.Drawing">
+    <value>189, 14</value>
+  </data>
+  <data name="txt_windowservice_name.Size" type="System.Drawing.Size, System.Drawing">
+    <value>167, 23</value>
+  </data>
+  <data name="label14.Size" type="System.Drawing.Size, System.Drawing">
+    <value>91, 14</value>
+  </data>
+  <data name="combo_windowservice_sdk_type.Size" type="System.Drawing.Size, System.Drawing">
+    <value>167, 22</value>
+  </data>
+  <data name="label11.Size" type="System.Drawing.Size, System.Drawing">
+    <value>63, 14</value>
+  </data>
+  <data name="combo_windowservice_env.Size" type="System.Drawing.Size, System.Drawing">
+    <value>167, 22</value>
+  </data>
+  <data name="label10.Size" type="System.Drawing.Size, System.Drawing">
+    <value>70, 14</value>
   </data>
   <data name="progress_window_service_tip.Size" type="System.Drawing.Size, System.Drawing">
     <value>398, 31</value>
@@ -443,29 +608,47 @@
   <data name="progress_window_service_tip.Text" xml:space="preserve">
     <value>使用步骤 1. 在发布配置tab里面创建环境，添加token服务器(windows).           2. 选择对应的环境</value>
   </data>
-  <data name="tabPage_windows_service.Size" type="System.Drawing.Size, System.Drawing">
-    <value>612, 303</value>
+  <data name="tabPage_windows_service.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 24</value>
   </data>
-  <data name="rich_windowservice_log.Size" type="System.Drawing.Size, System.Drawing">
-    <value>606, 297</value>
+  <data name="tabPage_windows_service.Size" type="System.Drawing.Size, System.Drawing">
+    <value>612, 301</value>
+  </data>
+  <data name="tabPage2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 24</value>
   </data>
   <data name="tabPage2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>612, 303</value>
+    <value>612, 301</value>
   </data>
   <data name="tabControl_window_service.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 131</value>
+    <value>0, 129</value>
   </data>
   <data name="tabControl_window_service.Size" type="System.Drawing.Size, System.Drawing">
     <value>620, 329</value>
   </data>
+  <data name="page_window_service.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 24</value>
+  </data>
   <data name="page_window_service.Size" type="System.Drawing.Size, System.Drawing">
-    <value>620, 460</value>
+    <value>620, 458</value>
+  </data>
+  <data name="label_how_to_linuxservice.Size" type="System.Drawing.Size, System.Drawing">
+    <value>35, 14</value>
+  </data>
+  <data name="checkBox_select_type_linuxservice.Size" type="System.Drawing.Size, System.Drawing">
+    <value>131, 18</value>
+  </data>
+  <data name="label51.Size" type="System.Drawing.Size, System.Drawing">
+    <value>301, 14</value>
+  </data>
+  <data name="txt_linux_service_env.Size" type="System.Drawing.Size, System.Drawing">
+    <value>277, 23</value>
   </data>
   <data name="label49.Location" type="System.Drawing.Point, System.Drawing">
     <value>26, 96</value>
   </data>
   <data name="label49.Size" type="System.Drawing.Size, System.Drawing">
-    <value>59, 12</value>
+    <value>70, 14</value>
   </data>
   <data name="label49.Text" xml:space="preserve">
     <value>环境变量:</value>
@@ -479,35 +662,38 @@
   <data name="progress_linux_service_tip.Text" xml:space="preserve">
     <value>使用步骤 1. 在发布配置tab里面创建环境，添加token服务器(linux).           2. 选择对应的环境</value>
   </data>
+  <data name="tabPage_linux_service.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 24</value>
+  </data>
   <data name="tabPage_linux_service.Size" type="System.Drawing.Size, System.Drawing">
-    <value>612, 303</value>
+    <value>612, 301</value>
   </data>
   <data name="tabPage_linux_service.Text" xml:space="preserve">
     <value>进度展示</value>
   </data>
-  <data name="rich_linuxservice_log.Size" type="System.Drawing.Size, System.Drawing">
-    <value>606, 297</value>
+  <data name="tabPage3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 24</value>
   </data>
   <data name="tabPage3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>612, 303</value>
+    <value>612, 301</value>
   </data>
   <data name="tabPage3.Text" xml:space="preserve">
     <value>发布日志</value>
   </data>
   <data name="tabControl_linux_service.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 131</value>
+    <value>0, 129</value>
   </data>
   <data name="tabControl_linux_service.Size" type="System.Drawing.Size, System.Drawing">
     <value>620, 329</value>
   </data>
   <data name="checkBox_select_deploy_linuxservice.Size" type="System.Drawing.Size, System.Drawing">
-    <value>120, 16</value>
+    <value>138, 18</value>
   </data>
   <data name="checkBox_select_deploy_linuxservice.Text" xml:space="preserve">
     <value>选择指定文件发布</value>
   </data>
   <data name="checkBox_Increment_linux_service.Size" type="System.Drawing.Size, System.Drawing">
-    <value>72, 16</value>
+    <value>82, 18</value>
   </data>
   <data name="checkBox_Increment_linux_service.Text" xml:space="preserve">
     <value>增量发布</value>
@@ -516,55 +702,160 @@
     <value>43, 46</value>
   </data>
   <data name="label47.Size" type="System.Drawing.Size, System.Drawing">
-    <value>215, 12</value>
+    <value>252, 14</value>
   </data>
   <data name="label47.Text" xml:space="preserve">
     <value>注意:只能发布装了agent的linux服务器</value>
   </data>
+  <data name="txt_linuxservice_name.Size" type="System.Drawing.Size, System.Drawing">
+    <value>167, 23</value>
+  </data>
   <data name="label48.Size" type="System.Drawing.Size, System.Drawing">
-    <value>77, 12</value>
+    <value>91, 14</value>
   </data>
   <data name="label48.Text" xml:space="preserve">
     <value>   服务名称:</value>
   </data>
+  <data name="combo_linux_env.Size" type="System.Drawing.Size, System.Drawing">
+    <value>167, 22</value>
+  </data>
+  <data name="label50.Size" type="System.Drawing.Size, System.Drawing">
+    <value>70, 14</value>
+  </data>
   <data name="label50.Text" xml:space="preserve">
     <value>环境名称:</value>
   </data>
-  <data name="b_linuxservice_deploy.Text" xml:space="preserve">
-    <value>发布</value>
-  </data>
-  <data name="btn_linux_service_retry.Text" xml:space="preserve">
-    <value>重试</value>
-  </data>
-  <data name="b_linux_service_rollback.Text" xml:space="preserve">
-    <value>回滚</value>
+  <data name="page_linux_service.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 24</value>
   </data>
   <data name="page_linux_service.Size" type="System.Drawing.Size, System.Drawing">
-    <value>620, 460</value>
+    <value>620, 458</value>
   </data>
   <data name="page_linux_service.Text" xml:space="preserve">
     <value>Linux服务发布</value>
   </data>
+  <data name="label_how_to_set.Size" type="System.Drawing.Size, System.Drawing">
+    <value>63, 14</value>
+  </data>
+  <data name="txt_backUp_ignore.Size" type="System.Drawing.Size, System.Drawing">
+    <value>115, 23</value>
+  </data>
+  <data name="list_backUp_ignore.ItemHeight" type="System.Int32, mscorlib">
+    <value>14</value>
+  </data>
+  <data name="list_backUp_ignore.Size" type="System.Drawing.Size, System.Drawing">
+    <value>152, 158</value>
+  </data>
   <data name="groupBox1.Text" xml:space="preserve">
     <value>Token服务器备份排除规则</value>
   </data>
-  <data name="btn_win_server_testAll.Text" xml:space="preserve">
-    <value>测试连接全部</value>
+  <data name="label_check_update.Size" type="System.Drawing.Size, System.Drawing">
+    <value>63, 14</value>
+  </data>
+  <data name="txt_env_ignore.Size" type="System.Drawing.Size, System.Drawing">
+    <value>122, 23</value>
+  </data>
+  <data name="list_env_ignore.ItemHeight" type="System.Int32, mscorlib">
+    <value>14</value>
+  </data>
+  <data name="list_env_ignore.Size" type="System.Drawing.Size, System.Drawing">
+    <value>157, 158</value>
+  </data>
+  <data name="txt_winserver_nickname.Size" type="System.Drawing.Size, System.Drawing">
+    <value>132, 23</value>
+  </data>
+  <data name="label32.Size" type="System.Drawing.Size, System.Drawing">
+    <value>126, 14</value>
+  </data>
+  <data name="label29.Size" type="System.Drawing.Size, System.Drawing">
+    <value>49, 14</value>
+  </data>
+  <data name="label5.Size" type="System.Drawing.Size, System.Drawing">
+    <value>91, 14</value>
+  </data>
+  <data name="combo_env_server_list.Size" type="System.Drawing.Size, System.Drawing">
+    <value>320, 22</value>
+  </data>
+  <data name="txt_env_server_host.Size" type="System.Drawing.Size, System.Drawing">
+    <value>125, 23</value>
+  </data>
+  <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
+    <value>49, 14</value>
+  </data>
+  <data name="txt_env_server_token.Size" type="System.Drawing.Size, System.Drawing">
+    <value>152, 23</value>
+  </data>
+  <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
+    <value>56, 14</value>
+  </data>
+  <data name="page_winserver.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 24</value>
+  </data>
+  <data name="page_winserver.Size" type="System.Drawing.Size, System.Drawing">
+    <value>576, 119</value>
   </data>
   <data name="page_winserver.Text" xml:space="preserve">
     <value>Token服务器(需要装agent)</value>
   </data>
-  <data name="btn_linux_server_testAll.Text" xml:space="preserve">
-    <value>测试连接全部</value>
+  <data name="txt_linux_server_nickname.Size" type="System.Drawing.Size, System.Drawing">
+    <value>94, 23</value>
+  </data>
+  <data name="label20.Size" type="System.Drawing.Size, System.Drawing">
+    <value>91, 14</value>
+  </data>
+  <data name="combo_linux_server_list.Size" type="System.Drawing.Size, System.Drawing">
+    <value>326, 22</value>
+  </data>
+  <data name="txt_linux_pwd.Size" type="System.Drawing.Size, System.Drawing">
+    <value>93, 23</value>
+  </data>
+  <data name="txt_linux_username.Size" type="System.Drawing.Size, System.Drawing">
+    <value>99, 23</value>
+  </data>
+  <data name="txt_linux_host.Size" type="System.Drawing.Size, System.Drawing">
+    <value>90, 23</value>
+  </data>
+  <data name="label17.Size" type="System.Drawing.Size, System.Drawing">
+    <value>49, 14</value>
+  </data>
+  <data name="label18.Size" type="System.Drawing.Size, System.Drawing">
+    <value>77, 14</value>
+  </data>
+  <data name="label19.Size" type="System.Drawing.Size, System.Drawing">
+    <value>42, 14</value>
+  </data>
+  <data name="label35.Size" type="System.Drawing.Size, System.Drawing">
+    <value>49, 14</value>
+  </data>
+  <data name="page_linux_server.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 24</value>
+  </data>
+  <data name="page_linux_server.Size" type="System.Drawing.Size, System.Drawing">
+    <value>576, 119</value>
   </data>
   <data name="page_linux_server.Text" xml:space="preserve">
     <value>linux服务器(docker发布)</value>
   </data>
+  <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>77, 14</value>
+  </data>
+  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>77, 14</value>
+  </data>
+  <data name="txt_env_name.Size" type="System.Drawing.Size, System.Drawing">
+    <value>125, 23</value>
+  </data>
+  <data name="combo_env_list.Size" type="System.Drawing.Size, System.Drawing">
+    <value>248, 22</value>
+  </data>
+  <data name="page_set.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 24</value>
+  </data>
   <data name="page_set.Size" type="System.Drawing.Size, System.Drawing">
-    <value>620, 460</value>
+    <value>620, 458</value>
   </data>
   <data name="chk_global_saveconfig_in_projectFolder.Size" type="System.Drawing.Size, System.Drawing">
-    <value>216, 16</value>
+    <value>250, 18</value>
   </data>
   <data name="chk_global_saveconfig_in_projectFolder.Text" xml:space="preserve">
     <value>AntDeploy.json保存在项目文件夹下</value>
@@ -575,17 +866,14 @@
   <data name="label52.Location" type="System.Drawing.Point, System.Drawing">
     <value>415, 287</value>
   </data>
-  <data name="chk_global_useCheckBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 16</value>
-  </data>
-  <data name="chk_global_useCheckBox.Text" xml:space="preserve">
-    <value>开启环境下服务器可分组功能</value>
+  <data name="label52.Size" type="System.Drawing.Size, System.Drawing">
+    <value>224, 14</value>
   </data>
   <data name="checkBox_multi_deploy.Location" type="System.Drawing.Point, System.Drawing">
     <value>409, 37</value>
   </data>
   <data name="checkBox_multi_deploy.Size" type="System.Drawing.Size, System.Drawing">
-    <value>192, 16</value>
+    <value>222, 18</value>
   </data>
   <data name="checkBox_multi_deploy.Text" xml:space="preserve">
     <value>Vs里可以同时打开多个发布窗口</value>
@@ -594,16 +882,22 @@
     <value>217, 37</value>
   </data>
   <data name="checkBox_save_deploy_log.Size" type="System.Drawing.Size, System.Drawing">
-    <value>132, 16</value>
+    <value>152, 18</value>
   </data>
   <data name="checkBox_save_deploy_log.Text" xml:space="preserve">
     <value>保存发布日志到本地</value>
+  </data>
+  <data name="label33.Size" type="System.Drawing.Size, System.Drawing">
+    <value>168, 14</value>
+  </data>
+  <data name="txt_http_proxy.Size" type="System.Drawing.Size, System.Drawing">
+    <value>181, 23</value>
   </data>
   <data name="label30.Location" type="System.Drawing.Point, System.Drawing">
     <value>73, 340</value>
   </data>
   <data name="label30.Size" type="System.Drawing.Size, System.Drawing">
-    <value>83, 12</value>
+    <value>98, 14</value>
   </data>
   <data name="label30.Text" xml:space="preserve">
     <value>Http代理配置:</value>
@@ -620,14 +914,23 @@
   <data name="label42.Location" type="System.Drawing.Point, System.Drawing">
     <value>440, 256</value>
   </data>
+  <data name="label42.Size" type="System.Drawing.Size, System.Drawing">
+    <value>196, 14</value>
+  </data>
   <data name="label41.Location" type="System.Drawing.Point, System.Drawing">
     <value>416, 272</value>
+  </data>
+  <data name="label41.Size" type="System.Drawing.Size, System.Drawing">
+    <value>224, 14</value>
+  </data>
+  <data name="label39.Size" type="System.Drawing.Size, System.Drawing">
+    <value>154, 14</value>
   </data>
   <data name="label38.Location" type="System.Drawing.Point, System.Drawing">
     <value>333, 237</value>
   </data>
   <data name="label38.Size" type="System.Drawing.Size, System.Drawing">
-    <value>293, 12</value>
+    <value>343, 14</value>
   </data>
   <data name="label38.Text" xml:space="preserve">
     <value>NetCore发布模式如果没有设置采用以下默认值:      </value>
@@ -635,14 +938,23 @@
   <data name="combo_netcore_publish_mode.Location" type="System.Drawing.Point, System.Drawing">
     <value>168, 234</value>
   </data>
+  <data name="combo_netcore_publish_mode.Size" type="System.Drawing.Size, System.Drawing">
+    <value>161, 22</value>
+  </data>
   <data name="label37.Size" type="System.Drawing.Size, System.Drawing">
-    <value>107, 12</value>
+    <value>126, 14</value>
   </data>
   <data name="label37.Text" xml:space="preserve">
     <value>NetCore 发布模式:</value>
   </data>
   <data name="label_without_vs.Location" type="System.Drawing.Point, System.Drawing">
     <value>362, 9</value>
+  </data>
+  <data name="label_without_vs.Size" type="System.Drawing.Size, System.Drawing">
+    <value>287, 14</value>
+  </data>
+  <data name="checkBox_Chinese.Size" type="System.Drawing.Size, System.Drawing">
+    <value>82, 18</value>
   </data>
   <data name="btn_choose_msbuild.Location" type="System.Drawing.Point, System.Drawing">
     <value>523, 162</value>
@@ -653,17 +965,29 @@
   <data name="label36.Location" type="System.Drawing.Point, System.Drawing">
     <value>49, 174</value>
   </data>
+  <data name="label36.Size" type="System.Drawing.Size, System.Drawing">
+    <value>133, 14</value>
+  </data>
   <data name="txt_msbuild_path.Location" type="System.Drawing.Point, System.Drawing">
     <value>168, 160</value>
+  </data>
+  <data name="label15.Size" type="System.Drawing.Size, System.Drawing">
+    <value>147, 14</value>
   </data>
   <data name="label15.Text" xml:space="preserve">
     <value>指定特定文件夹发布：</value>
   </data>
+  <data name="pag_advance_setting.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 24</value>
+  </data>
   <data name="pag_advance_setting.Size" type="System.Drawing.Size, System.Drawing">
-    <value>620, 460</value>
+    <value>620, 458</value>
   </data>
   <data name="tabcontrol.Size" type="System.Drawing.Size, System.Drawing">
     <value>628, 486</value>
+  </data>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>110, 110</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="$this.BackgroundImageLayout" type="System.Windows.Forms.ImageLayout, System.Windows.Forms">
@@ -671,6 +995,9 @@
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
     <value>636, 518</value>
+  </data>
+  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>Inherit</value>
   </data>
   <data name="$this.MiniDownBack" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>

@@ -11,7 +11,7 @@ namespace AntDeployWinform.Models
         public bool UseAsiaShanghai { get; set; }
         public bool SaveLogs { get; set; }
         public bool MultiInstance { get; set; }
-        public List<string> ProjectPathList  { get; set; }
+        public List<string> ProjectPathList { get; set; }
     }
 
     /// <summary>
@@ -71,7 +71,7 @@ namespace AntDeployWinform.Models
         }
     }
 
-    public delegate void EnvChange(Env env, bool isServerChange,bool isRemove);
+    public delegate void EnvChange(Env env, bool isServerChange, bool isRemove);
     public class DeployConfig
     {
         public event EnvChange EnvChangeEvent;
@@ -80,7 +80,7 @@ namespace AntDeployWinform.Models
         public void AddEnv(Env env)
         {
             this.Env.Add(env);
-            EnvChangeEvent?.Invoke(env, false,false);
+            EnvChangeEvent?.Invoke(env, false, false);
         }
 
         public void RemoveEnv(int index)
@@ -91,12 +91,12 @@ namespace AntDeployWinform.Models
             }
             var env = this.Env[index];
             this.Env.RemoveAt(index);
-            EnvChangeEvent?.Invoke(env, false,true);
+            EnvChangeEvent?.Invoke(env, false, true);
         }
 
         public void EnvServerChange(Env env)
         {
-            EnvChangeEvent?.Invoke(env, true,false);
+            EnvChangeEvent?.Invoke(env, true, false);
         }
 
 
@@ -154,7 +154,7 @@ namespace AntDeployWinform.Models
         public ImageCredential TargetImageCredential { get; set; }
 
         public string ImageFormat { get; set; }
-      
+
         public string[] Entrypoint { get; set; }
         public string[] Cmd { get; set; }
         public List<string> IgnoreList { get; set; }
@@ -263,6 +263,11 @@ namespace AntDeployWinform.Models
         public string DockerFireUrl { get; set; }
         public string WindowsServiceFireUrl { get; set; }
         public string LinuxServiceFireUrl { get; set; }
+
+        /// <summary>
+        ///  判断是否http地址
+        /// </summary>
+        public bool IsHttpUrl => string.IsNullOrEmpty(DockerFireUrl) ? false : DockerFireUrl.StartsWith("http", System.StringComparison.InvariantCultureIgnoreCase);
     }
 
 
