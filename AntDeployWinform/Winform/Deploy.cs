@@ -6788,6 +6788,10 @@ RETRY_WINDOWSSERVICE2:
                    if (gitModel != null)
                    {
                        var fileList = gitModel.GetChanges();
+                       
+                       // 修复BUG 在增量发布时，切换不同环境，Dockerfile 还是用的上次服务端记录了上次端口号的文件，倒至有不同环境相同项目发布到同一服务器上时无法得到正确的端口号和容器名称。
+                       // #TODO# 解决方法 在这里添加一个检查，如果上次发布的环境名和本次发布的环境名不一样了，则将Dockerfile添加到 fileList 列表中，以解决增量发布时切换不同环境发布时引发发布不成功的情况，因为服务端已记录上次发布的Dockerfile，并添加了上次的端口，倒至这次会发布不成功
+                       
                        gitChangeFileCount = fileList.Count;
                        if (gitChangeFileCount < 1)
                        {
