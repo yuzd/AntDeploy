@@ -66,7 +66,7 @@ namespace AntDeployWinform.Models
             else
             {
                 var runtime = NetCorePublishMode.Split('(')[1].Split(')')[0];
-                return $" --runtime {runtime}";
+                return $" --runtime {runtime} --self-contained";
             }
 
         }

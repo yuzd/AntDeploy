@@ -4846,7 +4846,7 @@ RETRY_IIS2:
                             var runtime = "";
                             if (string.IsNullOrEmpty(PluginConfig.NetCorePublishMode) || PluginConfig.NetCorePublishMode=="Default")
                             {
-                                runtime = " --runtime win-x64";
+                                runtime = " --runtime win-x64 --self-contained";
                             }
                             else
                             {
@@ -9221,7 +9221,7 @@ RETRY_DOCKER:
                         
                         if (string.IsNullOrEmpty(PluginConfig.NetCorePublishMode) || PluginConfig.NetCorePublishMode == "Default")
                         {
-                            runtime = " --runtime linux-x64";
+                            runtime = " --runtime linux-x64 --self-contained";
                         }
                         else
                         {
