@@ -495,11 +495,7 @@ namespace AntDeployWinform.Models
             }
 
             var url = this.FireUrlText.Text.ToLower();
-            if (!string.IsNullOrEmpty(url) && !url.StartsWith("http"))
-            {
-                return false;
-            }
-
+       
             if (ServerType.Equals(ServerType.IIS))
             {
                 Server.IIsFireUrl = this.FireUrlText.Text;
