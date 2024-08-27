@@ -55,6 +55,8 @@ namespace AntDeployAgent.Util
                 process.StartInfo.Verb = "runas";
                 process.StartInfo.RedirectStandardError = true;
                 process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.StandardOutputEncoding = Encoding.UTF8;
+                process.StartInfo.StandardErrorEncoding = Encoding.UTF8;
                 process.Start();
                 process.OutputDataReceived += (sender, args) =>
                 {
